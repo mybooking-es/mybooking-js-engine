@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Mybooking Basic - Seleccionar vehículo</title>
+    <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-ui-bootstrap/0.5pre/css/custom-theme/jquery-ui-1.10.0.custom.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.5/css/bulma.min.css">
+    <link rel="stylesheet" href="./assets/styles/styles.css" />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+  </head>
+  <body class="choose_product">
+
+    <section class="section section-padding-large">
+      <div class="container is-desktop">
+        <div class="columns">
+          <h1 class="title">Seleccionar vehículo</h1>
+        </div>
+        <hr>
+        <div class="columns">
+          <div class="column is-three-fifths">
+            <div id="product_listing"></div>
+          </div>
+          <aside class="column is-two-fifths">
+            <div id="reservation_detail" class="tile is-ancestor">
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <!-- Modal to change selection -->
+    <div class="modal">
+      <div class="modal-background">
+      </div>
+      <div class="modal-card">
+        <header class="modal-card-head">
+          <p class="modal-card-title">Modificar búsqueda</p>
+          <button id="close_modal_button" class="delete modal-close" aria-label="close"></button>
+        </header>        
+        <section class="modal-card-body">
+          <form
+            name="search_form"
+            action="choose_product.html"
+            method="get"
+            enctype="application/x-www-form-urlencoded">
+            <!-- Entrega -->
+            <div class="field">
+              <label class="label">Entrega</label>
+              <div class="control">
+                <div class="select is-fullwidth">
+                  <select id="pickup_place" name="pickup_place"> </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- Custom delivery place -->
+            <div id="another_pickup_place_group" class="field" style="display:none">
+              <div class="control">
+                <input type="text" name="pickup_place_other" id="pickup_place_other" class="input" placeholder="Introducir dirección"/>
+                <input type="hidden" name="custom_pickup_place" value="false"/>
+              </div>
+            </div>
+
+            <div class="field">
+              <div class="control">
+                <label class="checkbox">
+                    <input type="checkbox" id="same_pickup_return_place" name="same_pickup_return_place" 
+                           checked/>&nbsp;&nbsp;Devolver en la misma oficina
+                </label>
+              </div>
+            </div>
+            <div class="field field-body">
+              <div class="field">
+                <div class="control is-expanded">
+                  <input
+                          type="text"
+                          id="date_from"
+                          name="date_from"
+                          class="input"
+                          autocomplete="off"
+                        />
+                </div>
+              </div>
+              <div class="field">
+                <div class="control">
+                  <div class="select is-fullwidth">
+                    <select id="time_from" name="time_from"> </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Devolución -->
+            <div class="field">
+              <label class="label">Devolución</label>
+              <div class="control return_place_group">
+                <div class="select is-fullwidth">
+                  <select id="return_place" name="return_place"> </select>
+                </div>
+              </div>          
+            </div>
+            <!-- Custom collection place -->
+            <div id="another_return_place_group" class="field return_place_group" style="display:none">
+              <div class="control">
+                <input type="text" name="return_place_other" id="return_place_other" class="input" placeholder="Introducir dirección"/>
+                <input type="hidden" name="custom_return_place" value="false"/>
+              </div>
+            </div>
+
+            <div class="field field-body">
+              <div class="field">
+                <div class="control is-expanded">
+                  <input type="text" id="date_to" name="date_to" autocomplete="off" class="input"/>
+                </div>
+              </div>
+              <div class="field">
+                <div class="control">
+                  <div class="select is-fullwidth">
+                    <select id="time_to" name="time_to"> </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="field is-horizontal">
+              <div class="field-body">
+                <div class="field">
+                  <div class="control">
+                    <input class="button is-primary" type="submit" value="Nueva búsqueda" />
+                  </div>
+                </div>
+              </div>
+            </div>        
+          </form>
+        </section>
+      </div>
+    </div>  
+
+    <!-- Script detailed product for choose_product -->   
+    <script type="text/tpml" id="script_detailed_product">
+      <% if (available > 0) { %>
+      <h2 class="subtitle is-4">Hemos encontrado <strong><%=available%></strong> vehículos disponibles</h2>
+      <% } else { %>
+      <h2 class="subtitle is-4">Lo sentimos, no hemos encontrados vehículos disponibles en esas fechas</h2>  
+      <% } %>    
+      <% for (var idxP=0;idxP<products.length;idxP++) { %>
+        <% var product = products[idxP]; %>
+        <div class="columns">
+          <div class="column is-two-thirds">
+            <h3 class="subtitle"><%=product.name%></h2>
+            <img src="<%=product.photo%>" alt="">           
+            <!-- Offer or Promotion Code-->
+            <% if (product.price != product.base_price) { %>
+              <!-- Offer -->             
+              <% if (product.offer_discount_type == 'percentage' || product.offer_discount_type == 'amount') { %>
+                <p><%=new Number(product.offer_value)%>% <%=product.offer_name%></p>
+              <% } %>
+              <!-- Offer o promotion code (price before discount) -->
+              <p><small style="text-decoration: line-through"><%= configuration.formatCurrency(product.base_price)%></small></p>
+            <% } %>
+            <h4 class="has-text-warning is-size-3 has-text-weight-bold"><%= configuration.formatCurrency(product.price)%></h3>
+          </div>
+          <div class="column is-one-third hero">
+            <h3><span class="fa fa-plus-circle"></span>&nbsp;más info</h2>
+            <p><%=product.description%></p>
+            <div class="hero-foot">
+            <% if (product.availability) { %>
+              <% if (product.few_available_units) { %>
+              <p class="has-text-danger has-text-centered">¡Quedan pocas unidades!</p>  
+              <br>
+              <% } %>              
+              <a class="button is-primary btn-choose-product is-fullwidth" role="button" data-product="<%=product.code%>">Reservar</a>
+            <% } else { %>
+            <p class="has-text-centered">Modelo no disponible en la oficina y fechas seleccionadas</p>
+            <% } %>
+            </div>
+          </div>
+        </div>
+        <hr>
+      <% } %>
+    </script>
+    
+    <!-- Script detailed for reservation summary -->
+    <script type="text/tmpl" id="script_reservation_summary">
+      <div class="tile is-parent is-vertical">
+        <div class="tile is-child notification has-background-light">
+          <p class="title">Reserva</h4>
+          <div class="content">
+            <p class="subtitle has-text-weight-semibold has-text-grey">Entrega</p>
+            <ul>
+              <li><%=shopping_cart.pickup_place_customer_translation%></li>
+              <li><%=shopping_cart.date_from_full_format%> <%=shopping_cart.time_from%></li>
+            </ul>
+          </div>
+          <div class="content">
+            <p class="subtitle has-text-weight-semibold has-text-grey">Devolución</p>
+            <ul>
+              <li><%=shopping_cart.return_place_customer_translation%></li>
+              <li><%=shopping_cart.date_to_full_format%> <%=shopping_cart.time_to%></li>
+            </ul>
+          </div>
+          <div class="content">
+            <p class="has-text-weight-semibold">Duración del alquiler: <%=shopping_cart.days%> día/s</p>
+            <div class="is-pulled-right">
+              <button id="modify_reservation_button" class="button is-primary modal-button" data-target="modal">Modificar reserva</button> 
+            </div>  
+          </div> 
+        </div> 
+      </div>
+    </script> 
+
+    <script src="./assets/js/mybooking-engine-init.js"></script>
+    <script src="../../dist/js/mybooking-js-engine.js"></script>
+
+  </body>
+</html>

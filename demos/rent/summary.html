@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Mybooking Basic - Resumen</title>
+    <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-ui-bootstrap/0.5pre/css/custom-theme/jquery-ui-1.10.0.custom.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.5/css/bulma.min.css">
+    <link rel="stylesheet" href="./assets/styles/styles.css" />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+  </head>
+  <body class="summary">
+
+    <div id="full_loader" class="gooey">
+      <span class="dot"></span>
+      <div class="dots">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+
+    <section class="section section-padding-large">
+      <div class="container is-desktop">
+        <div class="columns">
+          <h1 class="title">Su reserva</h1>
+        </div>
+        <hr>
+        <div class="columns">
+          <div class="column">
+            <div id="reservation_detail" class="tile is-ancestor"></div>
+          </div>
+        </div>
+        <hr>
+        <div class="columns">
+          <div class="column">
+            <div id="reservation_form_container">
+            </div>
+          </div>
+        </div>  
+      </div>
+    </section>
+
+    <!-- Reservation summary -->
+    <script type="text/tmpl" id="script_reservation_summary">
+      <div class="tile is-parent is-vertical">
+
+        <!-- Summary message -->
+        <div class="hero <% if (booking.status == 'confirmed'){ %>is-primary<%} else if (booking.status == 'pending_confirmation') {%>is-warning<%}%> ">
+          <div class="hero-body">
+            <div class="container">
+              <h1 class="title">
+                <%= booking.summary_status %>
+              </h1>
+            </div>
+          </div>
+        </div>
+        <br>
+        <div class="hero">
+          <div class="hero-body">
+            <div class="container">
+              <h2 class="subtitle">
+                LOCALIZADOR: <%= booking.id %>
+              </h2>
+            </div>
+          </div>
+        </div>
+        <!-- Pickup/return information -->
+        <div class="tile is-parent notification">
+          <div class="tile is-child notification has-background-light">
+            <div class="content">
+              <p class="subtitle has-text-weight-semibold has-text-grey">Entrega</p>
+              <ul>
+                <li><%=booking.pickup_place_customer_translation%></li>
+                <li><%=booking.date_from_full_format%> <%=booking.time_from%></li>
+              </ul>
+              <p class="has-text-weight-semibold">Duración del alquiler: <%=booking.days%> día/s</p>
+            </div>
+          </div> 
+          <div class="tile is-child notification has-background-light">
+            <div class="content">
+              <p class="subtitle has-text-weight-semibold has-text-grey">Devolución</p>
+              <ul>
+                <li><%=booking.return_place_customer_translation%></li>
+                <li><%=booking.date_to_full_format%> <%=booking.time_to%></li>
+              </ul>
+            </div>
+          </div>
+          <div class="tile is-child notification has-background-light">
+            <div class="content">
+              <p class="subtitle has-text-weight-semibold has-text-grey">Modelo</p>
+              <% for (var idx=0; idx<booking.booking_lines.length; idx++) { %>
+                <p><%=booking.booking_lines[idx].item_description_customer_translation%></p>
+                <p>GRUPO <%=booking.booking_lines[idx].item_id%></p>
+                <img src="<%=booking.booking_lines[idx].photo_medium%>"/>  
+              <% } %>              
+            </div>
+          </div>            
+        </div>
+        <!-- Extras -->
+        <% if (booking.booking_extras.length > 0) { %>
+        <div class="tile is-parent is-vertical notification">
+          <div class="tile is-child notification has-background-light">
+            <p class="title">Extras seleccionados</h4>
+            <div class="content">
+              <ul>
+            <% for (var idx=0; idx<booking.booking_extras.length; idx++) { %>
+              <li><%=booking.booking_extras[idx].quantity%>x <%=booking.booking_extras[idx].extra_description_customer_translation%> <span class="is-pulled-right"><%=configuration.formatCurrency(booking.booking_extras[idx].extra_cost)%></span></li>
+            <% } %>
+              </ul>          
+            </div>
+          </div>
+        </div>
+        <% } %>
+        <!-- Driver information -->
+        <div class="tile is-parent notification">
+          <div class="tile is-child notification has-background-light">
+            <div class="content">
+              <p class="subtitle has-text-weight-semibold has-text-grey">Datos del conductor</p>
+              <ul>
+                <li>Nombre: <%=booking.customer_name%></li>
+                <li>Apellidos: <%=booking.customer_surname%></li>
+                <li>Fecha de nacimiento: <%=booking.driver_date_of_birth%>
+                <li>Documento de identidad: <%=booking.driver_document_id%></li>
+              </ul>
+            </div>
+          </div> 
+          <div class="tile is-child notification has-background-light">
+            <div class="content">
+              <p class="subtitle has-text-weight-semibold has-text-grey">Datos de contacto</p>
+              <ul>
+                <li>Email: <%=booking.customer_email%></li>
+                <li>Teléfono: <%=booking.customer_phone%> <%=booking.customer_mobile_phone%></li>
+                <li>Dirección: <% if (booking.driver_address) { %>
+                    <%=booking.driver_address.street%> <%=booking.driver_address.number%> <%=booking.driver_address.complement%>
+                    <% } %>
+                </li>
+                <li>Ciudad/Lugar: <% if (booking.driver_address) { %>
+                    <%= booking.driver_address.city %>
+                    <% } %>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="tile is-child notification has-background-light">
+            <div class="content">
+              <p class="subtitle has-text-weight-semibold has-text-grey">Resumen</p>
+              <ul>
+                <li>Total vehículo: <%=configuration.formatCurrency(booking.item_cost)%></li>
+                <li>Extras: <%= configuration.formatCurrency(booking.extras_cost)%></li>  
+                <li>Total alquiler: <%= configuration.formatCurrency(booking.total_cost)%></li>         
+            </div>
+          </div>            
+        </div>
+        <% if (booking.total_paid > 0) { %>
+        <div class="hero is-warning">
+          <div class="hero-body">
+            <div class="container">
+              <p class="subtitle">
+                El importe restante (<%= configuration.formatCurrency(booking.total_pending)%>) deberá ser pagado en el momento de la 
+                recogida del vehículo
+              </p>
+            </div>
+          </div>
+        </div>
+        <% } %>  
+      </div>
+    </script>
+
+    <script type="text/tmpl" id="script_reservation_form">
+      <form id="form-reservation" name="booking_information_form" autocomplete="off">
+             
+        <h4 class="is-size-4 has-text-weight-semibold has-text-grey">Dirección del conductor</h4>
+        <br>
+        <div class="field field-body">
+          <div class="field">
+            <label class="label">Calle</label>
+            <div class="control is-expanded">
+                <input name="customer_address[street]" id="street" type="text" class="input" placeholder="Calle:"
+                   value="<%=booking.address_street%>">
+            </div>
+          </div>
+          <div class="field">
+            <label class="label">Número</label>
+            <div class="control is-expanded">
+                <input name="customer_address[number]" id="number" type="text" class="input"  placeholder="Número:" value="<%=booking.address_number%>">
+            </div>
+          </div>
+          <div class="field">
+            <label class="label">Complemento</label>
+            <div class="control is-expanded">
+                <input name="customer_address[complement]" id="complemento" type="text" class="input"  placeholder="Complemento:" value="<%=booking.address_complement%>">
+            </div>
+          </div>
+        </div>
+
+        <div class="field field-body">
+          <div class="field">
+            <label class="label">Ciudad</label>
+            <div class="control is-expanded">
+                <input name="customer_address[city]" id="city" type="text" class="input"  placeholder="Ciudad:" value="<%=booking.address_city%>">
+            </div>
+          </div>
+          <div class="field">
+            <label class="label">Provincia</label>
+            <div class="control is-expanded">
+                <input name="customer_address[state]" id="state" class="input"  type="text" placeholder="Provincia:" value="<%=booking.address_state%>">
+            </div>
+          </div>
+          <div class="field">
+            <label class="label">País</label>
+            <div class="control is-expanded">
+                <input name="customer_address[country]" id="country" type="text" class="input"  placeholder="País:" value="<%=booking.address_country%>">
+            </div>
+          </div>
+          <div class="field">
+            <label class="label">Código Postal</label>
+            <div class="control is-expanded">
+                <input name="customer_address[zip]" id="zip" class="input"  type="text" placeholder="Código Postal:" value="<%=booking.address_zip%>">
+            </div>
+          </div>                      
+        </div>
+        
+        <div class="field is-grouped">
+          <div class="control">
+            <button id="btn_update_reservation" type="button" class="button is-primary">Actualizar</a>
+          </div>
+        </div> 
+      </form>
+    </script>
+
+    <!-- Payment -->
+    <script type="text/tmpl" id="script_payment_detail">
+      <input type="hidden" name="payment" value="redsys256" data-payment-method="redsys256">
+      <div class="field is-grouped">
+        <div class="control">
+          <button type="submit" class="button is-primary">Pagar</a>
+        </div>
+      </div>  
+    </script>
+
+    <script src="./assets/js/mybooking-engine-init.js"></script>
+    <script src="../../dist/js/mybooking-js-engine.js"></script>
+
+  </body>
+</html>

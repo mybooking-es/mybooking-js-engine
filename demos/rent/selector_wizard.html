@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Mybooking Basic - Inicio</title>
+    <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-ui-bootstrap/0.5pre/css/custom-theme/jquery-ui-1.10.0.custom.css"/>
+    <!--link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.5/css/bulma.min.css"-->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">    
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"/>
+    <!--link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.12.0/css/all.css"-->
+    <link rel="stylesheet" href="./assets/styles/styles.css" />   
+    <link rel="stylesheet" href="./assets/styles/style-wizard.css" />        
+  </head>
+  <body class="mybooking-selector-wizard">
+    <!-- Wizard container -->  
+    <div id="wizard_container" class="bg-white text-dark" style="display: none">
+        <!-- Title -->
+        <div id="step_title" class="step_title text-center h5 pb-2"></div>
+        <!-- Close btn -->
+        <span id="close_wizard_btn" style="" ><i class="fa fa-times"></i></span>
+        <!-- Container -->
+        <hr>
+        <div id="wizard_container_step" class="bg-white p-2">
+          <div id="wizard_container_step_header">
+          </div>
+          <div id="wizard_container_step_body">
+          </div>
+        </div>
+    </div>
+    <section class="section">
+      <!-- Search form -->
+      <div class="container">
+        <form name="wizard_search_form" class="mt-5">
+            <input type="hidden" name="pickup_place">
+            <input type="hidden" name="return_place">
+            <input type="hidden" name="date_from">
+            <input type="hidden" name="time_from">
+            <input type="hidden" name="time_to">
+            <div class="row">
+              <div class="col">
+                <div class="row">
+                  <div class="col-md pb-2 pb-md-0 mr-md-1">
+                      <label for="place_holder">¿Dónde?</label>
+                      <div class="form-group">
+                      <input type="text" class="form-control form-control-lg bg-white text-muted" id="place_holder" 
+                             aria-describedby="pickupPlaceHolder" placeholder="Elige un lugar" readonly="true">
+                      </div>
+                  </div>
+                  <div class="col-md mr-md-1 d-flex justify-content-between flex-column">
+                      <label for="from_holder">¿Cuando?</label>
+                      <div class="form-group">
+                        <input type="text" class="form-control form-control-lg bg-white text-muted" id="from_holder" 
+                               aria-describedby="FromHolder" placeholder="Fecha de salida" readonly="true">
+                      </div>
+                  </div>    
+                  <div class="col-md pb-2 pb-md-0 mr-md-1 d-flex align-items-end">
+                      <div class="form-group w-100">
+                          <input type="text" class="form-control form-control-lg bg-white text-muted" id="to_holder" 
+                               aria-describedby="FromHolder" placeholder="Fecha de salida" readonly="true">
+                      </div>
+                  </div> 
+                </div>  
+              </div>  
+              <div class="col-md-auto d-flex align-items-end">
+                <div class="form-group w-100">
+                  <button id="btn_reservation" type="button" class="btn btn-lg btn-primary w-100">Reservar</button> 
+                </div>
+              </div>                                     
+            </div>           
+          </div>
+        </form>
+      </div>
+    </section>
+    <!-- Javascript -->
+    <script src="./assets/js/mybooking-engine-init.js"></script>
+    <script src="../../dist/js/mybooking-js-engine.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+    <script>
+      window.initMap = function() {
+         //selectorModel.setAutocomplete();
+      }
+    </script>  
+
+    <!-- ===================================================== -->
+    <!--                      Microtemplates                   -->
+    <!-- ===================================================== -->
+
+    <script id="wizard_steps_summary" type="txt/tmpl">
+
+      <div>
+        <div class="row">
+          <div class="col-md-6 text-right">
+            <p><%= summary.pickupPlace %></p>
+            <% if (summary.dateFrom != null) {%>
+              <p><%= summary.dateFrom %> <% if (summary.timeFrom != null) {%><%= summary.timeFrom %><% } %> </p>
+            <% } %>
+          </div>
+          <div class="col-md-6">
+            <p><%= summary.returnPlace %></p>
+            <% if (summary.dateTo != null) {%>
+              <p><%= summary.dateTo %> <% if (summary.timeTo != null) {%><%= summary.timeTo %><% } %></p>
+            <% } %>      
+          </div>
+        </div>
+      </div>
+
+    </script>
+
+    <!-- Select place micro-template -->
+
+    <script id="select_place_tmpl" type="txt/tmpl">
+
+      <div class="container p-0">
+        <div class="row">
+          <div class="col-md-12">
+            <ul style="list-style: none" class="pt-3">
+              <% for (var idx=0; idx<places.length; idx++) { %>
+              <li><a class="selector_place text-primary" role="button" data-place-id="<%=places[idx].name%>"><%=places[idx].name%></a></li>
+              <% } %>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+    </script>
+
+    <!-- Select place multiple destionations micro-template -->
+
+    <script id="select_place_multiple_destinations_tmpl" type="txt/tmpl">
+
+      <div class="container p-0">
+        <!-- Destinations selector -->
+        <div class="row mt-3">
+          <div class="col-md-12">
+            <button class="btn btn-primary destination-selector" type="button" data-destination-id="all">Todos</button>
+            <% for (var idx=0; idx<places.destinations.length; idx++) { %>
+              <button class="btn btn-primary destination-selector"  type="button" 
+                 data-destination-id="<%=places.destinations[idx].id%>"><%=places.destinations[idx].name%></button>
+            <% } %>
+          </div>
+        </div>
+        <hr>
+        <!-- Places selector -->
+        <div class="row">
+          <div class="col-md-12">
+            <% for (var idx=0; idx<places.destinations.length; idx++) { %>
+              <h3 class="destination-group" data-destination-id="<%=places.destinations[idx].id%>"><a name="<%=places.destinations[idx].id%>"><%=places.destinations[idx].name%></a></h3>
+              <ul style="list-style: none" class="destination-group pt-3" data-destination-id="<%=places.destinations[idx].id%>">
+              <% for (var idy=0; idy<places.destinations[idx].places.length; idy++) { %>               
+                <li><a class="selector_place text-primary" role="button" data-place-id="<%=places.destinations[idx].places[idy].name%>"><%=places.destinations[idx].places[idy].name%></a></li>
+              <% } %>
+              </ul>
+            <% } %>
+          </div>
+        </div>
+      </div>
+
+    </script>    
+
+    <!-- Select date micro-template -->
+
+    <script id="select_date_tmpl" type="txt/tmpl">
+
+      <div class="container p-0">
+        <div class="row">
+          <div class="col-md-12">
+             <div id="selector_date" class="pt-3"></div>
+          </div>
+        </div>
+      </div>
+
+    </script>
+
+    <!-- Select time micro-template -->
+
+    <script id="select_time_tmpl" type="txt/tmpl">
+
+      <div class="container p-2 mb-5">
+          <% for (var idx=0; idx<times.length; idx++) { %>
+              <% if (idx % 2 == 0) { %>
+              <div class="row">
+              <% } %>
+                <div class="col">
+                  <button type="button" class="btn btn-light selector_time text-center mb-2 p-3" style="width: 100%" data-value="<%=times[idx]%>"><%= times[idx] %></button>
+                </div>
+              <% if (idx % 2 == 1) { %>                
+              </div>
+              <% } %>
+            <% } %>
+        </div>
+      </div>
+
+    </script>    
+
+  </body>
+</html>

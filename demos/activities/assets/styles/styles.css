@@ -1,0 +1,107 @@
+@import url('https://fonts.googleapis.com/css?family=Open+Sans&display=swap');
+
+body {
+  font-family: 'Open Sans', sans-serif;
+}
+
+@media screen and (min-width: 1024px) {
+	.container {
+		max-width: 960px;
+	}
+}
+
+/* Override jqueryui styles to adapt to Bulma */
+
+input[type="text"], input[type="password"], .ui-autocomplete-input, textarea, .uneditable-input {
+    display: inline-block;
+		padding-bottom: calc(.375em - 1px);
+    padding-left: calc(.625em - 1px);
+    padding-right: calc(.625em - 1px);
+    padding-top: calc(.375em - 1px);
+    font-size: 1rem;
+    line-height: 1.5;
+
+		border-color: #dbdbdb;
+    border-radius: 4px;
+    color: #363636;
+
+}
+
+.form-reservation-error {
+
+  color: hsl(348, 100%, 61%);
+
+}
+
+/** Font awesome 4.7 **/
+
+@font-face {
+    font-family: "FontAwesome";
+    font-weight: normal;
+    font-style : normal;
+}
+
+
+/** OVERRIDE JQUERY UI **/
+
+ /* Header */
+  .ui-datepicker .ui-datepicker-header {
+    background-color: transparent !important;
+    padding: 20px !important;
+    border-bottom: 1px solid #EEE;
+    padding-bottom: 0px !important;
+    margin-bottom: 5px !important;
+
+  }
+
+  /* Title */
+  .ui-datepicker-title {
+    position: relative !important;
+    top: -15px !important;
+    margin: 0 !important;
+  }
+
+  /* Month and year */
+  .ui-datepicker-month, .ui-datepicker-year {
+    font-size: 1.4em !important;
+  }
+
+  .ui-datepicker {
+    width: 100% !important;
+    height: 100% !important;
+    border: 0 !important;
+  }
+  .ui-datepicker table {
+    width: 100% !important;
+    height: 100% !important;
+  }
+  .ui-datepicker table th span {
+    font-size: 1.4em !important;
+    text-align: center !important;
+    color: #d7d6d6;
+  }
+
+  .ui-datepicker table td span,
+  .ui-datepicker table td a {
+    height: 100%;
+    font-size: 1.4em !important;
+    box-shadow: none !important; /* Avoid shadow on cells */
+  }
+
+  .ui-datepicker-prev:before{
+      content: '\f053';
+      font-family: 'FontAwesome';
+      font-size: 20px;
+      /*left: -6px !important;*/
+  }
+
+  .ui-datepicker-next:before {
+      content: '\f054';
+      font-family: 'FontAwesome';
+      font-size: 20px;
+      /*right: -6px !important;*/
+  }
+
+  .ui-icon {
+        background-image: none !important;
+  }

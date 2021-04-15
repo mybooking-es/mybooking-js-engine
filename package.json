@@ -1,0 +1,35 @@
+{
+  "name": "mybooking-js-engine",
+  "version": "0.9.23",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack --config webpack.config.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mybooking-es/mybooking-js-engine.git"
+  },
+  "keywords": [
+    "reservation engine"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "jquery": ">=3.5.0",
+    "load-google-maps-api": "^2.0.1",
+    "loadash": "^1.0.0",
+    "serialize-javascript": ">=2.1.1",
+    "webpack": "^4.41.6",
+    "webpack-cli": "^3.3.7",
+    "elliptic": ">=6.5.3",
+    "acorn": ">=6.4.1",
+    "minimist": ">=1.2.3",
+    "kind-of": ">=6.0.3"
+  },
+  "bugs": {
+    "url": "https://github.com/mybooking-es/mybooking-js-engine/issues"
+  },
+  "homepage": "https://github.com/mybooking-es/mybooking-js-engine"
+}

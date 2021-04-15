@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Mybooking Basic - Contacto</title>
+    <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-ui-bootstrap/0.5pre/css/custom-theme/jquery-ui-1.10.0.custom.css"/>
+    <!--link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.5/css/bulma.min.css"-->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">      
+    <link rel="stylesheet" href="./assets/styles/styles.css" />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+  </head>
+  <body class="mybooking-contact-widget">
+
+    <section class="section">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-12">
+            <h1 class="display-5">Contacto</h1>
+            <!-- Reservation complete -->
+            <form id="widget_contact_form" name="widget_contact_form" autocomplete="off">
+
+              <div class="form-row">
+                <div class="form-group col-md-6">
+                <label for="customer_name">Nombre*</label>
+                <input type="text" class="form-control" name="customer_name" id="customer_name" placeholder="Nombre:*">
+                </div>
+                <div class="form-group col-md-6">
+                <label for="customer_surname">Apellidos*</label>
+                <input type="text" class="form-control" name="customer_surname" id="customer_surname" placeholder="Apellidos:*">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="customer_email">Correo electrónico*</label>
+                <input type="text" class="form-control" name="customer_email" id="customer_email" placeholder="Correo electrónico:*">
+              </div>
+
+              <div class="form-group">
+                <label for="customer_phone">Teléfono*</label>
+                <input type="text" class="form-control" name="customer_phone" id="customer_phone" placeholder="Teléfono:*">
+              </div>                    
+
+              <div class="form-group">
+                <label for="customer_name">Mensaje*</label>
+                <textarea class="form-control" name="comments" id="comments" placeholder="Mensaje"></textarea>
+              </div>   
+
+              <div class="form-group">
+                <div class="alert alert-danger" id="contact_form_errors" style="display: none"></div>
+              </div>
+
+              <div class="form-group">
+                <button id="send_message_button" type="submit" class="btn btn-primary">Enviar</a> 
+              </div>  
+
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <script src="./assets/js/mybooking-engine-init.js"></script>
+    <script src="../../dist/js/mybooking-js-engine.js"></script>
+
+  </body>
+</html>

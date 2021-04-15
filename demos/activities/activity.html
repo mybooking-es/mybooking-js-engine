@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Mybooking Basic - Activities - Activity</title>
+    <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-ui-bootstrap/0.5pre/css/custom-theme/jquery-ui-1.10.0.custom.css"/>
+    <!--link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.5/css/bulma.min.css"-->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">      
+    <link rel="stylesheet" href="./assets/styles/styles.css" />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+  </head>
+  <body class="mybooking-activity">
+
+    <div class="container">
+      <div class="row">
+        <div class="col-md-7">
+        </div>
+        <div class="col-md-5">
+          <div id="buy_selector" class="pt-3" data-id="2"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Micro templates -->
+
+    <!-- Activity One Time Selector -->
+
+    <script type="text/tmpl" id="script_one_time_selector">
+
+        <form name="select_date_form" id="select_date_form">
+          <input type="hidden" name="activity_id" id="activity_id" value="<%=activity.id%>"/>
+          <% if (typeof activity.available !== 'undefined') { %>
+            <% if (activity.available == 0) { %>
+              <div class="alert alert-danger">
+                <p><%=i18next.t('activities.calendarWidget.fullPlaces')%></p>
+              </div>
+            <% } else if (activity.available == 2) {%>
+              <div class="alert alert-warning">
+                <% if (activity.allow_select_places_for_reservation) { %>
+                <p><%=i18next.t('activities.calendarWidget.fewPlacesWarning')%></p>
+                <% } else { %>
+                <p><%=i18next.t('activities.calendarWidget.fewNoPlacesWarning')%></p>  
+                <% } %>
+              </div>                  
+            <% } %> 
+          <% } %>
+          <div id="tickets"></div>
+        </form>
+
+    </script>
+
+    <!-- Activity Multiple Dates Selector -->
+
+    <script type="text/tmpl" id="script_multiple_dates_selector">
+
+        <h2 class="h5 mt-3 mb-3"><b>Seleccionar fecha</b></h2>
+        <form name="select_date_form" id="select_date_form">
+          <input type="hidden" name="activity_id" id="activity_id" value="<%=activity.id%>"/>
+          <div class="form-group">
+            <select name="activity_date_id" id="activity_date_id" class="form-control">
+            </select>
+          </div>
+          <div id="tickets"></div>
+        </form>          
+
+    </script>
+
+    <!-- Activity Cyclic Calendar -->
+
+    <script type="text/tmpl" id="script_cyclic_calendar">
+
+        <h2 class="h5 mt-3 mb-3 text-muted"><b>Seleccionar fecha</b></h2>
+        <form name="select_date_form" id="select_date_form">
+          <input type="hidden" name="activity_id" id="activity_id" value="<%=activity_id%>"/>
+          <div id="datepicker"></div>
+          <div id="turns"></div>
+          <div id="tickets"></div>
+        </form>             
+       
+    </script>
+
+    <script type="text/tmpl" id="script_cyclic_turns">
+
+      <% if (isEmptyTurns) {%>
+        <div class="alert alert-warning">
+             <p>Lo sentimos, no hay horarios disponibles</p>
+        </div>
+      <% } else { %>
+        <br>
+        <h2 class="h5 mt-3 mb-3 text-muted"><b>Seleccionar hora</b></h2>
+        <div class="form-group">
+          <% for (turn in turns) { %>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="turn" id="turn" value="<%=turn%>"
+                     <% if (!turns[turn]) {%>disabled<%}%>>
+              <label class="form-check-label" for="turn">
+                  <% if (!turns[turn]) {%><span class="text-danger"><%=turn%></span><% } else {%><%=turn%><% } %>
+              </label>
+            </div>
+          <% } %> 
+        </div>
+      <% }%>
+
+    </script>
+
+    <script type="text/tmpl" id="script_tickets">
+
+        <h2 class="h5 mt-5 mb-3 text-muted"><b>Seleccionar personas</b></h2>
+
+        <% for (item in tickets) { %>
+           <div class="form-group">
+              <select name="quantity_rate_<%=item%>" id="quantity_rate_<%=item%>" class="quantity_rate form-control">
+                <% for (var idx=0; idx<tickets[item].length; idx++) { %>
+                <option value="<%=tickets[item][idx]["number"]%>" data-total="<%=tickets[item][idx]["total"]%>"><%=tickets[item][idx]["description"]%></option>
+                <% } %>
+              </select>
+           </div>
+        <% } %>
+
+        <div class="form-group">
+          <a id="btn_reservation" href="#" class="btn btn-primary w-100" role="button">Reservar</a>
+        </div>  
+
+    </script>
+
+    <script type="text/tmpl" id="script_fixed_ticket">
+        <% for (item in tickets) { %>
+          <input type="hidden" name="quantity_rate_<%=item%>" class="quantity_rate" value="1"/>
+        <% } %>
+        
+        <div class="form-group">
+          <a id="btn_reservation" href="#" class="btn btn-primary w-100" role="button">Reservar</a>
+        </div>  
+
+    </script>
+
+
+    <!-- JS Libraries -->
+    <script src="./assets/js/mybooking-engine-init.js"></script>
+    <script src="../../dist/js/mybooking-js-engine.js"></script>
+  </body>
+
+</html>  

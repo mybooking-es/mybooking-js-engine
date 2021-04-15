@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Mybooking Basic - Inicio</title>
+    <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-ui-bootstrap/0.5pre/css/custom-theme/jquery-ui-1.10.0.custom.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.5/css/bulma.min.css">
+    <link rel="stylesheet" href="./assets/styles/styles.css" />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+  </head>
+  <body class="mybooking-selector-widget">
+    <section class="section section-padding-large">
+    <div class="container is-desktop">
+      <div class="columns">
+        <div class="column is-full">
+        <h1 class="title">Selección fechas y lugares de entrega y devolución</h1>
+          <form
+            name="widget_search_form"
+            method="get"
+            enctype="application/x-www-form-urlencoded">
+            
+            <!-- Delivery place -->
+            <div class="field">
+              <label class="label">Entrega</label>
+              <div class="control widget_pickup_place_group">
+                <div class="select is-fullwidth">
+                  <select id="widget_pickup_place" name="pickup_place" placeholder="Seleccionar lugar de entrega"> </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- Custom delivery place -->
+            <div id="another_pickup_place_group" class="field" style="display:none">
+              <div class="control">
+                <input type="text" name="pickup_place_other" id="widget_pickup_place_other" class="input" placeholder="Introducir dirección"/>
+                <input type="hidden" name="custom_pickup_place" value="false"/>
+              </div>
+            </div>
+
+            <div class="field">
+              <div class="control">
+                <label class="checkbox">
+                    <input type="checkbox" id="widget_same_pickup_return_place" name="same_pickup_return_place" 
+                           checked/>&nbsp;&nbsp;Devolver en la misma oficina
+                </label>
+              </div>
+            </div>
+
+            <!-- Delivery date -->
+
+            <div class="field">
+              <div class="field-body">
+                <div class="field">
+                  <div class="control is-expanded">
+                    <input
+                            type="text"
+                            id="widget_date_from"
+                            name="date_from"
+                            class="input"
+                            autocomplete="off"
+                            placeholder="dd/mm/yyyy"
+                          />
+                  </div>
+                </div>
+                <div class="field">
+                  <div class="control is-expanded">
+                    <div class="select is-fullwidth">
+                      <select id="widget_time_from" name="time_from" placeholder="hh:mm"> </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+            <!-- Devolución -->
+            <div class="field">
+              <label class="label">Devolución</label>
+              <div class="control widget_return_place_group" style="display: none">
+                <div class="select is-fullwidth">
+                  <select id="widget_return_place" name="return_place" placeholder="Seleccionar lugar de devolución"> </select>
+                </div>
+              </div>          
+            </div>
+            
+            <!-- Custom collection place -->
+            <div id="another_return_place_group" class="field" style="display:none">
+              <div class="control">
+                <input type="text" name="return_place_other" id="widget_return_place_other" class="input" placeholder="Introducir dirección"/>
+                <input type="hidden" name="custom_return_place" value="false"/>
+              </div>
+            </div>
+
+            <div class="field field-body">
+              <div class="field">
+                <div class="control is-expanded">
+                  <input type="text" id="widget_date_to" name="date_to" autocomplete="off" class="input" placeholder="dd/mm/yyyy"/>
+                </div>
+              </div>
+              <div class="field">
+                <div class="control">
+                  <div class="select is-fullwidth">
+                    <select id="widget_time_to" name="time_to" placeholder="hh:mm"> </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="field">
+              <div class="control">
+                <label class="checkbox">
+                    <div>
+                      <input type="checkbox" id="widget_accept_age" name="accept_age"/>&nbsp;Soy mayor de 21 años
+                    </div>
+                </label>
+              </div>
+            </div>
+
+            <div class="field is-horizontal">
+              <div class="field-body">
+                <div class="field">
+                  <div class="control">
+                    <input class="button is-primary" type="submit" value="Buscar" />
+                  </div>
+                </div>
+              </div>
+            </div>        
+            
+          </form>
+      </div>
+      </div>
+    </div>
+    </section>
+    <script src="./assets/js/mybooking-engine-init.js"></script>
+    <script src="../../dist/js/mybooking-js-engine.js"></script>
+    <script>
+      window.initMap = function() {
+         //selectorModel.setAutocomplete();
+      }
+    </script>  
+  </body>
+</html>
