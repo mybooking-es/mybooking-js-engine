@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.9.24]
+
+### Fixed
+
+- Payment method selector when multiple payment methods both in complete and my reservation
+
+### Added
+
+- Customer login component 
+
 ## [0.9.23]
 
 ### Added

@@ -52,7 +52,7 @@ require('./lib/YSDDateControl.js');
 require('./common/commonServices.js');
 require('./common/commonSettings.js');
 require('./common/commonTranslations.js');
-require('./common/commonLoader');
+require('./common/commonLoader.js');
 
 // == Contact module
 
@@ -115,11 +115,12 @@ $(document).ready(function () {
     if ($('body').hasClass('complete')) {
         require('./rent/selector/modify_reservation_selector.js');      
         require('./rent/mediator/rentEngineMediator.js');           
+        require('./profile/Login.js');   
         require('./rent/complete.js');
     }
 });
 
-// Page complete JS
+// Page summary JS
 $(document).ready(function () {
     if ($('body').hasClass('summary')) {
         require('./rent/mediator/rentEngineMediator.js');         
@@ -132,6 +133,13 @@ $(document).ready(function () {
     if ($('body').hasClass('reservation')) {
         require('./rent/mediator/rentEngineMediator.js');         
         require('./rent/reservation.js');
+    }
+});
+
+// == Page login
+$(document).ready(function() {
+    if ($('body').hasClass('mybooking_login')) {
+        require('./profile/Login.js');
     }
 });
 

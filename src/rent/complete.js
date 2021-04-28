@@ -2,7 +2,7 @@ require(['jquery',
          'commonServices', 'commonSettings', 'commonTranslations', 'commonLoader',
          'i18next','ysdtemplate','YSDDateControl', 
          './selector/modify_reservation_selector', './selector-wizard/selector_wizard', 'select2', 
-         'YSDMemoryDataSource','YSDSelectSelector', './mediator/rentEngineMediator',
+         'YSDMemoryDataSource','YSDSelectSelector', './mediator/rentEngineMediator', '../profile/Login',
          'jquery.i18next', 'jquery.formparams', 'jquery.form',
 	       'jquery.validate', 'jquery.ui', 'jquery.ui.datepicker-es',
          'jquery.ui.datepicker-en', 'jquery.ui.datepicker-ca', 'jquery.ui.datepicker-it',
@@ -10,7 +10,7 @@ require(['jquery',
 	     function($, 
                 commonServices, commonSettings, commonTranslations, commonLoader, 
                 i18next, tmpl, DateControl, selector, selectorWizard, select2,
-                MemoryDataSource, SelectSelector, rentEngineMediator) {
+                MemoryDataSource, SelectSelector, rentEngineMediator, Login) {
 
   var model = { // THE MODEL
     requestLanguage: null,
@@ -500,6 +500,7 @@ require(['jquery',
   var view = { // THE VIEW
 
     selectorLoaded: false,
+    login: null,
 
   	init: function() {
       model.requestLanguage = commonSettings.language(document.documentElement.lang);
@@ -526,18 +527,84 @@ require(['jquery',
         selector.view.init();
       }
 
-      // Setup UI
-      this.setupReservationForm();
-      this.setupReservationFormValidation();
-
+      // Complements
+      /*
+      if (model.configuration.engineCustomerAccess) {
+        this.setupLoginForm();
+      }
+      else {
+        this.prepareReservationForm();
+      }
+      */
+      this.prepareReservationForm();
       // Load shopping cart
       model.loadShoppingCart();
   	},
 
     /**
+     * Setup the login form
+     */
+    setupLoginForm: function() {
+      var self = this;
+      $('#extras_listing').hide();
+      $('.reservation_form_container').hide();
+      if (document.getElementById('script_complete_complement')) {
+        // Login form
+        var html = tmpl('script_complete_complement')({});
+        $('#extras_listing').before(html);
+        this.login = new Login();
+        // Setup event listener
+        this.login.model.addListener('login', function(event) {
+          if (event.type == 'login' && event.data && event.data.success) {
+            // Disable the form
+            $('form[name=mybooking_select_user_form] input').prop('disabled', true);
+            $('form[name=mybooking_login_form] input, form[name=mybooking_login_form] button').prop('disabled', true);
+            // Message
+            if (document.getElementById('script_welcome_customer')) {
+              var htmlMessage = tmpl('script_welcome_customer')({i18next: i18next, user: event.data.user});
+              $('#reservation_complement_container').append(htmlMessage);
+            }
+            // Customer identified => Show the form
+            $('#extras_listing').show();
+            $('.reservation_form_container').show();   
+            self.prepareReservationForm();         
+          }
+        });
+        this.login.view.init();
+        $('form[name=mybooking_select_user_form] input[name=registered_customer]').on('change', function(){
+          if ($(this).val() === 'true') {
+            $('.mybooking_login_form_element').show();
+            $('#extras_listing').hide();
+            $('.reservation_form_container').hide();
+          }
+          else {
+            $('.mybooking_login_form_element').hide();
+            $('#extras_listing').show();
+            $('.reservation_form_container').show();            
+          }
+        });
+      }
+      else {
+        this.prepareReservationForm();
+      }
+
+    },
+
+    prepareReservationForm: function() {
+        // Setup UI
+        this.setupReservationForm();
+        this.setupReservationFormValidation();
+    },
+
+    /**
      * Setup the reservation form
      */
     setupReservationForm: function() {
+
+      var connectedUser = false;
+      if ( this.login && this.login.model.connectedUser ) {
+        connectedUser = true;
+      }
 
       // The reservation form fields are defined in a micro-template
       var locale = model.requestLanguage;
@@ -649,7 +716,7 @@ require(['jquery',
         $('form[name=reservation_form]').validate(
             {
                 ignore: '', // To be able to validate driver date of birth
-
+                errorClass: 'text-danger',
                 submitHandler: function(form) {
                     $('#reservation_error').hide();
                     $('#reservation_error').html('');
@@ -695,7 +762,7 @@ require(['jquery',
                         required: '#conditions_read_pay_now:visible'
                     },                                        
                     'payment_method_select': {
-                        required: '#payment_method_select:visible'
+                        required: 'input[name=payment_method_select]:visible'
                     }
                 },
 
@@ -751,7 +818,7 @@ require(['jquery',
                     },                                     
                     'payment_method_select': {
                         'required': i18next.t('complete.reservationForm.validations.selectPaymentMethod')
-                      }
+                    }
 
                 },
 

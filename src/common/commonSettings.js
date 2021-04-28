@@ -21,6 +21,7 @@ define('commonSettings', ['jquery','commonServices','commonLoader','commonTransl
       dateFormat: null,
       dateShortFormat: null,
       promotionCode: true,      
+      engineCustomerAccess: false,
       // Renting MODULE
       selectFamily: false,
       multipleDestinations: false,
@@ -204,6 +205,10 @@ define('commonSettings', ['jquery','commonServices','commonLoader','commonTransl
              mybookingSettings.data.activityReservationMultipleItems = data.activity_reservation_multiple_items;
              mybookingSettings.data.selectActivityCategory = data.select_activity_category;
              mybookingSettings.data.selectActivityDestination = data.select_activity_destination;
+             // Customer access
+             if (typeof data.engine_customer_access !== 'undefined') {
+               mybookingSettings.data.engineCustomerAccess = true;
+             }
              if (callback) {
                 callback(mybookingSettings.data);
              }

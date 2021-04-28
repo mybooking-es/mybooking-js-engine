@@ -111,6 +111,7 @@ $(document).ready(function () {
     if ($('body').hasClass('complete')) {
         require('./rent/selector/modify_reservation_selector.js');  
         require('./rent/mediator/rentEngineMediator.js');                
+        require('./profile/Login.js');
         require('./rent/complete.js');
     }
 });

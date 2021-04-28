@@ -267,7 +267,9 @@ define('commonTranslations', [], function() {
               'hours': '&nbsp;<u><b>{{count}}</b></u>&nbsp;  hour',
               'hours_plural': '&nbsp;<u><b>{{count}}</b></u>&nbsp;  hours',
               'minutes': '&nbsp;<u><b>{{count}}</b></u>&nbsp;  minute',
-              'minutes_plural': '&nbsp;<u><b>{{count}}</b></u>&nbsp;  minutes'              
+              'minutes_plural': '&nbsp;<u><b>{{count}}</b></u>&nbsp;  minutes', 
+              'error': 'We are sorry. There was an error in the process',
+              'welcomeConnectedUser': 'Welcome <b>{{name}}</b> you can proceed with your reservation'             
             },
             extra: {
               'daily_amount': '{{oneUnitPrice}} per day',
@@ -715,7 +717,9 @@ define('commonTranslations', [], function() {
               'hours': '&nbsp;<u><b>{{count}}</b></u>&nbsp; hora',
               'hours_plural': '&nbsp;<u><b>{{count}}</b></u>&nbsp; horas',
               'minutes': '&nbsp;<u><b>{{count}}</b></u>&nbsp; minuto',
-              'minutes_plural': '&nbsp;<u><b>{{count}}</b></u>&nbsp; minutos' 
+              'minutes_plural': '&nbsp;<u><b>{{count}}</b></u>&nbsp; minutos', 
+              'error': 'Lo sentimos. Se ha producido un error en el proceso.',
+              'welcomeConnectedUser': 'Bienvenido <b>{{name}}</b>, puede proceder con su reserva'      
             },
             extra: {
               'daily_amount': '{{oneUnitPrice}}/día',
@@ -1164,7 +1168,9 @@ define('commonTranslations', [], function() {
           'hours': '&nbsp;<u><b>{{count}}</b></u>&nbsp; hora',
           'hours_plural': '&nbsp;<u><b>{{count}}</b></u>&nbsp; hores',
           'minutes': '&nbsp;<u><b>{{count}}</b></u>&nbsp; minut',
-          'minutes_plural': '&nbsp;<u><b>{{count}}</b></u>&nbsp; minuts'           
+          'minutes_plural': '&nbsp;<u><b>{{count}}</b></u>&nbsp; minuts',
+          'error': "Ho sentim. S'ha produit un error al procès",
+          'welcomeConnectedUser': 'Benvingut <b>{{name}}</b>, pot procedir amb la seva reserva'            
         },
         extra: {
           'daily_amount': '{{oneUnitPrice}}/dia',
@@ -1612,7 +1618,9 @@ define('commonTranslations', [], function() {
           'hours': '&nbsp;<u><b>{{count}}</b></u>&nbsp; stunde',
           'hours_plural': '&nbsp;<u><b>{{count}}</b></u>&nbsp; stunden',
           'minutes': '&nbsp;<u><b>{{count}}</b></u>&nbsp; minute',
-          'minutes_plural': '&nbsp;<u><b>{{count}}</b></u>&nbsp; minuten'           
+          'minutes_plural': '&nbsp;<u><b>{{count}}</b></u>&nbsp; minuten',
+          'error': 'Wir entschuldigen uns. Es ist ein Fehler aufgetreten',
+          'welcomeConnectedUser': 'Willkommen <b>{{name}}</b>,Sie können mit Ihrer Reservierung fortfahren'                       
         },
         extra: {
           'daily_amount': '{{oneUnitPrice}}/Tag',
@@ -2061,7 +2069,9 @@ define('commonTranslations', [], function() {
           'hours': '&nbsp;<u><b>{{count}}</b></u>&nbsp; heure',
           'hours_plural': '&nbsp;<u><b>{{count}}</b></u>&nbsp; heures',
           'minutes': '&nbsp;<u><b>{{count}}</b></u>&nbsp; minute',
-          'minutes_plural': '&nbsp;<u><b>{{count}}</b></u>&nbsp; minutes'             
+          'minutes_plural': '&nbsp;<u><b>{{count}}</b></u>&nbsp; minutes',
+          'error': "Nous sommes désolés. Il y a eu une erreur dans le processus",
+          'welcomeConnectedUser': 'Bienvenue <b>{{name}}</b>, vous pouvez procéder à votre réservation'                        
         },
         extra: {
           'daily_amount': '{{oneUnitPrice}}/jour',
@@ -2509,7 +2519,9 @@ define('commonTranslations', [], function() {
           'hours': '&nbsp;<u><b>{{count}}</b></u>&nbsp; ora',
           'hours_plural': '&nbsp;<u><b>{{count}}</b></u>&nbsp; ore',
           'minutes': '&nbsp;<u><b>{{count}}</b></u>&nbsp; minuto',
-          'minutes_plural': '&nbsp;<u><b>{{count}}</b></u>&nbsp; minuti'                
+          'minutes_plural': '&nbsp;<u><b>{{count}}</b></u>&nbsp; minuti',
+          'error': "Siamo spiacenti. Si è verificato un errore nel processo",
+          'welcomeConnectedUser': 'Benvenuto <b>{{name}}</b>, puoi procedere con la prenotazione'                               
         },
         extra: {
           'daily_amount': '{{oneUnitPrice}}/giorno',
