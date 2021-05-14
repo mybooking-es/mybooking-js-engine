@@ -377,6 +377,13 @@ require(['jquery',
         url += '?';
         url += urlParams.join('&');
       }
+
+      // Authorization => Customer
+      var headers = {};
+      if (view.login && view.login.model && view.login.model.bearer) {
+        headers['Authorization'] = view.login.model.bearer;
+      }
+
       // Request
       var self = this;
       commonLoader.show();
@@ -387,6 +394,7 @@ require(['jquery',
             dataType : 'json',
             contentType : 'application/json; charset=utf-8',
             crossDomain: true,
+            headers: headers,
             success: function(data, textStatus, jqXHR) {
                 // Hide Loader (OK)
                 commonLoader.hide();
@@ -528,15 +536,12 @@ require(['jquery',
       }
 
       // Complements
-      /*
       if (model.configuration.engineCustomerAccess) {
         this.setupLoginForm();
       }
       else {
         this.prepareReservationForm();
       }
-      */
-      this.prepareReservationForm();
       // Load shopping cart
       model.loadShoppingCart();
   	},
@@ -545,54 +550,88 @@ require(['jquery',
      * Setup the login form
      */
     setupLoginForm: function() {
+      this.prepareReservationForm();
       var self = this;
+      // Complete hide
+      $('#form-reservation').hide();
       $('#extras_listing').hide();
       $('.reservation_form_container').hide();
-      if (document.getElementById('script_complete_complement')) {
+      if (document.getElementById('script_complete_complement') && 
+          document.getElementById('script_create_account')) {
         // Login form
         var html = tmpl('script_complete_complement')({});
         $('#extras_listing').before(html);
+        // Signup form
+        var htmlSignup = tmpl('script_create_account');
+        $('#payment_detail').before(htmlSignup);
+        //
         this.login = new Login();
         // Setup event listener
         this.login.model.addListener('login', function(event) {
-          if (event.type == 'login' && event.data && event.data.success) {
-            // Disable the form
-            $('form[name=mybooking_select_user_form] input').prop('disabled', true);
-            $('form[name=mybooking_login_form] input, form[name=mybooking_login_form] button').prop('disabled', true);
-            // Message
-            if (document.getElementById('script_welcome_customer')) {
-              var htmlMessage = tmpl('script_welcome_customer')({i18next: i18next, user: event.data.user});
-              $('#reservation_complement_container').append(htmlMessage);
+          if (event.type == 'login' && event.data) {
+            if (event.data.success) {
+              // Disable login/create account form
+              $('form[name=mybooking_select_user_form] input').prop('disabled', true);
+              $('form[name=mybooking_login_form] input, form[name=mybooking_login_form] button').prop('disabled', true);
+              // Show login message
+              if (document.getElementById('script_welcome_customer')) {
+                var htmlMessage = tmpl('script_welcome_customer')({i18next: i18next, user: event.data.user});
+                $('#reservation_complement_container').append(htmlMessage);
+              }
+              // Remove create account components
+              $('.mybooking_rent_create_account_selector_container').remove();
+              $('.mybooking_rent_create_account_fields_container').remove();
+              // Show the reservation form
+              $('#form-reservation').show();
+              $('#extras_listing').show();
+              $('.customer_component').hide();
+              $('.reservation_form_container').show();   
+            }         
+            else {
+              alert(i18next.t('common.invalid_user_password'));
             }
-            // Customer identified => Show the form
-            $('#extras_listing').show();
-            $('.reservation_form_container').show();   
-            self.prepareReservationForm();         
           }
         });
         this.login.view.init();
         $('form[name=mybooking_select_user_form] input[name=registered_customer]').on('change', function(){
           if ($(this).val() === 'true') {
             $('.mybooking_login_form_element').show();
+            $('#form-reservation').hide();
             $('#extras_listing').hide();
             $('.reservation_form_container').hide();
           }
           else {
             $('.mybooking_login_form_element').hide();
+            $('#form-reservation').show();
             $('#extras_listing').show();
             $('.reservation_form_container').show();            
           }
         });
-      }
-      else {
-        this.prepareReservationForm();
+        // Setup create account components
+        this.setupCreateAccountComponents();        
       }
 
     },
+    /**
+     * Setup create account components
+     */
+    setupCreateAccountComponents: function() {
+      $('input[name=create_customer_account]').on('change', function(){
+        if ($(this).val() === 'true') {
+          $('.mybooking_rent_create_account_fields_container').show();
+        }
+        else {
+          $('.mybooking_rent_create_account_fields_container').hide();
+        }
+      });
+    },
+
 
     prepareReservationForm: function() {
         // Setup UI
         this.setupReservationForm();
+        $('.complete-section-title.customer_component').show();
+        $('#form-reservation').show();
         this.setupReservationFormValidation();
     },
 
@@ -713,6 +752,17 @@ require(['jquery',
      */ 
     setupReservationFormValidation: function() {
 
+        $.validator.addMethod("pwcheck", function(value) {
+           if ( $('#account_password').is(':visible') ) {
+             return  /^[A-Za-z0-9\d=!\-@._*]*$/.test(value) // consists of only these
+                     && /[a-z]/.test(value) // has a lowercase letter
+                     && /[A-Z]/.test(value) // has a uppercase letter
+                     && /\d/.test(value) // has a digit
+                     && /[=!\-@._*]/.test(value); // has a symbol
+           }
+           return true;
+        });
+
         $('form[name=reservation_form]').validate(
             {
                 ignore: '', // To be able to validate driver date of birth
@@ -731,19 +781,23 @@ require(['jquery',
 
                 rules : {
 
-                    'customer_name': 'required',
-                    'customer_surname' : 'required',
+                    'customer_name': {
+                      required: '#customer_name:visible'
+                    },
+                    'customer_surname' : {
+                      required: '#customer_surname:visible'
+                    },
                     'customer_email' : {
-                        required: true,
+                        required: '#customer_email:visible',
                         email: true
                     },
                     'customer_email_confirmation': {
-                        required: true,
+                        required: '#customer_email_confirmation:visible',
                         email: true,
                         equalTo : 'customer_email'
                     },
                     'customer_phone': {
-                        required: true,
+                        required: '#customer_phone:visible',
                         minlength: 9
                     },
                     'driver_date_of_birth': {
@@ -763,6 +817,11 @@ require(['jquery',
                     },                                        
                     'payment_method_select': {
                         required: 'input[name=payment_method_select]:visible'
+                    },
+                    'account_password': {
+                        required: '#account_password:visible',
+                        pwcheck: '#account_password:visible',
+                        minlength: 8
                     }
                 },
 
@@ -818,7 +877,12 @@ require(['jquery',
                     },                                     
                     'payment_method_select': {
                         'required': i18next.t('complete.reservationForm.validations.selectPaymentMethod')
-                    }
+                    },
+                    'account_password': {
+                        'required': i18next.t('complete.reservationForm.validations.fieldRequired'),
+                        'pwcheck': i18next.t('complete.reservationForm.validations.passwordCheck'),
+                        'minlength': i18next.t('complete.reservationForm.validations.minLength', {minlength: 8}),
+                    },                     
 
                 },
 

@@ -269,7 +269,8 @@ define('commonTranslations', [], function() {
               'minutes': '&nbsp;<u><b>{{count}}</b></u>&nbsp;  minute',
               'minutes_plural': '&nbsp;<u><b>{{count}}</b></u>&nbsp;  minutes', 
               'error': 'We are sorry. There was an error in the process',
-              'welcomeConnectedUser': 'Welcome <b>{{name}}</b> you can proceed with your reservation'             
+              'welcomeConnectedUser': 'Welcome <b>{{name}}</b> you can proceed with your reservation',
+              'invalid_user_password': 'Invalid user or password'             
             },
             extra: {
               'daily_amount': '{{oneUnitPrice}} per day',
@@ -357,6 +358,8 @@ define('commonTranslations', [], function() {
                   'select_country': 'Select country',  
                   'validations': {
                     'fieldRequired': 'This field is required',
+                    'passwordCheck': 'Password must contain upper case letter, lower case letter, digit and symbol',
+                    'minLength': 'Minimum {{minlength}} characters',
                     'customerNameRequired': 'Customer name is required',
                     'customerSurnameRequired': 'Customer surname is required',
                     'customerEmailRequired': 'Customer email is required',
@@ -719,7 +722,8 @@ define('commonTranslations', [], function() {
               'minutes': '&nbsp;<u><b>{{count}}</b></u>&nbsp; minuto',
               'minutes_plural': '&nbsp;<u><b>{{count}}</b></u>&nbsp; minutos', 
               'error': 'Lo sentimos. Se ha producido un error en el proceso.',
-              'welcomeConnectedUser': 'Bienvenido <b>{{name}}</b>, puede proceder con su reserva'      
+              'welcomeConnectedUser': 'Bienvenido <b>{{name}}</b>, puede proceder con su reserva',
+              'invalid_user_password': 'El usuario o el password no son válidos'                       
             },
             extra: {
               'daily_amount': '{{oneUnitPrice}}/día',
@@ -807,6 +811,8 @@ define('commonTranslations', [], function() {
                     'select_country': 'Seleccionar país',                     
                     'validations': {
                       'fieldRequired': 'Campo obligatorio',  
+                      'passwordCheck': 'La contraseña debe contener letras mayúsculas, minúsculas, dígitos y símbolos',
+                      'minLength': 'Tamaño mínimo {{minlength}}',                      
                       'customerNameRequired': 'Nombre del cliente obligatorio',
                       'customerSurnameRequired': 'Apellidos del cliente obligatorios',
                       'customerEmailRequired': 'Correo electrónico del cliente obligatorio',
@@ -1170,7 +1176,8 @@ define('commonTranslations', [], function() {
           'minutes': '&nbsp;<u><b>{{count}}</b></u>&nbsp; minut',
           'minutes_plural': '&nbsp;<u><b>{{count}}</b></u>&nbsp; minuts',
           'error': "Ho sentim. S'ha produit un error al procès",
-          'welcomeConnectedUser': 'Benvingut <b>{{name}}</b>, pot procedir amb la seva reserva'            
+          'welcomeConnectedUser': 'Benvingut <b>{{name}}</b>, pot procedir amb la seva reserva',
+          'invalid_user_password': "L'usuari o la clau no són correctes"                         
         },
         extra: {
           'daily_amount': '{{oneUnitPrice}}/dia',
@@ -1258,7 +1265,9 @@ define('commonTranslations', [], function() {
             'booking_amount': "Per confirmar la reserva s'ha de realitzar un pagament de <strong>{{amount}}</strong>.",
             'select_country': 'Escollir país',              
             'validations': {
-              'fieldRequired': 'Camp obligatori',  
+              'fieldRequired': 'Camp obligatori', 
+              'passwordCheck': 'La contrasenya ha de contenir lletres majúscules, minúscules, dígits i símbols',              
+              'minLength': 'Mínim {{minlength}} caràcters',               
               'customerNameRequired': 'El nom del client és obligatori',
               'customerSurnameRequired': 'Els cognoms del client són obligatoris',
               'customerEmailRequired': 'El correu electrònic del client és obligatori',
@@ -1620,7 +1629,8 @@ define('commonTranslations', [], function() {
           'minutes': '&nbsp;<u><b>{{count}}</b></u>&nbsp; minute',
           'minutes_plural': '&nbsp;<u><b>{{count}}</b></u>&nbsp; minuten',
           'error': 'Wir entschuldigen uns. Es ist ein Fehler aufgetreten',
-          'welcomeConnectedUser': 'Willkommen <b>{{name}}</b>,Sie können mit Ihrer Reservierung fortfahren'                       
+          'welcomeConnectedUser': 'Willkommen <b>{{name}}</b>,Sie können mit Ihrer Reservierung fortfahren',
+          'invalid_user_password': 'Ungültiger Benutzer oder Passwort'                                    
         },
         extra: {
           'daily_amount': '{{oneUnitPrice}}/Tag',
@@ -1707,7 +1717,9 @@ define('commonTranslations', [], function() {
             'booking_amount': 'Um Ihre Reservierung zu bestätigen, wird Ihre Karte mit <strong>{{amount}}</strong> belastet.',
             'select_country': 'Land auswählen',             
             'validations': {
-              'fieldRequired': 'Dieses Feld wird benötigt',  
+              'fieldRequired': 'Dieses Feld wird benötigt',
+              'passwordCheck': 'Das Passwort muss Großbuchstaben, Kleinbuchstaben, Ziffern und Symbole enthalten',
+              'minLength': 'Mindestens {{minlength}} Zeichen',                 
               'customerNameRequired': 'Obligatorischer Kundenname',
               'customerSurnameRequired': 'Nachname des Kunden erforderlich',
               'customerEmailRequired': 'Obligatorische Kunden-E-Mail',
@@ -2071,7 +2083,8 @@ define('commonTranslations', [], function() {
           'minutes': '&nbsp;<u><b>{{count}}</b></u>&nbsp; minute',
           'minutes_plural': '&nbsp;<u><b>{{count}}</b></u>&nbsp; minutes',
           'error': "Nous sommes désolés. Il y a eu une erreur dans le processus",
-          'welcomeConnectedUser': 'Bienvenue <b>{{name}}</b>, vous pouvez procéder à votre réservation'                        
+          'welcomeConnectedUser': 'Bienvenue <b>{{name}}</b>, vous pouvez procéder à votre réservation',
+          'invalid_user_password': 'Utilisateur ou mot de passe invalide'                                     
         },
         extra: {
           'daily_amount': '{{oneUnitPrice}}/jour',
@@ -2159,6 +2172,8 @@ define('commonTranslations', [], function() {
             'booking_amount': 'Pour confirmer votre réservation un paiement de <strong>{{amount}}</strong> est demandé',
             'validations': {
               'fieldRequired': 'Champ obligatoire',  
+              'passwordCheck': 'Le mot de passe doit contenir une lettre majuscule, une lettre minuscule, un chiffre et un symbole ',
+              'minLength': 'Minimum {{minlength}} caractères',                   
               'customerNameRequired': 'Champ obligatoire',
               'customerSurnameRequired': 'Champ obligatoire',
               'customerEmailRequired': 'Champ obligatoire',
@@ -2521,7 +2536,8 @@ define('commonTranslations', [], function() {
           'minutes': '&nbsp;<u><b>{{count}}</b></u>&nbsp; minuto',
           'minutes_plural': '&nbsp;<u><b>{{count}}</b></u>&nbsp; minuti',
           'error': "Siamo spiacenti. Si è verificato un errore nel processo",
-          'welcomeConnectedUser': 'Benvenuto <b>{{name}}</b>, puoi procedere con la prenotazione'                               
+          'welcomeConnectedUser': 'Benvenuto <b>{{name}}</b>, puoi procedere con la prenotazione',
+          'invalid_user_password': 'Utente o password non validi'                                            
         },
         extra: {
           'daily_amount': '{{oneUnitPrice}}/giorno',
@@ -2608,7 +2624,9 @@ define('commonTranslations', [], function() {
             'booking_amount': 'Per confermare la prenotazione verrà addebitato un importo di <strong>{{amount}} </strong> sulla tua carta.',
             'select_country': 'Seleziona il paese',  
             'validations': {
-              'fieldRequired': 'Questo campo è obbligatorio',   
+              'fieldRequired': 'Questo campo è obbligatorio',  
+              'passwordCheck': 'La password deve contenere una lettera maiuscola, una lettera minuscola, una cifra e un simbolo', 
+              'minLength': 'Minimo {{minlength}} caratteri',
               'customerNameRequired': 'Nome cliente obbligatorio',
               'customerSurnameRequired': 'Cognome del cliente richiesto',
               'customerEmailRequired': 'Email cliente obbligatoria',

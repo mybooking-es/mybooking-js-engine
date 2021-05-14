@@ -1,13 +1,13 @@
 window.mybookingEngine = function(){
   var baseURL = '';
   var apiKey = '';
-  var extrasStep = true;
+  var extrasStep = false;
   var chooseProductUrl = 'choose_product.html';
   var chooseExtrasUrl = 'choose_extras.html';
   var completeUrl = 'complete.html';
   var summaryUrl = 'summary.html';
   var useGoogleMaps = false;
-  var customLoader = true;
+  var customLoader = false;
   var googleMapsSettings = {
   };
   function getBaseURL() {

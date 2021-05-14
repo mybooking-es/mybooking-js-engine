@@ -1284,6 +1284,7 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
                       }
                       else {
                         $(self.selectorModel.return_place_selector).val($(self.selectorModel.pickup_place_selector).val());
+                        $(self.selectorModel.return_place_selector).trigger('change');
                       }
                       // In both cases notify that the return place has changed
                       self.selectorController.returnPlaceChanged();
