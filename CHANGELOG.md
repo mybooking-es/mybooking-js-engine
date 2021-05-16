@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.9.25]
+
+### Added
+
+- Complete step: Sign in or Sign up customer account
+
+### Fixed
+
+- Promotion Code with API Key
+
 ## [0.9.24]
 
 ### Fixed

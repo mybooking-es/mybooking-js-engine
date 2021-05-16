@@ -934,6 +934,16 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
           return true;
         });
 
+        var promotionCodeUrl = commonServices.URL_PREFIX + '/api/check-promotion-code';
+        var urlParams = [];
+        if (commonServices.apiKey && commonServices.apiKey != '') {
+          urlParams.push('api_key='+commonServices.apiKey);
+        }    
+        if (urlParams.length > 0) {
+          promotionCodeUrl += '?';
+          promotionCodeUrl += urlParams.join('&');
+        }
+
         $(this.selectorModel.form_selector).validate({
            invalidHandler: function(form)
            {
@@ -967,7 +977,7 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
                },
                promotion_code: {
                    remote: {
-                       url: commonServices.URL_PREFIX + '/api/check-promotion-code',
+                       url: promotionCodeUrl,
                        type: 'POST',
                        data: {
                            code: function() {
