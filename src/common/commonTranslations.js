@@ -2731,7 +2731,203 @@ define('commonTranslations', [], function() {
 
         }
       }
-  	}
+  	},
+    ru: {
+        translation: {
+          common: {
+            'days': '&nbsp;<u><b>{{count}}</b></u>&nbsp;  день',
+            'days_plural': '&nbsp;<u><b>{{count}}</b></u>&nbsp;  дней',
+            'hours': '&nbsp;<u><b>{{count}}</b></u>&nbsp;  час',
+            'hours_plural': '&nbsp;<u><b>{{count}}</b></u>&nbsp;  часы',
+            'minutes': '&nbsp;<u><b>{{count}}</b></u>&nbsp;  минута',
+            'minutes_plural': '&nbsp;<u><b>{{count}}</b></u>&nbsp;  минут',
+            'error': 'Мы сожалеем. Произошла ошибка в процессе',
+            'welcomeConnectedUser': 'Добро пожаловать, <b> {{name}} </b>, вы можете продолжить бронирование',
+            'invalid_user_password': 'Неверный пользователь или пароль'
+          },
+          extra: {
+            'daily_amount': '{{oneUnitPrice}} в день',
+            'hourly_amount': '{{oneUnitPrice}} в час',
+            'unitary_amount': '{{oneUnitPrice}}',
+            'total': 'Общее {{total}}'
+          },
+          contact: {
+            'form_errors': 'Пожалуйста, проверьте ошибки',
+            'validate_captcha': 'Пожалуйста, подтвердите капчу',
+            'validations': {
+               'nameRequired': 'Имя обязательно',
+               'surnameRequired': 'Фамилия обязательна',
+               'emailRequired': 'Электронная почта обязательна',
+               'phoneNumberRequired': 'Номер телефона обязателен',
+               'commentsRequired': 'Сообщение обязательно'
+            },
+            'message_sent_successfully': 'Сообщение успешно отправлено',
+            'error_sending_message': 'Ошибка отправки сообщения'
+          },
+          calendar_selector: {
+            'min_time': 'Сбор предыдущего бронирования находится по адресу {{time}}',
+            'max_time': 'Доставка следующей брони по адресу {{time}}'
+          },
+              selector: {
+              'select_pickup_place': 'Выберите место получения',
+              'select_return_place': 'Выберите место возврата',
+              'another_place': 'Точный адрес',
+              'error_loading_data': 'Мы сожалеем. При загрузке данных произошла ошибка',
+                      'validations': {
+                'pickupPlaceRequired': 'Требуется место получения',
+                'dateFromRequired': 'Требуется дата',
+                'timeFromRequired': 'Требуется время',
+                'returnPlaceRequired': 'Требуется место возврата',
+                'dateToRequired': 'Требуется дата',
+                'timeToRequired': 'Требуется время',
+                          'sameDayTimeToGreaterTimeFrom': 'Должен быть позже срока доставки',
+                          'acceptAge': 'Вы должны подтвердить, что вам больше {{years}} лет',
+                          'promotionCodeInvalid': 'Промокод недействителен'
+                      }
+              },
+              chooseProduct: {
+                      'loadShoppingCart': {
+                          'error': 'Мы сожалеем. Произошла ошибка при поиске'
+                      },
+                      'selectProduct': {
+                          'productNotSelected': 'Пожалуйста, выберите автомобиль.',
+                          'error': 'Мы сожалеем. При выборе автомобиля произошла ошибка'
+                      },
+              'selectUnits': 'Выберите единицы',
+              'units': '{{count}} Эдиница',
+              'units_plural': '{{count}} Эдиницы',
+              'max_duration': 'Максимальная продолжительность составляет {{duration}}',
+              'min_duration': 'Минимальная продолжительность составляет {{duration}}'
+              },
+              chooseExtras: {
+                      'loadShoppingCart': {
+                          'error': 'Мы сожалеем. При загрузке данных произошла ошибка.'
+                      },
+                      'selectExtra': {
+                          'error': 'Мы сожалеем. При обновлении дополнений произошла ошибка.'
+                      },
+                      'deleteExtra': {
+                          'error': 'Мы сожалеем. При удалении дополнений произошла ошибка.'
+                      }
+              },
+              complete: {
+              'loadShoppingCart': {
+                'error': 'Мы сожалеем. При загрузке данных произошла ошибка.'
+              },
+              'selectExtra': {
+                'error': 'Мы сожалеем. При обновлении дополнений произошла ошибка'
+              },
+              'deleteExtra': {
+                'error': 'Мы сожалеем. При удалении дополнений произошла ошибка.'
+              },
+              'promotionCode': {
+                'error': 'Мы сожалеем. При проверке промокода произошла ошибка.',
+              },
+              'reservationForm': {
+                'errors': 'Пожалуйста, проверьте ошибки в форме бронирования.',
+                'total_payment': 'Оплатить {{amount}}',
+                'payment_button': 'Оплатить {{amount}}',
+                'booking_amount': 'Для подтверждения бронирования требуется оплатить <strong> {{amount}} </strong>.',
+                'select_country': 'Выберите страну',
+                'validations': {
+                  'fieldRequired': 'Это поле обязательно к заполнению',
+                  'passwordCheck': 'Пароль должен содержать заглавную букву, строчную букву, цифру и символ.',
+                  'minLength': 'Минимум {{minlength}} символов',
+                  'customerNameRequired': 'Требуется имя клиента',
+                  'customerSurnameRequired': 'Фамилия клиента обязательна',
+                  'customerEmailRequired': 'Требуется електронная почта клиента',
+                  'customerEmailInvalidFormat': 'Неверный адрес электронной почты',
+                  'customerEmailConfirmationRequired': 'Требуется подтверждение электронной почт клиента',
+                  'customerEmailConfirmationEqualsEmail': 'Подтверждение электронной почты клиента должно совпадать с адресом электронной почты клиента',
+                  'customerPhoneNumberRequired': 'Требуется номер телефона клиента',
+                  'customerPhoneNumberMinLength': 'Минимальная длина номера телефона клиента',
+                  'driverDateOfBirthRequired': 'Требуется указать дату рождения водителя.',
+                  'numberOfAdultsRequired': 'Требуется номер в группе',
+                  'conditionsReadRequired': 'Пожалуйста, подтвердите, что вы прочитали условия аренды',
+                  'privacyPolicyRequired': 'Пожалуйста, подтвердите, что вы прочитали политику конфиденциальности',
+                  'selectPaymentMethod': 'Пожалуйста, выберите способ оплаты'
+                }
+              },
+              'createReservation': {
+                'error': 'Мы сожалеем. При создании бронирования произошла ошибка.'
+              }
+              },
+                summary: {
+            'loadReservation': {
+              'error': 'Мы сожалеем. При загрузке бронирования произошла ошибка.'
+            }
+                },
+          myReservation: {
+            'select_country': 'Выберите страну',
+            'loadReservation': {
+              'error': 'Мы сожалеем. При загрузке бронирования произошла ошибка.'
+            },
+            'pay': {
+              'total_payment': 'Оплатить {{amount}}',
+              'payment_button': 'Оплатить {{amount}}',
+              'paymentMethodRequired': 'Пожалуйста, выберите способ оплаты.',
+              'booking_amount': 'Для подтверждения бронирования требуется оплатить <strong> {{amount}} </strong>.',
+              'pending_amount': 'Выплата ожидаемой суммы <strong> {{amount}} </strong> это вариант'
+            },
+            'updateReservation': {
+              'success': 'Бронирование успешно обновлено',
+              'error': 'Мы сожалеем. При обновлении бронирования произошла ошибка'
+            }
+          },
+          selectorWizard: {
+             'pickupPlace': 'Пункт сбора',
+             'dateFrom': 'Дата сбора',
+             'timeFrom': 'Время сбора',
+             'returnPlace': 'Пункт возврата',
+             'dateTo': 'Дата возвращения',
+             'timeTo': 'Время возврата'
+          },
+          activities: {
+            common: {
+              'errorLoadingData': 'Мы сожалеем. При загрузке информации произошла ошибка',
+              'errorUpdatingData': 'Мы сожалеем. При обновлении данных произошла ошибка',
+              'dataUpdateOk': 'Данные успешно обновлены'
+            },
+            calendarWidget: {
+               'selectTickets': 'Вы не выбрали ни одного билета',
+               'fullPlaces': 'Полная вместимость',
+               'fewPlacesWarning': 'Последние места',
+               'fewNoPlacesWarning': 'Последние ходы'
+            },
+            multipleDates: {
+               'selectDate': 'Пожалуйста, выберите дату'
+            },
+            checkout: {
+               'errorCreatingOrder': 'Мы сожалеем. При создании бронирования произошла ошибка',
+               'errors': 'Пожалуйста, проверьте ошибки в форме бронирования.',
+               'validations': {
+                 'customerNameRequired': 'Требуется имя клиента',
+                 'customerSurnameRequired': 'Требуется фамилия клиента',
+                 'customerEmailRequired': 'Требуется електронная почта клиента',
+                 'customerEmailInvalidFormat': 'Неверный адрес электронной почты',
+                 'customerEmailConfirmationRequired': 'Требуется подтверждение электронной почты клиента',
+                 'customerEmailConfirmationEqualsEmail': 'Подтверждение электронной почты клиента должно совпадать с адресом электронной почты клиента',
+                 'customerPhoneNumberRequired': 'Требуется номер телефона клиента',
+                 'customerPhoneNumberMinLength': 'Минимальная длина номера телефона клиента',
+                 'conditionsReadRequired': 'Пожалуйста, подтвердите, что вы прочитали условия аренды',
+                 'privacyPolicyRequired': 'Пожалуйста, подтвердите, что вы прочитали политику конфиденциальности',
+                 'selectPaymentMethod': 'Пожалуйста, выберите способ оплаты'
+               }
+            },
+            payment: {
+               'total_payment': 'Оплатить {{amount}}',
+               'payment_button': 'Оплатить {{amount}}',
+               'deposit_amount': 'Для подтверждения бронирования требуется оплатить <strong> {{amount}} </strong>.',
+               'pending_amount': 'Выплата ожидаемой суммы <strong> {{amount}} </strong> разрешена',
+               'errors': 'Пожалуйста, проверьте ошибки.',
+               'paymentMethodNotSelected': 'Пожалуйста, выберите способ оплаты.'
+            },
+            myReservation: {
+               'cancelReservationConfirm': 'Вы хотите отменить бронирование?',
+            }
+          }
+        }
+    }    
 
   };
 

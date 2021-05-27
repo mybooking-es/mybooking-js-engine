@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.9.26]
+
+### Added
+
+- Russian translation
+
+### Fixed
+
+- Renting reservation: confirm email field
+
 ## [0.9.25]
 
 ### Added

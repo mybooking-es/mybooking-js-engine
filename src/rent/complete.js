@@ -789,12 +789,12 @@ require(['jquery',
                     },
                     'customer_email' : {
                         required: '#customer_email:visible',
-                        email: true
+                        email: '#customer_email:visible'
                     },
-                    'customer_email_confirmation': {
-                        required: '#customer_email_confirmation:visible',
-                        email: true,
-                        equalTo : 'customer_email'
+                    'confirm_customer_email': {
+                        required: '#confirm_customer_email:visible',
+                        email: '#confirm_customer_email:visible',
+                        equalTo : '#customer_email'
                     },
                     'customer_phone': {
                         required: '#customer_phone:visible',
@@ -833,9 +833,9 @@ require(['jquery',
                         required: i18next.t('complete.reservationForm.validations.customerEmailRequired'),
                         email: i18next.t('complete.reservationForm.validations.customerEmailInvalidFormat'),
                     },
-                    'customer_email_confirmation': {
+                    'confirm_customer_email': {
                         'required': i18next.t('complete.reservationForm.validations.customerEmailConfirmationRequired'),
-                        email: i18next.t('complete.reservationForm.validations.customerEmailInvalidFormat'),
+                        'email': i18next.t('complete.reservationForm.validations.customerEmailInvalidFormat'),
                         'equalTo': i18next.t('complete.reservationForm.validations.customerEmailConfirmationEqualsEmail')
                     },
                     'customer_phone': {
