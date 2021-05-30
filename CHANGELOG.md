@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.9.27]
+
+### Added
+
+- Password Forgotten and Password Change components
+
 ## [0.9.26]
 
 ### Added
