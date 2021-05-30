@@ -3,6 +3,7 @@ require(['jquery',
          'i18next','ysdtemplate','YSDDateControl', 
          './selector/modify_reservation_selector', './selector-wizard/selector_wizard', 'select2', 
          'YSDMemoryDataSource','YSDSelectSelector', './mediator/rentEngineMediator', '../profile/Login',
+         '../profile/PasswordForgottenComponent',
          'jquery.i18next', 'jquery.formparams', 'jquery.form',
 	       'jquery.validate', 'jquery.ui', 'jquery.ui.datepicker-es',
          'jquery.ui.datepicker-en', 'jquery.ui.datepicker-ca', 'jquery.ui.datepicker-it',
@@ -10,7 +11,7 @@ require(['jquery',
 	     function($, 
                 commonServices, commonSettings, commonTranslations, commonLoader, 
                 i18next, tmpl, DateControl, selector, selectorWizard, select2,
-                MemoryDataSource, SelectSelector, rentEngineMediator, Login) {
+                MemoryDataSource, SelectSelector, rentEngineMediator, Login, PasswordForgottenComponent) {
 
   var model = { // THE MODEL
     requestLanguage: null,
@@ -561,6 +562,20 @@ require(['jquery',
         // Login form
         var html = tmpl('script_complete_complement')({});
         $('#extras_listing').before(html);
+        // Setup password forgotten
+        $('.mybooking_login_password_forgotten').on('click', function(){
+          var htmlPasswordForgotten = tmpl('script_password_forgotten')({});
+          $('#modalExtraDetail .modal-title').html('');
+          $('#modalExtraDetail .modal-body').html(htmlPasswordForgotten);
+          var passwordForgottenComponent = new PasswordForgottenComponent();
+          passwordForgottenComponent.model.addListener('PasswordForgotten', function(event){
+            if (event.type === 'PasswordForgotten' && (typeof event.data != 'undefined') && event.data.success === true) {
+              $('#modalExtraDetail').modal('hide');
+            }
+          });
+          passwordForgottenComponent.view.init();
+          $('#modalExtraDetail').modal('show');
+        });
         // Signup form
         var htmlSignup = tmpl('script_create_account');
         $('#payment_detail').before(htmlSignup);
@@ -752,16 +767,7 @@ require(['jquery',
      */ 
     setupReservationFormValidation: function() {
 
-        $.validator.addMethod("pwcheck", function(value) {
-           if ( $('#account_password').is(':visible') ) {
-             return  /^[A-Za-z0-9\d=!\-@._*]*$/.test(value) // consists of only these
-                     && /[a-z]/.test(value) // has a lowercase letter
-                     && /[A-Z]/.test(value) // has a uppercase letter
-                     && /\d/.test(value) // has a digit
-                     && /[=!\-@._*]/.test(value); // has a symbol
-           }
-           return true;
-        });
+        commonSettings.appendValidators();
 
         $('form[name=reservation_form]').validate(
             {

@@ -270,7 +270,15 @@ define('commonTranslations', [], function() {
               'minutes_plural': '&nbsp;<u><b>{{count}}</b></u>&nbsp;  minutes', 
               'error': 'We are sorry. There was an error in the process',
               'welcomeConnectedUser': 'Welcome <b>{{name}}</b> you can proceed with your reservation',
-              'invalid_user_password': 'Invalid user or password'             
+              'invalid_user_password': 'Invalid user or password',
+              'no_necessary_url_params': 'The URL does not contain the information necessary to carry out the process'             
+            },
+            password_forgotten: {
+              'message': "A message has been sent to your email address in order to reset the password",
+              'invalid_username_email': "The username or email address you entered does not exist"
+            },
+            change_password: {
+              'message': "The password has been changed. You can now access with your username and password"
             },
             extra: {
               'daily_amount': '{{oneUnitPrice}} per day',
@@ -723,7 +731,15 @@ define('commonTranslations', [], function() {
               'minutes_plural': '&nbsp;<u><b>{{count}}</b></u>&nbsp; minutos', 
               'error': 'Lo sentimos. Se ha producido un error en el proceso.',
               'welcomeConnectedUser': 'Bienvenido <b>{{name}}</b>, puede proceder con su reserva',
-              'invalid_user_password': 'El usuario o el password no son válidos'                       
+              'invalid_user_password': 'El usuario o el password no son válidos',
+              'no_necessary_url_params': 'La URL no contiene la información necesaria para llevar a cabo el proceso'                 
+            },
+            password_forgotten: {
+              'message': "Se ha enviado un mensaje a su dirección de correo electrónico para restablecer la contraseña.",
+              'invalid_username_email': "Usuario o correo electrónico no registrados"
+            },
+            change_password: {
+              'message': "La contraseña ha sido cambiada. Ahora puede acceder con su nombre de usuario y contraseña."
             },
             extra: {
               'daily_amount': '{{oneUnitPrice}}/día',
@@ -1177,8 +1193,16 @@ define('commonTranslations', [], function() {
           'minutes_plural': '&nbsp;<u><b>{{count}}</b></u>&nbsp; minuts',
           'error': "Ho sentim. S'ha produit un error al procès",
           'welcomeConnectedUser': 'Benvingut <b>{{name}}</b>, pot procedir amb la seva reserva',
-          'invalid_user_password': "L'usuari o la clau no són correctes"                         
+          'invalid_user_password': "L'usuari o la clau no són correctes",      
+          'no_necessary_url_params': "La URL no conté la informació necessària per dur a terme el procés"                                
         },
+        password_forgotten: {
+          'message': "S'ha enviat un missatge a la vostra adreça de correu electrònic per restablir la contrasenya",
+          'invalid_username_email': "El nom d’usuari o l’adreça de correu electrònic no existeixen"          
+        },
+        change_password: {
+          'message': "La contrasenya s'ha canviat. Ara podeu accedir amb el vostre nom d’usuari i contrasenya"
+        },        
         extra: {
           'daily_amount': '{{oneUnitPrice}}/dia',
           'hourly_amount': '{{oneUnitPrice}}/hora',
@@ -1630,8 +1654,16 @@ define('commonTranslations', [], function() {
           'minutes_plural': '&nbsp;<u><b>{{count}}</b></u>&nbsp; minuten',
           'error': 'Wir entschuldigen uns. Es ist ein Fehler aufgetreten',
           'welcomeConnectedUser': 'Willkommen <b>{{name}}</b>,Sie können mit Ihrer Reservierung fortfahren',
-          'invalid_user_password': 'Ungültiger Benutzer oder Passwort'                                    
+          'invalid_user_password': 'Ungültiger Benutzer oder Passwort',
+          'no_necessary_url_params': "Die URL enthält nicht die Informationen, die zur Durchführung des Prozesses erforderlich sind" 
         },
+        password_forgotten: {
+          'message': "Eine Nachricht wurde an Ihre E-Mail-Adresse gesendet, um das Passwort zurückzusetzen",
+          'invalid_username_email': "Der von Ihnen eingegebene Benutzername oder die von Ihnen eingegebene E-Mail-Adresse ist nicht vorhanden"              
+        },
+        change_password: {
+          'message': "Das Passwort wurde geändert. Sie können jetzt mit Ihrem Benutzernamen und Passwort zugreifen"
+        },        
         extra: {
           'daily_amount': '{{oneUnitPrice}}/Tag',
           'hourly_amount': '{{oneUnitPrice}}/Stunde',
@@ -2084,8 +2116,16 @@ define('commonTranslations', [], function() {
           'minutes_plural': '&nbsp;<u><b>{{count}}</b></u>&nbsp; minutes',
           'error': "Nous sommes désolés. Il y a eu une erreur dans le processus",
           'welcomeConnectedUser': 'Bienvenue <b>{{name}}</b>, vous pouvez procéder à votre réservation',
-          'invalid_user_password': 'Utilisateur ou mot de passe invalide'                                     
+          'invalid_user_password': 'Utilisateur ou mot de passe invalide',
+          'no_necessary_url_params': "L'URL ne contient pas les informations nécessaires pour mener à bien le processus" 
         },
+        password_forgotten: {
+          'message': "Un message a été envoyé à votre adresse e-mail afin de réinitialiser le mot de passe",
+          'invalid_username_email': "Le nom d'utilisateur ou l'adresse e-mail que vous avez entré n'existe pas"                 
+        },
+        change_password: {
+          'message': "Le mot de passe a été changé. Vous pouvez maintenant accéder avec votre nom d'utilisateur et votre mot de passe"
+        },        
         extra: {
           'daily_amount': '{{oneUnitPrice}}/jour',
           'hourly_amount': '{{oneUnitPrice}}/heure',
@@ -2537,8 +2577,16 @@ define('commonTranslations', [], function() {
           'minutes_plural': '&nbsp;<u><b>{{count}}</b></u>&nbsp; minuti',
           'error': "Siamo spiacenti. Si è verificato un errore nel processo",
           'welcomeConnectedUser': 'Benvenuto <b>{{name}}</b>, puoi procedere con la prenotazione',
-          'invalid_user_password': 'Utente o password non validi'                                            
+          'invalid_user_password': 'Utente o password non validi',
+          'no_necessary_url_params': "L'URL non contiene le informazioni necessarie per eseguire il processo"                                                       
         },
+        password_forgotten: {
+          'message': "È stato inviato un messaggio al tuo indirizzo email per reimpostare la password",
+          'invalid_username_email': "Il nome utente o l'indirizzo e-mail che hai inserito non esiste" 
+        },
+        change_password: {
+          'message': "La password è stata modificata. Ora puoi accedere con il tuo nome utente e password"
+        },        
         extra: {
           'daily_amount': '{{oneUnitPrice}}/giorno',
           'hourly_amount': '{{oneUnitPrice}}/ora',
@@ -2743,8 +2791,16 @@ define('commonTranslations', [], function() {
             'minutes_plural': '&nbsp;<u><b>{{count}}</b></u>&nbsp;  минут',
             'error': 'Мы сожалеем. Произошла ошибка в процессе',
             'welcomeConnectedUser': 'Добро пожаловать, <b> {{name}} </b>, вы можете продолжить бронирование',
-            'invalid_user_password': 'Неверный пользователь или пароль'
+            'invalid_user_password': 'Неверный пользователь или пароль',
+            'no_necessary_url_params': "URL-адрес не содержит информации, необходимой для выполнения процесса."             
           },
+          password_forgotten: {
+            'message': "На ваш адрес электронной почты было отправлено сообщение для сброса пароля.",
+            'invalid_username_email': "Введенное вами имя пользователя или адрес электронной почты не существует."
+          },
+          change_password: {
+            'message': "Пароль был изменен. Теперь вы можете получить доступ со своим именем пользователя и паролем"
+          },          
           extra: {
             'daily_amount': '{{oneUnitPrice}} в день',
             'hourly_amount': '{{oneUnitPrice}} в час',

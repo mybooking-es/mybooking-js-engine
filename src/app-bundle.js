@@ -63,6 +63,22 @@ $(document).ready(function() {
     }
 });
 
+// == Page password forgotten
+
+$(document).ready(function() {
+  if ($('body').hasClass('mybooking-password-forgotten')) {
+    require('./profile/PasswordForgottenComponent.js');
+    require('./profile/password_forgotten.js');
+  }  
+});
+
+$(document).ready(function() {
+  if ($('body').hasClass('mybooking-change-password')) {
+    require('./profile/ChangePasswordComponent.js');
+    require('./profile/change_password.js');
+  }  
+});
+
 // == Renting module
 
 $(document).ready(function() {
@@ -74,6 +90,7 @@ $(document).ready(function() {
 
 // Page with selector widget JS
 $(document).ready(function () {
+    console.log('SELECTOR ready');
     if ($('body').hasClass('mybooking-selector-widget') &&
         $('form[name=widget_search_form]').length) {
         require('./rent/selector/widget.js');
@@ -133,13 +150,6 @@ $(document).ready(function () {
     if ($('body').hasClass('reservation')) {
         require('./rent/mediator/rentEngineMediator.js');         
         require('./rent/reservation.js');
-    }
-});
-
-// == Page login
-$(document).ready(function() {
-    if ($('body').hasClass('mybooking_login')) {
-        require('./profile/Login.js');
     }
 });
 

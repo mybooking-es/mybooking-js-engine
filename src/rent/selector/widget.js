@@ -109,11 +109,11 @@ require(['jquery', 'commonSettings', 'commonLoader', './SelectorRent'],
 
   };
 
-  $(document).ready(function(){
+  //$(document).ready(function(){
       console.log('widget');
       commonLoader.show();
       widgetSelectorModel.loadSettings();
-  });
+  //});
 
 
 });

@@ -52,9 +52,9 @@ require(['jquery', 'commonSettings', './selector_wizard'],
 
   };
 
-  $(document).ready(function(){
+  //$(document).ready(function(){
     console.log('selector_wizard_widget');
     widgetSelectorWizardModel.loadSettings();
-  });
+  //});
 
 });

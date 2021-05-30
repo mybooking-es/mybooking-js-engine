@@ -239,6 +239,20 @@ define('commonSettings', ['jquery','commonServices','commonLoader','commonTransl
             vars[hash[0]] = hash[1];
           }
           return vars;
+    },
+    appendValidators: function() {
+
+        $.validator.addMethod("pwcheck", function(value, element) {
+           if ( $(element).length > 0 && $(element).is(':visible') ) {
+             return  /^[A-Za-z0-9\d=!\-@._*]*$/.test(value) // consists of only these
+                     && /[a-z]/.test(value) // has a lowercase letter
+                     && /[A-Z]/.test(value) // has a uppercase letter
+                     && /\d/.test(value) // has a digit
+                     && /[=!\-@._*]/.test(value); // has a symbol
+           }
+           return true;
+        });
+      
     }
   };
 

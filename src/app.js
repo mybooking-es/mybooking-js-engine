@@ -59,6 +59,22 @@ $(document).ready(function() {
     }
 });
 
+// == Page password forgotten
+
+$(document).ready(function() {
+  if ($('body').hasClass('mybooking_password_forgotten')) {
+    require('./profile/PasswordForgottenComponent.js');
+    require('./profile/password_forgotten.js');
+  }  
+});
+
+$(document).ready(function() {
+  if ($('body').hasClass('mybooking_change_password')) {
+    require('./profile/ChangePasswordComponent.js');
+    require('./profile/change_password.js');
+  }  
+});
+
 // == Renting module
 
 $(document).ready(function() {
@@ -101,8 +117,9 @@ $(document).ready(function () {
 $(document).ready(function () {
     if ($('body').hasClass('choose_extras')) {
         require('./rent/selector/modify_reservation_selector.js');      
-        require('./rent/mediator/rentEngineMediator.js');            
-        require('./rent/choose_extras.js');
+        require('./rent/mediator/rentEngineMediator.js');           
+        require('./profile/Login.js');   
+        require('./rent/complete.js');
     }
 });
 
