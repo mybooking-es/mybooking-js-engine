@@ -155,6 +155,13 @@ $(document).ready(function () {
 
 // == Product renting
 
+// Product Search JS
+$(document).ready(function() {
+    if ($('body').hasClass('mybooking-product-search')) {
+        require('./rent/ProductSearch.js');
+    }
+});
+
 // Page with product selector widget
 $(document).ready(function () {
     if ($('body').hasClass('mybooking-product') &&

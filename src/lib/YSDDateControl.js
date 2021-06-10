@@ -73,7 +73,14 @@ define(['jquery','moment'], function($, moment){
       months : ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'],    
       literals : { 'day': 'Tag', 'month': 'Monat', 'year': 'Jahr' }
 
+    },
+
+    ru: {
+      months : ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],    
+      literals : { 'day': 'день', 'month': 'Месяц', 'year': 'Год' }
+
     }
+
 
   }
 

@@ -565,16 +565,30 @@ require(['jquery',
         // Setup password forgotten
         $('.mybooking_login_password_forgotten').on('click', function(){
           var htmlPasswordForgotten = tmpl('script_password_forgotten')({});
-          $('#modalExtraDetail .modal-title').html('');
-          $('#modalExtraDetail .modal-body').html(htmlPasswordForgotten);
-          var passwordForgottenComponent = new PasswordForgottenComponent();
-          passwordForgottenComponent.model.addListener('PasswordForgotten', function(event){
-            if (event.type === 'PasswordForgotten' && (typeof event.data != 'undefined') && event.data.success === true) {
-              $('#modalExtraDetail').modal('hide');
-            }
-          });
-          passwordForgottenComponent.view.init();
-          $('#modalExtraDetail').modal('show');
+          if ($('div.mybooking_password_forgotten_container').length > 0) {
+            // Show in div
+            $('div.mybooking_password_forgotten_container').html(htmlPasswordForgotten);
+            var passwordForgottenComponent = new PasswordForgottenComponent();
+            passwordForgottenComponent.model.addListener('PasswordForgotten', function(event){
+              if (event.type === 'PasswordForgotten' && (typeof event.data != 'undefined') && event.data.success === true) {
+                $('div.mybooking_password_forgotten_container').empty();
+              }
+            });
+            passwordForgottenComponent.view.init();            
+          }
+          else {
+            // Show in a modal
+            $('#modalExtraDetail .modal-title').html('');
+            $('#modalExtraDetail .modal-body').html(htmlPasswordForgotten);
+            var passwordForgottenComponent = new PasswordForgottenComponent();
+            passwordForgottenComponent.model.addListener('PasswordForgotten', function(event){
+              if (event.type === 'PasswordForgotten' && (typeof event.data != 'undefined') && event.data.success === true) {
+                $('#modalExtraDetail').modal('hide');
+              }
+            });
+            passwordForgottenComponent.view.init();
+            $('#modalExtraDetail').modal('show');
+          }
         });
         // Signup form
         var htmlSignup = tmpl('script_create_account');
@@ -593,6 +607,11 @@ require(['jquery',
                 var htmlMessage = tmpl('script_welcome_customer')({i18next: i18next, user: event.data.user});
                 $('#reservation_complement_container').append(htmlMessage);
               }
+              // Empty password forgotten components
+              $('.mybooking_login_password_forgotten').remove();
+              if ( $('.mybooking_password_forgotten_container').length > 0) {
+                $('.mybooking_password_forgotten_container').empty();        
+              }     
               // Remove create account components
               $('.mybooking_rent_create_account_selector_container').remove();
               $('.mybooking_rent_create_account_fields_container').remove();
@@ -611,12 +630,20 @@ require(['jquery',
         $('form[name=mybooking_select_user_form] input[name=registered_customer]').on('change', function(){
           if ($(this).val() === 'true') {
             $('.mybooking_login_form_element').show();
+            // Empty password forgotten container
+            if ( $('.mybooking_password_forgotten_container').length > 0) {            
+              $('.mybooking_password_forgotten_container').empty();
+            }            
             $('#form-reservation').hide();
             $('#extras_listing').hide();
             $('.reservation_form_container').hide();
           }
           else {
             $('.mybooking_login_form_element').hide();
+            // Empty password forgotten container
+            if ( $('.mybooking_password_forgotten_container').length > 0) {            
+              $('.mybooking_password_forgotten_container').empty();
+            }
             $('#form-reservation').show();
             $('#extras_listing').show();
             $('.reservation_form_container').show();            

@@ -5,6 +5,8 @@
 ### Added
 
 - Password Forgotten and Password Change components
+- Product Search component
+- Date Control Russian translations
 
 ## [0.9.26]
 
