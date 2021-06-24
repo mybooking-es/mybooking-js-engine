@@ -271,7 +271,8 @@ define('commonTranslations', [], function() {
               'error': 'We are sorry. There was an error in the process',
               'welcomeConnectedUser': 'Welcome <b>{{name}}</b> you can proceed with your reservation',
               'invalid_user_password': 'Invalid user or password',
-              'no_necessary_url_params': 'The URL does not contain the information necessary to carry out the process'             
+              'no_necessary_url_params': 'The URL does not contain the information necessary to carry out the process',
+              'required': 'Required'             
             },
             password_forgotten: {
               'message': "A message has been sent to your email address in order to reset the password",
@@ -304,6 +305,7 @@ define('commonTranslations', [], function() {
               'max_time': 'The delivery of the next reservation is at {{time}}'
             },
         		selector: {
+                'select': 'Select',
                 'select_pickup_place': 'Select pickup place',
                 'select_return_place': 'Select return place',
                 'another_place': 'Exact address',
@@ -732,7 +734,8 @@ define('commonTranslations', [], function() {
               'error': 'Lo sentimos. Se ha producido un error en el proceso.',
               'welcomeConnectedUser': 'Bienvenido <b>{{name}}</b>, puede proceder con su reserva',
               'invalid_user_password': 'El usuario o el password no son válidos',
-              'no_necessary_url_params': 'La URL no contiene la información necesaria para llevar a cabo el proceso'                 
+              'no_necessary_url_params': 'La URL no contiene la información necesaria para llevar a cabo el proceso',
+              'required': 'Obligatorio'                   
             },
             password_forgotten: {
               'message': "Se ha enviado un mensaje a su dirección de correo electrónico para restablecer la contraseña.",
@@ -765,6 +768,7 @@ define('commonTranslations', [], function() {
               'max_time': 'La entrega de la siguiente reserva es a las {{time}}'
             },  		
             selector: {
+              'select': 'Seleccionar',              
               'select_pickup_place': 'Seleccionar lugar de entrega',
               'select_return_place': 'Seleccionar lugar de devolución',  
               'another_place': 'Dirección exacta',
@@ -1194,7 +1198,8 @@ define('commonTranslations', [], function() {
           'error': "Ho sentim. S'ha produit un error al procès",
           'welcomeConnectedUser': 'Benvingut <b>{{name}}</b>, pot procedir amb la seva reserva',
           'invalid_user_password': "L'usuari o la clau no són correctes",      
-          'no_necessary_url_params': "La URL no conté la informació necessària per dur a terme el procés"                                
+          'no_necessary_url_params': "La URL no conté la informació necessària per dur a terme el procés",                                
+          'required': 'Obligatori'  
         },
         password_forgotten: {
           'message': "S'ha enviat un missatge a la vostra adreça de correu electrònic per restablir la contrasenya",
@@ -1227,6 +1232,7 @@ define('commonTranslations', [], function() {
           'max_time': "L'entrega de la propera reserva és a les {{time}}"
         },      
         selector: {
+          'select': 'Seleccionar',          
           'select_pickup_place': 'Seleccionar el lloc de lliurament',
           'select_return_place': 'Seleccionar el lloc de devolució',  
           'another_place': 'Adreça exacta',
@@ -1655,7 +1661,8 @@ define('commonTranslations', [], function() {
           'error': 'Wir entschuldigen uns. Es ist ein Fehler aufgetreten',
           'welcomeConnectedUser': 'Willkommen <b>{{name}}</b>,Sie können mit Ihrer Reservierung fortfahren',
           'invalid_user_password': 'Ungültiger Benutzer oder Passwort',
-          'no_necessary_url_params': "Die URL enthält nicht die Informationen, die zur Durchführung des Prozesses erforderlich sind" 
+          'no_necessary_url_params': "Die URL enthält nicht die Informationen, die zur Durchführung des Prozesses erforderlich sind", 
+          'required': 'Erforderlich' 
         },
         password_forgotten: {
           'message': "Eine Nachricht wurde an Ihre E-Mail-Adresse gesendet, um das Passwort zurückzusetzen",
@@ -1688,6 +1695,7 @@ define('commonTranslations', [], function() {
           'max_time': 'Die Lieferung der nächsten Reservierung erfolgt um {{time}} Uhr'
         },
         selector: {
+          'select': 'Selektionär',          
           'select_pickup_place': 'Abholort auswählen',
           'select_return_place': 'Rückgabeort auswählen',
           'another_place': 'Exakte Adresse',
@@ -2117,7 +2125,8 @@ define('commonTranslations', [], function() {
           'error': "Nous sommes désolés. Il y a eu une erreur dans le processus",
           'welcomeConnectedUser': 'Bienvenue <b>{{name}}</b>, vous pouvez procéder à votre réservation',
           'invalid_user_password': 'Utilisateur ou mot de passe invalide',
-          'no_necessary_url_params': "L'URL ne contient pas les informations nécessaires pour mener à bien le processus" 
+          'no_necessary_url_params': "L'URL ne contient pas les informations nécessaires pour mener à bien le processus", 
+          'required': "Obligatoire"
         },
         password_forgotten: {
           'message': "Un message a été envoyé à votre adresse e-mail afin de réinitialiser le mot de passe",
@@ -2150,6 +2159,7 @@ define('commonTranslations', [], function() {
           'max_time': 'La livraison de la prochaine réservation est à {{time}}'
         },
         selector: {
+          'select': 'Sélectionnez',
           'select_pickup_place': 'Sélectionnez un lieu de prise en charge',
           'select_return_place': 'Sélectionnez le lieu de retour',
           'another_place': 'Adresse exacte',
@@ -2578,7 +2588,8 @@ define('commonTranslations', [], function() {
           'error': "Siamo spiacenti. Si è verificato un errore nel processo",
           'welcomeConnectedUser': 'Benvenuto <b>{{name}}</b>, puoi procedere con la prenotazione',
           'invalid_user_password': 'Utente o password non validi',
-          'no_necessary_url_params': "L'URL non contiene le informazioni necessarie per eseguire il processo"                                                       
+          'no_necessary_url_params': "L'URL non contiene le informazioni necessarie per eseguire il processo",
+          'required': "Richiesto"                                                       
         },
         password_forgotten: {
           'message': "È stato inviato un messaggio al tuo indirizzo email per reimpostare la password",
@@ -2611,6 +2622,7 @@ define('commonTranslations', [], function() {
           'max_time': 'La consegna della prossima prenotazione è alle {{time}}'
         },  
         selector: {
+          'select': 'Seleziona',
           'select_pickup_place': 'Seleziona il luogo di ritiro',
           'select_return_place': 'Seleziona luogo di ritorno',
           'another_place': 'Indirizzo esatto',
@@ -2792,7 +2804,8 @@ define('commonTranslations', [], function() {
             'error': 'Мы сожалеем. Произошла ошибка в процессе',
             'welcomeConnectedUser': 'Добро пожаловать, <b> {{name}} </b>, вы можете продолжить бронирование',
             'invalid_user_password': 'Неверный пользователь или пароль',
-            'no_necessary_url_params': "URL-адрес не содержит информации, необходимой для выполнения процесса."             
+            'no_necessary_url_params': "URL-адрес не содержит информации, необходимой для выполнения процесса.",             
+            'required': "обязательный"
           },
           password_forgotten: {
             'message': "На ваш адрес электронной почты было отправлено сообщение для сброса пароля.",
@@ -2825,6 +2838,7 @@ define('commonTranslations', [], function() {
             'max_time': 'Доставка следующей брони по адресу {{time}}'
           },
               selector: {
+              'select': 'селекционер',
               'select_pickup_place': 'Выберите место получения',
               'select_return_place': 'Выберите место возврата',
               'another_place': 'Точный адрес',

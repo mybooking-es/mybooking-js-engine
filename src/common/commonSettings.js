@@ -25,7 +25,8 @@ define('commonSettings', ['jquery','commonServices','commonLoader','commonTransl
       // Renting MODULE
       selectFamily: false,
       multipleDestinations: false,
-      selectDestination: false,      
+      selectDestination: false, 
+      selectRentalLocation: false,     
       // - Renting dates
       minDays   : 1,
       timeToFrom: true,
@@ -59,6 +60,7 @@ define('commonSettings', ['jquery','commonServices','commonLoader','commonTransl
       activityReservationMultipleItems: true,
       selectActivityCategory: false,
       selectActivityDestination: false,
+      selectActivityRentalLocation: false,
       formatExtraAmount: function(i18next, oneUnitPrice, priceCalculation, days, hours, amount, currencySymbol, decimals) {
 
         var unitAmountFormatted = this.formatCurrency(oneUnitPrice, currencySymbol, decimals);
@@ -156,6 +158,7 @@ define('commonSettings', ['jquery','commonServices','commonLoader','commonTransl
              // Renting
              mybookingSettings.data.selectFamily = data.select_family;
              mybookingSettings.data.selectDestination = data.select_destination;
+             mybookingSettings.data.selectRentalLocation = data.select_rental_location;
              // - Renting dates
              mybookingSettings.data.minDays = data.min_days;
              mybookingSettings.data.timeToFrom = data.time_to_from;
@@ -205,6 +208,7 @@ define('commonSettings', ['jquery','commonServices','commonLoader','commonTransl
              mybookingSettings.data.activityReservationMultipleItems = data.activity_reservation_multiple_items;
              mybookingSettings.data.selectActivityCategory = data.select_activity_category;
              mybookingSettings.data.selectActivityDestination = data.select_activity_destination;
+             mybookingSettings.data.selectActivityRentalLocation = data.select_activity_rental_location;
              // Customer access
              if (typeof data.engine_customer_access !== 'undefined') {
                mybookingSettings.data.engineCustomerAccess = true;

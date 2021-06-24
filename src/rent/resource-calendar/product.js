@@ -25,6 +25,7 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
     maxTimeFrom: null, // Max time to
     code: null, // Product code
     salesChannelCode: null, // Sales channel code
+    rentalLocationCode: null, // Rental location code
     pickupPlace: null, // Selected pickup/place
     selectedDateFrom: null, // Selected date from
     selectedDateTo: null, // Selected date to
@@ -211,7 +212,7 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
       }
       var urlParams = [];
       urlParams.push('include_products=true');
-      if (this.requestLanguage != null) {
+      if (this.requestLanguage != null) {
         urlParams.push('lang='+this.requestLanguage);
       }
       if (commonServices.apiKey && commonServices.apiKey != '') {
@@ -281,14 +282,19 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
 
       var data = {date_from: moment(this.selectedDateFrom).format('DD/MM/YYYY'),
                   date_to: moment(this.selectedDateTo).format('DD/MM/YYYY'),
-                  category_code: this.code
+                  category_code: this.code,
+                  engine_fixed_product: true
                   };
 
-      if ($(this.salesChannelCode != null)) {
+      if (this.salesChannelCode != null) {
         data.sales_channel_code = this.salesChannelCode;
       }
+      if (this.rentalLocationCode != null) {
+        data.rental_location_code = this.rentalLocationCode;
+        data.engine_fixed_rental_location = ($(this.form_selector).find('input[type=hidden][name=rental_location_code]').length == 0);
+      }
 
-      if (this.configuration.pickupReturnPlace) {
+      if (this.configuration.pickupReturnPlace) {
         data.pickup_place = $(this.pickup_place_selector).val();
         data.return_place = $(this.return_place_selector).val();
       }
@@ -537,8 +543,12 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
         productModel.requestLanguage = commonSettings.language(document.documentElement.lang);
         productModel.code = $('#product_selector').attr('data-code');
         var salesChannelAttr = $('#product_selector').attr('data-sales-channel-code');
+        var rentalLocationCodeAttr = $('#product_selector').attr('data-rental-location-code');
         if (typeof salesChannelAttr !== 'undefined') {
           productModel.salesChannelCode = $('#product_selector').attr('data-sales-channel-code');
+        }
+        if (typeof rentalLocationCodeAttr !== 'undefined') {
+          productModel.rentalLocationCode = $('#product_selector').attr('data-rental-location-code');
         }
         productModel.today = moment().format('YYYY-MM-DD');
 

@@ -31,6 +31,9 @@ require(['jquery', 'i18next', 'ysdtemplate',
         // Build the URL
        var url = commonServices.URL_PREFIX + '/api/booking/frontend/products-key-characteristics';
        var urlParams = [];
+       if (productSearchModel.requestLanguage != null) {
+        urlParams.push('lang='+productSearchModel.requestLanguage);
+       }
        if (commonServices.apiKey && commonServices.apiKey != '') {
          urlParams.push('api_key='+commonServices.apiKey);
        }        

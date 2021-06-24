@@ -37,6 +37,9 @@ define('selector_wizard', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource
       agentId: null,
       salesChannelCode: null,
       familyId: null,
+      engineFixedFamily: false,
+      rentalLocationCode: null,
+      engineFixedRentaLocation: false
     },
 
     bodyOverflowY: null,
@@ -164,6 +167,8 @@ define('selector_wizard', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource
                    });
       // Extract the AgentId from the query parameters => Affiliates
       this.extractAgentId();
+      // Extract rental_location_code from the form
+      this.extractRentalLocationCode();
       // Extract sales_channel_code from the form
       this.extractSalesChannelCode();
       // Extra family_id from the from
@@ -191,6 +196,26 @@ define('selector_wizard', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource
       }
       if (agentId != null) {
         selectorWizardModel.selectionData.agentId = agentId;
+      }
+
+    },
+
+    /**
+     * Extract the rental location code
+     */ 
+    extractRentalLocationCode: function() {
+
+      console.log('extract rental-location-code');
+
+      if ($('form[name=wizard_search_form]').length > 0) {
+        if ($('form[name=wizard_search_form] input[name=rental_location_code]').length > 0) {
+          var rentalLocationCode = $('form[name=wizard_search_form] input[name=rental_location_code]').val();
+          if (rentalLocationCode != '') {
+            console.log('rental-location-code: '+rentalLocationCode);
+            selectorWizardModel.selectionData.rentalLocationCode = rentalLocationCode;
+            selectorWizardModel.selectionData.engineFixedRentaLocation = true;
+          }
+        }
       }
 
     },
@@ -224,6 +249,7 @@ define('selector_wizard', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource
           var familyId = $('form[name=widget_search_form] input[name=family_id]').val();
           if (familyId != '') {
             selectorWizardModel.selectionData.familyId = familyId;
+            selectorWizardModel.selectionData.engineFixedFamily = true;
           }
         }
       }
@@ -290,7 +316,6 @@ define('selector_wizard', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource
   	},
 
     startFromShoppingCart: function(shopping_cart) {
-      //this.showWizard();
       selectorWizardModel.shoppingCart = shopping_cart;
     },
 
@@ -525,6 +550,14 @@ define('selector_wizard', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource
       // Appends the family id
       if (selectorWizardModel.selectionData.familyId != null) {
         params.push('family_id='+commonSettings.data.encodeData(selectorWizardModel.selectionData.familyId));
+        params.push('engine_fixed_family='+commonSettings.data.encodeData(selectorWizardModel.selectionData.engineFixedFamily));
+      }
+      else if (selectorWizardModel.shoppingCart) {
+        if (selectorWizardModel.shoppingCart.engine_fixed_family && 
+            selectorWizardModel.shoppingCart.family_id != null) {
+          params.push('family_id='+selectorWizardModel.shoppingCart.family_id);
+          params.push('engine_fixed_family='+selectorWizardModel.shoppingCart.engine_fixed_family);          
+        }
       }
       console.log('sales_channel_code:'+selectorWizardModel.selectionData.salesChannelCode);
       // Append the sales channel code
@@ -538,8 +571,20 @@ define('selector_wizard', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource
           params.push('sales_channel_code='+selectorWizardModel.shoppingCart.sales_channel_code);
         }
       }
+      // Append the erntal location code
+      if (selectorWizardModel.selectionData.rentalLocationCode != null) {
+        params.push('rental_location_code='+commonSettings.data.encodeData(selectorWizardModel.selectionData.rentalLocationCode));
+        params.push('engine_fixed_rental_location='+commonSettings.data.encodeData(selectorWizardModel.selectionData.engineFixedRentaLocation));
+      }
+      else if (selectorWizardModel.shoppingCart) {
+        if (selectorWizardModel.shoppingCart.engine_fixed_rental_location && 
+            selectorWizardModel.shoppingCart.rental_location_code != null) {
+          params.push('rental_location_code='+selectorWizardModel.shoppingCart.rental_location_code);
+          params.push('engine_fixed_rental_location='+selectorWizardModel.shoppingCart.engine_fixed_rental_location);          
+        }
+      }
 
-      if (params.length > 0) {
+      if (params.length > 0){
         url += '?';
         url += params.join('&');
       }

@@ -120,7 +120,11 @@ define('customSelector', ['jquery', 'commonSettings', 'commonLoader', 'YSDEventT
         // Family
         this.selector.model.family_id = 'custom_family_id',
         this.selector.model.family_id_selector = '#custom_family_id',   
-        this.selector.model.family_selector = '.custom_family',     
+        this.selector.model.family_selector = '.custom_family',
+        // Rental Location Code
+        this.selector.model.rental_location_code = 'custom_rental_location_code',
+        this.selector.model.rental_location_code_selector = '#custom_rental_location_code',   
+        this.selector.model.rental_location_selector = '.custom_rental_location',              
         // Accept Age
         this.selector.model.accept_age_selector = '#custom_accept_age';
         // Promotion code

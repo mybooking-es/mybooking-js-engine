@@ -7,6 +7,10 @@
 - Password Forgotten and Password Change components
 - Product Search component
 - Date Control Russian translations
+- Added Rental Location Code to :
+  - Rent Selector (select or hidden input)
+  - Rent Selector Wizard (hidden input)
+  - Product Calendar (hidden input)
 
 ## [0.9.26]
 

@@ -28,6 +28,8 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
     time_from : null,
     date_to : null,
     time_to : null,
+    engine_fixed_rental_location: false,
+    rental_location_code: null,
     pickup_place: null,
     pickup_place_other: null,
     custom_pickup_place: null,
@@ -36,6 +38,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
     custom_return_place: null,
     promotion_code: null,
     sales_channel_code: null,
+    engine_fixed_family: false,
     family_id: null,
     driver_age_rule_id: null,
     number_of_adults: null,
@@ -119,6 +122,13 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
       this.time_from = decodeURIComponent(url_vars['time_from']);
       this.date_to = decodeURIComponent(url_vars['date_to']);
       this.time_to = decodeURIComponent(url_vars['time_to']);
+      if (this.configuration.selectRentalLocation) {
+        this.rental_location_code = decodeURIComponent(url_vars['rental_location_code']);
+        if (typeof url_vars['engine_fixed_rental_location'] !== 'undefined' && 
+            url_vars['engine_fixed_rental_location'] === 'true') {
+          this.engine_fixed_rental_location = true;
+        }
+      }
       this.pickup_place = decodeURIComponent(url_vars['pickup_place']).replace(/\+/g, " ");
       this.pickup_place_other = decodeURIComponent(url_vars['pickup_place_other']).replace(/\+/g, " ");
       this.custom_pickup_place = decodeURIComponent(url_vars['custom_pickup_place']);
@@ -128,6 +138,10 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
       this.promotion_code = decodeURIComponent(url_vars['promotion_code']);
       this.sales_channel_code = decodeURIComponent(url_vars['sales_channel_code']);
       this.family_id = decodeURIComponent(url_vars['family_id']);
+      if (typeof url_vars['engine_fixed_family'] !== 'undefined' && 
+          url_vars['engine_fixed_family'] === 'true') {
+        this.engine_fixed_family = true;
+      }
       this.driver_age_rule_id = decodeURIComponent(url_vars['driver_age_rule_id']);
       this.number_of_adults = decodeURIComponent(url_vars['number_of_adults']);
       this.number_of_children = decodeURIComponent(url_vars['number_of_children']);
@@ -170,6 +184,11 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
         data.time_to = this.time_to;
       }
 
+      if (this.rental_location_code != 'undefined' && this.rental_location_code != '') {
+        data.rental_location_code = this.rental_location_code;
+        data.engine_fixed_rental_location = this.engine_fixed_rental_location;
+      }
+
       if (this.pickup_place != 'undefined' && this.pickup_place != '') {
         data.pickup_place = this.pickup_place;
       }
@@ -204,6 +223,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
 
       if (this.family_id != 'undefined' && this.family_id != '') {
         data.family_id = this.family_id;
+        data.engine_fixed_family = this.engine_fixed_family;
       }
       
       if (this.driver_age_rule_id != 'undefined' && this.driver_age_rule_id != '') {

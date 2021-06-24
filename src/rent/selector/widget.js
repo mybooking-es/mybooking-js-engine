@@ -96,7 +96,11 @@ require(['jquery', 'commonSettings', 'commonLoader', './SelectorRent'],
         // Family
         this.selector.model.family_id = 'widget_family_id',
         this.selector.model.family_id_selector = '#widget_family_id',   
-        this.selector.model.family_selector = '.widget_family',     
+        this.selector.model.family_selector = '.widget_family', 
+        // Rental Location Code
+        this.selector.model.rental_location_code = 'widget_rental_location_code',
+        this.selector.model.rental_location_code_selector = '#widget_rental_location_code',   
+        this.selector.model.rental_location_selector = '.widget_rental_location', 
         // Accept age
         this.selector.model.accept_age_selector = '#widget_accept_age';
         // Promotion code
