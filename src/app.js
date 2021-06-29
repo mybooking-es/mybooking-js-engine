@@ -207,3 +207,11 @@ $(document).ready(function () {
         require('./activities/Order.js');
     }
 });
+
+// == Transfer module
+$(document).ready(function() {
+    if ( $('body').hasClass('mybooking-transfer-selector') &&
+         $('form[name=transfer_search_form]').length) {
+        require('./transfer/selector/index.js');
+    }
+});

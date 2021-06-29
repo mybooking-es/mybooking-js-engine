@@ -1,6 +1,5 @@
-window.mybookingEngine = function(){
-  var baseURL = '';
-  var apiKey = '';
+const engineInit = async function (){
+  var config = await fetch('../env.json').then(response => response.json());
   var extrasStep = false;
   var chooseProductUrl = 'choose_product.html';
   var chooseExtrasUrl = 'choose_extras.html';
@@ -11,10 +10,10 @@ window.mybookingEngine = function(){
   var googleMapsSettings = {
   };
   function getBaseURL() {
-    return baseURL;
+    return config.baseURL;
   }
   function getApiKey() {
-    return apiKey;
+    return config.apiKey;
   }
   function getExtrasStep() {
     return extrasStep;
@@ -40,6 +39,7 @@ window.mybookingEngine = function(){
   function getGoogleMapsSettings() {
     return googleMapsSettings;
   }
+
   return{
     baseURL: getBaseURL,
     apiKey: getApiKey,
@@ -51,4 +51,6 @@ window.mybookingEngine = function(){
     completeUrl: getCompleteUrl,
     summaryUrl: getSummaryUrl
   }
-}();
+};
+
+export default engineInit;

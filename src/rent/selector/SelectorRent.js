@@ -769,10 +769,14 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
       var agentId = null;  
       if (typeof urlVars['agentId'] != 'undefined') {
         agentId = decodeURIComponent(urlVars['agentId']);
-        cookie.set('__mb_agent_id', agentId, {expires: 14});      
+        if (cookie.set) {
+          cookie.set('__mb_agent_id', agentId, {expires: 14});
+        }
       }
       else {
-        agentId = cookie.get('__mb_agent_id');  
+        if (cookie.get) {
+          agentId = cookie.get('__mb_agent_id');
+        }
       }
       if (agentId != null) {
         var input = document.createElement("input");

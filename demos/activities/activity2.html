@@ -138,13 +138,23 @@
         
         <div class="form-group">
           <a id="btn_reservation" href="#" class="btn btn-primary w-100" role="button">Reservar</a>
-        </div>  
-
+        </div>
     </script>
 
-    <!-- JS Libraries -->
-    <script src="./assets/js/mybooking-engine-init.js"></script>
-    <script src="../../dist/js/mybooking-js-engine.js"></script>
+    <script type="module">
+      import('./assets/js/mybooking-engine-init.js')
+        .then(async function (module) {
+          return await module.default();
+        })
+        .then(function(module) {
+          window.mybookingEngine = module;
+          var script = document.getElementById('engine');
+          script.setAttribute('src', script.getAttribute('data-src'));
+          script.removeAttribute('data-src');
+        });
+    </script>
+    <script id="engine" async data-src="../js/mybooking-js-engine.js"></script>
+    <script src="/reload/reload.js"></script>
   </body>
 
 </html>  

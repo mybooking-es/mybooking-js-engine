@@ -16,14 +16,14 @@
   </head>
   <body class="summary">
 
-    <div id="full_loader" class="gooey">
+    <!-- <div id="full_loader" class="gooey">
       <span class="dot"></span>
       <div class="dots">
         <span></span>
         <span></span>
         <span></span>
       </div>
-    </div>
+    </div> -->
 
     <section class="section section-padding-large">
       <div class="container is-desktop">
@@ -244,8 +244,19 @@
       </div>  
     </script>
 
-    <script src="./assets/js/mybooking-engine-init.js"></script>
-    <script src="../../dist/js/mybooking-js-engine.js"></script>
-
+    <script type="module">
+      import('./assets/js/mybooking-engine-init.js')
+        .then(async function (module) {
+          return await module.default();
+        })
+        .then(function(module) {
+          window.mybookingEngine = module;
+          var script = document.getElementById('engine');
+          script.setAttribute('src', script.getAttribute('data-src'));
+          script.removeAttribute('data-src');
+        });
+    </script>
+    <script id="engine" async data-src="../js/mybooking-js-engine.js"></script>
+    <script src="/reload/reload.js"></script>
   </body>
 </html>

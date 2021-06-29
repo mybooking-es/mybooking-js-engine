@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack --config webpack.config.js"
+    "build": "rm -rf dist && webpack --config webpack.config.js",
+    "start": "npx env-cmd --file config/env.json supervisor -e 'html|js|json' -w . node server.js"
   },
   "repository": {
     "type": "git",
@@ -17,16 +18,21 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "acorn": ">=6.4.1",
+    "elliptic": "^6.5.4",
+    "env-cmd": "^10.1.0",
+    "express": "^4.17.1",
+    "http": "0.0.1-security",
     "jquery": ">=3.5.0",
+    "kind-of": ">=6.0.3",
     "load-google-maps-api": "^2.0.1",
     "loadash": "^1.0.0",
-    "serialize-javascript": ">=2.1.1",
-    "webpack": "^4.41.6",
-    "webpack-cli": "^3.3.7",
-    "elliptic": ">=6.5.3",
-    "acorn": ">=6.4.1",
     "minimist": ">=1.2.3",
-    "kind-of": ">=6.0.3"
+    "reload": "^3.2.0",
+    "serialize-javascript": "^6.0.0",
+    "supervisor": "^0.12.0",
+    "webpack": "^5.40.0",
+    "webpack-cli": "^3.3.12"
   },
   "bugs": {
     "url": "https://github.com/mybooking-es/mybooking-js-engine/issues"

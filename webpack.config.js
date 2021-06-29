@@ -25,11 +25,13 @@ module.exports = [
       },
       resolve: {
         modules: ["node_modules", "src/lib", "src/common"]
-      }/*,
+      }
+      ,
       optimization: {
-          // We no not want to minimize our code.
-          minimize: false
-      }*/
+        // We no not want to minimize our code.
+        minimize: false
+      },
+      devtool: 'inline-source-map',
    },
    // WordPress Plugin
    {
@@ -69,10 +71,6 @@ module.exports = [
           minimize: false
       }
       */
-      
-      
-      
-      
-      
+
    }
 ];
