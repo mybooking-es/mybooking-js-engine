@@ -37,7 +37,7 @@
               enctype="application/x-www-form-urlencoded"
             >
               <div class="field-body">
-                <!-- Delivery date -->
+                <!-- Date -->
                 <div class="field">
                   <div class="field-body">
                     <div class="field">
@@ -45,8 +45,8 @@
                       <div class="control is-fullwidth">
                         <input
                           type="text"
-                          id="date_from"
-                          name="date_from"
+                          id="date"
+                          name="date"
                           class="input"
                           autocomplete="off"
                           placeholder="dd/mm/yyyy"
@@ -58,8 +58,8 @@
                         <label class="label">Hora</label>
                         <div class="select is-fullwidth">
                           <select
-                            id="time_from"
-                            name="time_from"
+                            id="time"
+                            name="time"
                             placeholder="hh:mm"
                           ></select>
                         </div>
@@ -68,7 +68,7 @@
                   </div>
                 </div>
 
-                <!-- Delivery place -->
+                <!-- Origin point -->
                 <div class="field">
                   <label class="label">Punto de recogida</label>
                   <div class="control origin_point_group">
@@ -82,7 +82,7 @@
                   </div>
                 </div>
 
-                <!-- Devolución -->
+                <!-- Destination point -->
                 <div class="field">
                   <label class="label">Punto de entrega</label>
                   <div class="control destination_point_group">
@@ -97,23 +97,107 @@
                 </div>
               </div>
               <br/>
-              <div class="field-body" style="align-items: center; justify-content: space-between;">
-                <div class="field" style="display: flex; align-items: center; justify-content: flex-start;">
-                  <label class="label"
-                    >¿Cuántas personas (incluidos los niños)?</label
-                  >
-                  &nbsp;&nbsp;
-                  <div class="control number_of_people">
-                    <div>
-                      <input
-                        type="text"
-                        id="number_of_people"
-                        name="number_of_people"
-                        class="input"
-                        autocomplete="off"
-                        placeholder="Introducir el número de personas"
-                      />
+              <div id="return_block" class="field-body" style="display: none;">
+                <!-- Return Date -->
+                <div class="field">
+                  <div class="field-body">
+                    <div class="field">
+                      <label class="label">Fécha</label>
+                      <div class="control is-fullwidth">
+                        <input
+                          type="text"
+                          id="return_date"
+                          name="return_date"
+                          class="input"
+                          autocomplete="off"
+                          placeholder="dd/mm/yyyy"
+                        />
+                      </div>
                     </div>
+                    <div class="field">
+                      <div class="control is-expanded">
+                        <label class="label">Hora</label>
+                        <div class="select is-fullwidth">
+                          <select
+                            id="return_time"
+                            name="return_time"
+                            placeholder="hh:mm"
+                          ></select>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Return origin point -->
+                <div class="field">
+                  <label class="label">Punto de recogida</label>
+                  <div class="control return_origin_point_group">
+                    <div class="select is-fullwidth">
+                      <select
+                        id="return_origin_point"
+                        name="return_origin_point"
+                        placeholder="Seleccionar punto de recogida"
+                      ></select>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Return destination point -->
+                <div class="field">
+                  <label class="label">Punto de entrega</label>
+                  <div class="control return_destination_point_group">
+                    <div class="select is-fullwidth">
+                      <select
+                        id="return_destination_point"
+                        name="return_destination_point"
+                        placeholder="Seleccionar punto de entrega"
+                      ></select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <br/>
+              <div class="field-body" style="align-items: center; justify-content: space-between;">
+                <div class="field" style="display: flex; align-items: center;">
+                  <div style="display: flex; align-items: center; margin-right: 16px;">
+                    <label style="margin-right: 8px;">
+                      Adultos
+                    </label>
+                    <input
+                      type="text"
+                      id="number_of_adults"
+                      name="number_of_adults"
+                      class="input"
+                      autocomplete="off"
+                      style="max-width: 50px;"
+                    />
+                  </div>
+                  <div style="display: flex; align-items: center; margin-right: 16px;">
+                    <label style="margin-right: 8px;">
+                      Niños
+                    </label>
+                    <input
+                      type="text"
+                      id="number_of_children"
+                      name="number_of_children"
+                      class="input"
+                      autocomplete="off"
+                      style="max-width: 50px;"
+                    />
+                  </div>
+                  <div style="display: flex; align-items: center;">
+                    <label style="margin-right: 8px;">
+                      Bebes
+                    </label>
+                    <input
+                      type="text"
+                      id="number_of_infants"
+                      name="number_of_infants"
+                      class="input"
+                      autocomplete="off"
+                      style="max-width: 50px;"
+                    />
                   </div>
                 </div>
                 <div class="field" style="min-width: 20%;">
@@ -121,18 +205,18 @@
                     <label class="radio">
                       <input
                         type="radio"
-                        id="widget_switch_return"
-                        name="switch_return"
+                        class="rountrip"
+                        name="rountrip"
                         checked
-                        value="one_way"
+                        value="false"
                       />&nbsp;&nbsp;Ida
                     </label>
                     <label class="radio">
                       <input
                         type="radio"
-                        id="widget_switch_return"
-                        name="switch_return"
-                        value="two_way"
+                        class="rountrip"
+                        name="rountrip"
+                        value="true"
                       />&nbsp;&nbsp;Ida / Vuelta
                     </label>
                   </div>

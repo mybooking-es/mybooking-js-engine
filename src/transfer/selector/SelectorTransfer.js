@@ -20,9 +20,7 @@ define('SelectorTransfer', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSourc
     // == Selectors
 
     // Search form
-    this.form_selector = 'form[name=search_form]';
-    // Search form template
-    this.form_selector_tmpl = 'form_selector_tmpl';
+    this.form_selector = 'form[name=transfer_search_form]';
 
     // Date
     this.date_id = 'date';
@@ -42,7 +40,9 @@ define('SelectorTransfer', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSourc
 
     // One / Two ways trip
     this.rountrip_id = 'rountrip';
-    this.rountrip_selector = '#rountrip';
+    this.rountrip_selector = '.rountrip';
+    this.return_block_id = 'return_block';
+    this.return_block_selector = '#return_block';
 
     // Return Date
     this.return_date_id = 'return_date';
@@ -61,16 +61,48 @@ define('SelectorTransfer', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSourc
     this.return_destination_point_selector = '#return_destination_point';
 
     // Number of people
-    this.number_of_people_id = 'number_of_people';
-    this.number_of_people_selector = '#number_of_people';
+    this.number_of_adults_id = 'number_of_adults';
+    this.number_of_adults_selector = '#number_of_adults';
+    this.number_of_children_id = 'number_of_children';
+    this.number_of_children_selector = '#number_of_children';
+    this.number_of_infants_id = 'number_of_infants';
+    this.number_of_infants_selector = '#number_of_infants';
 
     // == State variables
     this.dataSourceOriginPoints = null; // Origin points datasource
     this.dataSourceDestinationPoints = null; // Destination points datasource
+    this.dataSourceTime = [ // TODO
+        "08:00",
+        "08:30",
+        "09:00",
+        "09:30",
+        "10:00",
+        "10:30",
+        "11:00",
+        "11:30",
+        "12:00",
+        "12:30",
+        "13:00",
+        "13:30",
+    ];
 
     this.requestLanguage = null;
     this.configuration = null;
     this.shopping_cart = null;
+    /* this.shopping_cart = { // TODO
+      origin_point: 1,
+      destination_point: 1,
+      date: "2021-08-30",
+      time: "08:00",
+      return_origin_point: 2,
+      return_destination_point: 2,
+      return_date: "2021-09-30",
+      return_time: "10:30",
+      number_of_adults: 2,
+      number_of_children: 3,
+      number_of_infants: 1,
+      rountrip: true,
+    } */;
     this.loadedShoppingCart = false;
 
     this.setSelectorView = function(_selectorView) {
@@ -103,6 +135,20 @@ define('SelectorTransfer', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSourc
         this.selectorModel = _selectorModel;
     }
 
+    this.dateChanged = function () {
+      var onewayDate = $(this.selectorModel.date_selector).datepicker('getDate') ? $(this.selectorModel.date_selector).datepicker('getDate').getTime() : null;
+      var twowayDate = $(this.selectorModel.return_date_selector).datepicker('getDate') ? $(this.selectorModel.return_date_selector).datepicker('getDate').getTime() : null;
+      if (onewayDate !== null && twowayDate !== null && onewayDate >= twowayDate) {
+        var date = new Date(twowayDate);
+        var day  = date.getDate() - 1;
+        var month  = date.getMonth() + 1;
+        var year  = date.getFullYear();
+        window.alert('La fecha de vuelta no puede ser mayor a la de ida.');
+        $(this.selectorModel.date_selector).datepicker('setDate', day + '/' + month + '/' + year);
+      }
+
+    }
+
   };
 
 
@@ -112,6 +158,7 @@ define('SelectorTransfer', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSourc
    *
    ***************************************************************************/
   var SelectorTransferView = function(_selectorModel, _selectorController) {
+
     this.selectorModel = _selectorModel;
     this.selectorController = _selectorController;
 
@@ -119,24 +166,327 @@ define('SelectorTransfer', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSourc
      * Init
      */
     this.init = function() {
-        
+
+        var self = this;
+
         // Setup request language and settings
         this.selectorModel.requestLanguage = commonSettings.language(document.documentElement.lang);
-        this.loadOriginPoints();
+
+        // Setup controls
+        this.setupControls();
+
+        // Setup date settings
+        this.loadDate('date');
+        this.loadDate('return_date');
+
+        // Setup date settings
+        this.loadTime('time');
+        this.loadTime('return_time');
+        
+        // Setup origin and destination points
+        this.loadOriginPoints('origin_point');
+        if (this.selectorModel.shopping_cart) {
+          this.loadDestinationPoints('destination_point');
+        }
+        this.loadOriginPoints('return_origin_point');
+        if (this.selectorModel.shopping_cart) {
+          this.loadDestinationPoints('return_destination_point');
+        }
+
+        // Setup number of people
+        if (this.selectorModel.shopping_cart) {
+          $(this.selectorModel.number_of_adults_selector).val(this.selectorModel.shopping_cart.number_of_adults);
+        }
+        if (this.selectorModel.shopping_cart) {
+          $(this.selectorModel.number_of_children_selector).val(this.selectorModel.shopping_cart.number_of_children);
+        }
+        if (this.selectorModel.shopping_cart) {
+          $(this.selectorModel.number_of_infants_selector).val(this.selectorModel.shopping_cart.number_of_infants);
+        }
+
+        // Setup rountrip
+        if (this.selectorModel.shopping_cart) {
+          $('input:radio[name=' + this.selectorModel.rountrip_id + ']:checked').attr('checked', false);
+          $('input:radio[value=' + this.selectorModel.shopping_cart.rountrip + ']').attr('checked', true);
+          $(this.selectorModel.rountrip_selector).trigger('change');
+        }
+
     }
     
     /**
      * Load settings
      */
-    this.loadSettings = function (instance) {
-        commonLoader.show();
-        return commonSettings.loadSettings(function(data){
-            instance.model.configuration = data;
-            commonLoader.hide();
-            instance.view.init();
-        });
+    this.loadSettings = function () {
+      var self = this;
+
+      commonLoader.show();
+      return commonSettings.loadSettings(function(data){
+          self.selectorModel.configuration = data;
+          commonLoader.hide();
+          self.init();
+      });
     }
-    // TODO
+
+    /**
+    * Load date
+    */
+    this.loadDate = function(idSelector) {
+      var date;
+      if (this.selectorModel.shopping_cart) {
+        date = new Date(this.selectorModel.shopping_cart[idSelector]);
+      }
+      if (date) {
+        $(this.selectorModel[idSelector + '_selector']).datepicker('setDate', date);
+      }
+    };
+
+    /**
+    * Load time
+    */
+    this.loadTime = function(idSelector) {
+
+      var self = this;
+
+      var time;
+      if (this.selectorModel.shopping_cart) {
+        time = this.selectorModel.shopping_cart[idSelector];
+      }
+
+      if (!this.selectorModel.shopping_cart || !this.selectorModel.shopping_cart[idSelector]) {
+        $(this.selectorModel[idSelector + '_selector']).append('<option value=""> - No selection - </option>');
+      }
+      $.each(this.selectorModel.dataSourceTime, function (i, item) {
+        if (self.selectorModel.shopping_cart && self.selectorModel.shopping_cart[idSelector] === item) {
+          $(self.selectorModel[idSelector + '_selector']).append($('<option selected="selected"></option>').val(item).html(item));
+        } else {
+          $(self.selectorModel[idSelector + '_selector']).append($('<option></option>').val(item).html(item));
+        }
+      });
+
+    };
+    
+    /**
+    * Load origin points
+    */
+    this.loadOriginPoints = function(idSelector) {
+
+      // Build URL
+      var url = commonServices.URL_PREFIX + '/api/booking-transfer/frontend/origin-points';
+      var urlParams = [];
+      if (this.selectorModel.requestLanguage != null) {
+      urlParams.push('lang='+this.selectorModel.requestLanguage);
+      }
+      if (commonServices.apiKey && commonServices.apiKey != '') {
+      urlParams.push('api_key='+commonServices.apiKey);
+      }    
+      if (urlParams.length > 0) {
+      url += '?';
+      url += urlParams.join('&');
+      }
+      
+      // DataSource
+      this.selectorModel.dataSourceOriginPoints = new RemoteDataSource(url,
+        {
+        'id':'id',
+        'description': function(data) {
+            return data.name;
+        }});
+
+      this.addSelector(idSelector, this.selectorModel.dataSourceOriginPoints);
+    }
+
+    /**
+    * Load destination points
+    */
+    this.loadDestinationPoints = function(idSelector, clearInput) {
+      var self = this;
+
+      // Build URL
+      var url = commonServices.URL_PREFIX + '/api/booking-transfer/frontend/destination-points';
+      var urlParams = [];
+      urlParams.push('origin_point_id='+encodeURIComponent($(this.selectorModel.origin_point).val()));
+      if (this.selectorModel.requestLanguage != null) {
+        urlParams.push('lang='+this.selectorModel.requestLanguage);
+      }
+      if (commonServices.apiKey && commonServices.apiKey != '') {
+        urlParams.push('api_key='+commonServices.apiKey);
+      }    
+      if (urlParams.length > 0) {
+        url += '?';
+        url += urlParams.join('&');
+      }
+
+      // DataSource
+      this.selectorModel.dataSourceDestinationPoints = new RemoteDataSource(url,
+          {
+          'id':'id',
+          'description': function(data) {
+              return data.name;
+          }});
+
+      this.addSelector(idSelector, this.selectorModel.dataSourceDestinationPoints, clearInput);
+      $(this.selectorModel[idSelector + '_selector']).attr('disabled', false);
+    }
+
+    /**
+    * Add data to inputs selects
+    */
+    this.addSelector = function (idSelector, dataSource, clearInput) {
+      var self = this;
+
+      new SelectSelector(this.selectorModel[idSelector + '_id'], 
+              dataSource, 
+              null, 
+              true, 
+              i18next.t('selector.select_pickup_place'),
+            function(data) {
+              if (self.selectorModel.shopping_cart && !clearInput) {
+                $(self.selectorModel[idSelector + '_selector']).val(self.selectorModel.shopping_cart[idSelector]);
+              }
+            });
+    }
+
+    /**
+    * Setup controls
+    */
+    this.setupControls = function () {
+      var self = this;
+
+      // ------------------------ Setup controls --------------------------------
+      $(this.selectorModel.origin_point_selector).bind('change', function(value) {
+        self.loadDestinationPoints('destination_point', true);
+      });
+      $(this.selectorModel.return_origin_point_selector).bind('change', function(value) {
+        self.loadDestinationPoints('return_destination_point', true);
+      });
+
+      this.setupDateControl('date');
+      this.setupDateControl('return_date');
+
+      $(this.selectorModel.rountrip_selector).bind('change', function(event) {
+        var value = event.currentTarget.value;
+        if (value === 'true') {
+          $(self.selectorModel.return_block_selector).show();
+        } else {
+          $(self.selectorModel.return_block_selector).hide();
+        }
+      });
+
+      this.setupFormControl();
+
+    }
+
+    this.setupDateControl = function (idSelector) {
+      var self = this;
+
+      $.datepicker.setDefaults( $.datepicker.regional[this.selectorModel.requestLanguage || 'es'] );
+      var locale = $.datepicker.regional[this.selectorModel.requestLanguage || 'es'];
+      var maxDate = moment().add(365, 'days').tz(this.selectorModel.configuration.timezone).format(this.selectorModel.configuration.dateFormat);
+      $(this.selectorModel[idSelector + '_selector']).datepicker({
+        numberOfMonths:1,
+        maxDate: maxDate,
+        minDate: new Date(),
+        dateFormat: 'dd/mm/yy',
+        onSelect: function() {
+          self.selectorController.dateChanged();     
+       }
+      }, locale);
+
+      // Avoid Google Automatic Translation
+      $('.ui-datepicker').addClass('notranslate');
+    }
+
+    this.setupFormControl = function () {
+      var self = this;
+
+      $(this.selectorModel.form_selector).validate({
+        invalidHandler: function(form) {
+          $(self.selectorModel.form_selector + ' label.form-reservation-error').remove();
+        },
+        rules: {
+            date: {
+                required: self.selectorModel.date_selector,
+            },
+            time: {
+                required: self.selectorModel.time_selector,
+            },
+            origin_point: {
+                required: self.selectorModel.origin_point_selector,
+            },
+            destination_point: {
+                required: self.selectorModel.destination_point_selector,
+            },
+            rountrip: {
+                required: self.selectorModel.rountrip_selector,
+            },
+            return_date: {
+                required: self.selectorModel.return_date_selector + ':visible',
+            },
+            return_time: {
+                required: self.selectorModel.return_time_selector + ':visible',
+            },
+            return_origin_point: {
+                required: self.selectorModel.return_origin_point_selector + ':visible',
+            },
+            return_destination_point: {
+                required: self.selectorModel.return_destination_point_selector + ':visible',
+            },
+            number_of_adults: {
+                required: self.selectorModel.number_of_adults_selector
+            },
+            number_of_children: {
+                required: self.selectorModel.number_of_children_selector
+            },
+            number_of_infants: {
+                required: self.selectorModel.number_of_infants_selector
+            },           
+        },
+        messages: {
+            date: {
+                required: i18next.t('common.required'),
+            },
+            time: {
+                required: i18next.t('common.required'),
+            },
+            origin_point: {
+                required: i18next.t('common.required'),
+            },
+            destination_point: {
+                required: i18next.t('common.required'),
+            },
+            rountrip: {
+                required: i18next.t('common.required'),
+            },
+            return_date: {
+                required: i18next.t('common.required'),
+            },
+            return_time: {
+                required: i18next.t('common.required'),
+            },
+            return_origin_point: {
+                required: i18next.t('common.required'),
+            },
+            return_destination_point: {
+                required: i18next.t('common.required'),
+            },
+            number_of_adults: {
+                required: i18next.t('common.required'),
+            },
+            number_of_children: {
+                required: i18next.t('common.required'),
+            },
+            number_of_infants: {
+                required: i18next.t('common.required'),
+            },
+        },
+        errorPlacement: function (error, element) {
+
+          error.insertAfter(element.parent());
+    
+        },
+        errorClass : 'form-reservation-error'
+     });
+    }
 
   };
 
@@ -152,7 +502,10 @@ define('SelectorTransfer', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSourc
     this.controller.setSelectorModel(this.model);
     this.model.setSelectorView(this.view);
 
-    this.view.loadSettings(this);
+    $(this.model.return_block_selector).hide();
+    $(this.model.destination_point_selector).attr('disabled', true);
+    $(this.model.return_destination_point_selector).attr('disabled', true);
+    this.view.loadSettings();
 
   }
 
