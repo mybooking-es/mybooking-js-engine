@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Mybooking Basic - Seleccionar vehículo</title>
+    <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-ui-bootstrap/0.5pre/css/custom-theme/jquery-ui-1.10.0.custom.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.5/css/bulma.min.css">
+    <link rel="stylesheet" href="./assets/styles/styles.css" />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+  </head>
+  <body class="mybooking-transfer-choose-product">
+    <section class="section section-padding-large">
+      <div class="container is-desktop">
+        <div class="columns">
+          <h1 class="title">Seleccionar vehículo</h1>
+        </div>
+        <hr>
+        <div class="columns">
+          <div class="column is-three-fifths">
+            <div id="product_listing"></div>
+          </div>
+          <aside class="column is-two-fifths">
+            <div id="reservation_detail" class="tile is-ancestor">
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <!-- Modal to change selection -->
+    <div class="modal" id="modify_reservation_modal">
+      <div class="modal-background">
+      </div>
+      <div class="modal-card" style="width: 800px; max-width: 100%;">
+        <header class="modal-card-head">
+          <p class="modal-card-title">Modificar búsqueda</p>
+          <button id="close_modal_button" class="delete modal-close" aria-label="close"></button>
+        </header>        
+        <section class="modal-card-body">
+          <form
+          name="transfer_search_form"
+          method="get"
+          enctype="application/x-www-form-urlencoded"
+        >
+          <div class="field-body">
+            <!-- Date -->
+            <div class="field">
+              <div class="field-body">
+                <div class="field">
+                  <label class="label">Fécha</label>
+                  <div class="control is-fullwidth">
+                    <input
+                      type="text"
+                      id="date"
+                      name="date"
+                      class="input"
+                      autocomplete="off"
+                      placeholder="dd/mm/yyyy"
+                    />
+                  </div>
+                </div>
+                <div class="field">
+                  <div class="control is-expanded">
+                    <label class="label">Hora</label>
+                    <div class="select is-fullwidth">
+                      <select
+                        id="time"
+                        name="time"
+                        placeholder="hh:mm"
+                      ></select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Origin point -->
+            <div class="field">
+              <label class="label">Punto de recogida</label>
+              <div class="control origin_point_id_group">
+                <div class="select is-fullwidth">
+                  <select
+                    id="origin_point"
+                    name="origin_point_id"
+                    placeholder="Seleccionar punto de recogida"
+                  ></select>
+                </div>
+              </div>
+            </div>
+
+            <!-- Destination point -->
+            <div class="field">
+              <label class="label">Punto de entrega</label>
+              <div class="control destination_point_id_group">
+                <div class="select is-fullwidth">
+                  <select
+                    id="destination_point"
+                    name="destination_point_id"
+                    placeholder="Seleccionar punto de entrega"
+                  ></select>
+                </div>
+              </div>
+            </div>
+          </div>
+          <br/>
+          <div id="return_block" class="field-body" style="display: none;">
+            <!-- Return Date -->
+            <div class="field">
+              <div class="field-body">
+                <div class="field">
+                  <label class="label">Fécha</label>
+                  <div class="control is-fullwidth">
+                    <input
+                      type="text"
+                      id="return_date"
+                      name="return_date"
+                      class="input"
+                      autocomplete="off"
+                      placeholder="dd/mm/yyyy"
+                    />
+                  </div>
+                </div>
+                <div class="field">
+                  <div class="control is-expanded">
+                    <label class="label">Hora</label>
+                    <div class="select is-fullwidth">
+                      <select
+                        id="return_time"
+                        name="return_time"
+                        placeholder="hh:mm"
+                      ></select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Return origin point -->
+            <div class="field">
+              <label class="label">Punto de recogida</label>
+              <div class="control return_origin_point_id_group">
+                <div class="select is-fullwidth">
+                  <select
+                    id="return_origin_point"
+                    name="return_origin_point_id"
+                    placeholder="Seleccionar punto de recogida"
+                  ></select>
+                </div>
+              </div>
+            </div>
+
+            <!-- Return destination point -->
+            <div class="field">
+              <label class="label">Punto de entrega</label>
+              <div class="control return_destination_point_id_group">
+                <div class="select is-fullwidth">
+                  <select
+                    id="return_destination_point"
+                    name="return_destination_point_id"
+                    placeholder="Seleccionar punto de entrega"
+                  ></select>
+                </div>
+              </div>
+            </div>
+          </div>
+          <br/>
+          <div class="field-body" style="align-items: center; justify-content: space-between;">
+            <div class="field" style="display: flex; align-items: center;">
+              <div style="display: flex; align-items: center; margin-right: 16px;">
+                <label style="margin-right: 8px;">
+                  Adultos
+                </label>
+                <input
+                  type="text"
+                  id="number_of_adults"
+                  name="number_of_adults"
+                  class="input"
+                  autocomplete="off"
+                  style="max-width: 50px;"
+                />
+              </div>
+              <div style="display: flex; align-items: center; margin-right: 16px;">
+                <label style="margin-right: 8px;">
+                  Niños
+                </label>
+                <input
+                  type="text"
+                  id="number_of_children"
+                  name="number_of_children"
+                  class="input"
+                  autocomplete="off"
+                  style="max-width: 50px;"
+                />
+              </div>
+              <div style="display: flex; align-items: center;">
+                <label style="margin-right: 8px;">
+                  Bebes
+                </label>
+                <input
+                  type="text"
+                  id="number_of_infants"
+                  name="number_of_infants"
+                  class="input"
+                  autocomplete="off"
+                  style="max-width: 50px;"
+                />
+              </div>
+            </div>
+            <div class="field" style="min-width: 20%;">
+              <div class="control">
+                <label class="radio">
+                  <input
+                    type="radio"
+                    class="round_trip"
+                    name="round_trip"
+                    checked
+                    value="false"
+                  />&nbsp;&nbsp;Ida
+                </label>
+                <label class="radio">
+                  <input
+                    type="radio"
+                    class="round_trip"
+                    name="round_trip"
+                    value="true"
+                  />&nbsp;&nbsp;Ida / Vuelta
+                </label>
+              </div>
+            </div>
+
+            <div class="field">
+              <div class="field-body">
+                <div class="field">
+                  <div class="control">
+                    <input
+                      class="button is-primary"
+                      type="submit"
+                      value="Encontrar un transfer"
+                      style="width: 100%;"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+        </section>
+      </div>
+    </div>  
+
+    <!-- Script detailed product for choose_product -->   
+    <script type="text/tmpl" id="script_detailed_product">
+      <% if (available > 0) { %>
+      <h2 class="subtitle is-4">Hemos encontrado <strong><%=available%></strong> vehículos disponibles</h2>
+      <% } else { %>
+      <h2 class="subtitle is-4">Lo sentimos, no hemos encontrados vehículos disponibles en esas fechas</h2>  
+      <% } %>    
+      <% for (var idxP=0;idxP<products.length;idxP++) { %>
+        <% var product = products[idxP]; %>
+        <div class="columns">
+          <div class="column is-two-thirds">
+            <h3 class="subtitle"><%=product.name%></h2>
+            <img src="<%=product.photo%>" alt="">           
+            <!-- Offer or Promotion Code-->
+            <% if (product.price != product.base_price) { %>
+              <!-- Offer -->             
+              <% if (product.offer_discount_type == 'percentage' || product.offer_discount_type == 'amount') { %>
+                <p><%=new Number(product.offer_value)%>% <%=product.offer_name%></p>
+              <% } %>
+              <!-- Offer o promotion code (price before discount) -->
+              <p><small style="text-decoration: line-through"><%= configuration.formatCurrency(product.base_price)%></small></p>
+            <% } %>
+            <h4 class="has-text-warning is-size-3 has-text-weight-bold"><%= configuration.formatCurrency(product.price)%></h3>
+          </div>
+          <div class="column is-one-third hero">
+            <h3><span class="fa fa-plus-circle"></span>&nbsp;más info</h2>
+            <p><%=product.description%></p>
+            <div class="hero-foot">
+            <% if (product.available) { %>
+              <% if (product.few_available_units) { %>
+              <p class="has-text-danger has-text-centered">¡Quedan pocas unidades!</p>  
+              <br>
+              <% } %>              
+              <a class="button is-primary btn-choose-product is-fullwidth" role="button" data-product="<%=product.code%>">Reservar</a>
+            <% } else { %>
+            <p class="has-text-centered">Modelo no disponible en la oficina y fechas seleccionadas</p>
+            <% } %>
+            </div>
+          </div>
+        </div>
+        <hr>
+      <% } %>
+    </script>
+    
+    <!-- Script detailed for reservation summary -->
+    <script type="text/tmpl" id="script_reservation_summary">
+      <div class="tile is-parent is-vertical">
+        <div class="tile is-child notification has-background-light">
+          <p class="title">Reserva</h4>
+          <div class="content">
+            <% if (shopping_cart.round_trip) { %>
+              <p class="subtitle has-text-weight-semibold has-text-grey">Ida</p>
+            <% } else { %>
+              <p class="subtitle has-text-weight-semibold has-text-grey">Solo ida</p>
+            <% } %>
+            <ul>
+              <li>Fecha/hora: <%=shopping_cart.date%> <%=shopping_cart.time%></li>
+              <li>Origen: <%=shopping_cart.origin_point_name%></li>
+              <li>Destino: <%=shopping_cart.destination_point_name%></li>
+            </ul>
+          </div>
+          <% if (shopping_cart.round_trip) { %>
+            <div class="content">
+              <p class="subtitle has-text-weight-semibold has-text-grey">Vuelta</p>
+              <ul>
+                <li>Fecha/hora: <%=shopping_cart.date%> <%=shopping_cart.time%></li>
+                <li>Origen: <%=shopping_cart.return_origin_point_name%></li>
+                <li>Destino: <%=shopping_cart.return_destination_point_name%></li>
+              </ul>
+            </div>
+          <% } %>
+          <div class="content">
+            <p class="subtitle has-text-weight-semibold has-text-grey">Número de personas</p>
+            <ul>
+              <li>Adultos: <%=shopping_cart.number_of_adults%></li>
+              <li>Niños: <%=shopping_cart.number_of_children%></li>
+              <li>Bebes: <%=shopping_cart.number_of_infants%></li>
+            </ul>
+          </div>
+          <div class="content">
+            <div class="is-pulled-right">
+              <button id="modify_reservation_button" class="button is-primary modal-button" data-target="modal">Modificar reserva</button> 
+            </div>  
+          </div> 
+        </div> 
+      </div>
+    </script> 
+    
+    <script type="module">
+      import('./assets/js/mybooking-engine-init.js')
+        .then(async function (module) {
+          return await module.default();
+        })
+        .then(function(module) {
+          window.mybookingEngine = module;
+          var script = document.getElementById('engine');
+          script.setAttribute('src', script.getAttribute('data-src'));
+          script.removeAttribute('data-src');
+        });
+    </script>
+    <script id="engine" async data-src="../js/mybooking-js-engine.js"></script>
+    <script src="/reload/reload.js"></script>
+  </body>
+</html>

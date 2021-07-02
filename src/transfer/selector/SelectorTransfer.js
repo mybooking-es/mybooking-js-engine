@@ -39,8 +39,8 @@ define('SelectorTransfer', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSourc
     this.destination_point_selector = '#destination_point';
 
     // One / Two ways trip
-    this.rountrip_id = 'rountrip';
-    this.rountrip_selector = '.rountrip';
+    this.round_trip_id = 'round_trip';
+    this.round_trip_selector = '.round_trip';
     this.return_block_id = 'return_block';
     this.return_block_selector = '#return_block';
 
@@ -90,18 +90,18 @@ define('SelectorTransfer', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSourc
     this.configuration = null;
     this.shopping_cart = null;
     /* this.shopping_cart = { // TODO
-      origin_point: 1,
-      destination_point: 1,
+      origin_point_id: 1,
+      destination_point_id: 1,
       date: "2021-08-30",
       time: "08:00",
-      return_origin_point: 2,
-      return_destination_point: 2,
+      return_origin_point_id: 2,
+      return_destination_point_id: 2,
       return_date: "2021-09-30",
       return_time: "10:30",
       number_of_adults: 2,
       number_of_children: 3,
       number_of_infants: 1,
-      rountrip: true,
+      round_trip: true,
     } */;
     this.loadedShoppingCart = false;
 
@@ -166,7 +166,6 @@ define('SelectorTransfer', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSourc
      * Init
      */
     this.init = function() {
-
         var self = this;
 
         // Setup request language and settings
@@ -204,11 +203,11 @@ define('SelectorTransfer', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSourc
           $(this.selectorModel.number_of_infants_selector).val(this.selectorModel.shopping_cart.number_of_infants);
         }
 
-        // Setup rountrip
+        // Setup round_trip
         if (this.selectorModel.shopping_cart) {
-          $('input:radio[name=' + this.selectorModel.rountrip_id + ']:checked').attr('checked', false);
-          $('input:radio[value=' + this.selectorModel.shopping_cart.rountrip + ']').attr('checked', true);
-          $(this.selectorModel.rountrip_selector).trigger('change');
+          $('input:radio[name=' + this.selectorModel.round_trip_id + ']:checked').attr('checked', false);
+          $('input:radio[value=' + this.selectorModel.shopping_cart.round_trip + ']').attr('checked', true);
+          $(this.selectorModel.round_trip_selector).trigger('change');
         }
 
     }
@@ -216,14 +215,16 @@ define('SelectorTransfer', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSourc
     /**
      * Load settings
      */
-    this.loadSettings = function () {
+    this.loadSettings = function (initialize) {
       var self = this;
 
       commonLoader.show();
       return commonSettings.loadSettings(function(data){
           self.selectorModel.configuration = data;
           commonLoader.hide();
-          self.init();
+          if(initialize) {
+            self.init();
+          }
       });
     }
 
@@ -269,6 +270,10 @@ define('SelectorTransfer', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSourc
     * Load origin points
     */
     this.loadOriginPoints = function(idSelector) {
+      if (this.selectorModel.dataSourceOriginPoints) {
+        this.addSelector(idSelector, 'dataSourceOriginPoints');
+        return;
+      }
 
       // Build URL
       var url = commonServices.URL_PREFIX + '/api/booking-transfer/frontend/origin-points';
@@ -283,7 +288,7 @@ define('SelectorTransfer', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSourc
       url += '?';
       url += urlParams.join('&');
       }
-      
+
       // DataSource
       this.selectorModel.dataSourceOriginPoints = new RemoteDataSource(url,
         {
@@ -292,13 +297,19 @@ define('SelectorTransfer', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSourc
             return data.name;
         }});
 
-      this.addSelector(idSelector, this.selectorModel.dataSourceOriginPoints);
+      this.addSelector(idSelector, 'dataSourceOriginPoints');
     }
 
     /**
     * Load destination points
     */
     this.loadDestinationPoints = function(idSelector, clearInput) {
+      if (this.selectorModel.dataSourceDestinationPoints) {
+        this.addSelector(idSelector, 'dataSourceDestinationPoints', clearInput);
+        $(this.selectorModel[idSelector + '_selector']).attr('disabled', false);
+        return;
+      }
+
       var self = this;
 
       // Build URL
@@ -324,26 +335,64 @@ define('SelectorTransfer', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSourc
               return data.name;
           }});
 
-      this.addSelector(idSelector, this.selectorModel.dataSourceDestinationPoints, clearInput);
+      this.addSelector(idSelector, 'dataSourceDestinationPoints', clearInput);
       $(this.selectorModel[idSelector + '_selector']).attr('disabled', false);
     }
 
     /**
     * Add data to inputs selects
     */
-    this.addSelector = function (idSelector, dataSource, clearInput) {
+    this.addSelector = function (idSelector, idDataSource, clearInput) {
       var self = this;
 
       new SelectSelector(this.selectorModel[idSelector + '_id'], 
-              dataSource, 
+          this.selectorModel[idDataSource],
               null, 
               true, 
               i18next.t('selector.select_pickup_place'),
             function(data) {
               if (self.selectorModel.shopping_cart && !clearInput) {
-                $(self.selectorModel[idSelector + '_selector']).val(self.selectorModel.shopping_cart[idSelector]);
+                $(self.selectorModel[idSelector + '_selector']).val(self.selectorModel.shopping_cart[idSelector + '_id']);
               }
             });
+    }
+
+    /**
+     * Start the component from shopping cart : Load the shopping cart information in the selector fields
+     */
+     this.startFromShoppingCart = function(shopping_cart) { /* Show the selector with the shopping cart information */
+
+      this.selectorModel.shopping_cart = shopping_cart;
+      this.init();
+
+    }
+
+    // ------------------------ Extract Agent Id ------------------------------
+
+
+    this.extractAgentId = function() {
+
+      var urlVars = commonSettings.getUrlVars();
+      var agentId = null;  
+      if (typeof urlVars['agentId'] != 'undefined') {
+        agentId = decodeURIComponent(urlVars['agentId']);
+        if (cookie.set) {
+          cookie.set('__mb_agent_id', agentId, {expires: 14});
+        }
+      }
+      else {
+        if (cookie.get) {
+          agentId = cookie.get('__mb_agent_id');
+        }
+      }
+      if (agentId != null) {
+        var input = document.createElement("input");
+        input.setAttribute("type", "hidden");
+        input.setAttribute("name", "agent_id");
+        input.setAttribute("value", agentId);
+        $(this.selectorModel.form_selector).append(input);
+      }
+
     }
 
     /**
@@ -363,16 +412,21 @@ define('SelectorTransfer', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSourc
       this.setupDateControl('date');
       this.setupDateControl('return_date');
 
-      $(this.selectorModel.rountrip_selector).bind('change', function(event) {
+      $(this.selectorModel.round_trip_selector).bind('change', function(event) {
+
         var value = event.currentTarget.value;
         if (value === 'true') {
           $(self.selectorModel.return_block_selector).show();
         } else {
           $(self.selectorModel.return_block_selector).hide();
         }
+
       });
 
       this.setupFormControl();
+      $(this.selectorModel.form_selector).attr('action', commonServices.chooseProductUrl);
+
+      this.extractAgentId();
 
     }
 
@@ -410,14 +464,14 @@ define('SelectorTransfer', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSourc
             time: {
                 required: self.selectorModel.time_selector,
             },
-            origin_point: {
+            origin_point_id: {
                 required: self.selectorModel.origin_point_selector,
             },
-            destination_point: {
+            destination_point_id: {
                 required: self.selectorModel.destination_point_selector,
             },
-            rountrip: {
-                required: self.selectorModel.rountrip_selector,
+            round_trip: {
+                required: self.selectorModel.round_trip_selector,
             },
             return_date: {
                 required: self.selectorModel.return_date_selector + ':visible',
@@ -425,10 +479,10 @@ define('SelectorTransfer', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSourc
             return_time: {
                 required: self.selectorModel.return_time_selector + ':visible',
             },
-            return_origin_point: {
+            return_origin_point_id: {
                 required: self.selectorModel.return_origin_point_selector + ':visible',
             },
-            return_destination_point: {
+            return_destination_point_id: {
                 required: self.selectorModel.return_destination_point_selector + ':visible',
             },
             number_of_adults: {
@@ -448,13 +502,13 @@ define('SelectorTransfer', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSourc
             time: {
                 required: i18next.t('common.required'),
             },
-            origin_point: {
+            origin_point_id: {
                 required: i18next.t('common.required'),
             },
-            destination_point: {
+            destination_point_id: {
                 required: i18next.t('common.required'),
             },
-            rountrip: {
+            round_trip: {
                 required: i18next.t('common.required'),
             },
             return_date: {
@@ -463,10 +517,10 @@ define('SelectorTransfer', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSourc
             return_time: {
                 required: i18next.t('common.required'),
             },
-            return_origin_point: {
+            return_origin_point_id: {
                 required: i18next.t('common.required'),
             },
-            return_destination_point: {
+            return_destination_point_id: {
                 required: i18next.t('common.required'),
             },
             number_of_adults: {
@@ -505,7 +559,6 @@ define('SelectorTransfer', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSourc
     $(this.model.return_block_selector).hide();
     $(this.model.destination_point_selector).attr('disabled', true);
     $(this.model.return_destination_point_selector).attr('disabled', true);
-    this.view.loadSettings();
 
   }
 

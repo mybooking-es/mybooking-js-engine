@@ -215,3 +215,12 @@ $(document).ready(function() {
         require('./transfer/selector/index.js');
     }
 });
+
+// Page choose_product JS
+$(document).ready(function () {
+    if ($('body').hasClass('mybooking-transfer-choose-product')) {
+        require('./transfer/selector/modify_reservation_selector.js');  
+        require('./transfer/mediator/rentEngineMediator.js');        
+        require('./transfer/choose_product.js');
+    }
+});

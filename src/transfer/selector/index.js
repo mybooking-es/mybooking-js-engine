@@ -6,6 +6,7 @@
 require(['jquery', 'commonSettings', 'commonLoader', './SelectorTransfer'],
  function($, commonSettings, commonLoader, SelectorTransfer) {
 
-    new SelectorTransfer();
+    var selector = new SelectorTransfer();
+    selector.view.loadSettings(true);
 
 });
