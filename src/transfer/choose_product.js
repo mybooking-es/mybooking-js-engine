@@ -325,7 +325,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
     selectProduct: function(productCode, quantity, coverageCode) {
 
        // Build the URL
-       var url = commonServices.URL_PREFIX + '/api/booking-transfer/frontend/shopping-cart/';
+       var url = commonServices.URL_PREFIX + '/api/booking-transfer/frontend/shopping-cart';
        var freeAccessId = this.getShoppingCartFreeAccessId();
        if (freeAccessId) {
          url += '/' + freeAccessId;
