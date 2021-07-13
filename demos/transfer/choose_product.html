@@ -44,7 +44,7 @@
         </header>        
         <section class="modal-card-body">
           <form
-          name="transfer_search_form"
+          name="mybooking_transfer_search_form"
           method="get"
           enctype="application/x-www-form-urlencoded"
         >
@@ -266,16 +266,7 @@
         <div class="columns">
           <div class="column is-two-thirds">
             <h3 class="subtitle"><%=product.name%></h2>
-            <img src="<%=product.photo%>" alt="">           
-            <!-- Offer or Promotion Code-->
-            <% if (product.price != product.base_price) { %>
-              <!-- Offer -->             
-              <% if (product.offer_discount_type == 'percentage' || product.offer_discount_type == 'amount') { %>
-                <p><%=new Number(product.offer_value)%>% <%=product.offer_name%></p>
-              <% } %>
-              <!-- Offer o promotion code (price before discount) -->
-              <p><small style="text-decoration: line-through"><%= configuration.formatCurrency(product.base_price)%></small></p>
-            <% } %>
+            <img src="<%=product.photo%>" alt="">
             <h4 class="has-text-warning is-size-3 has-text-weight-bold"><%= configuration.formatCurrency(product.price)%></h3>
           </div>
           <div class="column is-one-third hero">
@@ -287,7 +278,7 @@
               <p class="has-text-danger has-text-centered">¡Quedan pocas unidades!</p>  
               <br>
               <% } %>              
-              <a class="button is-primary btn-choose-product is-fullwidth" role="button" data-product="<%=product.code%>">Reservar</a>
+              <a class="button is-primary btn-choose-product is-fullwidth" role="button" data-product="<%=product.id%>">Reservar</a>
             <% } else { %>
             <p class="has-text-centered">Modelo no disponible en la oficina y fechas seleccionadas</p>
             <% } %>

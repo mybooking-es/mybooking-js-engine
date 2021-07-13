@@ -21,8 +21,6 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
     sales_process: null,   // Sales process information
     // Product detail
     productDetail: null,   // product detail instance
-    // Selected coverage
-    hasCoverage: false,
     // Query parameters
     date : null,
     time : null,
@@ -36,8 +34,8 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
     number_of_adults: null,
     number_of_children: null,
     number_of_infants: null,
-    number_of_products: null,
     agent_id: null,
+    item_id: null,
 
     // -------------- Load settings ----------------------------
 
@@ -102,8 +100,8 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
      * - number_of_adults
      * - number_of_children
      * - number_of_infants
-     * - number_of_products
      * - agent_id
+     * - item_id
      */
     extractVariables: function() { // Load variables from the request
 
@@ -120,9 +118,9 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
       this.number_of_adults = decodeURIComponent(url_vars['number_of_adults']);
       this.number_of_children = decodeURIComponent(url_vars['number_of_children']);
       this.number_of_infants = decodeURIComponent(url_vars['number_of_infants']);
-      this.number_of_products = decodeURIComponent(url_vars['number_of_products']);
       this.rountrip = decodeURIComponent(url_vars['rountrip']);
       this.agent_id = decodeURIComponent(url_vars['agent_id']);
+      this.item_id = decodeURIComponent(url_vars['item_id']);
 
     },
 
@@ -175,11 +173,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
       
       if (this.return_destination_point_id != 'undefined' && this.return_destination_point_id != '') {
         data.return_destination_point_id = this.return_destination_point_id;
-      }
-
-      if (this.number_of_products != 'undefined' && this.number_of_products != '') {
-        data.number_of_products = this.number_of_products;
-      }   
+      }  
       
       if (this.number_of_adults != 'undefined' && this.number_of_adults != '') {
         data.number_of_adults = this.number_of_adults;
@@ -199,6 +193,10 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
 
       if (this.agent_id != 'undefined' && this.agent_id != '') {
         data.agent_id = this.agent_id;
+      }
+
+      if (this.item_id != 'undefined' && this.item_id != '') {
+        data.item_id = this.item_id;
       }
 
       var jsonData = encodeURIComponent(JSON.stringify(data));
@@ -289,9 +287,8 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
      *
      * @productCode:: The product code
      * @quantity:: The quantity
-     * @coverageCode:: The coverageCode (if it uses coverage)
      */
-    buildSelectProductDataParams: function(productCode, quantity, coverageCode) {
+    buildSelectProductDataParams: function(productCode, quantity) {
 
       var data = {
         product: productCode
@@ -299,18 +296,6 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
 
       if (typeof quantity != 'undefined') {
         data.quantity = quantity;
-      }
-
-      // Apply coverage
-      if (this.hasCoverage) {
-        if (coverageCode != null) {
-          data.coverage = coverageCode;
-        }
-        else {
-          if (typeof $('input[type=radio][name=coverage]:checked').attr('data-value') !== 'undefined') {
-            data.coverage = $('input[type=radio][name=coverage]:checked').attr('data-value');
-          }
-        }
       }
 
       var jsonData = encodeURIComponent(JSON.stringify(data));
@@ -322,7 +307,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
     /**
      * Set the product
      */
-    selectProduct: function(productCode, quantity, coverageCode) {
+    selectProduct: function(productCode, quantity) {
 
        // Build the URL
        var url = commonServices.URL_PREFIX + '/api/booking-transfer/frontend/shopping-cart';
@@ -344,17 +329,16 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
        }
        // Request
        commonLoader.show();
-       debugger;
        $.ajax({
                type: 'POST',
                url : url,
-               data: this.buildSelectProductDataParams(productCode, quantity, coverageCode),
+               data: this.buildSelectProductDataParams(productCode, quantity),
                dataType : 'json',
                contentType : 'application/json; charset=utf-8',
                crossDomain: true,
                success: function(data, textStatus, jqXHR) {
                  model.shopping_cart = data.shopping_cart;
-                 commonLoader.hide();
+                 commonLoader.hide(); 
                  if (!model.sales_process.multiple_products) {
                     view.gotoNextStep();
                  }
@@ -424,8 +408,6 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
      */
     selectProductBtnClick: function(productCode) {
       rentEngineMediator.onChooseSingleProduct( productCode, 
-                                                model.hasCoverage,
-                                                view.getCurrentSelectedCoverage(), 
                                                 model.products, 
                                                 model.shopping_cart
                                               );
@@ -454,22 +436,6 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
       }
 
     },
-
-    coverageSelectorClick: function(selector) {
-
-      thisRadio = $(selector);
-      // remove the class imChecked from other radios
-      $('input[type=radio][name=coverage]').not(thisRadio).removeClass("imChecked");
-      // Check the class imChecked
-      if (thisRadio.hasClass("imChecked")) {
-          thisRadio.removeClass("imChecked");
-          thisRadio.prop('checked', false);
-      } else { 
-          thisRadio.prop('checked', true);
-          thisRadio.addClass("imChecked");
-      };
-
-    }
 
   };
 
@@ -516,12 +482,12 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
           if ($('#modify_reservation_button').length) {
             // The user clicks on the modify reservation button
             $('#modify_reservation_button').bind('click', function() {
-              // Setup the wizard
+              // Setup the selector
               if (!view.selectorLoaded) {
                 selector.view.startFromShoppingCart(model.shopping_cart);
                 view.selectorLoaded = true;
               }
-              // Show the reservation wizard
+              // Show the reservation selector
               // Compatibility with old version of the theme
               var modifyReservationModalSelector = '#choose_productModal';
               if ($('#modify_reservation_modal').length) {
@@ -536,7 +502,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
                   $(modifyReservationModalSelector).modal(commonServices.jsBSModalShowOptions());
                 }
               }
-              // $(modifyReservationModalSelector).show(); // TODO demo show modal.
+              $(modifyReservationModalSelector).show(); // TODO demo show modal (comment in pro!)
             });
           }
         
@@ -575,31 +541,8 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
           // Bind the event to show detailed product
           $('.js-product-info-btn').bind('click', function(){
             controller.productDetailIconClick($(this).attr('data-product'));
-          });  
-          // Setup coverage
-          this.setupCoverage();        
+          });    
         }  
-
-    },
-
-    /***
-     * Prepare the product selector to manage coverage
-     */
-    setupCoverage: function() {
-
-      model.hasCoverage = false;
-      for (var idx=0;idx<model.products.length;idx++) {
-        if (model.products[idx].coverage && model.products[idx].coverage instanceof Array &&
-            model.products[idx].coverage.length > 0) {
-          model.hasCoverage = true;
-          break;
-        }
-      }
-      if (model.hasCoverage) {
-        $('input[type=radio][name=coverage]').click(function(e){
-            controller.coverageSelectorClick(this);
-        });        
-      }
 
     },
 
@@ -622,16 +565,6 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
         }                       
       }
 
-    },
-
-    getCurrentSelectedCoverage: function() {
-      var coverage = null;
-      if (model.hasCoverage) {
-        if (typeof $('input[type=radio][name=coverage]:checked').attr('data-value') !== 'undefined') {
-          coverage = $('input[type=radio][name=coverage]:checked').attr('data-value');
-        }        
-      }
-      return coverage;
     },
 
     /**

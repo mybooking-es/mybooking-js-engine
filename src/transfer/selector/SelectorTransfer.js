@@ -20,7 +20,7 @@ define('SelectorTransfer', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSourc
     // == Selectors
 
     // Search form
-    this.form_selector = 'form[name=transfer_search_form]';
+    this.form_selector = 'form[name=mybooking_transfer_search_form]'; 
 
     // Date
     this.date_id = 'date';
@@ -71,6 +71,7 @@ define('SelectorTransfer', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSourc
     // == State variables
     this.dataSourceOriginPoints = null; // Origin points datasource
     this.dataSourceDestinationPoints = null; // Destination points datasource
+    this.dataSourceReturnDestinationPoints = null; // Return Destination points datasource
     this.dataSourceTime = [ // TODO
         "08:00",
         "08:30",
@@ -89,20 +90,6 @@ define('SelectorTransfer', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSourc
     this.requestLanguage = null;
     this.configuration = null;
     this.shopping_cart = null;
-    /* this.shopping_cart = { // TODO
-      origin_point_id: 1,
-      destination_point_id: 1,
-      date: "2021-08-30",
-      time: "08:00",
-      return_origin_point_id: 2,
-      return_destination_point_id: 2,
-      return_date: "2021-09-30",
-      return_time: "10:30",
-      number_of_adults: 2,
-      number_of_children: 3,
-      number_of_infants: 1,
-      round_trip: true,
-    } */;
     this.loadedShoppingCart = false;
 
     this.setSelectorView = function(_selectorView) {
@@ -304,9 +291,16 @@ define('SelectorTransfer', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSourc
     * Load destination points
     */
     this.loadDestinationPoints = function(idSelector, clearInput) {
-      if (this.selectorModel.dataSourceDestinationPoints) {
-        this.addSelector(idSelector, 'dataSourceDestinationPoints', clearInput);
-        $(this.selectorModel[idSelector + '_selector']).attr('disabled', false);
+      var mySelector = $(this.selectorModel[idSelector + '_selector']);
+      var mySource = (idSelector === 'destination_point') ? 'dataSourceDestinationPoints' : 'dataSourceReturnDestinationPoints';
+
+      if (this.selectorModel[mySource]) {
+        if (!mySelector.attr('disabled')) {
+          mySelector.val('');
+        } else {
+          this.addSelector(idSelector, mySource, clearInput);
+          mySelector.attr('disabled', false);
+        }
         return;
       }
 
@@ -328,15 +322,15 @@ define('SelectorTransfer', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSourc
       }
 
       // DataSource
-      this.selectorModel.dataSourceDestinationPoints = new RemoteDataSource(url,
+      this.selectorModel[mySource] = new RemoteDataSource(url,
           {
           'id':'id',
           'description': function(data) {
               return data.name;
           }});
 
-      this.addSelector(idSelector, 'dataSourceDestinationPoints', clearInput);
-      $(this.selectorModel[idSelector + '_selector']).attr('disabled', false);
+      this.addSelector(idSelector, mySource, clearInput);
+      mySelector.attr('disabled', false);
     }
 
     /**
@@ -363,13 +357,12 @@ define('SelectorTransfer', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSourc
      this.startFromShoppingCart = function(shopping_cart) { /* Show the selector with the shopping cart information */
 
       this.selectorModel.shopping_cart = shopping_cart;
+      this.selectorModel.loadedShoppingCart = true;
       this.init();
 
     }
 
     // ------------------------ Extract Agent Id ------------------------------
-
-
     this.extractAgentId = function() {
 
       var urlVars = commonSettings.getUrlVars();

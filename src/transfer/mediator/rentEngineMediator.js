@@ -123,15 +123,11 @@ define('rentEngineMediator', ['jquery', 'YSDEventTarget'],
      * == Parameters::
      *
      * @productCode:: The selected product code
-     * @hasCoverage:: If it has a coverage
-     * @coverageCode:: The current coverage code
      * @products:: The products detail
      * @shoppingCart:: The current shopping cart
      *
      */
     onChooseSingleProduct: function ( productCode, 
-                                      hasCoverage, 
-                                      coverageCode, 
                                       products, 
                                       shoppingCart ) {
 
@@ -145,21 +141,12 @@ define('rentEngineMediator', ['jquery', 'YSDEventTarget'],
                       product: selectedProduct,
                       products: products,
                       shoppingCart: shoppingCart,
-                      hasCoverage: hasCoverage
                    };
-        // Information about coverage
-        if ( hasCoverage ) {
-          var coverageInfo = this.coverageDetail(selectedProduct.coverage, coverageCode);
-          data.availableCoverage = coverageInfo.availableCoverage;
-          data.selectedCoverage = coverageInfo.selectedCoverage;
-          data.fullCoverage = coverageInfo.fullCoverage;
-          data.coverageCode = coverageCode;
-        }
         // Invoke delegate
         this.chooseSingleProductDelegate( data, this );
       }
       else {
-        this.continueSelectSingleProduct( productCode, coverageCode );
+        this.continueSelectSingleProduct( productCode );
       }
 
     },
@@ -167,10 +154,10 @@ define('rentEngineMediator', ['jquery', 'YSDEventTarget'],
     /**
      * Select the product
      */
-    continueSelectSingleProduct: function( productCode, coverageCode ) {
+    continueSelectSingleProduct: function( productCode ) {
 
       if (this.chooseProduct != null) {
-        this.chooseProduct.model.selectProduct( productCode, 1, coverageCode );
+        this.chooseProduct.model.selectProduct( productCode, 1 );
       }
 
     },
@@ -258,39 +245,20 @@ define('rentEngineMediator', ['jquery', 'YSDEventTarget'],
      *
      * == Parameters::
      *
-     * @coverages:: The coverage options
      * @extras:: The extra options
      * @shoppingCart:: The shopping cart
      *
      */
-    onCheckout: function( coverages, 
+    onCheckout: function(
                           extras, 
                           shoppingCart ) {
 
       console.log('rentEngineMediator_checkout');
       if (typeof this.checkoutDelegate === 'function') {
         var data = {  
-                      coverages: coverages,
                       extras: extras,  
                       shoppingCart: shoppingCart
                    }
-        // Find current selected coverage
-        if (shoppingCart.extras != null && shoppingCart.extras instanceof Array) {
-          var coverageCode = null;
-          var selectedCoverage = shoppingCart.extras.find(function(element){
-                                    var found = coverages.find(function(coverageElement){
-                                      return element.extra_id === coverageElement.code;
-                                    });
-                                    return found;
-                                 });
-          if (selectedCoverage != null) {
-            coverageCode = selectedCoverage.extra_id;
-          }
-          var coverageInfo = this.coverageDetail(coverages, coverageCode);
-          data.availableCoverage = coverageInfo.availableCoverage;
-          data.selectedCoverage = coverageInfo.selectedCoverage;
-          data.fullCoverage = coverageInfo.fullCoverage;
-        }
         this.checkoutDelegate( data, this );
       }
       else {
@@ -373,38 +341,6 @@ define('rentEngineMediator', ['jquery', 'YSDEventTarget'],
     },
 
     // ----------- Utilities
-
-    /**
-     * Get coverage detailed information
-     */
-    coverageDetail : function(coverage, coverageCode) {
-
-      var result = {availableCoverage: null,
-                    selectedCoverage: null,
-                    fullCoverage: null};
-
-      if (coverage != null && coverage instanceof Array) {
-        var availableCoverage = coverage.sort(function(x,y){
-                                                  if (x.price < y.price) {
-                                                    return -1;
-                                                  }
-                                                  if (x.price > y.price) {
-                                                    return 1;
-                                                  }
-                                                  return 0;
-                                                }).reverse();
-        result.availableCoverage = availableCoverage;
-        if (availableCoverage.length > 0) {
-          if (coverageCode != null) {
-            result.selectedCoverage = availableCoverage.find(function(element) { return element.code == coverageCode });
-          }
-          result.fullCoverage = availableCoverage[0];
-        }
-      }
-
-      return result;
-
-    },
 
     // ----------- Notifications
 

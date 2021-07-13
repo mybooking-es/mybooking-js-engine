@@ -211,16 +211,26 @@ $(document).ready(function () {
 // == Transfer module
 $(document).ready(function() {
     if ( $('body').hasClass('mybooking-transfer-selector') &&
-         $('form[name=transfer_search_form]').length) {
+         $('form[name=mybooking_transfer_search_form]').length) {
         require('./transfer/selector/index.js');
     }
 });
 
-// Page choose_product JS
+// Transfer Page choose_product JS
 $(document).ready(function () {
     if ($('body').hasClass('mybooking-transfer-choose-product')) {
         require('./transfer/selector/modify_reservation_selector.js');  
         require('./transfer/mediator/rentEngineMediator.js');        
         require('./transfer/choose_product.js');
+    }
+});
+
+// Transfer Page complete JS
+$(document).ready(function () {
+    if ($('body').hasClass('mybooking-transfer-complete')) {
+        require('./transfer/selector/modify_reservation_selector.js');  
+        require('./transfer/mediator/rentEngineMediator.js');                
+        require('./profile/Login.js');
+        require('./transfer/complete.js');
     }
 });
