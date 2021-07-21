@@ -5,7 +5,7 @@
 ### Added
 
 - Renting Selector: Extract querystring arguments and and create hidden fields (It is necessary
-  to integrate the component with external components)
+  to integrate the component with external components => For example Transposh plugin)
 
 ### Fixed
 
