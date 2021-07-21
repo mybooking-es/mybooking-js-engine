@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.9.28]
+
+### Added
+
+- Renting Selector: Extract querystring arguments and and create hidden fields (It is necessary
+  to integrate the component with external components)
+
+### Fixed
+
+- Activities: Multiple payment methods not redirecting to payment gateway
+- Renting : Complete -> Summary URL with querystring parameters : Append the booking Id
+- Renting : Summary and My Reservation -> Do not manage customer language URL
+
+### Added
+
+- Product search: Price range filter
+
 ## [0.9.27]
 
 ### Added

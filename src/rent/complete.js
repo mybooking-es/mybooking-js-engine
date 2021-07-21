@@ -712,11 +712,15 @@ require(['jquery',
       else {
         var countriesArray = [];
       }
-      var values = ['']; 
+      var values = ['','','','']; 
 
       if (commonServices.jsUseSelect2) {
         // Setup country selector
-        var selectors = ['select[name=country]'];
+        var selectors = ['select[name=country]',
+                         'select[name=driver_driving_license_country]',
+                         'select[name=additional_driver_1_driving_license_country]',
+                         'select[name=additional_driver_2_driving_license_country]'];
+        console.log(selectors);
         for (var idx=0; idx<selectors.length; idx++) { 
           $countrySelector = $(selectors[idx]);    
           if ($countrySelector.length > 0 && typeof values[idx] !== 'undefined') {
@@ -1274,7 +1278,20 @@ require(['jquery',
      */
     gotoSummary: function(bookingId) {
 
-      window.location.href = commonServices.summaryUrl + '?id=' + bookingId;
+      var theUrl = commonServices.summaryUrl;
+
+      if (theUrl && theUrl !== '') {
+        // Append the id querystring
+        if (theUrl.indexOf('?') > 0) {
+          theUrl += '&';
+        }
+        else {
+          theUrl += '?';
+        }
+        theUrl += 'id=';
+        theUrl += bookingId;
+        window.location.href = theUrl;
+      }
 
     },
 

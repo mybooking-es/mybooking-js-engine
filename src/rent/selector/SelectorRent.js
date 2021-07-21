@@ -735,6 +735,10 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
         // Setup UI
         $(this.selectorModel.form_selector).attr('action', commonServices.chooseProductUrl);
         
+        // Extract choose product parameters
+        this.extractChooseProductParameters();
+
+        // Extract agent Id from location 
         this.extractAgentId();
 
         // Setup pickup/return places
@@ -759,9 +763,26 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
         this.setupValidation();
     }
 
+    /**
+     * Extract parameters
+     */ 
+    this.extractChooseProductParameters = function() {
+
+        // Append URL query string as hidden input
+        var urlVars = commonSettings.getUrlVarsFromString(commonServices.chooseProductUrl);
+        for (var idx in urlVars) {
+          if (idx != 'agentId' && typeof urlVars[idx] != 'undefined' ) {
+            var input = document.createElement("input");
+            input.setAttribute("type", "hidden");
+            input.setAttribute("name", idx);
+            input.setAttribute("value", urlVars[idx]);
+            $(this.selectorModel.form_selector).append(input);
+          }
+        }
+
+    }
 
     // ------------------------ Extract Agent Id ------------------------------
-
 
     this.extractAgentId = function() {
 
