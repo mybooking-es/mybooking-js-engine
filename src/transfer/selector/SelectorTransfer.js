@@ -85,6 +85,24 @@ define('SelectorTransfer', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSourc
         "12:30",
         "13:00",
         "13:30",
+        "14:00",
+        "14:30",
+        "15:00",
+        "15:30",
+        "16:00",
+        "16:30",
+        "17:00",
+        "17:30",
+        "18:00",
+        "18:30",
+        "19:00",
+        "19:30",
+        "20:00",
+        "20:30",
+        "21:00",
+        "21:30",
+        "22:00",
+        "22:30",
     ];
 
     this.requestLanguage = null;
@@ -122,18 +140,22 @@ define('SelectorTransfer', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSourc
         this.selectorModel = _selectorModel;
     }
 
-    this.dateChanged = function () {
-      var onewayDate = $(this.selectorModel.date_selector).datepicker('getDate') ? $(this.selectorModel.date_selector).datepicker('getDate').getTime() : null;
-      var twowayDate = $(this.selectorModel.return_date_selector).datepicker('getDate') ? $(this.selectorModel.return_date_selector).datepicker('getDate').getTime() : null;
-      if (onewayDate !== null && twowayDate !== null && onewayDate >= twowayDate) {
-        var date = new Date(twowayDate);
-        var day  = date.getDate() - 1;
-        var month  = date.getMonth() + 1;
-        var year  = date.getFullYear();
-        window.alert('La fecha de vuelta no puede ser mayor a la de ida.');
-        $(this.selectorModel.date_selector).datepicker('setDate', day + '/' + month + '/' + year);
-      }
+    this.dateChanged = function (element) {
+      var self = this;
 
+      if (element.id === 'date') {
+        var onewayDate = $(self.selectorModel.date_selector).datepicker('getDate') ? $(self.selectorModel.date_selector).datepicker('getDate').getTime() : null;
+        var twowayDate = $(self.selectorModel.return_date_selector).datepicker('getDate') ? $(self.selectorModel.return_date_selector).datepicker('getDate').getTime() : null;
+        if (onewayDate !== null && twowayDate !== null && onewayDate >= twowayDate) {
+          var date = new Date(twowayDate);
+          var day  = date.getDate() - 1;
+          var month  = date.getMonth() + 1;
+          var year  = date.getFullYear();
+          window.alert('Warning: La fecha de vuelta no puede ser igual o inferior');
+          $(this.selectorModel.date_selector).datepicker('setDate', day + '/' + month + '/' + year);
+  
+        }
+      }
     }
 
   };
@@ -196,6 +218,7 @@ define('SelectorTransfer', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSourc
           $('input:radio[value=' + this.selectorModel.shopping_cart.round_trip + ']').attr('checked', true);
           $(this.selectorModel.round_trip_selector).trigger('change');
         }
+
 
     }
     
@@ -419,6 +442,20 @@ define('SelectorTransfer', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSourc
       this.setupFormControl();
       $(this.selectorModel.form_selector).attr('action', commonServices.chooseProductUrl);
 
+      $.validator.addMethod('oneway_same_origin', function(value) {
+        return $(self.selectorModel.origin_point_selector).val() !== value;
+      });
+
+      $.validator.addMethod('twoway_same_origin', function(value) {
+        return $(self.selectorModel.return_origin_point_selector).val() !== value;
+      });
+
+      $.validator.addMethod('same_date', function() {
+        var onewayDate = $(self.selectorModel.date_selector).datepicker('getDate') ? $(self.selectorModel.date_selector).datepicker('getDate').getTime() : null;
+        var twowayDate = $(self.selectorModel.return_date_selector).datepicker('getDate') ? $(self.selectorModel.return_date_selector).datepicker('getDate').getTime() : null;
+        return onewayDate !== null && twowayDate !== null && onewayDate < twowayDate;
+      });
+
       this.extractAgentId();
 
     }
@@ -434,9 +471,9 @@ define('SelectorTransfer', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSourc
         maxDate: maxDate,
         minDate: new Date(),
         dateFormat: 'dd/mm/yy',
-        onSelect: function() {
-          self.selectorController.dateChanged();     
-       }
+        onSelect: function (value, element) {
+          self.selectorController.dateChanged(element);
+        },
       }, locale);
 
       // Avoid Google Automatic Translation
@@ -462,12 +499,14 @@ define('SelectorTransfer', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSourc
             },
             destination_point_id: {
                 required: self.selectorModel.destination_point_selector,
+                oneway_same_origin: true,
             },
             round_trip: {
                 required: self.selectorModel.round_trip_selector,
             },
             return_date: {
                 required: self.selectorModel.return_date_selector + ':visible',
+                same_date: true,
             },
             return_time: {
                 required: self.selectorModel.return_time_selector + ':visible',
@@ -477,6 +516,7 @@ define('SelectorTransfer', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSourc
             },
             return_destination_point_id: {
                 required: self.selectorModel.return_destination_point_selector + ':visible',
+                twoway_same_origin: true,
             },
             number_of_adults: {
                 required: self.selectorModel.number_of_adults_selector
@@ -500,12 +540,14 @@ define('SelectorTransfer', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSourc
             },
             destination_point_id: {
                 required: i18next.t('common.required'),
+                oneway_same_origin: 'Warning: Origen y destino no pueden ser iguales', // TODO
             },
             round_trip: {
                 required: i18next.t('common.required'),
             },
             return_date: {
                 required: i18next.t('common.required'),
+                same_date: 'Warning: La fecha de vuelta no puede ser igual o inferior', // TODO
             },
             return_time: {
                 required: i18next.t('common.required'),
@@ -515,6 +557,7 @@ define('SelectorTransfer', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSourc
             },
             return_destination_point_id: {
                 required: i18next.t('common.required'),
+                twoway_same_origin: 'Warning: Origen y destino no pueden ser iguales', // TODO
             },
             number_of_adults: {
                 required: i18next.t('common.required'),
