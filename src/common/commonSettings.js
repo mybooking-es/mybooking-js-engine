@@ -244,6 +244,15 @@ define('commonSettings', ['jquery','commonServices','commonLoader','commonTransl
           }
           return vars;
     },
+    getUrlVarsFromString: function(address) {
+          var vars = [], hash;
+          var hashes = address.slice(address.indexOf('?') + 1).split('&');
+          for(var i = 0; i < hashes.length; i++) {
+            hash = hashes[i].split('=');
+            vars[hash[0]] = hash[1];
+          }
+          return vars;
+    },
     appendValidators: function() {
 
         $.validator.addMethod("pwcheck", function(value, element) {

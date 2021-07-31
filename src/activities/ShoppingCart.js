@@ -189,12 +189,18 @@ require(['jquery','i18next', 'ysdtemplate',
 
       controller = { // THE CONTROLLER
 
+          /**
+           *  Remove shopping cart item button click
+           */ 
           removeShoppingCartItemButtonClick: function(date, time, itemId) {
 
               model.removeShoppingCartItem(date, time, itemId);
 
           },
 
+          /**
+           * Complete action (pay_now or request_reservation) changed
+           */ 
           completeActionChange: function() {
               
               if ($('input[name=complete_action]:checked').val() === 'pay_now') {
@@ -203,16 +209,20 @@ require(['jquery','i18next', 'ysdtemplate',
                 $('#payment_now_container').show();
                 // Only one payment method accepted
                 if ($('#payment_method_value').length) {
-                  $('input[name=payment]').val($('#payment_method_value').val());
+                  var paymentMethod = $('#payment_method_value').val();
+                  view.setPaymentMethod(paymentMethod);
                 }
                 // More than one payment methods accepted
-                $('.payment_method_select').unbind('change');
-                $('.payment_method_select').bind('change', function(){
-                  controller.paymentMethodChange($(this).val());
-                })
+                if ($('input[name=payment_method_select]').length > 0) {
+                  view.setupMultiplePaymentMethods();
+                }
               }
               else if ($('input[name=complete_action]:checked').val() === 'request_reservation') {
-                $('input[name=payment]').val('none');
+                view.setPaymentMethod('none');
+                // Clear the selected option
+                if ($('input[name=payment_method_select]').length > 0) {
+                  $('input[name=payment_method_select]').prop('checked', false);
+                }
                 $('#request_reservation_container').show();
                 $('#payment_on_delivery_container').hide();
                 $('#payment_now_container').hide();
@@ -220,8 +230,13 @@ require(['jquery','i18next', 'ysdtemplate',
 
           },
 
-          paymentMethodChange: function(value) {
-            $('input[name=payment]').val(value);
+          /**
+           * Change multiple payment methods
+           */
+          paymentMethodSelectChange: function() {
+            var paymentMethod = $('input[name=payment_method_select]:checked').val();
+            console.log(paymentMethod);
+            view.setPaymentMethod(paymentMethod);
           }
 
 
@@ -303,6 +318,9 @@ require(['jquery','i18next', 'ysdtemplate',
                           'payment_method_value': {
                               required: 'input[name=payment_method_value]:visible'
                           },
+                          'payment_method_select': {
+                              required: 'input[name=payment_method_select]:visible'
+                          },
                           'conditions_read_request_reservation' :  {
                               required: '#conditions_read_request_reservation:visible'
                           },
@@ -334,6 +352,9 @@ require(['jquery','i18next', 'ysdtemplate',
                           'payment_method_value': {
                               required: i18next.t('activities.checkout.validations.selectPaymentMethod')
                           },
+                          'payment_method_select': {
+                              required: i18next.t('activities.checkout.validations.selectPaymentMethod')
+                          },
                           'conditions_read_request_reservation': {
                               'required': i18next.t('activities.checkout.validations.conditionsReadRequired')
                           },                       
@@ -353,7 +374,8 @@ require(['jquery','i18next', 'ysdtemplate',
                               element.attr('name') == 'conditions_read_pay_now') {
                               error.insertAfter(element.parent());
                           }
-                          else if (element.attr('name') == 'payment_method_value') {
+                          else if (element.attr('name') === 'payment_method_value' || 
+                                   element.attr('name') === 'payment_method_select') {
                               error.insertAfter(document.getElementById('payment_method_select_error'));
                           }
                           else
@@ -443,10 +465,37 @@ require(['jquery','i18next', 'ysdtemplate',
                                                                configuration: model.configuration});
               $('#payment_detail').html(paymentInfo);
 
-              $('input[name=complete_action]').bind('click', function() {
-                 controller.completeActionChange();
-              });
+              // == Setup payment events
 
+              // -- Multiple options for complete a request => Make a request and pay
+              if ( $('input[name=complete_action]').length > 0 ) {
+                $('input[name=complete_action]').on('click', function() {
+                   controller.completeActionChange();
+                });
+              }
+              else {
+                // -- Only one option => maker a request or pay 
+                if ($('input[name=payment_method_select]').length > 0) {
+                  this.setupMultiplePaymentMethods();
+                }
+              }
+
+          },
+
+          setupMultiplePaymentMethods: function() {
+
+            $('input[name=payment_method_select]').off('change');
+            $('input[name=payment_method_select]').on('change', function(){
+              controller.paymentMethodSelectChange();
+            });
+
+          },
+
+          /**
+           * Set the payment method
+           */
+          setPaymentMethod: function(value) {
+            $('input[name=payment]').val(value);
           }
 
       };

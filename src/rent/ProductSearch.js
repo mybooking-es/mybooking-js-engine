@@ -113,6 +113,9 @@ require(['jquery', 'i18next', 'ysdtemplate',
         $('.mybooking-key-characteristic').each(function(index){
           $(this).val($(this).attr('data-value'));
         });
+        $('.mybooking-price-range').each(function(index) {
+          $(this).val($(this).attr('data-value'));
+        });
         // Setup controls
         this.setupControls();
       }
