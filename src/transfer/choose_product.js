@@ -47,26 +47,6 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
         model.configuration = data;
         view.init();
       });
-    },   
-
-    // ------------ Products information detail ------------------------
-
-    /**
-     * Get an Object with the quantities of each product in the
-     * shopping cart
-     */
-    getShoppingCartProductQuantities: function() {
-
-      var shoppingCartExtras = {};
-
-      if (this.shopping_cart != null) {
-          for (var idx=0;idx<this.products.length;idx++) {
-            shoppingCartExtras[this.products[idx].item_id] = this.products[idx].quantity;
-          }
-      }
-
-      return shoppingCartExtras;
-
     },
 
     // -------------- Extract data -----------------------------
@@ -286,17 +266,12 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
      * Build select product data
      *
      * @productCode:: The product code
-     * @quantity:: The quantity
      */
-    buildSelectProductDataParams: function(productCode, quantity) {
+    buildSelectProductDataParams: function(productCode) {
 
       var data = {
         product: productCode
       };
-
-      if (typeof quantity != 'undefined') {
-        data.quantity = quantity;
-      }
 
       var jsonData = encodeURIComponent(JSON.stringify(data));
 
@@ -307,8 +282,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
     /**
      * Set the product
      */
-    selectProduct: function(productCode, quantity) {
-
+    selectProduct: function(productCode) {
        // Build the URL
        var url = commonServices.URL_PREFIX + '/api/booking-transfer/frontend/shopping-cart';
        var freeAccessId = this.getShoppingCartFreeAccessId();
@@ -332,7 +306,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
        $.ajax({
                type: 'POST',
                url : url,
-               data: this.buildSelectProductDataParams(productCode, quantity),
+               data: this.buildSelectProductDataParams(productCode),
                dataType : 'json',
                contentType : 'application/json; charset=utf-8',
                crossDomain: true,
@@ -517,7 +491,6 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
             }
           }          
           var result = tmpl('script_detailed_product')({
-                              shoppingCartProductQuantities: model.getShoppingCartProductQuantities(),
                               shoppingCart: model.shopping_cart, 
                               products: model.products,
                               configuration: model.configuration,
