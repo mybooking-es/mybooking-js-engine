@@ -1,5 +1,5 @@
 require(['jquery', 
-         'commonServices', 'commonSettings', 'commonTranslations', 'commonLoader',
+         'commonServices', 'commonSettings', 'commonTranslations', 'commonLoader', 'commonUI',
          'i18next','ysdtemplate','YSDDateControl', 
          './selector/modify_reservation_selector', './selector-wizard/selector_wizard', 'select2', 
          'YSDMemoryDataSource','YSDSelectSelector', './mediator/rentEngineMediator', '../profile/Login',
@@ -9,7 +9,7 @@ require(['jquery',
          'jquery.ui.datepicker-en', 'jquery.ui.datepicker-ca', 'jquery.ui.datepicker-it',
 	       'jquery.ui.datepicker.validation'],
 	     function($, 
-                commonServices, commonSettings, commonTranslations, commonLoader, 
+                commonServices, commonSettings, commonTranslations, commonLoader, commonUI,
                 i18next, tmpl, DateControl, selector, selectorWizard, select2,
                 MemoryDataSource, SelectSelector, rentEngineMediator, Login, PasswordForgottenComponent) {
 
@@ -667,11 +667,12 @@ require(['jquery',
             var passwordForgottenComponent = new PasswordForgottenComponent();
             passwordForgottenComponent.model.addListener('PasswordForgotten', function(event){
               if (event.type === 'PasswordForgotten' && (typeof event.data != 'undefined') && event.data.success === true) {
-                $('#modalExtraDetail').modal('hide');
+                commonUI.hideModal('#modalExtraDetail');
               }
             });
             passwordForgottenComponent.view.init();
-            $('#modalExtraDetail').modal('show');
+            // Show the modal
+            commonUI.showModal('#modalExtraDetail');
           }
         });
         // Signup form
@@ -1223,15 +1224,8 @@ require(['jquery',
                 if ($('#modify_reservation_modal').length) {
                   modifyReservationModalSelector = '#modify_reservation_modal'
                 }
-                // Compatibility with libraries that overrides $.modal
-                if (commonServices.jsBsModalNoConflict && typeof $.fn.bootstrapModal !== 'undefined') {
-                  $(modifyReservationModalSelector).bootstrapModal(commonServices.jsBSModalShowOptions());
-                }
-                else {
-                  if ($.fn.modal) {
-                    $(modifyReservationModalSelector).modal(commonServices.jsBSModalShowOptions());
-                  }
-                }
+                // Show the modal to change dates
+                commonUI.showModal(modifyReservationModalSelector);
               }
          });
        }
@@ -1394,15 +1388,9 @@ require(['jquery',
                       });
         $('#modalExtraDetail .modal-extra-detail-title').html(model.extraDetail.name);
         $('#modalExtraDetail .modal-extra-detail-content').html(result);
-        // Compatibility with libraries that overrides $.modal
-        if (commonServices.jsBsModalNoConflict && typeof $.fn.bootstrapModal !== 'undefined') {
-          $('#modalExtraDetail').bootstrapModal(commonServices.jsBSModalShowOptions());
-        }
-        else {
-          if ($.fn.modal) {
-            $('#modalExtraDetail').modal(commonServices.jsBSModalShowOptions());
-          }
-        }
+
+        // Show the product in a modal
+        commonUI.showModal('#modalExtraDetail');
       }      
     },
 

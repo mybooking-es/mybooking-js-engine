@@ -1,14 +1,14 @@
 require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
-         'commonServices', 'commonSettings', 'commonTranslations', 'commonLoader',
+         'commonServices', 'commonSettings', 'commonTranslations', 'commonLoader', 'commonUI',
          'i18next', 'ysdtemplate', 
          './selector/modify_reservation_selector', './selector-wizard/selector_wizard',
-         './mediator/rentEngineMediator',
+         './mediator/rentEngineMediator', 
          'jquery.i18next',         
          'jquery.validate', 'jquery.ui', 'jquery.ui.datepicker-es',
          'jquery.ui.datepicker-en', 'jquery.ui.datepicker-ca', 'jquery.ui.datepicker-it',
          'jquery.ui.datepicker.validation'],
        function($, RemoteDataSource, SelectSelector, 
-                commonServices, commonSettings, commonTranslations, commonLoader,
+                commonServices, commonSettings, commonTranslations, commonLoader, commonUI,
                 i18next, tmpl, selector, selectorWizard, rentEngineMediator) {
 
   var model = {
@@ -468,6 +468,26 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
     },
 
     /**
+     * Show products in Grid
+     */ 
+    showProductsInGridButtonClick: function() {
+
+      $('.mybooking-product_container').removeClass('mybooking-product_list');
+      $('.mybooking-product_container').addClass('mybooking-product_grid');
+
+    },
+
+    /**
+     * Show products in List
+     */ 
+    showProductsInListButtonClick: function() {
+
+      $('.mybooking-product_container').removeClass('mybooking-product_grid');
+      $('.mybooking-product_container').addClass('mybooking-product_list');
+
+    },
+
+    /**
      * Select producto button click
      */
     selectProductBtnClick: function(productCode) {
@@ -591,15 +611,8 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
                 if ($('#modify_reservation_modal').length) {
                   modifyReservationModalSelector = '#modify_reservation_modal'
                 }
-                // Compatibility with libraries that overrides $.modal
-                if (commonServices.jsBsModalNoConflict && typeof $.fn.bootstrapModal !== 'undefined') {
-                  $(modifyReservationModalSelector).bootstrapModal(commonServices.jsBSModalShowOptions());
-                }
-                else {
-                  if ($.fn.modal) {
-                    $(modifyReservationModalSelector).modal(commonServices.jsBSModalShowOptions());
-                  }
-                }
+                // Show the modal to change dates
+                commonUI.showModal(modifyReservationModalSelector);
               }
             });
           }
@@ -622,6 +635,24 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
                               available: available,
                               i18next: i18next});
           $('#product_listing').html(result);
+
+          if (commonServices.chooseProductType === 'grid') {
+            controller.showProductsInGridButtonClick();
+          }
+          else if (commonServices.chooseProductType === 'list') {
+            controller.showProductsInListButtonClick();
+          }
+
+          // Bind the event to change to grid
+          $('.js-mb-grid').on('click', function(){
+            controller.showProductsInGridButtonClick();
+          });
+
+          $('.js-mb-list').on('click', function(){
+            controller.showProductsInListButtonClick();
+          });
+
+          // Bind the event to change to list
 
           // Bind the event to choose the product
           $('.btn-choose-product').bind('click', function() {
@@ -675,15 +706,10 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
                       });
         $('#modalProductDetail .modal-product-detail-title').html(model.productDetail.name);
         $('#modalProductDetail .modal-product-detail-content').html(result);
-        // Compatibility with libraries that overrides $.modal
-        if (commonServices.jsBsModalNoConflict && typeof $.fn.bootstrapModal !== 'undefined') {
-          $('#modalProductDetail').bootstrapModal(commonServices.jsBSModalShowOptions());
-        }
-        else {
-          if ($.fn.modal) {
-            $('#modalProductDetail').modal(commonServices.jsBSModalShowOptions());
-          }
-        }                       
+
+        // Show the product in a modal
+        commonUI.showModal('#modalProductDetail');
+                      
       }
 
     },

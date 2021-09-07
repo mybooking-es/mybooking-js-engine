@@ -1,5 +1,5 @@
 require(['jquery', 
-         'commonServices', 'commonSettings', 'commonTranslations', 'commonLoader',
+         'commonServices', 'commonSettings', 'commonTranslations', 'commonLoader', 'commonUI',
          'i18next', 'ysdtemplate', './selector/modify_reservation_selector',
          './mediator/rentEngineMediator',
          'jquery.i18next',         
@@ -8,7 +8,7 @@ require(['jquery',
          'jquery.ui.datepicker-en', 'jquery.ui.datepicker-ca', 'jquery.ui.datepicker-it',
          'jquery.ui.datepicker.validation'],
        function($, 
-                commonServices, commonSettings, commonTranslations, commonLoader,
+                commonServices, commonSettings, commonTranslations, commonLoader, commonUI,
                 i18next, tmpl, selector, rentEngineMediator) {
 
   var model = { // THE MODEL
@@ -327,15 +327,8 @@ require(['jquery',
                   if ($('#modify_reservation_modal').length) {
                     modifyReservationModalSelector = '#modify_reservation_modal'
                   }
-                  // Compatibility with libraries that overrides $.modal
-                  if (commonServices.jsBsModalNoConflict && typeof $.fn.bootstrapModal !== 'undefined') {
-                    $(modifyReservationModalSelector).bootstrapModal(commonServices.jsBSModalShowOptions());
-                  }
-                  else {
-                    if ($.fn.modal) {
-                      $(modifyReservationModalSelector).modal(commonServices.jsBSModalShowOptions());
-                    }
-                  }
+                  // Show the modal to change dates
+                  commonUI.showModal(modifyReservationModalSelector);
                 }
            });
          }
