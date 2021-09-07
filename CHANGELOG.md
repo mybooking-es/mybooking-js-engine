@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.9.29]
+
+### Added
+
+- Date Range Picker : Added Catalan translation
+- Renting : Hide Prices if zero settings
+- Renting : Manage Customer classifier
+
+### Fixed
+
+- Product calendar : Fixed rental location when AJAX request
+- Activity Cyclic : Performace status value 3 => Date not posible due to anticipation
+
 ## [0.9.28]
 
 ### Added

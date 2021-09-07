@@ -282,13 +282,16 @@ define('ActivityCyclic', ['jquery','ysdtemplate', 'YSDRemoteDataSource','YSDSele
                        var dateStr = moment(date).format('YYYY-MM-DD');
                        if (typeof activityCyclicModel.performances[dateStr] !== 'undefined') {
                          if (activityCyclicModel.performances[dateStr] == 1) {
-                            return [true];
+                            return [true]; // Date selectable
                          }
                          else if (activityCyclicModel.performances[dateStr] == 2) {
-                            return [true, 'bg-warning text-warning'];
+                            return [true, 'bg-warning text-warning']; // Warning places
                          }
                          else if (activityCyclicModel.performances[dateStr] == 0) {   
-                            return [false, 'bg-danger text-danger'];
+                            return [false, 'bg-danger text-danger']; // No places
+                         }
+                         else if (activityCyclicModel.performances[dateStr] == 3) {
+                            return [false]; // Not possible due to date
                          }
                        }
                        else {

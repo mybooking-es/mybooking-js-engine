@@ -16,6 +16,7 @@ require(['jquery',
   var model = { // THE MODEL
     requestLanguage: null,
     configuration: null,     
+    customerClassifiers: null,
     // The shopping cart    
     shopping_cart: null,
     extras: null,         // Extras
@@ -26,12 +27,57 @@ require(['jquery',
 
     // -------------- Load settings ----------------------------
 
+    /**
+     * Load settings
+     */ 
     loadSettings: function() {
       commonSettings.loadSettings(function(data){
         model.configuration = data;
         view.init();
       });
     },      
+
+    // ------------ Load customer classifiers -----------------
+
+    /**
+     * Load customer classifiers
+     */ 
+    loadCustomerClassifier: function() { 
+
+      console.log('loadCustomerClassifier');
+      var self = this;
+      var url = commonServices.URL_PREFIX + '/api/booking/frontend/customer-classifier';
+      var urlParams = []
+      if (commonServices.apiKey && commonServices.apiKey != '') {
+        urlParams.push('api_key='+commonServices.apiKey);
+      }  
+      if (model.requestLanguage != null) {
+        urlParams.push('lang='+model.requestLanguage);
+      }
+      if (urlParams.length > 0) {
+        url += '?';
+        url += urlParams.join('&');
+      }
+      var self = this;
+      // Request
+      $.ajax({
+        type: 'GET',
+        url: url,
+        dataType: 'json',
+        success: function(data, textStatus, jqXHR) {
+          self.customerClassifiers = data;
+          for (var idx=0;idx<self.customerClassifiers.length;idx++){
+            self.customerClassifiers[idx]['text'] = self.customerClassifiers[idx]['description'] = self.customerClassifiers[idx]['name'];
+          } 
+
+          view.updateCustomerClassifiers();
+        },
+        error: function(data, textStatus, jqXHR) {
+          alert(i18next.t('common.error'));
+        }
+      });      
+    },
+
 
     // ------------ Extras information detail ------------------------
 
@@ -53,6 +99,9 @@ require(['jquery',
 
     },
 
+    /**
+     * Check if an extra code is a coverage
+     */  
     isCoverage: function(extraCode) {
       var found = false;
       if (this.coverages) {
@@ -68,15 +117,24 @@ require(['jquery',
 
     // ------------------ Shopping cart -------------------------------
 
+    /**
+     * Get the shopping cart id from the session storage
+     */  
     getShoppingCartFreeAccessId: function() { /* Get the shopping cart id */
       return sessionStorage.getItem('shopping_cart_free_access_id');
     },
 
+    /**
+     * Remove the shopping cart id from the session storage
+     */  
     deleteShoppingCartFreeAccessId: function() { /* Get the shopping cart id */
       return sessionStorage.removeItem('shopping_cart_free_access_id');
     },
 
-    loadShoppingCart: function() { /** Load the shopping cart **/
+    /**
+     * Load the shopping cart
+     */ 
+    loadShoppingCart: function() { 
 
        // Build the URL
        var url = commonServices.URL_PREFIX + '/api/booking/frontend/shopping-cart';
@@ -87,7 +145,7 @@ require(['jquery',
        var urlParams = [];
        urlParams.push('include_extras=true');
        urlParams.push('include_coverage=true');
-       if (model.requestLanguage != null) {
+       if (model.requestLanguage != null) {
         urlParams.push('lang='+model.requestLanguage);
        }
        if (commonServices.apiKey && commonServices.apiKey != '') {
@@ -128,20 +186,10 @@ require(['jquery',
 
     // -------------- Extras management --------------------------
 
-    buildSetExtraDataParams: function(extraCode, quantity) {
-
-      var data = {
-        extra: extraCode,
-        quantity: quantity
-      };
-
-      var jsonData = encodeURIComponent(JSON.stringify(data));
-
-      return jsonData;
-
-    },
-
-    setExtra: function(extraCode, quantity) { /** Add an extra **/
+    /**
+     * Add an extra / update its quantity
+     */   
+    setExtra: function(extraCode, quantity) { 
 
       // Build the URL
       var url = commonServices.URL_PREFIX + '/api/booking/frontend/shopping-cart';
@@ -187,19 +235,10 @@ require(['jquery',
 
     },
 
-    buildDeleteExtraDataParams: function(extraCode) {
-
-      var data = {
-        extra: extraCode
-      };
-
-      var jsonData = encodeURIComponent(JSON.stringify(data));
-
-      return jsonData;
-
-    },
-
-    deleteExtra: function(extraCode) { /** Remove an extra **/
+    /**
+     * Remove an extra
+     */  
+    deleteExtra: function(extraCode) { 
 
       // Build the URL
       var url = commonServices.URL_PREFIX + '/api/booking/frontend/shopping-cart';
@@ -244,8 +283,9 @@ require(['jquery',
 
     },
 
-    // Load extra (extra detail Page)
-
+    /**
+     * Load the extra detail page
+     */  
     loadExtra: function(extraCode) {
 
        // Build the URL
@@ -284,8 +324,36 @@ require(['jquery',
 
     },
 
-    // -------------- Promotion Code --------------------------------------
+    buildSetExtraDataParams: function(extraCode, quantity) {
 
+      var data = {
+        extra: extraCode,
+        quantity: quantity
+      };
+
+      var jsonData = encodeURIComponent(JSON.stringify(data));
+
+      return jsonData;
+
+    },
+    
+    buildDeleteExtraDataParams: function(extraCode) {
+
+      var data = {
+        extra: extraCode
+      };
+
+      var jsonData = encodeURIComponent(JSON.stringify(data));
+
+      return jsonData;
+
+    },
+
+    // -------------- Promotion Code --------------------------------------
+    
+    /**
+     *  Apply the promotion code
+     */ 
     applyPromotionCode: function(promotionCode) {
 
       var requestData = {promotion_code: promotionCode};
@@ -350,7 +418,10 @@ require(['jquery',
       sessionStorage.setItem('booking_free_access_id', value);
     },
 
-    sendBookingRequest: function() { /** Send a booking request **/
+    /**
+     * Checkout => Create a reservation
+     */  
+    sendBookingRequest: function() { 
 
       // Prepare the request data
       var reservation = $('form[name=reservation_form]').formParams(false);
@@ -442,6 +513,19 @@ require(['jquery',
   };
 
   var controller = { // THE CONTROLLER
+
+      customerTypeChanged: function(customerType) {
+
+        if (customerType == 'individual') {
+          $('.mybooking_customer_legal_entity').hide();
+          $('.mybooking_customer_individual').show();
+        }
+        else {
+          $('.mybooking_customer_individual').hide();
+          $('.mybooking_customer_legal_entity').show();
+        }
+
+      },
 
       extraChecked: function(extraCode) {
           model.setExtra(extraCode, 1);
@@ -699,6 +783,17 @@ require(['jquery',
         $('form[name=reservation_form]').html(reservationForm);                                                                    
       }
 
+      // Load customer classifier
+      if (model.configuration.useCustomerClassifier && 
+          $('form[name=reservation_form]').find('select[name=customer_classifier_id]').length) {
+        model.loadCustomerClassifier();
+      }
+
+      // Configure customer type
+      $('#customer_type').on('change', function(){
+        controller.customerTypeChanged($(this).val());
+      });
+
       // Configure address country
 
       // Load countries
@@ -799,7 +894,10 @@ require(['jquery',
     setupReservationFormValidation: function() {
 
         commonSettings.appendValidators();
-
+        jQuery.extend(jQuery.validator.messages, {
+            required: i18next.t('complete.reservationForm.validations.fieldRequired')
+        });
+        
         $('form[name=reservation_form]').validate(
             {
                 ignore: '', // To be able to validate driver date of birth
@@ -817,7 +915,18 @@ require(['jquery',
                 },
 
                 rules : {
-
+                    'customer_classifier_id': {
+                      required: '#customer_classifier_id:visible'
+                    },
+                    'customer_type': {
+                      required: '#customer_type:visible'
+                    },
+                    'customer_company_name': {
+                      required: '#customer_company_name:visible'
+                    },
+                    'customer_company_contact_name': {
+                      required: '#customer_company_contact_name:visible'
+                    },
                     'customer_name': {
                       required: '#customer_name:visible'
                     },
@@ -863,7 +972,18 @@ require(['jquery',
                 },
 
                 messages : {
-
+                    'customer_classifier_id': {
+                        'required': i18next.t('complete.reservationForm.validations.fieldRequired')
+                    },
+                    'customer_type': {
+                      required: i18next.t('complete.reservationForm.validations.fieldRequired')
+                    },
+                    'customer_company_name': {
+                      required: i18next.t('complete.reservationForm.validations.fieldRequired')
+                    },
+                    'customer_company_contact_name': {
+                      required: i18next.t('complete.reservationForm.validations.fieldRequired')
+                    },
                     'customer_name': i18next.t('complete.reservationForm.validations.customerNameRequired'),
                     'customer_surname' : i18next.t('complete.reservationForm.validations.customerSurnameRequired'),
                     'customer_email' : {
@@ -934,6 +1054,10 @@ require(['jquery',
                     else if (element.attr('name') == 'payment_method_select') {
                         error.insertAfter(document.getElementById('payment_method_select_error'));
                     }
+                    else if (element.attr('name') == 'customer_classifier_id' && 
+                             $('#customer_classifier_id + span.select2-container').length) {
+                        error.insertAfter('#customer_classifier_id + span.select2-container');
+                    }
                     else
                     {
                         error.insertAfter(element);
@@ -962,6 +1086,40 @@ require(['jquery',
     },
 
     // -------------------- View Updates
+
+    /**
+     * Update customer classifier
+     */ 
+    updateCustomerClassifiers: function() {
+
+      if (commonServices.jsUseSelect2) {
+        $customerClassifierSelector = $('#customer_classifier_id');
+        if ($customerClassifierSelector.length > 0) {
+          $customerClassifierSelector.select2({
+            placeholder: i18next.t('common.selectOption'),
+            allowClear: true,
+            width: '100%',
+            theme: 'bootstrap4',                  
+            data: model.customerClassifiers
+          });
+          $customerClassifierSelector.val('');
+          $customerClassifierSelector.trigger('change');
+        }
+      }
+      else {
+        // Setup customer classifier
+        if (document.getElementById('customer_classifier_id')) {
+          var customerClassifierDataSource = new MemoryDataSource(model.customerClassifiers);
+          var customerClassifierModel = null;
+          var selectorModel = new SelectSelector('customer_classifier_id',
+                                                 customerClassifierDataSource, 
+                                                 customerClassifierModel, 
+                                                 true, 
+                                                 i18next.t('common.selectOption'));
+        }
+      }
+
+    },
 
     /**
      * Updates the shopping card when the shopping cart is loaded

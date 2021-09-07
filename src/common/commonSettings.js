@@ -49,6 +49,8 @@ define('commonSettings', ['jquery','commonServices','commonLoader','commonTransl
       rentingFormFillDataNamedResources: false,
       rentingFormFillDataNamedResourcesHeight: false,
       rentingFormFillDataNamedResourcesWeight: false,
+      hidePriceIfZero: false,
+      useCustomerClassifier: false,
       // - Product Calendar
       datesSelector: 'start_end_date',
       singleDateTimeSelector: 'start_end_time',
@@ -197,6 +199,10 @@ define('commonSettings', ['jquery','commonServices','commonLoader','commonTransl
              mybookingSettings.data.rentingFormFillDataNamedResources = data.renting_form_fill_data_named_resources || false;
              mybookingSettings.data.rentingFormFillDataNamedResourcesHeight = data.renting_form_fill_data_named_resources_height || false;
              mybookingSettings.data.rentingFormFillDataNamedResourcesWeight = data.renting_form_fill_data_named_resources_weight || false;
+             // - Hide price if zero
+             mybookingSettings.data.hidePriceIfZero = data.hide_price_if_zero || false;
+             // - Use customer classifier
+             mybookingSettings.data.useCustomerClassifier = data.use_customer_classifier || false;
              // - Renting calendar
              mybookingSettings.data.datesSelector = data.dates_selector;
              mybookingSettings.data.singleDateTimeSelector = data.single_date_time_selector;

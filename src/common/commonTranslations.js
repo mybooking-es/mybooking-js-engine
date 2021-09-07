@@ -272,7 +272,8 @@ define('commonTranslations', [], function() {
               'welcomeConnectedUser': 'Welcome <b>{{name}}</b> you can proceed with your reservation',
               'invalid_user_password': 'Invalid user or password',
               'no_necessary_url_params': 'The URL does not contain the information necessary to carry out the process',
-              'required': 'Required'             
+              'required': 'Required',
+              'selectOption': 'Select an option'             
             },
             password_forgotten: {
               'message': "A message has been sent to your email address in order to reset the password",
@@ -735,7 +736,8 @@ define('commonTranslations', [], function() {
               'welcomeConnectedUser': 'Bienvenido <b>{{name}}</b>, puede proceder con su reserva',
               'invalid_user_password': 'El usuario o el password no son válidos',
               'no_necessary_url_params': 'La URL no contiene la información necesaria para llevar a cabo el proceso',
-              'required': 'Obligatorio'                   
+              'required': 'Obligatorio',
+              'selectOption': 'Seleccionar una opción'                   
             },
             password_forgotten: {
               'message': "Se ha enviado un mensaje a su dirección de correo electrónico para restablecer la contraseña.",
@@ -1199,7 +1201,8 @@ define('commonTranslations', [], function() {
           'welcomeConnectedUser': 'Benvingut <b>{{name}}</b>, pot procedir amb la seva reserva',
           'invalid_user_password': "L'usuari o la clau no són correctes",      
           'no_necessary_url_params': "La URL no conté la informació necessària per dur a terme el procés",                                
-          'required': 'Obligatori'  
+          'required': 'Obligatori',
+          'selectOption': 'Escollir una opció'  
         },
         password_forgotten: {
           'message': "S'ha enviat un missatge a la vostra adreça de correu electrònic per restablir la contrasenya",
@@ -1662,7 +1665,8 @@ define('commonTranslations', [], function() {
           'welcomeConnectedUser': 'Willkommen <b>{{name}}</b>,Sie können mit Ihrer Reservierung fortfahren',
           'invalid_user_password': 'Ungültiger Benutzer oder Passwort',
           'no_necessary_url_params': "Die URL enthält nicht die Informationen, die zur Durchführung des Prozesses erforderlich sind", 
-          'required': 'Erforderlich' 
+          'required': 'Erforderlich',
+          'selectOption': 'Wähle eine Option' 
         },
         password_forgotten: {
           'message': "Eine Nachricht wurde an Ihre E-Mail-Adresse gesendet, um das Passwort zurückzusetzen",
@@ -2126,7 +2130,8 @@ define('commonTranslations', [], function() {
           'welcomeConnectedUser': 'Bienvenue <b>{{name}}</b>, vous pouvez procéder à votre réservation',
           'invalid_user_password': 'Utilisateur ou mot de passe invalide',
           'no_necessary_url_params': "L'URL ne contient pas les informations nécessaires pour mener à bien le processus", 
-          'required': "Obligatoire"
+          'required': "Obligatoire",
+          'selectOption': "Sélectionner une option"
         },
         password_forgotten: {
           'message': "Un message a été envoyé à votre adresse e-mail afin de réinitialiser le mot de passe",
@@ -2589,7 +2594,8 @@ define('commonTranslations', [], function() {
           'welcomeConnectedUser': 'Benvenuto <b>{{name}}</b>, puoi procedere con la prenotazione',
           'invalid_user_password': 'Utente o password non validi',
           'no_necessary_url_params': "L'URL non contiene le informazioni necessarie per eseguire il processo",
-          'required': "Richiesto"                                                       
+          'required': "Richiesto",
+          'selectOption': "Seleziona un'opzione"                                                       
         },
         password_forgotten: {
           'message': "È stato inviato un messaggio al tuo indirizzo email per reimpostare la password",
@@ -2805,7 +2811,8 @@ define('commonTranslations', [], function() {
             'welcomeConnectedUser': 'Добро пожаловать, <b> {{name}} </b>, вы можете продолжить бронирование',
             'invalid_user_password': 'Неверный пользователь или пароль',
             'no_necessary_url_params': "URL-адрес не содержит информации, необходимой для выполнения процесса.",             
-            'required': "обязательный"
+            'required': "обязательный",
+            'selectOption': "Выберите вариант"
           },
           password_forgotten: {
             'message': "На ваш адрес электронной почты было отправлено сообщение для сброса пароля.",

@@ -109,6 +109,9 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
       if (this.pickupPlace) {
         url += '&pickup_place='+encodeURIComponent(this.pickupPlace);
       }
+      if (this.rentalLocationCode) {
+        url += '&rental_location_code='+encodeURIComponent(this.rentalLocationCode);
+      }
       if (commonServices.apiKey && commonServices.apiKey != '') {
         url += '&api_key='+commonServices.apiKey;
       }    
