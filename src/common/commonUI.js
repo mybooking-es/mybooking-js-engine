@@ -16,16 +16,16 @@ define('commonUI',['jquery', 'commonServices', 'jquery.modal'],function($, commo
      * 
      * @selector [String] The selector 
      */ 
-  	showModal: function(selector) {
-
-      console.log('show modal');
+  	showModal: function(selector, callbackOnShow) {
 
       var selectorMBM = selector + '_MBM';
 
-      console.log(selectorMBM);
-      console.log($(selectorMBM).length);
-
       if ($(selectorMBM).length > 0) {
+        // Setup the callback on Show
+        if (callbackOnShow !== undefined && typeof callbackOnShow === 'function') {
+          $(selectorMBM).on($.mbModal.OPEN, callbackOnShow);
+        }
+        // Show the modal
         $(selectorMBM).mbModal({ modalClass: "mybooking-modal",
                                  blockerClass: "mybooking-jquery-modal",});
       }
@@ -58,9 +58,7 @@ define('commonUI',['jquery', 'commonServices', 'jquery.modal'],function($, commo
      * @selector [String] The selector 
      * 
      */ 
-    hideModal: function(selector) {
-
-      console.log('hide modal');
+    hideModal: function(selector, callbackOnHide) {
 
       var selectorMBM = selector + '_MBM';
 
@@ -83,11 +81,29 @@ define('commonUI',['jquery', 'commonServices', 'jquery.modal'],function($, commo
 
     /**
      * Show a slider
+     * 
+     * It uses slickjs if defined
+     * 
      */ 
     showSlider: function(selector) {
 
       console.log('show slideshow');
 
+      // If slick library defined
+      if ($.fn.slick) {
+        $(selector).slick({
+                slidesToShow: 1,
+                slidesToScroll: 1,
+                autoplay: true,
+                autoplaySpeed: 4000,
+                arrows: true,
+                dots: true,
+                adaptiveHeight: true,
+                prevArrow: '<button type="button" class="slick-prev">&nbsp;</type>',
+                nextArrow: '<button type="button" class="slick-next">&nbsp;</type>'
+              });
+      }
+      
     }
 
   }

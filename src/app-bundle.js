@@ -27,13 +27,13 @@ require('./lib/jquery.ui.datepicker.validation.js');
 require('./lib/jquery.form.js');
 require('./lib/jquery.formparams.js');
 require('./lib/jquery.i18next.js');
+require('./lib/jquery.modal.js');
 
 // SUPPORT
 require('./lib/i18next.js');
 require('./lib/loaderSpinner.js');
 require('./lib/select2.js');
 require('./lib/cookie.js');
-require('./lib/jquery.modal.js');
 
 // Yurak Sisa Dream Libraries
 require('./lib/YSDEventTarget.js');

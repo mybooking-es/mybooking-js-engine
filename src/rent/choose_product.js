@@ -716,7 +716,14 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
         }
 
         // Show the product in a modal
-        commonUI.showModal('#modalProductDetail');
+        setTimeout(function(){
+            commonUI.showModal('#modalProductDetail', function(event, modal){
+                                                        // Callback on show => show slider
+                                                        if ( $('.mybooking-carousel-inner').length ) {  
+                                                          commonUI.showSlider('.mybooking-carousel-inner');
+                                                        }
+                                                      });
+          }, 100);
                       
       }
 
