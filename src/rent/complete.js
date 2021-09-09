@@ -649,8 +649,7 @@ require(['jquery',
         // Setup password forgotten
         $('.mybooking_login_password_forgotten').on('click', function(){
           var htmlPasswordForgotten = tmpl('script_password_forgotten')({});
-          if ($('div.mybooking_password_forgotten_container').length > 0) {
-            // Show in div
+          if ($('div.mybooking_password_forgotten_container').length > 0) { // Show in div
             $('div.mybooking_password_forgotten_container').html(htmlPasswordForgotten);
             var passwordForgottenComponent = new PasswordForgottenComponent();
             passwordForgottenComponent.model.addListener('PasswordForgotten', function(event){
@@ -660,10 +659,16 @@ require(['jquery',
             });
             passwordForgottenComponent.view.init();            
           }
-          else {
-            // Show in a modal
-            $('#modalExtraDetail .modal-title').html('');
-            $('#modalExtraDetail .modal-body').html(htmlPasswordForgotten);
+          else { // Show in a modal
+            // Compatibility with bootstrap modal replacement (from 0.9.30)
+            if ($('#modalExtraDetail_MBM').length) {
+              $('#modalExtraDetail_MBM .modal-title').html('');
+              $('#modalExtraDetail_MBM .modal-body').html(htmlPasswordForgotten);     
+            }
+            else {
+              $('#modalExtraDetail .modal-title').html('');
+              $('#modalExtraDetail .modal-body').html(htmlPasswordForgotten);
+            }
             var passwordForgottenComponent = new PasswordForgottenComponent();
             passwordForgottenComponent.model.addListener('PasswordForgotten', function(event){
               if (event.type === 'PasswordForgotten' && (typeof event.data != 'undefined') && event.data.success === true) {
@@ -1221,7 +1226,7 @@ require(['jquery',
               else { // Show the reservation form
                 // Compatibility with old version of the theme
                 var modifyReservationModalSelector = '#choose_productModal';
-                if ($('#modify_reservation_modal').length) {
+                if ($('#modify_reservation_modal').length || $('#modify_reservation_modal_MBM').length) {
                   modifyReservationModalSelector = '#modify_reservation_modal'
                 }
                 // Show the modal to change dates
@@ -1386,8 +1391,15 @@ require(['jquery',
         var result = tmpl('script_extra_modal')({
                         extra: model.extraDetail
                       });
-        $('#modalExtraDetail .modal-extra-detail-title').html(model.extraDetail.name);
-        $('#modalExtraDetail .modal-extra-detail-content').html(result);
+        // Compatibility with bootstrap modal replacement (from 0.9.30)
+        if ($('#modalExtraDetail_MBM').length) {
+          $('#modalExtraDetail_MBM .modal-extra-detail-title').html(model.extraDetail.name);
+          $('#modalExtraDetail_MBM .modal-extra-detail-content').html(result);       
+        }
+        else {
+          $('#modalExtraDetail .modal-extra-detail-title').html(model.extraDetail.name);
+          $('#modalExtraDetail .modal-extra-detail-content').html(result);                 
+        }
 
         // Show the product in a modal
         commonUI.showModal('#modalExtraDetail');

@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.9.30]
+
+### Added
+
+- Remove bootstrap dependency
+  - modal : Use mbModal (fork of jquerymodal) instead of bootstrap modal appending the 
+    suffix \_MBM at the modal element ID. If not it will still be using bootstrap modal
+  - slider :
+
 ## [0.9.29]
 
 ### Added

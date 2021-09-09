@@ -33,6 +33,7 @@ require('./lib/i18next.js');
 require('./lib/loaderSpinner.js');
 require('./lib/select2.js');
 require('./lib/cookie.js');
+require('./lib/jquery.modal.js');
 
 // Yurak Sisa Dream Libraries
 require('./lib/YSDEventTarget.js');

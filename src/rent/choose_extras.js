@@ -324,7 +324,7 @@ require(['jquery',
                 else { // Show the reservation form
                   // Compatibility with old version of the theme
                   var modifyReservationModalSelector = '#choose_productModal';
-                  if ($('#modify_reservation_modal').length) {
+                  if ($('#modify_reservation_modal').length || $('#modify_reservation_modal_MBM').length) {
                     modifyReservationModalSelector = '#modify_reservation_modal'
                   }
                   // Show the modal to change dates

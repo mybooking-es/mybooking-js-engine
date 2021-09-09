@@ -608,7 +608,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
               else { // Show the reservation form
                 // Compatibility with old version of the theme
                 var modifyReservationModalSelector = '#choose_productModal';
-                if ($('#modify_reservation_modal').length) {
+                if ($('#modify_reservation_modal').length || $('#modify_reservation_modal_MBM').length > 0) {
                   modifyReservationModalSelector = '#modify_reservation_modal'
                 }
                 // Show the modal to change dates
@@ -704,8 +704,16 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
         var result = tmpl('script_product_modal')({
                         product: model.productDetail
                       });
-        $('#modalProductDetail .modal-product-detail-title').html(model.productDetail.name);
-        $('#modalProductDetail .modal-product-detail-content').html(result);
+
+        // Compatibility with bootstrap modal replacement (from 0.9.30)
+        if ($('#modalProductDetail_MBM').length) {
+          $('#modalProductDetail_MBM .modal-product-detail-title').html(model.productDetail.name);
+          $('#modalProductDetail_MBM .modal-product-detail-content').html(result);      
+        }
+        else {
+          $('#modalProductDetail .modal-product-detail-title').html(model.productDetail.name);
+          $('#modalProductDetail .modal-product-detail-content').html(result);                 
+        }
 
         // Show the product in a modal
         commonUI.showModal('#modalProductDetail');

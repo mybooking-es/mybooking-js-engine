@@ -46,7 +46,7 @@ define('commonServices',[],function(){
     useGoogleMaps: mybookingEngine && mybookingEngine.useGoogleMaps ? mybookingEngine.useGoogleMaps() : false,
     googleMapsSettings: mybookingEngine && mybookingEngine.googleMapsSettings ? mybookingEngine.googleMapsSettings() : null,
     // Renting
-    chooseProductType: mybookingEngine && mybookingEngine.chooseProductType ? mybookingEngine.chooseProductType : 'grid',
+    chooseProductType: mybookingEngine && mybookingEngine.chooseProductType ? mybookingEngine.chooseProductType : 'list',
     chooseProductUrl: mybookingEngine && mybookingEngine.chooseProductUrl ? formatURL(mybookingEngine.chooseProductUrl(), siteURL) : '',
     extrasStep: mybookingEngine && mybookingEngine.extrasStep ? mybookingEngine.extrasStep() : false,
     chooseExtrasUrl: mybookingEngine && mybookingEngine.chooseExtrasUrl ? formatURL(mybookingEngine.chooseExtrasUrl(), siteURL) : '',
