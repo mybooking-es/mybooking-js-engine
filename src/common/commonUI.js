@@ -98,7 +98,7 @@ define('commonUI',['jquery', 'commonServices', 'jquery.modal'],function($, commo
                 autoplaySpeed: 4000,
                 arrows: true,
                 dots: true,
-                adaptiveHeight: true,
+                //adaptiveHeight: true,
                 prevArrow: '<button type="button" class="slick-prev">&nbsp;</type>',
                 nextArrow: '<button type="button" class="slick-next">&nbsp;</type>'
               });
