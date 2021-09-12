@@ -549,11 +549,11 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
       rentEngineMediator.notifyEvent(event);
 
       // Go to next step
-      if (commonServices.extrasStep) {
-        window.location.href= commonServices.chooseExtrasUrl;
+      if (commonServices.transferExtrasStep) {
+        window.location.href= commonServices.transferChooseExtrasUrl;
       }
       else {
-        window.location.href= commonServices.completeUrl;
+        window.location.href= commonServices.transferCompleteUrl;
       }
 
     }

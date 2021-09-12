@@ -453,7 +453,7 @@ define('SelectorTransfer', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSourc
       });
 
       this.setupFormControl();
-      $(this.selectorModel.form_selector).attr('action', commonServices.chooseProductUrl);
+      $(this.selectorModel.form_selector).attr('action', commonServices.transferChooseProductUrl);
 
       $.validator.addMethod('oneway_same_origin', function(value) {
         return $(self.selectorModel.origin_point_selector).val() !== value;

@@ -1085,7 +1085,7 @@ require(['jquery',
      */
     gotoSummary: function(bookingId) {
 
-      window.location.href = commonServices.summaryUrl + '?id=' + bookingId;
+      window.location.href = commonServices.transferSummaryUrl + '?id=' + bookingId;
 
     },
 
@@ -1097,7 +1097,7 @@ require(['jquery',
     // Not shoppingcart in session => Try if it was a booking
     var bookingId = model.getBookingFreeAccessId();
     if (bookingId != null) {
-      window.location.href = commonServices.summaryUrl + '?id=' + bookingId;
+      window.location.href = commonServices.transferSummaryUrl + '?id=' + bookingId;
     }
   }
 

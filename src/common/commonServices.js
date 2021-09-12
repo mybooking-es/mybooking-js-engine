@@ -56,7 +56,13 @@ define('commonServices',[],function(){
     // Activities
     shoppingCartUrl: mybookingEngine && mybookingEngine.shoppingCartUrl ? formatURL(mybookingEngine.shoppingCartUrl(), siteURL) : '',
     orderUrl: mybookingEngine && mybookingEngine.orderUrl ? formatURL(mybookingEngine.orderUrl(), siteURL) : '',
-    activitiesTermsUrl: mybookingEngine && mybookingEngine.activitiesTermsUrl ? formatURL(mybookingEngine.activitiesTermsUrl(), siteURL) : ''
+    activitiesTermsUrl: mybookingEngine && mybookingEngine.activitiesTermsUrl ? formatURL(mybookingEngine.activitiesTermsUrl(), siteURL) : '',
+    // Transfers
+    transferChooseProductUrl: mybookingEngine && mybookingEngine.transferChooseProductUrl ? formatURL(mybookingEngine.transferChooseProductUrl(), siteURL) : '',
+    transferExtrasStep: mybookingEngine && mybookingEngine.transferExtrasStep ? mybookingEngine.transferExtrasStep() : false,
+    transferChooseExtrasUrl: mybookingEngine && mybookingEngine.transferChooseExtrasUrl ? formatURL(mybookingEngine.transferChooseExtrasUrl(), siteURL) : '',
+    transferCompleteUrl: mybookingEngine && mybookingEngine.transferCompleteUrl ? formatURL(mybookingEngine.transferCompleteUrl(), siteURL) : '', 
+    transferSummaryUrl: mybookingEngine && mybookingEngine.transferSummaryUrl ? formatURL(mybookingEngine.transferSummaryUrl(), siteURL) : ''
 
   };
 
