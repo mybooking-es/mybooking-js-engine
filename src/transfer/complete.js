@@ -55,11 +55,11 @@ require(['jquery',
     // ------------------ Shopping cart -------------------------------
 
     getShoppingCartFreeAccessId: function() { /* Get the shopping cart id */
-      return sessionStorage.getItem('shopping_cart_free_access_id');
+      return sessionStorage.getItem('transfer_shopping_cart_free_access_id');
     },
 
     deleteShoppingCartFreeAccessId: function() { /* Get the shopping cart id */
-      return sessionStorage.removeItem('shopping_cart_free_access_id');
+      return sessionStorage.removeItem('transfer_shopping_cart_free_access_id');
     },
 
     loadShoppingCart: function() { /** Load the shopping cart **/

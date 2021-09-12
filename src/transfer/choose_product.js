@@ -107,11 +107,11 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
     // -------------- Shopping cart ----------------------------
 
     putShoppingCartFreeAccessId: function(value) {
-      sessionStorage.setItem('shopping_cart_free_access_id', value);
+      sessionStorage.setItem('transfer_shopping_cart_free_access_id', value);
     },
 
     getShoppingCartFreeAccessId: function() {
-      return sessionStorage.getItem('shopping_cart_free_access_id');
+      return sessionStorage.getItem('transfer_shopping_cart_free_access_id');
     },
 
     isShoppingCartData: function() {
