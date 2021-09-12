@@ -37,36 +37,6 @@
               enctype="application/x-www-form-urlencoded"
             >
               <div class="field-body">
-                <!-- Date -->
-                <div class="field">
-                  <div class="field-body">
-                    <div class="field">
-                      <label class="label">Fécha</label>
-                      <div class="control is-fullwidth">
-                        <input
-                          type="text"
-                          id="date"
-                          name="date"
-                          class="input"
-                          autocomplete="off"
-                          placeholder="dd/mm/yyyy"
-                        />
-                      </div>
-                    </div>
-                    <div class="field">
-                      <div class="control is-expanded">
-                        <label class="label">Hora</label>
-                        <div class="select is-fullwidth">
-                          <select
-                            id="time"
-                            name="time"
-                            placeholder="hh:mm"
-                          ></select>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
 
                 <!-- Origin point -->
                 <div class="field">
@@ -95,6 +65,38 @@
                     </div>
                   </div>
                 </div>
+
+                <!-- Date -->
+                <div class="field">
+                  <div class="field-body">
+                    <div class="field">
+                      <label class="label">Fecha</label>
+                      <div class="control is-fullwidth">
+                        <input
+                          type="text"
+                          id="date"
+                          name="date"
+                          class="input"
+                          autocomplete="off"
+                          placeholder="dd/mm/yyyy"
+                        />
+                      </div>
+                    </div>
+                    <div class="field">
+                      <div class="control is-expanded">
+                        <label class="label">Hora</label>
+                        <div class="select is-fullwidth">
+                          <select
+                            id="time"
+                            name="time"
+                            placeholder="hh:mm"
+                          ></select>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
               </div>
               <br/>
               <div id="return_block" class="field-body" style="display: none;">
@@ -102,7 +104,7 @@
                 <div class="field">
                   <div class="field-body">
                     <div class="field">
-                      <label class="label">Fécha</label>
+                      <label class="label">Fecha</label>
                       <div class="control is-fullwidth">
                         <input
                           type="text"
@@ -165,7 +167,7 @@
                       Adultos
                     </label>
                     <input
-                      type="text"
+                      type="number"
                       id="number_of_adults"
                       name="number_of_adults"
                       class="input"
@@ -178,7 +180,7 @@
                       Niños
                     </label>
                     <input
-                      type="text"
+                      type="number"
                       id="number_of_children"
                       name="number_of_children"
                       class="input"
@@ -191,7 +193,7 @@
                       Bebes
                     </label>
                     <input
-                      type="text"
+                      type="number"
                       id="number_of_infants"
                       name="number_of_infants"
                       class="input"

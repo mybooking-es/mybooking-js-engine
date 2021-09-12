@@ -327,7 +327,7 @@
     <script type="text/tmpl" id="script_product_detail">
       <h4 class="is-size-4 has-text-weight-semibold has-text-grey">Vehículo</h4>
       <p><%=shopping_cart.item_description_customer_translation%> <span class="is-pulled-right"><%= configuration.formatCurrency(shopping_cart.item_cost)%></span></p>
-      <img src="<%=shopping_cart.photo_medium%>"/>  
+      <img src="<%=shopping_cart.item_photo%>"/>  
     </script>
 
     <!-- Script extras -->
@@ -421,7 +421,7 @@
           <p class="title">Tu vehículo</h4>
           <div class="content">
             <p><%=shopping_cart.item_description_customer_translation%> <span class="is-pulled-right"><%= configuration.formatCurrency(shopping_cart.item_cost)%></span></p>
-            <img src="<%=shopping_cart.photo_medium%>"/>
+            <img src="<%=shopping_cart.item_photo%>"/>
           </div>
         </div>
         <% if (shopping_cart.extras.length > 0) { %>

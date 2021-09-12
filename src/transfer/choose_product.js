@@ -313,9 +313,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
                success: function(data, textStatus, jqXHR) {
                  model.shopping_cart = data.shopping_cart;
                  commonLoader.hide(); 
-                 if (!model.sales_process.multiple_products) {
-                    view.gotoNextStep();
-                 }
+                 view.gotoNextStep();
                },
                error: function(data, textStatus, jqXHR) {
                  commonLoader.hide();

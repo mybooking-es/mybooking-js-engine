@@ -280,6 +280,8 @@ define('SelectorTransfer', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSourc
     * Load origin points
     */
     this.loadOriginPoints = function(idSelector) {
+      console.log('loadOriginPoints');
+
       if (this.selectorModel.dataSourceOriginPoints) {
         this.addSelector(idSelector, 'dataSourceOriginPoints');
         return;
@@ -314,25 +316,31 @@ define('SelectorTransfer', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSourc
     * Load destination points
     */
     this.loadDestinationPoints = function(idSelector, clearInput) {
+      console.log('loadDestinationPoints');
+
       var mySelector = $(this.selectorModel[idSelector + '_selector']);
       var mySource = (idSelector === 'destination_point') ? 'dataSourceDestinationPoints' : 'dataSourceReturnDestinationPoints';
 
       if (this.selectorModel[mySource]) {
         if (!mySelector.attr('disabled')) {
           mySelector.val('');
-        } else {
+        } 
+        else {
           this.addSelector(idSelector, mySource, clearInput);
           mySelector.attr('disabled', false);
         }
-        return;
+        //return; // It is not necessary because it avoids to reload destination points when origin point changes
       }
 
       var self = this;
 
+      var originPointId = $(this.selectorModel.origin_point_selector).val();
+      console.log(originPointId);
+
       // Build URL
       var url = commonServices.URL_PREFIX + '/api/booking-transfer/frontend/destination-points';
       var urlParams = [];
-      urlParams.push('origin_point_id='+encodeURIComponent($(this.selectorModel.origin_point).val()));
+      urlParams.push('origin_point_id='+encodeURIComponent(originPointId));
       if (this.selectorModel.requestLanguage != null) {
         urlParams.push('lang='+this.selectorModel.requestLanguage);
       }
@@ -418,17 +426,22 @@ define('SelectorTransfer', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSourc
       var self = this;
 
       // ------------------------ Setup controls --------------------------------
-      $(this.selectorModel.origin_point_selector).bind('change', function(value) {
+
+      // Origin point change
+      $(this.selectorModel.origin_point_selector).on('change', function(value) {
         self.loadDestinationPoints('destination_point', true);
       });
-      $(this.selectorModel.return_origin_point_selector).bind('change', function(value) {
+      // Return origin point change
+      $(this.selectorModel.return_origin_point_selector).on('change', function(value) {
         self.loadDestinationPoints('return_destination_point', true);
       });
 
+      // Setup date control
       this.setupDateControl('date');
       this.setupDateControl('return_date');
 
-      $(this.selectorModel.round_trip_selector).bind('change', function(event) {
+      // On Change round trip
+      $(this.selectorModel.round_trip_selector).on('change', function(event) {
 
         var value = event.currentTarget.value;
         if (value === 'true') {

@@ -18,6 +18,27 @@ Funcionalidades:
 
 `$ npm install`
 
+## Desarrollo
+
+Crear una carpeta config con un archivo env.json con los siguientes atributos
+
+```json
+{
+  "baseURL": "MY-BOOKING INSTANCE URL",
+  "apiKey": "API-KEY",
+  "port": 8000
+}
+
+```
+
+Ejecutar
+
+`$ npm run start`
+
+Abrir el navegador
+
+http://localhost:8000
+
 ## Construir
 
 `$ npm run build`
