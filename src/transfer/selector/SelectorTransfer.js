@@ -146,8 +146,8 @@ define('SelectorTransfer', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSourc
       var self = this;
 
       if (element.id === 'date') {
-        var onewayDate = $(self.selectorModel.date_selector).datepicker('getDate') ? $(self.selectorModel.date_selector).datepicker('getDate').getTime() : null;
-        var twowayDate = $(self.selectorModel.return_date_selector).datepicker('getDate') ? $(self.selectorModel.return_date_selector).datepicker('getDate').getTime() : null;
+        var onewayDate = $(self.selectorModel.date_selector).datepicker('getDate'); // ? $(self.selectorModel.date_selector).datepicker('getDate').getTime() : null;
+        var twowayDate = $(self.selectorModel.return_date_selector).datepicker('getDate'); // ? $(self.selectorModel.return_date_selector).datepicker('getDate').getTime() : null;
         if (onewayDate !== null && twowayDate !== null && onewayDate >= twowayDate) {
           var date = new Date(twowayDate);
           var day  = date.getDate() - 1;
@@ -183,7 +183,7 @@ define('SelectorTransfer', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSourc
         this.selectorModel.requestLanguage = commonSettings.language(document.documentElement.lang);
 
         // Setup controls
-        this.setupControls();
+        this.setupSelectorFormTmpl();
 
         // Setup date settings
         this.loadDate('date');
@@ -453,7 +453,6 @@ define('SelectorTransfer', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSourc
         }
 
       });
-      this.setupSelectorFormTmpl();
       this.setupFormControl();
       $(this.selectorModel.form_selector).attr('action', commonServices.transferChooseProductUrl);
 
@@ -520,6 +519,8 @@ define('SelectorTransfer', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSourc
         // Assign to the form
         $(this.selectorModel.form_selector).append(html);
       }
+
+      this.setupControls();
 
     }
 
