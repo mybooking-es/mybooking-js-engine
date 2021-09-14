@@ -41,7 +41,7 @@ const engineInit = async function (){
     transferChooseProductUrl: getTransferChooseProductUrl,
     transferChooseExtrasUrl: getTransferChooseExtrasUrl,
     transferCompleteUrl: getTransferCompleteUrl,
-    transerSummaryUrl: getTransferSummaryUrl
+    transferSummaryUrl: getTransferSummaryUrl
   }
 };
 

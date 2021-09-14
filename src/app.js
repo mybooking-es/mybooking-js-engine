@@ -220,7 +220,7 @@ $(document).ready(function() {
 $(document).ready(function () {
     if ($('body').hasClass('mybooking-transfer-choose-product')) {
         require('./transfer/selector/modify_reservation_selector.js');  
-        require('./transfer/mediator/rentEngineMediator.js');        
+        require('./transfer/mediator/transferEngineMediator.js');        
         require('./transfer/choose_product.js');
     }
 });
@@ -229,7 +229,7 @@ $(document).ready(function () {
 $(document).ready(function () {
     if ($('body').hasClass('mybooking-transfer-complete')) {
         require('./transfer/selector/modify_reservation_selector.js');  
-        require('./transfer/mediator/rentEngineMediator.js');                
+        require('./transfer/mediator/transferEngineMediator.js');                
         require('./profile/Login.js');
         require('./transfer/complete.js');
     }

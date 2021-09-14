@@ -2,14 +2,14 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
          'commonServices', 'commonSettings', 'commonTranslations', 'commonLoader',
          'i18next', 'ysdtemplate', 
          './selector/modify_reservation_selector',
-         './mediator/rentEngineMediator',
+         './mediator/transferEngineMediator',
          'jquery.i18next',         
          'jquery.validate', 'jquery.ui', 'jquery.ui.datepicker-es',
          'jquery.ui.datepicker-en', 'jquery.ui.datepicker-ca', 'jquery.ui.datepicker-it',
          'jquery.ui.datepicker.validation'],
        function($, RemoteDataSource, SelectSelector, 
                 commonServices, commonSettings, commonTranslations, commonLoader,
-                i18next, tmpl, selector, rentEngineMediator) {
+                i18next, tmpl, selector, transferEngineMediator) {
 
   var model = {
 
@@ -379,7 +379,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
      * Select producto button click
      */
     selectProductBtnClick: function(productCode) {
-      rentEngineMediator.onChooseSingleProduct( productCode, 
+      transferEngineMediator.onChooseSingleProduct( productCode, 
                                                 model.products, 
                                                 model.shopping_cart
                                               );
@@ -404,7 +404,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
         alert(i18next.t('chooseProduct.selectProduct.productNotSelected'));
       }
       else {
-        rentEngineMediator.onChooseMultipleProducts( model.shopping_cart );
+        transferEngineMediator.onChooseMultipleProducts( model.shopping_cart );
       }
 
     },
@@ -546,7 +546,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
       // Notify the event
       var event = {type: 'productChoosen',
                    data: model.shopping_cart};
-      rentEngineMediator.notifyEvent(event);
+      transferEngineMediator.notifyEvent(event);
 
       // Go to next step
       if (commonServices.transferExtrasStep) {
@@ -566,7 +566,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
     controller: controller,
     view: view
   }
-  rentEngineMediator.setChooseProduct( rentChooseProduct );
+  transferEngineMediator.setChooseProduct( rentChooseProduct );
 
   // The loader is show on start and hidden after the result of
   // the search has been rendered (in model.loadShoppingCart)

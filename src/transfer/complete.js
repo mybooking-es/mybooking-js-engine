@@ -2,7 +2,7 @@ require(['jquery',
          'commonServices', 'commonSettings', 'commonTranslations', 'commonLoader',
          'i18next','ysdtemplate','YSDDateControl', 
          './selector/modify_reservation_selector', 'select2', 
-         'YSDMemoryDataSource','YSDSelectSelector', './mediator/rentEngineMediator', '../profile/Login',
+         'YSDMemoryDataSource','YSDSelectSelector', './mediator/transferEngineMediator', '../profile/Login',
          '../profile/PasswordForgottenComponent',
          'jquery.i18next', 'jquery.formparams', 'jquery.form',
 	       'jquery.validate', 'jquery.ui', 'jquery.ui.datepicker-es',
@@ -11,7 +11,7 @@ require(['jquery',
 	     function($, 
                 commonServices, commonSettings, commonTranslations, commonLoader, 
                 i18next, tmpl, DateControl, selector, select2,
-                MemoryDataSource, SelectSelector, rentEngineMediator, Login, PasswordForgottenComponent) {
+                MemoryDataSource, SelectSelector, transferEngineMediator, Login, PasswordForgottenComponent) {
 
   var model = { // THE MODEL
     requestLanguage: null,
@@ -72,7 +72,8 @@ require(['jquery',
        }
        var urlParams = [];
        urlParams.push('include_extras=true');
-       if (model.requestLanguage != null) {
+       urlParams.push('include_sales_process=true');
+       if (model.requestLanguage != null) {
         urlParams.push('lang='+model.requestLanguage);
        }
        if (commonServices.apiKey && commonServices.apiKey != '') {
@@ -335,11 +336,12 @@ require(['jquery',
                 // remove the shopping cart id from the session
                 model.deleteShoppingCartFreeAccessId();
                 model.putBookingFreeAccessId(bookingId);
+                debugger;
                 if (payNow && payment_method_id != null && payment_method_id != '') {
                     // Notify the event
                     var event = {type: 'newReservationWithPaymentRequested',
                                  data: data};
-                    rentEngineMediator.notifyEvent(event);
+                    transferEngineMediator.notifyEvent(event);
                     // Go to payment
                     var paymentData = {
                         id: bookingId,
@@ -354,7 +356,7 @@ require(['jquery',
                     // Notify the event
                     var event = {type: 'newReservationRequested',
                                  data: data};
-                    rentEngineMediator.notifyEvent(event);
+                    transferEngineMediator.notifyEvent(event);
                     // Go to summary          
                     view.gotoSummary(bookingId);
                 }
@@ -398,7 +400,7 @@ require(['jquery',
 
       sendReservationButtonClick: function() {
 
-          rentEngineMediator.onCheckout(
+          transferEngineMediator.onCheckout(
                                          model.extras,
                                          model.shopping_cart );
       
@@ -828,7 +830,7 @@ require(['jquery',
       // Update the extras
       // this.updateExtras(); // TODO
       // Update the payment
-      // this.updatePayment(); // TODO
+      this.updatePayment();
 
     },
 
@@ -1063,7 +1065,7 @@ require(['jquery',
     payment: function(url, bookingId, paymentData) {
 
       var summaryUrl = commonServices.summaryUrl + '?id=' + bookingId;
-      rentEngineMediator.onNewReservationPayment(url, summaryUrl, paymentData);
+      transferEngineMediator.onNewReservationPayment(url, summaryUrl, paymentData);
 
     },
 
@@ -1107,7 +1109,7 @@ require(['jquery',
     controller: controller,
     view: view
   }
-  rentEngineMediator.setComplete( rentComplete );
+  transferEngineMediator.setComplete( rentComplete );
 
   // The loader is show on start and hidden after the result of
   // the search has been rendered (in model.loadShoppingCart)
