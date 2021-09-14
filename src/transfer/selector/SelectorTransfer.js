@@ -21,6 +21,8 @@ define('SelectorTransfer', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSourc
 
     // Search form
     this.form_selector = 'form[name=mybooking_transfer_search_form]'; 
+    // Search form template
+    this.form_selector_tmpl = 'transfer_form_selector_tmpl';
 
     // Date
     this.date_id = 'date';
@@ -451,7 +453,7 @@ define('SelectorTransfer', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSourc
         }
 
       });
-
+      this.setupSelectorFormTmpl();
       this.setupFormControl();
       $(this.selectorModel.form_selector).attr('action', commonServices.transferChooseProductUrl);
 
@@ -491,6 +493,34 @@ define('SelectorTransfer', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSourc
 
       // Avoid Google Automatic Translation
       $('.ui-datepicker').addClass('notranslate');
+    }
+
+    /**
+     * Setup the selector form templ
+     *
+     * The selector form can be rendered in two ways:
+     *
+     * - Directly on the page (recommeded for final projects)
+     * - Using a template that choose which fields should be rendered
+     *
+     * For the first option just create the form with the fields in the page
+     * For the second option create an empty form and a template that creates
+     * the fields depending on the configuration
+     *
+     * Note: The two options are hold for compatibility uses
+     * 
+     */
+    this.setupSelectorFormTmpl = function() {
+
+      // The selector form fields are defined in a micro-template
+      if (document.getElementById(this.selectorModel.form_selector_tmpl)) {
+        console.log(this.selectorModel.configuration);
+        // Load the template
+        var html = tmpl(this.selectorModel.form_selector_tmpl)({configuration: this.selectorModel.configuration});
+        // Assign to the form
+        $(this.selectorModel.form_selector).append(html);
+      }
+
     }
 
     this.setupFormControl = function () {
