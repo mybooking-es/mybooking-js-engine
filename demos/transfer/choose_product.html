@@ -23,10 +23,10 @@
         <hr>
         <div class="columns">
           <div class="column is-three-fifths">
-            <div id="product_listing"></div>
+            <div id="mybooking_transfer_product_listing"></div>
           </div>
           <aside class="column is-two-fifths">
-            <div id="reservation_detail" class="tile is-ancestor">
+            <div id="mybooking_transfer_reservation_detail" class="tile is-ancestor">
             </div>
           </aside>
         </div>
@@ -34,7 +34,7 @@
     </section>
 
     <!-- Modal to change selection -->
-    <div class="modal" id="modify_reservation_modal">
+    <div class="modal" id="modify_transfer_reservation_modal">
       <div class="modal-background">
       </div>
       <div class="modal-card" style="width: 800px; max-width: 100%;">
@@ -255,7 +255,7 @@
     </div>  
 
     <!-- Script detailed product for choose_product -->   
-    <script type="text/tmpl" id="script_detailed_product">
+    <script type="text/tmpl" id="script_transfer_detailed_product">
       <% if (available > 0) { %>
       <h2 class="subtitle is-4">Hemos encontrado <strong><%=available%></strong> vehículos disponibles</h2>
       <% } else { %>
@@ -292,7 +292,7 @@
     </script>
     
     <!-- Script detailed for reservation summary -->
-    <script type="text/tmpl" id="script_reservation_summary">
+    <script type="text/tmpl" id="script_transfer_reservation_summary">
       <div class="tile is-parent is-vertical">
         <div class="tile is-child notification has-background-light">
           <p class="title">Reserva</h4>

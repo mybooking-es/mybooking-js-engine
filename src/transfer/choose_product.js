@@ -445,11 +445,11 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
     showShoppingCart: function() {
 
         // Show the reservation summary 
-        if (document.getElementById('script_reservation_summary')) {
-          var reservationDetail = tmpl('script_reservation_summary')({
+        if (document.getElementById('script_transfer_reservation_summary')) {
+          var reservationDetail = tmpl('script_transfer_reservation_summary')({
                 shopping_cart: model.shopping_cart,
                 configuration: model.configuration});
-          $('#reservation_detail').html(reservationDetail);
+          $('#mybooking_transfer_reservation_detail').html(reservationDetail);
 
           if ($('#modify_reservation_button').length) {
             // The user clicks on the modify reservation button
@@ -460,11 +460,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
                 view.selectorLoaded = true;
               }
               // Show the reservation selector
-              // Compatibility with old version of the theme
-              var modifyReservationModalSelector = '#choose_productModal';
-              if ($('#modify_reservation_modal').length) {
-                modifyReservationModalSelector = '#modify_reservation_modal'
-              }
+              modifyReservationModalSelector = '#modify_transfer_reservation_modal'
               // Compatibility with libraries that overrides $.modal
               if (commonServices.jsBsModalNoConflict && typeof $.fn.bootstrapModal !== 'undefined') {
                 $(modifyReservationModalSelector).bootstrapModal(commonServices.jsBSModalShowOptions());
@@ -481,20 +477,20 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
         }
 
         // Show the products
-        if (document.getElementById('script_detailed_product')) {
+        if (document.getElementById('script_transfer_detailed_product')) {
           var available = 0;
           for (var idx=0;idx<model.products.length;idx++) {
             if (model.products[idx].available) {
               available += 1;
             }
           }          
-          var result = tmpl('script_detailed_product')({
+          var result = tmpl('script_transfer_detailed_product')({
                               shoppingCart: model.shopping_cart, 
                               products: model.products,
                               configuration: model.configuration,
                               available: available,
                               i18next: i18next});
-          $('#product_listing').html(result);
+          $('#mybooking_transfer_product_listing').html(result);
 
           // Bind the event to choose the product
           $('.btn-choose-product').bind('click', function() {
@@ -519,19 +515,19 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
 
     showProductDetail: function() {
 
-      if (document.getElementById('script_product_modal')) {
-        var result = tmpl('script_product_modal')({
+      if (document.getElementById('script_transfer_product_modal')) {
+        var result = tmpl('script_transfer_product_modal')({
                         product: model.productDetail
                       });
-        $('#modalProductDetail .modal-product-detail-title').html(model.productDetail.name);
-        $('#modalProductDetail .modal-product-detail-content').html(result);
+        $('#modalTransferProductDetail .modal-product-detail-title').html(model.productDetail.name);
+        $('#modalTransferProductDetail .modal-product-detail-content').html(result);
         // Compatibility with libraries that overrides $.modal
         if (commonServices.jsBsModalNoConflict && typeof $.fn.bootstrapModal !== 'undefined') {
-          $('#modalProductDetail').bootstrapModal(commonServices.jsBSModalShowOptions());
+          $('#modalTransferProductDetail').bootstrapModal(commonServices.jsBSModalShowOptions());
         }
         else {
           if ($.fn.modal) {
-            $('#modalProductDetail').modal(commonServices.jsBSModalShowOptions());
+            $('#modalTransferProductDetail').modal(commonServices.jsBSModalShowOptions());
           }
         }                       
       }
