@@ -196,11 +196,11 @@ define('SelectorTransfer', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSourc
         // Setup origin and destination points
         this.loadOriginPoints('origin_point');
         if (this.selectorModel.shopping_cart) {
-          this.loadDestinationPoints('destination_point');
+          this.loadDestinationPoints('destination_point', false, this.selectorModel.shopping_cart.origin_point_id);
         }
         this.loadOriginPoints('return_origin_point');
         if (this.selectorModel.shopping_cart) {
-          this.loadDestinationPoints('return_destination_point');
+          this.loadDestinationPoints('return_destination_point', false, this.selectorModel.shopping_cart.return_origin_point_id);
         }
 
         // Setup number of people
@@ -317,7 +317,7 @@ define('SelectorTransfer', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSourc
     /**
     * Load destination points
     */
-    this.loadDestinationPoints = function(idSelector, clearInput) {
+    this.loadDestinationPoints = function(idSelector, clearInput, value) {
       console.log('loadDestinationPoints');
 
       var mySelector = $(this.selectorModel[idSelector + '_selector']);
@@ -336,7 +336,7 @@ define('SelectorTransfer', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSourc
 
       var self = this;
 
-      var originPointId = $(this.selectorModel.origin_point_selector).val();
+      var originPointId = value || $(this.selectorModel.origin_point_selector).val();
       console.log(originPointId);
 
       // Build URL

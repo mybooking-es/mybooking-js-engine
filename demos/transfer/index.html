@@ -100,6 +100,34 @@
               </div>
               <br/>
               <div id="return_block" class="field-body" style="display: none;">
+                <!-- Return origin point -->
+                <div class="field">
+                  <label class="label">Punto de recogida</label>
+                  <div class="control return_origin_point_id_group">
+                    <div class="select is-fullwidth">
+                      <select
+                        id="return_origin_point"
+                        name="return_origin_point_id"
+                        placeholder="Seleccionar punto de recogida"
+                      ></select>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Return destination point -->
+                <div class="field">
+                  <label class="label">Punto de entrega</label>
+                  <div class="control return_destination_point_id_group">
+                    <div class="select is-fullwidth">
+                      <select
+                        id="return_destination_point"
+                        name="return_destination_point_id"
+                        placeholder="Seleccionar punto de entrega"
+                      ></select>
+                    </div>
+                  </div>
+                </div>
+
                 <!-- Return Date -->
                 <div class="field">
                   <div class="field-body">
@@ -130,34 +158,6 @@
                     </div>
                   </div>
                 </div>
-
-                <!-- Return origin point -->
-                <div class="field">
-                  <label class="label">Punto de recogida</label>
-                  <div class="control return_origin_point_id_group">
-                    <div class="select is-fullwidth">
-                      <select
-                        id="return_origin_point"
-                        name="return_origin_point_id"
-                        placeholder="Seleccionar punto de recogida"
-                      ></select>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Return destination point -->
-                <div class="field">
-                  <label class="label">Punto de entrega</label>
-                  <div class="control return_destination_point_id_group">
-                    <div class="select is-fullwidth">
-                      <select
-                        id="return_destination_point"
-                        name="return_destination_point_id"
-                        placeholder="Seleccionar punto de entrega"
-                      ></select>
-                    </div>
-                  </div>
-                </div>
               </div>
               <br/>
               <div class="field-body" style="align-items: center; justify-content: space-between;">
@@ -172,8 +172,9 @@
                       name="number_of_adults"
                       class="input"
                       autocomplete="off"
-                      value="0"
+                      value="1"
                       style="max-width: 50px;"
+                      min="0"
                     />
                   </div>
                   <div style="display: flex; align-items: center; margin-right: 16px;">
@@ -188,6 +189,7 @@
                       autocomplete="off"
                       value="0"
                       style="max-width: 50px;"
+                      min="0"
                     />
                   </div>
                   <div style="display: flex; align-items: center;">
@@ -202,6 +204,7 @@
                       autocomplete="off"
                       value="0"
                       style="max-width: 50px;"
+                      min="0"
                     />
                   </div>
                 </div>
