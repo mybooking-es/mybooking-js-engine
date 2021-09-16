@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>Mybooking Basic - Resumen de la reserva</title>
+    <title>Mybooking Transfer - Resumen de la reserva</title>
     <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-ui-bootstrap/0.5pre/css/custom-theme/jquery-ui-1.10.0.custom.css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.5/css/bulma.min.css">
@@ -15,13 +15,97 @@
     />
   </head>
   <body class="mybooking-transfer-summary">
+
     <section class="section section-padding-large">
       <div class="container is-desktop">
         <div class="columns">
-          <h1 class="title">Hola Mundo!</h1>
+          <h1 class="title">Su reserva</h1>
         </div>
         <hr>
+        <div class="columns">
+          <div class="column">
+            <div id="mybooking_transfer_reservation_detail" class="tile is-ancestor"></div>
+          </div>
+        </div>
       </div>
     </section>
+
+    <!-- Reservation summary -->
+    <!-- Script detailed for reservation summary -->
+    <script type="text/tmpl" id="script_transfer_reservation_summary">
+      <div class="tile is-parent is-vertical">
+        <div class="tile is-child notification has-background-light">
+          <p class="title">Reserva</h4>
+          <div class="content">
+            <% if (booking.round_trip) { %>
+              <p class="subtitle has-text-weight-semibold has-text-grey">Ida</p>
+            <% } else { %>
+              <p class="subtitle has-text-weight-semibold has-text-grey">Solo ida</p>
+            <% } %>
+            <ul>
+              <li>Fecha/hora: <%=booking.date%> <%=booking.time%></li>
+              <li>Origen: <%=booking.origin_point_name%></li>
+              <li>Destino: <%=booking.destination_point_name%></li>
+            </ul>
+          </div>
+          <% if (booking.round_trip) { %>
+            <div class="content">
+              <p class="subtitle has-text-weight-semibold has-text-grey">Vuelta</p>
+              <ul>
+                <li>Fecha/hora: <%=booking.date%> <%=booking.time%></li>
+                <li>Origen: <%=booking.return_origin_point_name%></li>
+                <li>Destino: <%=booking.return_destination_point_name%></li>
+              </ul>
+            </div>
+          <% } %>
+          <div class="content">
+            <p class="subtitle has-text-weight-semibold has-text-grey">Número de personas</p>
+            <ul>
+              <li>Adultos: <%=booking.number_of_adults%></li>
+              <li>Niños: <%=booking.number_of_children%></li>
+              <li>Bebes: <%=booking.number_of_infants%></li>
+            </ul>
+          </div>
+        </div>
+        <div class="tile is-child notification has-background-light">
+          <p class="title">Tu vehículo</h4>
+          <div class="content">
+            <p><%=booking.item_description_customer_translation%> <span class="is-pulled-right"><%= configuration.formatCurrency(booking.item_cost)%></span></p>
+            <img src="<%=booking.item_photo%>"/>
+          </div>
+        </div>
+        <% if (booking.extras.length > 0) { %>
+        <div class="tile is-child notification has-background-light">
+          <p class="title">Tus extras</h4>
+          <div class="content">
+            <ul>
+          <% for (var idx=0; idx<booking.extras.length; idx++) { %>
+            <li><%=booking.extras[idx].extra_description_customer_translation%> <span class="is-pulled-right"><%= configuration.formatCurrency(booking.extras[idx].extra_cost)%></span></li>
+          <% } %>
+            </ul>          
+          </div>
+        </div>
+        <% } %>
+        <div class="tile is-child notification has-background-light">
+          <p class="title">Importe total</p>
+          <p class="subtitle"><span class="is-pulled-right"><%= configuration.formatCurrency(booking.total_cost)%></span></p>
+        </div>
+      </div>
+    </script> 
+
+    <script type="module">
+      import('./assets/js/mybooking-engine-init.js')
+        .then(async function (module) {
+          return await module.default();
+        })
+        .then(function(module) {
+          window.mybookingEngine = module;
+          var script = document.getElementById('engine');
+          script.setAttribute('src', script.getAttribute('data-src'));
+          script.removeAttribute('data-src');
+        });
+    </script>
+    <script id="engine" async data-src="../js/mybooking-js-engine.js"></script>
+    <script src="/reload/reload.js"></script>
   </body>
 </html>

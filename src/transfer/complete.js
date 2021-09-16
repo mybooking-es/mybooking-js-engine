@@ -272,18 +272,18 @@ require(['jquery',
     // -------------- Checkout : Confirm reservation ----------------------
 
     getBookingFreeAccessId: function() { /* Get the shopping cart id */
-      return sessionStorage.getItem('booking_free_access_id');
+      return sessionStorage.getItem('transfer_booking_free_access_id');
     },
 
 
     putBookingFreeAccessId: function(value) {
-      sessionStorage.setItem('booking_free_access_id', value);
+      sessionStorage.setItem('transfer_booking_free_access_id', value);
     },
 
     sendBookingRequest: function() { /** Send a booking request **/
 
       // Prepare the request data
-      var reservation = $('form[name=reservation_form]').formParams(false);
+      var reservation = $('form[name=mybooking_transfer_reservation_form]').formParams(false);
       if (typeof reservation.complete_action != 'undefined') {
         if (reservation.complete_action != 'pay_now') {
           reservation.payment = 'none';
@@ -675,7 +675,7 @@ require(['jquery',
 
         commonSettings.appendValidators();
 
-        $('form[name=reservation_form]').validate(
+        $('form[name=mybooking_transfer_reservation_form]').validate(
             {
                 errorClass: 'text-danger',
                 submitHandler: function(form) {
@@ -1075,6 +1075,7 @@ require(['jquery',
      */
     gotoPayment: function(url, paymentData) {
 
+      debugger;
       $.form(url, paymentData, 'POST').submit();
 
     },
@@ -1086,7 +1087,7 @@ require(['jquery',
      * Go to Summary page
      */
     gotoSummary: function(bookingId) {
-
+      debugger;
       window.location.href = commonServices.transferSummaryUrl + '?id=' + bookingId;
 
     },

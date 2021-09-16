@@ -239,6 +239,14 @@ $(document).ready(function () {
     }
 });
 
+// Transfer Page summary JS
+$(document).ready(function () {
+    if ($('body').hasClass('mybooking-transfer-summary')) {
+        require('./transfer/mediator/transferEngineMediator.js');                
+        require('./transfer/summary.js');
+    }
+});
+
 // Export modules to be able to be used as a Library
 //
 var customSelector = require('./rent/selector/custom_selector.js');

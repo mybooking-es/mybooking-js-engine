@@ -234,3 +234,11 @@ $(document).ready(function () {
         require('./transfer/complete.js');
     }
 });
+
+// Transfer Page summary JS
+$(document).ready(function () {
+    if ($('body').hasClass('mybooking-transfer-summary')) {
+        require('./transfer/mediator/transferEngineMediator.js');                
+        require('./transfer/summary.js');
+    }
+});
