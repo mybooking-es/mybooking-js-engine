@@ -451,9 +451,9 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
                 configuration: model.configuration});
           $('#mybooking_transfer_reservation_detail').html(reservationDetail);
 
-          if ($('#modify_reservation_button').length) {
+          if ($('#mybooking_transfer_modify_reservation_button').length) {
             // The user clicks on the modify reservation button
-            $('#modify_reservation_button').bind('click', function() {
+            $('#mybooking_transfer_modify_reservation_button').bind('click', function() {
               // Setup the selector
               if (!view.selectorLoaded) {
                 selector.view.startFromShoppingCart(model.shopping_cart);

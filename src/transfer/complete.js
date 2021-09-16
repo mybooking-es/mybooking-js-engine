@@ -475,8 +475,8 @@ require(['jquery',
       this.prepareReservationForm();
       var self = this;
       // Complete hide
-      $('#form-reservation').hide();
-      $('#extras_listing').hide();
+      $('#mybooking_transfer_form-reservation').hide();
+      $('#mybooking_transfer_extras_listing').hide();
       $('.reservation_form_container').hide();
       if (document.getElementById('script_complete_complement') && 
           document.getElementById('script_create_account')) {
@@ -854,18 +854,18 @@ require(['jquery',
     updateShoppingCartSummary: function() { // Updates the shopping cart summary (total)
 
        // Summary
-       if (document.getElementById('script_reservation_summary')) {
-         var reservationDetail = tmpl('script_reservation_summary')({shopping_cart: model.shopping_cart,
+       if (document.getElementById('script_transfer_reservation_summary')) {
+         var reservationDetail = tmpl('script_transfer_reservation_summary')({shopping_cart: model.shopping_cart,
                                                                      configuration: model.configuration});
                                                                      debugger;
-         $('#reservation_detail').html(reservationDetail);
+         $('#mybooking_transfer_reservation_detail').html(reservationDetail);
        }
       
        // Setup the events
        
-       if ($('#modify_reservation_button').length) {
+       if ($('#mybooking_transfer_modify_reservation_button').length) {
          // The user clicks on the modify reservation button
-         $('#modify_reservation_button').bind('click', function() { 
+         $('#mybooking_transfer_modify_reservation_button').bind('click', function() { 
               // Setup the selector
               if (!view.selectorLoaded) {
                 selector.view.startFromShoppingCart(model.shopping_cart);
@@ -874,8 +874,8 @@ require(['jquery',
               // Show the selector
               // Compatibility with old version of the theme
               var modifyReservationModalSelector = '#choose_productModal';
-              if ($('#modify_reservation_modal').length) {
-                modifyReservationModalSelector = '#modify_reservation_modal'
+              if ($('#mybooking_transfer_modify_reservation_modal').length) {
+                modifyReservationModalSelector = '#mybooking_transfer_modify_reservation_modal'
               }
               // Compatibility with libraries that overrides $.modal
               if (commonServices.jsBsModalNoConflict && typeof $.fn.bootstrapModal !== 'undefined') {
@@ -897,9 +897,9 @@ require(['jquery',
      * Update the products
      */
     updateProducts: function() {
-      if (document.getElementById('script_product_detail')) {  
-        if (!$('#script_product_detail').is(':empty')) {
-          var productInfo = tmpl('script_product_detail')(
+      if (document.getElementById('script_transfer_product_detail')) {  
+        if (!$('#script_transfer_product_detail').is(':empty')) {
+          var productInfo = tmpl('script_transfer_product_detail')(
                         {configuration: model.configuration, 
                          shopping_cart: model.shopping_cart});
                          debugger;
@@ -931,9 +931,9 @@ require(['jquery',
      * Updates all extras
      */
     updateExtras: function() { 
-        if (document.getElementById('script_detailed_extra')) {
+        if (document.getElementById('script_transfer_detailed_extra')) {
           // Show the extras
-          var result = tmpl('script_detailed_extra')({extras:model.extras,
+          var result = tmpl('script_transfer_detailed_extra')({extras:model.extras,
                                                       configuration: model.configuration,   
                                                       extrasInShoppingCart: model.getShoppingCartExtrasQuantities(),
                                                       i18next: i18next,
@@ -1007,15 +1007,15 @@ require(['jquery',
      * Updates the payment
      */
     updatePayment: function() {
-      var paymentInfo = tmpl('script_payment_detail')(
+      var paymentInfo = tmpl('script_transfer_payment_detail')(
                     {sales_process: model.sales_process,
                      shopping_cart: model.shopping_cart,
                      configuration: model.configuration,
                      i18next: i18next });
-      $('#payment_detail').html(paymentInfo);
+      $('#mybooking_transfer_payment_detail').html(paymentInfo);
 
       $('#btn_reservation').bind('click', function() {
-         $('form[name=reservation_form]').submit();
+         $('form[name=mybooking_transfer_reservation_form]').submit();
       });
 
       // Choose complete action between different options:
@@ -1039,19 +1039,19 @@ require(['jquery',
     // -------------------- Show extra detail    
 
     showExtraDetail: function() {
-      if (document.getElementById('script_extra_modal')) {
-        var result = tmpl('script_extra_modal')({
+      if (document.getElementById('script_transfer_extra_modal')) {
+        var result = tmpl('script_transfer_extra_modal')({
                         extra: model.extraDetail
                       });
-        $('#modalExtraDetail .modal-extra-detail-title').html(model.extraDetail.name);
-        $('#modalExtraDetail .modal-extra-detail-content').html(result);
+        $('#mybooking_transfer_modalExtraDetail .modal-extra-detail-title').html(model.extraDetail.name);
+        $('#mybooking_transfer_modalExtraDetail .modal-extra-detail-content').html(result);
         // Compatibility with libraries that overrides $.modal
         if (commonServices.jsBsModalNoConflict && typeof $.fn.bootstrapModal !== 'undefined') {
-          $('#modalExtraDetail').bootstrapModal(commonServices.jsBSModalShowOptions());
+          $('#mybooking_transfer_modalExtraDetail').bootstrapModal(commonServices.jsBSModalShowOptions());
         }
         else {
           if ($.fn.modal) {
-            $('#modalExtraDetail').modal(commonServices.jsBSModalShowOptions());
+            $('#mybooking_transfer_modalExtraDetail').modal(commonServices.jsBSModalShowOptions());
           }
         }
       }      

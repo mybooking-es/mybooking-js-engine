@@ -25,10 +25,10 @@
           <div class="column is-three-fifths">
             <!--div id="selected_product">
             </div-->
-            <!--div id="extras_listing">
-            </div-->
+            <div id="mybooking_transfer_extras_listing">
+            </div>
             <!-- Reservation complete -->
-            <form id="form-reservation" name="reservation_form" autocomplete="off">
+            <form id="mybooking_transfer_form-reservation" name="mybooking_transfer_reservation_form" autocomplete="off">
                     
                     <h4 class="is-size-4 has-text-weight-semibold has-text-grey">Datos del conductor</h4>
                     <br>
@@ -94,7 +94,7 @@
 
           </div>
           <aside class="column is-two-fifths">
-            <div id="reservation_detail" class="tile is-ancestor">
+            <div id="mybooking_transfer_reservation_detail" class="tile is-ancestor">
             </div>
           </aside>
         </div>
@@ -102,7 +102,7 @@
     </section>
 
     <!-- Modal to change selection -->
-    <div class="modal" id="modify_reservation_modal">
+    <div class="modal" id="modify_transfer_reservation_modal">
       <div class="modal-background">
       </div>
       <div class="modal-card" style="width: 800px; max-width: 100%;">
@@ -324,7 +324,7 @@
 
     <!-- Script products -->
 
-    <script type="text/tmpl" id="script_product_detail">
+    <script type="text/tmpl" id="script_transfer_product_detail">
       <h4 class="is-size-4 has-text-weight-semibold has-text-grey">Vehículo</h4>
       <p><%=shopping_cart.item_description_customer_translation%> <span class="is-pulled-right"><%= configuration.formatCurrency(shopping_cart.item_cost)%></span></p>
       <img src="<%=shopping_cart.item_photo%>"/>  
@@ -377,7 +377,7 @@
     </script-->
 
     <!-- Script detailed for reservation summary -->
-    <script type="text/tmpl" id="script_reservation_summary">
+    <script type="text/tmpl" id="script_transfer_reservation_summary">
       <div class="tile is-parent is-vertical">
         <div class="tile is-child notification has-background-light">
           <p class="title">Reserva</h4>
@@ -413,7 +413,7 @@
           </div>
           <div class="content">
             <div class="is-pulled-right">
-              <button id="modify_reservation_button" class="button is-primary modal-button" data-target="modal">Modificar reserva</button> 
+              <button id="mybooking_transfer_modify_reservation_button" class="button is-primary modal-button" data-target="modal">Modificar reserva</button> 
             </div>  
           </div> 
         </div>
@@ -444,7 +444,7 @@
     </script> 
 
     <!-- Payment detail -->
-    <script type="text/tmpl" id="script_payment_detail">
+    <script type="text/tmpl" id="script_transfer_payment_detail">
     
       <% if (sales_process.can_pay && sales_process.can_request) { %>
 
