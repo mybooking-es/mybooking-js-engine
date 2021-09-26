@@ -144,18 +144,10 @@ define('SelectorTransfer', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSourc
 
     this.dateChanged = function (element) {
       var self = this;
-
-      if (element.id === 'date') {
-        var onewayDate = $(self.selectorModel.date_selector).datepicker('getDate'); // ? $(self.selectorModel.date_selector).datepicker('getDate').getTime() : null;
-        var twowayDate = $(self.selectorModel.return_date_selector).datepicker('getDate'); // ? $(self.selectorModel.return_date_selector).datepicker('getDate').getTime() : null;
-        if (onewayDate !== null && twowayDate !== null && onewayDate >= twowayDate) {
-          var date = new Date(twowayDate);
-          var day  = date.getDate() - 1;
-          var month  = date.getMonth() + 1;
-          var year  = date.getFullYear();
-          window.alert('Warning: La fecha de vuelta no puede ser igual o inferior');
-          $(this.selectorModel.date_selector).datepicker('setDate', day + '/' + month + '/' + year);
-  
+      if (element.id === this.selectorModel.date_id) {
+        if ( $(this.selectorModel.return_date_selector).length > 0 ) {
+          $(this.selectorModel.return_date_selector).datepicker('option', 'minDate', 
+                $(document.getElementById(element.id)).datepicker('getDate'));
         }
       }
     }
@@ -439,8 +431,8 @@ define('SelectorTransfer', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSourc
       });
 
       // Setup date control
-      this.setupDateControl('date');
-      this.setupDateControl('return_date');
+      this.setupDateControl(this.selectorModel.date_selector);
+      this.setupDateControl(this.selectorModel.return_date_selector);
 
       // On Change round trip
       $(this.selectorModel.round_trip_selector).on('change', function(event) {
@@ -456,31 +448,21 @@ define('SelectorTransfer', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSourc
       this.setupFormControl();
       $(this.selectorModel.form_selector).attr('action', commonServices.transferChooseProductUrl);
 
-      $.validator.addMethod('oneway_same_origin', function(value) {
-        return $(self.selectorModel.origin_point_selector).val() !== value;
-      });
-
       $.validator.addMethod('twoway_same_origin', function(value) {
         return $(self.selectorModel.return_origin_point_selector).val() !== value;
-      });
-
-      $.validator.addMethod('same_date', function() {
-        var onewayDate = $(self.selectorModel.date_selector).datepicker('getDate') ? $(self.selectorModel.date_selector).datepicker('getDate').getTime() : null;
-        var twowayDate = $(self.selectorModel.return_date_selector).datepicker('getDate') ? $(self.selectorModel.return_date_selector).datepicker('getDate').getTime() : null;
-        return onewayDate !== null && twowayDate !== null && onewayDate < twowayDate;
       });
 
       this.extractAgentId();
 
     }
 
-    this.setupDateControl = function (idSelector) {
+    this.setupDateControl = function (selector) {
       var self = this;
 
       $.datepicker.setDefaults( $.datepicker.regional[this.selectorModel.requestLanguage || 'es'] );
       var locale = $.datepicker.regional[this.selectorModel.requestLanguage || 'es'];
       var maxDate = moment().add(365, 'days').tz(this.selectorModel.configuration.timezone).format(this.selectorModel.configuration.dateFormat);
-      $(this.selectorModel[idSelector + '_selector']).datepicker({
+      $(selector).datepicker({
         numberOfMonths:1,
         maxDate: maxDate,
         minDate: new Date(),
@@ -543,14 +525,12 @@ define('SelectorTransfer', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSourc
             },
             destination_point_id: {
                 required: self.selectorModel.destination_point_selector,
-                oneway_same_origin: true,
             },
             round_trip: {
                 required: self.selectorModel.round_trip_selector,
             },
             return_date: {
                 required: self.selectorModel.return_date_selector + ':visible',
-                same_date: true,
             },
             return_time: {
                 required: self.selectorModel.return_time_selector + ':visible',
@@ -584,14 +564,12 @@ define('SelectorTransfer', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSourc
             },
             destination_point_id: {
                 required: i18next.t('common.required'),
-                oneway_same_origin: 'Warning: Origen y destino no pueden ser iguales', // TODO
             },
             round_trip: {
                 required: i18next.t('common.required'),
             },
             return_date: {
                 required: i18next.t('common.required'),
-                same_date: 'Warning: La fecha de vuelta no puede ser igual o inferior', // TODO
             },
             return_time: {
                 required: i18next.t('common.required'),

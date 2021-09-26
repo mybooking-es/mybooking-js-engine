@@ -30,7 +30,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
     return_time : null,
     return_origin_point_id: null,
     return_destination_point_id: null,
-    rountrip: null,
+    round_trip: null,
     number_of_adults: null,
     number_of_children: null,
     number_of_infants: null,
@@ -76,7 +76,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
      * - return_time
      * - return_origin_point_id
      * - return_destination_point_id
-     * - rountrip
+     * - round_trip
      * - number_of_adults
      * - number_of_children
      * - number_of_infants
@@ -98,7 +98,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
       this.number_of_adults = decodeURIComponent(url_vars['number_of_adults']);
       this.number_of_children = decodeURIComponent(url_vars['number_of_children']);
       this.number_of_infants = decodeURIComponent(url_vars['number_of_infants']);
-      this.rountrip = decodeURIComponent(url_vars['rountrip']);
+      this.round_trip = decodeURIComponent(url_vars['round_trip']);
       this.agent_id = decodeURIComponent(url_vars['agent_id']);
       this.item_id = decodeURIComponent(url_vars['item_id']);
 
@@ -167,8 +167,8 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
         data.number_of_infants = this.number_of_infants;
       }
 
-      if (this.rountrip != 'undefined' && this.rountrip != '') {
-        data.rountrip = this.rountrip;
+      if (this.round_trip != 'undefined' && this.round_trip != '') {
+        data.round_trip = this.round_trip;
       }
 
       if (this.agent_id != 'undefined' && this.agent_id != '') {
