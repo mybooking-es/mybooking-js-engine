@@ -495,7 +495,7 @@ define('SelectorTransfer', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSourc
 
       // The selector form fields are defined in a micro-template
       if (document.getElementById(this.selectorModel.form_selector_tmpl)) {
-        console.log(this.selectorModel.configuration);
+        console.log('transfer-custom-form-selector');
         // Load the template
         var html = tmpl(this.selectorModel.form_selector_tmpl)({configuration: this.selectorModel.configuration});
         // Assign to the form

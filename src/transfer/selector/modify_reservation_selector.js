@@ -30,7 +30,7 @@ define('modify_reservation_selector', ['jquery', 'commonSettings', 'commonLoader
      * Initialize
      */
     init: function() {
-
+        console.log('Modify-Transfer-Selector');
         // Create selector    
         this.SelectorTransfer = new SelectorTransfer();
         // Setup request language and configuration
@@ -40,6 +40,7 @@ define('modify_reservation_selector', ['jquery', 'commonSettings', 'commonLoader
     },
 
     startFromShoppingCart(shopping_cart) {
+      debugger;
       if (this.SelectorTransfer != null) {
         this.SelectorTransfer.view.startFromShoppingCart(shopping_cart);
       } 
