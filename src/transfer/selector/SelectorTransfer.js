@@ -42,7 +42,7 @@ define('SelectorTransfer', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSourc
 
     // One / Two ways trip
     this.round_trip_id = 'round_trip';
-    this.round_trip_selector = '.round_trip';
+    this.round_trip_selector = 'input[name=round_trip]';
     this.return_block_id = 'return_block';
     this.return_block_selector = '#return_block';
 
@@ -152,6 +152,21 @@ define('SelectorTransfer', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSourc
       }
     }
 
+    this.rountTripChanged = function(event) {
+        debugger;
+        var value = event.currentTarget.value;
+        if (value === 'true') {
+          $(this.selectorModel.return_block_selector).show();
+          // Setup the return date min value as the date 
+          if ($(this.selectorModel.date_selector).datepicker('getDate')) {
+            $(this.selectorModel.return_date_selector).datepicker('option', 'minDate', 
+                $(this.selectorModel.date_selector).datepicker('getDate'));
+          }
+        } else {
+          $(this.selectorModel.return_block_selector).hide();
+        }      
+    }
+
   };
 
 
@@ -178,8 +193,8 @@ define('SelectorTransfer', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSourc
         this.setupSelectorFormTmpl();
 
         // Setup date settings
-        this.loadDate('date');
-        this.loadDate('return_date');
+        this.loadDate(this.selectorModel.date_selector);
+        this.loadDate(this.selectorModel.return_date_selector);
 
         // Setup date settings
         this.loadTime('time');
@@ -207,9 +222,9 @@ define('SelectorTransfer', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSourc
         }
 
         // Setup round_trip
-        if (this.selectorModel.shopping_cart) {
-          $('input:radio[name=' + this.selectorModel.round_trip_id + ']:checked').attr('checked', false);
-          $('input:radio[value=' + this.selectorModel.shopping_cart.round_trip + ']').attr('checked', true);
+        debugger;
+        if (this.selectorModel.shopping_cart && this.selectorModel.shopping_cart.round_trip) {
+          $(this.selectorModel.round_trip_selector).filter('[value="true"]').attr('checked', 'true');
           $(this.selectorModel.round_trip_selector).trigger('change');
         }
 
@@ -235,14 +250,35 @@ define('SelectorTransfer', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSourc
     /**
     * Load date
     */
-    this.loadDate = function(idSelector) {
-      var date;
+    this.loadDate = function(dateSelector) {
+      var date = null;
+      // It is a shopping cart
       if (this.selectorModel.shopping_cart) {
-        date = new Date(this.selectorModel.shopping_cart[idSelector]);
+        if (dateSelector === this.selectorModel.date_selector) { // Going
+          date = new Date(this.selectorModel.shopping_cart.date);
+        }
+        else if (dateSelector === this.selectorModel.return_date_selector) { // Return
+          if (this.selectorModel.shopping_cart.round_trip && this.selectorModel.shopping_cart.return_date) {
+            date = new Date(this.selectorModel.shopping_cart.return_date);
+          }
+          else if (this.selectorModel.shopping_cart.date) { // No return date => Take date
+            date = new Date(this.selectorModel.shopping_cart.date);
+          }
+        }
       }
+
       if (date) {
-        $(this.selectorModel[idSelector + '_selector']).datepicker('setDate', date);
+        $(dateSelector).datepicker('setDate', date);
       }
+
+      // If it is the return date selector => Setup the min date
+      if (dateSelector === this.selectorModel.return_date_selector &&
+        this.selectorModel.shopping_cart && this.selectorModel.shopping_cart.round_trip) {
+        $(dateSelector).datepicker('option', 'minDate', 
+              $(this.selectorModel.date_selector).datepicker('getDate'));
+      }
+
+
     };
 
     /**
@@ -328,7 +364,7 @@ define('SelectorTransfer', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSourc
 
       var self = this;
 
-      var originPointId = value || $(this.selectorModel.origin_point_selector).val();
+      var originPointId = value || $(this.selectorModel.origin_point_selector).val();
       console.log(originPointId);
 
       // Build URL
@@ -436,14 +472,8 @@ define('SelectorTransfer', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSourc
 
       // On Change round trip
       $(this.selectorModel.round_trip_selector).on('change', function(event) {
-
-        var value = event.currentTarget.value;
-        if (value === 'true') {
-          $(self.selectorModel.return_block_selector).show();
-        } else {
-          $(self.selectorModel.return_block_selector).hide();
-        }
-
+        self.selectorController.rountTripChanged(event);
+        debugger;
       });
       this.setupFormControl();
       $(this.selectorModel.form_selector).attr('action', commonServices.transferChooseProductUrl);

@@ -215,7 +215,7 @@ $(document).ready(function () {
 // == Transfer module
 $(document).ready(function() {
     if ( $('body').hasClass('mybooking-transfer-selector') &&
-         $('form[name=mybooking_transfer_search_form]').length) {
+         $('form[name=mybooking_widget_transfer_search_form]').length) {
         require('./transfer/selector/widget.js');
     }
 });
