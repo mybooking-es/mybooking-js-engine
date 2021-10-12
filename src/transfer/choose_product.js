@@ -460,7 +460,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
                 view.selectorLoaded = true;
               }
               // Show the reservation selector
-              modifyReservationModalSelector = '#modify_transfer_reservation_modal'
+              modifyReservationModalSelector = '#mybooking_transfer_modify_reservation_modal'
               // Compatibility with libraries that overrides $.modal
               if (commonServices.jsBsModalNoConflict && typeof $.fn.bootstrapModal !== 'undefined') {
                 $(modifyReservationModalSelector).bootstrapModal(commonServices.jsBSModalShowOptions());

@@ -348,7 +348,7 @@ require(['jquery',
                         payment: model.sales_process.can_pay_deposit ? 'deposit' : 'total', 
                         payment_method_id: payment_method_id
                     }
-                    view.payment(commonServices.URL_PREFIX + '/reserva/pagar',
+                    view.payment(commonServices.URL_PREFIX + '/reserva-transfer/pagar',
                                  bookingId, 
                                  paymentData);
                 }
