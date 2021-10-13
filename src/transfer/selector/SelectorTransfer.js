@@ -71,42 +71,15 @@ define('SelectorTransfer', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSourc
     this.number_of_infants_selector = '#number_of_infants';
 
     // == State variables
+    this.dates = null;
+    this.times = null;
+    this.returnDates = null;
+    this.returnTimes = null;
+
+
     this.dataSourceOriginPoints = null; // Origin points datasource
     this.dataSourceDestinationPoints = null; // Destination points datasource
     this.dataSourceReturnDestinationPoints = null; // Return Destination points datasource
-    this.dataSourceTime = [ // TODO
-        "08:00",
-        "08:30",
-        "09:00",
-        "09:30",
-        "10:00",
-        "10:30",
-        "11:00",
-        "11:30",
-        "12:00",
-        "12:30",
-        "13:00",
-        "13:30",
-        "14:00",
-        "14:30",
-        "15:00",
-        "15:30",
-        "16:00",
-        "16:30",
-        "17:00",
-        "17:30",
-        "18:00",
-        "18:30",
-        "19:00",
-        "19:30",
-        "20:00",
-        "20:30",
-        "21:00",
-        "21:30",
-        "22:00",
-        "22:30",
-    ];
-
     this.requestLanguage = null;
     this.configuration = null;
     this.shopping_cart = null;
@@ -115,6 +88,120 @@ define('SelectorTransfer', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSourc
     this.setSelectorView = function(_selectorView) {
         this.selectorView = _selectorView;
     }
+
+    /**
+     * Load Origin Days
+     */
+    this.loadDays = function(year, month) { /* Load pickup days */
+      console.log('loadDays. year='+year+' month='+month);
+      this.startDate = moment([year, month - 1]);
+      this.endDate = moment(this.startDate).endOf('month');
+      var self = this;
+      // Build URL
+      var url = commonServices.URL_PREFIX + '/api/booking-transfer/frontend/dates?from='+
+                this.startDate.format('YYYY-MM-DD')+
+                '&to='+this.endDate.format('YYYY-MM-DD');
+      url += '&transfer_destination_point_id='+$(this.origin_point_selector).val();
+      if (commonServices.apiKey && commonServices.apiKey != '') {
+        url += '&api_key='+commonServices.apiKey;
+      }        
+      // Request
+      $.ajax({
+        type: 'GET',
+        url: url,
+        dataType: 'json',
+        success: function(data, textStatus, jqXHR) {
+          self.dates = data;
+          self.selectorView.update('days', 'date');
+        },
+        error: function(data, textStatus, jqXHR) {
+          alert(i18next.t('selector.error_loading_data'));
+        }
+      });
+    };
+
+    /**
+     * Load Return Days
+     */
+    this.loadReturnDays = function(year, month) { 
+      console.log('loadReturnDays. year='+year+' month='+month);
+      this.startDate = moment([year, month - 1]);
+      this.endDate = moment(this.startDate).endOf('month');
+      var self = this;
+      // Build URL
+      var url = commonServices.URL_PREFIX + '/api/booking-transfer/frontend/dates?from='+
+                this.startDate.format('YYYY-MM-DD')+
+                '&to='+this.endDate.format('YYYY-MM-DD');
+      url += '&transfer_destination_point_id='+$(this.return_origin_point_selector).val();
+      if (commonServices.apiKey && commonServices.apiKey != '') {
+        url += '&api_key='+commonServices.apiKey;
+      }        
+      // Request
+      $.ajax({
+        type: 'GET',
+        url: url,
+        dataType: 'json',
+        success: function(data, textStatus, jqXHR) {
+          self.returnDates = data;
+          self.selectorView.update('days', 'return_date');
+        },
+        error: function(data, textStatus, jqXHR) {
+          alert(i18next.t('selector.error_loading_data'));
+        }
+      });
+    };
+
+    /**
+     * Load Hours
+     */
+    this.loadHours = function(date) { 
+      var self=this;
+      // Build URL
+      var url = commonServices.URL_PREFIX + '/api/booking/frontend/times?date='+date;
+      url += '&transfer_destination_point_id='+$(this.return_origin_point_selector).val();      
+      if (commonServices.apiKey && commonServices.apiKey != '') {
+        url += '&api_key='+commonServices.apiKey;
+      }        
+      // Request
+      $.ajax({
+        type: 'GET',
+        url: url,
+        dataType: 'json',
+        success: function(data, textStatus, jqXHR) {
+          self.times = data;
+          self.selectorView.update('hours', 'time', data);
+        },
+        error: function(data, textStatus, jqXHR) {
+          alert(i18next.t('selector.error_loading_data'));
+        }
+      });
+    };
+
+    /**
+     * Load Hours
+     */
+    this.loadReturnHours = function(date) { 
+      var self=this;
+      // Build URL
+      var url = commonServices.URL_PREFIX + '/api/booking/frontend/times?date='+date;
+      url += '&transfer_destination_point_id='+$(this.return_origin_point_selector).val();      
+      if (commonServices.apiKey && commonServices.apiKey != '') {
+        url += '&api_key='+commonServices.apiKey;
+      }        
+      // Request
+      $.ajax({
+        type: 'GET',
+        url: url,
+        dataType: 'json',
+        success: function(data, textStatus, jqXHR) {
+          self.returnTimes = data;
+          self.selectorView.update('hours', 'return_time', data);
+        },
+        error: function(data, textStatus, jqXHR) {
+          alert(i18next.t('selector.error_loading_data'));
+        }
+      });
+    };
 
   };
 
@@ -142,18 +229,36 @@ define('SelectorTransfer', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSourc
         this.selectorModel = _selectorModel;
     }
 
+    /**
+     * Date Changed
+     */ 
     this.dateChanged = function (element) {
       var self = this;
-      if (element.id === this.selectorModel.date_id) {
-        if ( $(this.selectorModel.return_date_selector).length > 0 ) {
-          $(this.selectorModel.return_date_selector).datepicker('option', 'minDate', 
-                $(document.getElementById(element.id)).datepicker('getDate'));
-        }
+      if ( $(this.selectorModel.return_date_selector).length > 0 ) {
+        $(this.selectorModel.return_date_selector).datepicker('option', 'minDate', 
+              $(document.getElementById(element.id)).datepicker('getDate'));
       }
+      // Load Hours
+      var date = moment(element.lastVal, this.selectorModel.configuration.dateFormat).format('YYYY-MM-DD');
+      this.selectorModel.loadHours(date);
+      //this.selectorView.loadTime();
     }
 
+    /**
+     * Return Date Changed
+     */
+    this.returnDateChanged = function (element) {
+      var self = this;
+      // Load Hours
+      var date = moment(element.lastVal, this.selectorModel.configuration.dateFormat).format('YYYY-MM-DD');
+      this.selectorModel.loadReturnHours(date);
+      //this.selectorView.loadReturnTime();
+    }          
+
+    /**
+     * Round trip Changed
+     */ 
     this.rountTripChanged = function(event) {
-        debugger;
         var value = event.currentTarget.value;
         if (value === 'true') {
           $(this.selectorModel.return_block_selector).show();
@@ -191,14 +296,6 @@ define('SelectorTransfer', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSourc
 
         // Setup controls
         this.setupSelectorFormTmpl();
-
-        // Setup date settings
-        this.loadDate(this.selectorModel.date_selector);
-        this.loadDate(this.selectorModel.return_date_selector);
-
-        // Setup date settings
-        this.loadTime('time');
-        this.loadTime('return_time');
         
         // Setup origin and destination points
         this.loadOriginPoints('origin_point');
@@ -208,6 +305,16 @@ define('SelectorTransfer', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSourc
         this.loadOriginPoints('return_origin_point');
         if (this.selectorModel.shopping_cart) {
           this.loadDestinationPoints('return_destination_point', false, this.selectorModel.shopping_cart.return_origin_point_id);
+        }
+
+        if (this.selectorModel.shopping_cart) {
+          // Setup date settings
+          this.loadDate();
+          this.loadReturnDate();
+
+          // Setup date settings
+          this.loadTime();
+          this.loadReturnTime();
         }
 
         // Setup number of people
@@ -222,7 +329,6 @@ define('SelectorTransfer', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSourc
         }
 
         // Setup round_trip
-        debugger;
         if (this.selectorModel.shopping_cart && this.selectorModel.shopping_cart.round_trip) {
           $(this.selectorModel.round_trip_selector).filter('[value="true"]').attr('checked', 'true');
           $(this.selectorModel.round_trip_selector).trigger('change');
@@ -250,31 +356,53 @@ define('SelectorTransfer', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSourc
     /**
     * Load date
     */
-    this.loadDate = function(dateSelector) {
+    this.loadDate = function() {
       var date = null;
       // It is a shopping cart
       if (this.selectorModel.shopping_cart) {
-        if (dateSelector === this.selectorModel.date_selector) { // Going
-          date = new Date(this.selectorModel.shopping_cart.date);
+        date = new Date(this.selectorModel.shopping_cart.date);
+      }
+
+      if (date) {
+        $(this.selectorModel.date_selector).datepicker('setDate', date);
+      }
+
+    };
+
+    /**
+    * Load time
+    */
+    this.loadTime = function() {
+
+      var date = moment($(this.selectorModel.date_selector).datepicker('getDate')).format('YYYY-MM-DD');  
+      if (date) {
+        this.selectorModel.loadHours(date);
+      }
+    };
+    
+
+    /**
+    * Load date
+    */
+    this.loadReturnDate = function() {
+      var date = null;
+      // It is a shopping cart
+      if (this.selectorModel.shopping_cart) {
+        if (this.selectorModel.shopping_cart.round_trip && this.selectorModel.shopping_cart.return_date) {
+          date = new Date(this.selectorModel.shopping_cart.return_date);
         }
-        else if (dateSelector === this.selectorModel.return_date_selector) { // Return
-          if (this.selectorModel.shopping_cart.round_trip && this.selectorModel.shopping_cart.return_date) {
-            date = new Date(this.selectorModel.shopping_cart.return_date);
-          }
-          else if (this.selectorModel.shopping_cart.date) { // No return date => Take date
-            date = new Date(this.selectorModel.shopping_cart.date);
-          }
+        else if (this.selectorModel.shopping_cart.date) { // No return date => Take date
+          date = new Date(this.selectorModel.shopping_cart.date);
         }
       }
 
       if (date) {
-        $(dateSelector).datepicker('setDate', date);
+        $(this.selectorModel.return_date_selector).datepicker('setDate', date);
       }
 
       // If it is the return date selector => Setup the min date
-      if (dateSelector === this.selectorModel.return_date_selector &&
-        this.selectorModel.shopping_cart && this.selectorModel.shopping_cart.round_trip) {
-        $(dateSelector).datepicker('option', 'minDate', 
+      if (this.selectorModel.shopping_cart && this.selectorModel.shopping_cart.round_trip) {
+        $(this.selectorModel.return_date_selector).datepicker('option', 'minDate', 
               $(this.selectorModel.date_selector).datepicker('getDate'));
       }
 
@@ -284,28 +412,15 @@ define('SelectorTransfer', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSourc
     /**
     * Load time
     */
-    this.loadTime = function(idSelector) {
+    this.loadReturnTime = function() {
 
-      var self = this;
-
-      var time;
-      if (this.selectorModel.shopping_cart) {
-        time = this.selectorModel.shopping_cart[idSelector];
+      var date = moment($(this.selectorModel.return_date_selector).datepicker('getDate')).format('YYYY-MM-DD');  
+      if (date) {
+        this.selectorModel.loadReturnHours(date);
       }
-
-      if (!this.selectorModel.shopping_cart || !this.selectorModel.shopping_cart[idSelector]) {
-        $(this.selectorModel[idSelector + '_selector']).append('<option value=""> - No selection - </option>');
-      }
-      $.each(this.selectorModel.dataSourceTime, function (i, item) {
-        if (self.selectorModel.shopping_cart && self.selectorModel.shopping_cart[idSelector] === item) {
-          $(self.selectorModel[idSelector + '_selector']).append($('<option selected="selected"></option>').val(item).html(item));
-        } else {
-          $(self.selectorModel[idSelector + '_selector']).append($('<option></option>').val(item).html(item));
-        }
-      });
 
     };
-    
+
     /**
     * Load origin points
     */
@@ -467,13 +582,12 @@ define('SelectorTransfer', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSourc
       });
 
       // Setup date control
-      this.setupDateControl(this.selectorModel.date_selector);
-      this.setupDateControl(this.selectorModel.return_date_selector);
+      this.setupDateControl();
+      this.setupReturnDateControl();
 
       // On Change round trip
       $(this.selectorModel.round_trip_selector).on('change', function(event) {
         self.selectorController.rountTripChanged(event);
-        debugger;
       });
       this.setupFormControl();
       $(this.selectorModel.form_selector).attr('action', commonServices.transferChooseProductUrl);
@@ -486,19 +600,105 @@ define('SelectorTransfer', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSourc
 
     }
 
-    this.setupDateControl = function (selector) {
+    this.setupDateControl = function () {
       var self = this;
 
       $.datepicker.setDefaults( $.datepicker.regional[this.selectorModel.requestLanguage || 'es'] );
       var locale = $.datepicker.regional[this.selectorModel.requestLanguage || 'es'];
       var maxDate = moment().add(365, 'days').tz(this.selectorModel.configuration.timezone).format(this.selectorModel.configuration.dateFormat);
-      $(selector).datepicker({
+      $(this.selectorModel.date_selector).datepicker({
         numberOfMonths:1,
         maxDate: maxDate,
         minDate: new Date(),
         dateFormat: 'dd/mm/yy',
+        beforeShow: function(element, instance) {
+          console.log('before_show Date');
+          if (instance.lastVal) {
+            console.log('lastVal:'+instance.lastVal);
+            var date = moment(instance.lastVal, self.selectorModel.configuration.dateFormat);
+          }
+          else {
+            var date = moment();
+          }
+          self.selectorModel.loadDays(date.year(), date.month()+1);
+        },
+        beforeShowDay: function(date) {
+          if (self.selectorModel.dates == null) {
+            return [false];
+          }
+          var idx = self.selectorModel.dates.findIndex(function(element){
+                      return element == moment(date).format('YYYY-MM-DD');
+                    }); 
+          if (idx > -1) {
+            return [true];
+          }     
+          else {
+            return [false];
+          }              
+        },
+        onChangeMonthYear: function(year, month, instance) {
+           console.log('date changed month : ' + month+ ' year: '+year);
+           // if the user has selected a origin point
+             if ($(self.selectorModel.origin_point_selector).val() != null &&
+                 $(self.selectorModel.origin_point_selector).val() != '') { 
+               self.selectorModel.loadDays(year, month);         
+             }         
+        },
         onSelect: function (value, element) {
           self.selectorController.dateChanged(element);
+        },
+      }, locale);
+
+      // Avoid Google Automatic Translation
+      $('.ui-datepicker').addClass('notranslate');
+    }
+
+    this.setupReturnDateControl = function () {
+      var self = this;
+
+      $.datepicker.setDefaults( $.datepicker.regional[this.selectorModel.requestLanguage || 'es'] );
+      var locale = $.datepicker.regional[this.selectorModel.requestLanguage || 'es'];
+      var maxDate = moment().add(365, 'days').tz(this.selectorModel.configuration.timezone).format(this.selectorModel.configuration.dateFormat);
+      $(this.selectorModel.return_date_selector).datepicker({
+        numberOfMonths:1,
+        maxDate: maxDate,
+        minDate: new Date(),
+        dateFormat: 'dd/mm/yy',
+        beforeShow: function(element, instance) {
+          console.log('before_show ReturnDate');
+          if (instance.lastVal) {
+            console.log('lastVal:'+instance.lastVal);
+            var date = moment(instance.lastVal, self.selectorModel.configuration.dateFormat);
+          }
+          else {
+            var date = moment();
+          }
+          self.selectorModel.loadReturnDays(date.year(), date.month()+1);
+        },
+        beforeShowDay: function(date) {
+          if (self.selectorModel.returnDates == null) {
+            return [false];
+          }          
+          var idx = self.selectorModel.returnDates.findIndex(function(element){
+                      return element == moment(date).format('YYYY-MM-DD');
+                    }); 
+          if (idx > -1) {
+            return [true];
+          }     
+          else {
+            return [false];
+          }              
+        },
+        onChangeMonthYear: function(year, month, instance) {
+           console.log('return date changed month : ' + month+ ' year: '+year);
+           // if the user has selected a origin point
+             if ($(self.selectorModel.return_origin_point_selector).val() != null &&
+                 $(self.selectorModel.return_origin_point_selector).val() != '') { 
+               self.selectorModel.loadReturnDays(year, month);         
+             }         
+        },
+        onSelect: function (value, element) {
+          self.selectorController.returnDateChanged(element);
         },
       }, locale);
 
@@ -628,6 +828,79 @@ define('SelectorTransfer', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSourc
         },
         errorClass : 'form-reservation-error'
      });
+    }
+
+    // ------------------------ Update GUI ------------------------------------
+
+    /**
+     * Update the GUI when selector fields changes
+     */
+    this.update = function(action, id) {
+
+      var self = this;
+
+      switch (action) {
+        case 'days':
+          if (id == 'date') {
+            $(this.selectorModel.date_selector).datepicker('refresh');
+            // Enable the control
+            if ($(this.selectorModel.date_selector).attr('disabled')) {  
+              $(this.selectorModel.date_selector).attr('disabled', false);
+            }              
+          }
+          else if (id == 'return_date') {
+            $(this.selectorModel.return_date_selector).datepicker('refresh');
+          }
+          break;
+        case 'hours':
+          if (id == 'time') {
+            var dataSource = new MemoryDataSource(this.selectorModel.times);
+            var time = this.selectorModel.shopping_cart ? this.selectorModel.shopping_cart.time : null;
+            if (time != null && this.selectorModel.times.indexOf(time) == -1) {
+              time = null;
+            }            
+            var timeSelector = new SelectSelector(this.selectorModel.time_id,
+                                                  dataSource, 
+                                                  time, 
+                                                  true, 
+                                                  'hh:mm',
+                                                  function() {
+                                                      // After load data => Select current value
+                                                      if (time != null) {
+                                                        $(self.selectorModel.time_selector).val(time);
+                                                      }
+                                                  } );
+            // Enable the control
+            if ($(this.selectorModel.time_selector).attr('disabled')) {   
+              $(this.selectorModel.time_selector).attr('disabled', false);
+            } 
+
+          }
+          else if (id == 'return_time') {
+            var dataSource = new MemoryDataSource(this.selectorModel.returnTimes);
+            var returnTime = this.selectorModel.shopping_cart ? this.selectorModel.shopping_cart.return_time : null;
+            if (returnTime != null && this.selectorModel.returnTimes.indexOf(returnTime) == -1) {
+              returnTime = null;
+            }
+            var pickupTime = new SelectSelector(this.selectorModel.return_time_id,
+                                                dataSource, 
+                                                returnTime, 
+                                                true, 
+                                                'hh:mm',
+                                                function() {
+                                                    // After load data => Select current value
+                                                    if (returnTime != null) {
+                                                      $(self.selectorModel.return_time_selector).val(returnTime);
+                                                    }
+                                                } );
+            // Enable the control
+            if ($(this.selectorModel.return_time_selector).attr('disabled')) {   
+              $(this.selectorModel.return_time_selector).attr('disabled', false);
+            }            
+          }
+          break;
+      }
+
     }
 
   };
