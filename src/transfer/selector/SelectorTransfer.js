@@ -45,6 +45,7 @@ define('SelectorTransfer', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSourc
     this.round_trip_selector = 'input[name=round_trip]';
     this.return_block_id = 'return_block';
     this.return_block_selector = '#return_block';
+    this.return_origin_destination_block_selector = '#return_origin_destination_block';
 
     // Return Date
     this.return_date_id = 'return_date';
@@ -256,21 +257,27 @@ define('SelectorTransfer', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSourc
     this.rountTripChanged = function(event) {
         var value = event.currentTarget.value;
         if (value === 'true') {
-          // Show the return block
-          $(this.selectorModel.return_block_selector).show();
           // Setup the return date min value as the date 
           if ($(this.selectorModel.date_selector).datepicker('getDate')) {
             $(this.selectorModel.return_date_selector).datepicker('option', 'minDate', 
                 $(this.selectorModel.date_selector).datepicker('getDate'));
           }
-          // Load return origin points (if not modifing selector and not return origin point value)
-          // That is a new selector and first time changed to round trip
-          if (!this.selectorModel.shopping_cart && 
-              ($(this.selectorModel.return_origin_point_selector).val() === null || $(this.selectorModel.return_origin_point_selector).val() === '') ){
-            this.selectorView.loadReturnOriginPoints();
+          // Show the return block
+          $(this.selectorModel.return_block_selector).show();
+          if (this.selectorModel.configuration.transfer_allow_select_return_origin_destination) {
+            $(this.selectorModel.return_origin_destination_block_selector).show();
+            // Load return origin points (if not modifing selector and not return origin point value)
+            // That is a new selector and first time changed to round trip
+            if (!this.selectorModel.shopping_cart && 
+                ($(this.selectorModel.return_origin_point_selector).val() === null || $(this.selectorModel.return_origin_point_selector).val() === '') ){
+              this.selectorView.loadReturnOriginPoints();
+            }
           }
         } else {
           $(this.selectorModel.return_block_selector).hide();
+          if (this.selectorModel.configuration.transfer_allow_select_return_origin_destination) {
+            $(this.selectorModel.return_origin_destination_block_selector).hide();
+          }
         }      
     }
 

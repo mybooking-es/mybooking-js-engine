@@ -2718,6 +2718,8 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
       selectActivityCategory: false,
       selectActivityDestination: false,
       selectActivityRentalLocation: false,
+      // Transfer
+      transfer_allow_select_return_origin_destination: false,
       formatExtraAmount: function(i18next, oneUnitPrice, priceCalculation, days, hours, amount, currencySymbol, decimals) {
 
         var unitAmountFormatted = this.formatCurrency(oneUnitPrice, currencySymbol, decimals);
@@ -2866,6 +2868,8 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
              mybookingSettings.data.selectActivityCategory = data.select_activity_category;
              mybookingSettings.data.selectActivityDestination = data.select_activity_destination;
              mybookingSettings.data.selectActivityRentalLocation = data.select_activity_rental_location;
+             // Transfer
+             mybookingSettings.data.transfer_allow_select_return_origin_destination = data.transfer_allow_select_return_origin_destination;
              // Customer access
              if (typeof data.engine_customer_access !== 'undefined') {
                mybookingSettings.data.engineCustomerAccess = true;
@@ -31493,6 +31497,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
     this.round_trip_selector = 'input[name=round_trip]';
     this.return_block_id = 'return_block';
     this.return_block_selector = '#return_block';
+    this.return_origin_destination_block_selector = '#return_origin_destination_block';
 
     // Return Date
     this.return_date_id = 'return_date';
@@ -31704,20 +31709,27 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
     this.rountTripChanged = function(event) {
         var value = event.currentTarget.value;
         if (value === 'true') {
-          // Show the return block
-          $(this.selectorModel.return_block_selector).show();
           // Setup the return date min value as the date 
           if ($(this.selectorModel.date_selector).datepicker('getDate')) {
             $(this.selectorModel.return_date_selector).datepicker('option', 'minDate', 
                 $(this.selectorModel.date_selector).datepicker('getDate'));
           }
-          // Load return origin points (if not modify dates)
-          if (!this.selectorModel.shopping_cart && 
-              ($(this.selectorModel.return_origin_point_selector).val() === null || $(this.selectorModel.return_origin_point_selector).val() === '') ){
-            this.selectorView.loadReturnOriginPoints();
+          // Show the return block
+          $(this.selectorModel.return_block_selector).show();
+          if (this.selectorModel.configuration.transfer_allow_select_return_origin_destination) {
+            $(this.selectorModel.return_origin_destination_block_selector).show();
+            // Load return origin points (if not modifing selector and not return origin point value)
+            // That is a new selector and first time changed to round trip
+            if (!this.selectorModel.shopping_cart && 
+                ($(this.selectorModel.return_origin_point_selector).val() === null || $(this.selectorModel.return_origin_point_selector).val() === '') ){
+              this.selectorView.loadReturnOriginPoints();
+            }
           }
         } else {
           $(this.selectorModel.return_block_selector).hide();
+          if (this.selectorModel.configuration.transfer_allow_select_return_origin_destination) {
+            $(this.selectorModel.return_origin_destination_block_selector).hide();
+          }
         }      
     }
 
