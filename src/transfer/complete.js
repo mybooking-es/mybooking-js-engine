@@ -94,6 +94,7 @@ require(['jquery',
                  model.shopping_cart = data.shopping_cart;
                  model.extras = data.extras;
                  model.sales_process = data.sales_process;
+                 view.prepareReservationForm();
                  view.updateShoppingCart();
                  // Hide the loader
                  commonLoader.hide();
@@ -461,9 +462,9 @@ require(['jquery',
       if (model.configuration.engineCustomerAccess) {
         this.setupLoginForm();
       }
-      else {
-        this.prepareReservationForm();
-      }
+      //else {
+      //  this.prepareReservationForm();
+      //}
       // Load shopping cart
       model.loadShoppingCart();
   	},
@@ -472,7 +473,7 @@ require(['jquery',
      * Setup the login form
      */
     setupLoginForm: function() {
-      this.prepareReservationForm();
+      //this.prepareReservationForm();
       var self = this;
       // Complete hide
       $('#mybooking_transfer_form-reservation').hide();
@@ -610,60 +611,16 @@ require(['jquery',
 
       // The reservation form fields are defined in a micro-template
       var locale = model.requestLanguage;
-      var localeReservationFormScript = 'script_renting_complete_form_tmpl_'+locale;
+      var localeReservationFormScript = 'script_transfer_complete_form_tmpl_'+locale;
       if (locale != null && document.getElementById(localeReservationFormScript)) {
-        var reservationForm = tmpl(localeReservationFormScript)({configuration: model.configuration});
-        $('form[name=reservation_form]').html(reservationForm);           
+        var reservationForm = tmpl(localeReservationFormScript)({configuration: model.configuration,
+                                                                 shopping_cart: model.shopping_cart});
+        $('form[name=mybooking_transfer_reservation_form]').html(reservationForm);           
       }
-      else if (document.getElementById('script_renting_complete_form_tmpl')) {
-        var reservationForm = tmpl('script_renting_complete_form_tmpl')({configuration: model.configuration});
-        $('form[name=reservation_form]').html(reservationForm);                                                                    
-      }
-
-      // Configure address country
-
-      // Load countries
-      var countries = i18next.t('common.countries', {returnObjects: true });
-      if (countries instanceof Object) {
-        var countryCodes = Object.keys(countries);
-        var countriesArray = countryCodes.map(function(value){ 
-                                return {id: value, text: countries[value], description: countries[value]};
-                             });
-      } 
-      else {
-        var countriesArray = [];
-      }
-      var values = ['']; 
-
-      if (commonServices.jsUseSelect2) {
-        // Setup country selector
-        var selectors = ['select[name=country]'];
-        for (var idx=0; idx<selectors.length; idx++) { 
-          $countrySelector = $(selectors[idx]);    
-          if ($countrySelector.length > 0 && typeof values[idx] !== 'undefined') {
-            $countrySelector.select2({
-              width: '100%',
-              theme: 'bootstrap4',                  
-              data: countriesArray
-            });
-            // Assign value
-            var value = (values[idx] !== null && values[idx] !== '' ? values[idx] : '');
-            $countrySelector.val(values[idx]);
-            $countrySelector.trigger('change');
-          }
-        }
-      }
-      else {
-        // Setup country selector
-        var selectors = ['country'];
-        for (var idx=0; idx<selectors.length; idx++) { 
-          if (document.getElementById(selectors[idx])) {
-            var countriesDataSource = new MemoryDataSource(countriesArray);
-            var countryModel = (values[idx] == null ? '' : values[idx])
-            var selectorModel = new SelectSelector(selectors[idx],
-                countriesDataSource, countryModel, true, i18next.t('complete.reservationForm.select_country'));
-          }
-        }
+      else if (document.getElementById('script_transfer_complete_form_tmpl')) {
+        var reservationForm = tmpl('script_transfer_complete_form_tmpl')({configuration: model.configuration,
+                                                                          shopping_cart: model.shopping_cart});
+        $('form[name=mybooking_transfer_reservation_form]').html(reservationForm);                                                                    
       }
 
     },
@@ -730,7 +687,43 @@ require(['jquery',
                         required: '#account_password:visible',
                         pwcheck: '#account_password:visible',
                         minlength: 8
-                    }
+                    },
+                    'detailed_origin_address': {
+                        required: '#detailed_origin_address:visible'
+                    },
+                    'detailed_origin_flight_number': {
+                        required: '#detailed_origin_flight_number:visible'
+                    },
+                    'detailed_origin_flight_estimated_time': {
+                        required: '#detailed_origin_flight_estimated_time:visible'
+                    },
+                    'detailed_destination_address': {
+                        required: '#detailed_destination_address:visible'
+                    },
+                    'detailed_destination_flight_number': {
+                        required: '#detailed_destination_flight_number:visible'
+                    },
+                    'detailed_destination_flight_estimated_time': {
+                        required: '#detailed_destination_flight_estimated_time:visible'
+                    },
+                    'detailed_return_origin_address': {
+                        required: '#detailed_return_origin_address:visible'
+                    },
+                    'detailed_return_origin_flight_number': {
+                        required: '#detailed_return_origin_flight_number:visible'
+                    },
+                    'detailed_return_origin_flight_estimated_time': {
+                        required: '#detailed_return_origin_flight_estimated_time:visible'
+                    },
+                    'detailed_return_destination_address': {
+                        required: '#detailed_return_destination_address:visible'
+                    },
+                    'detailed_return_destination_flight_number': {
+                        required: '#detailed_return_destination_flight_number:visible'
+                    },
+                    'detailed_return_destination_flight_estimated_time': {
+                        required: '#detailed_return_destination_flight_estimated_time:visible'
+                    },                                                                                                    
                 },
 
                 messages : {
@@ -788,7 +781,42 @@ require(['jquery',
                         'pwcheck': i18next.t('complete.reservationForm.validations.passwordCheck'),
                         'minlength': i18next.t('complete.reservationForm.validations.minLength', {minlength: 8}),
                     },                     
-
+                    'detailed_origin_address': {
+                        required: i18next.t('complete.reservationForm.validations.fieldRequired')
+                    },
+                    'detailed_origin_flight_number': {
+                        required: i18next.t('complete.reservationForm.validations.fieldRequired')
+                    },
+                    'detailed_origin_flight_estimated_time': {
+                        required: i18next.t('complete.reservationForm.validations.fieldRequired')
+                    },
+                    'detailed_destination_address': {
+                        required: i18next.t('complete.reservationForm.validations.fieldRequired')
+                    },
+                    'detailed_destination_flight_number': {
+                        required: i18next.t('complete.reservationForm.validations.fieldRequired')
+                    },
+                    'detailed_destination_flight_estimated_time': {
+                        required: i18next.t('complete.reservationForm.validations.fieldRequired')
+                    },
+                    'detailed_return_origin_address': {
+                        required: i18next.t('complete.reservationForm.validations.fieldRequired')
+                    },
+                    'detailed_return_origin_flight_number': {
+                        required: i18next.t('complete.reservationForm.validations.fieldRequired')
+                    },
+                    'detailed_return_origin_flight_estimated_time': {
+                        required: i18next.t('complete.reservationForm.validations.fieldRequired')
+                    },
+                    'detailed_return_destination_address': {
+                        required: i18next.t('complete.reservationForm.validations.fieldRequired')
+                    },
+                    'detailed_return_destination_flight_number': {
+                        required: i18next.t('complete.reservationForm.validations.fieldRequired')
+                    },
+                    'detailed_return_destination_flight_estimated_time': {
+                        required: i18next.t('complete.reservationForm.validations.fieldRequired')
+                    },
                 },
 
                 errorPlacement: function (error, element) {
@@ -828,7 +856,7 @@ require(['jquery',
       // Update the summary
       this.updateShoppingCartSummary();
       // Update the extras
-      // this.updateExtras(); // TODO
+      this.updateExtras();
       // Update the payment
       this.updatePayment();
 
@@ -938,7 +966,7 @@ require(['jquery',
                                                       extrasInShoppingCart: model.getShoppingCartExtrasQuantities(),
                                                       i18next: i18next,
                                                       shopping_cart: model.shopping_cart});
-          $('#extras_listing').html(result);
+          $('#mybooking_transfer_extras_listing').html(result);
 
           // == Setup events
 
