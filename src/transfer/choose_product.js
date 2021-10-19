@@ -379,34 +379,11 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
      * Select producto button click
      */
     selectProductBtnClick: function(productCode) {
-      transferEngineMediator.onChooseSingleProduct( productCode, 
-                                                model.products, 
-                                                model.shopping_cart
-                                              );
+      transferEngineMediator.onChooseVehicle( productCode, 
+                                              model.products, 
+                                              model.shopping_cart
+                                            );
         
-    },
-
-    /**
-     * Product quantity changed
-     */
-    productQuantityChanged: function(productCode, newQuantity) {
-
-      model.selectProduct(productCode, newQuantity);
-
-    },
-
-    /**
-     * Multiple products next button click
-     */
-    multipleProductsNextButtonClick: function() {
-
-      if (model.shopping_cart.items.length == 0) {
-        alert(i18next.t('chooseProduct.selectProduct.productNotSelected'));
-      }
-      else {
-        transferEngineMediator.onChooseMultipleProducts( model.shopping_cart );
-      }
-
     },
 
   };
@@ -496,15 +473,6 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
           $('.btn-choose-product').bind('click', function() {
             controller.selectProductBtnClick($(this).attr('data-product'));
           });
-          // Bind the events to manage multiple products
-          $('.select-choose-product').bind('change', function() {
-              var productCode = $(this).attr('data-value');
-              var productQuantity = $(this).val();
-              controller.productQuantityChanged(productCode, productQuantity);
-          });        
-          $('#go_to_complete').bind('click', function() {
-            controller.multipleProductsNextButtonClick();
-          });
           // Bind the event to show detailed product
           $('.js-product-info-btn').bind('click', function(){
             controller.productDetailIconClick($(this).attr('data-product'));
@@ -557,12 +525,12 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
   };
 
   // Configure the delegate
-  var rentChooseProduct = {
+  var transferChooseVehicle = {
     model: model,
     controller: controller,
     view: view
   }
-  transferEngineMediator.setChooseProduct( rentChooseProduct );
+  transferEngineMediator.setChooseVehicle( transferChooseVehicle );
 
   // The loader is show on start and hidden after the result of
   // the search has been rendered (in model.loadShoppingCart)

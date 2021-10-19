@@ -65,11 +65,13 @@ module.exports = [
               "jQuery":"jquery",
               "window.jQuery":"jquery"
             })
-      ],
+      ]/*,
       optimization: {
           // We no not want to minimize our code.
           minimize: false
       }
+      */
+      
       
 
    }

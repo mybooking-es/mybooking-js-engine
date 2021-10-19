@@ -10,22 +10,18 @@ define('transferEngineMediator', ['jquery', 'YSDEventTarget'],
 
     // -- Delegates
 
-    chooseSingleProductDelegate: null,
-    chooseMultipleProductsDelegate: null,
-    chooseExtrasDelegate: null,
+    chooseVehicleDelegate: null,
     checkoutDelegate: null,
     newReservationPaymentDelegate: null,
     existingReservationPaymentDelegate: null,
 
     // -- Rent engine components
 
-    chooseProduct: null,
-    chooseExtras: null,
+    chooseVehicle: null,
     complete: null,
     summary: null,
     myReservation: null,
-    productCalendar: null,
-
+ 
     
     addListener: function(type, listener) { /* addListener */
        this.events.addEventListener(type, listener);  
@@ -44,15 +40,8 @@ define('transferEngineMediator', ['jquery', 'YSDEventTarget'],
     /**
      * Set choose product
      */
-    setChooseProduct( chooseProduct ) {
-       this.chooseProduct = chooseProduct;
-    },
-
-    /**
-     * Set choose extras 
-     */
-    setChooseExtras( chooseExtras ) {
-       this.chooseExtras = chooseExtras;
+    setChooseVehicle( chooseVehicle ) {
+       this.chooseVehicle = chooseVehicle;
     },
 
     /**
@@ -76,10 +65,6 @@ define('transferEngineMediator', ['jquery', 'YSDEventTarget'],
        this.myReservation = myReservation;
     },
 
-    setProductCalendar( productCalendar ) {
-       this.productCalendar = productCalendar;
-    },       
-
     // -----------------------------------
 
     /**
@@ -87,16 +72,8 @@ define('transferEngineMediator', ['jquery', 'YSDEventTarget'],
      */
     setupDelegate: function( delegate ) {
 
-      if (typeof delegate.chooseSingleProduct === 'function') {
-        this.chooseSingleProductDelegate = delegate.chooseSingleProduct;
-      }
-
-      if (typeof delegate.chooseMultipleProducts === 'function') {
-        this.chooseMultipleProductsDelegate = delegate.chooseMultipleProducts;
-      }
-
-      if (typeof delegate.chooseExtras === 'function') {
-        this.chooseExtrasDelegate = delegate.chooseExtras;
+      if (typeof delegate.chooseVehicle === 'function') {
+        this.chooseVehicleDelegate = delegate.chooseVehicle;
       }
 
       if (typeof delegate.checkout === 'function') {
@@ -118,35 +95,35 @@ define('transferEngineMediator', ['jquery', 'YSDEventTarget'],
     // --------- Choose Single Products
 
     /**
-     * Before choose single product => Act to avoid the selection
+     * Before choose vehicle => Act to avoid the selection
      *
      * == Parameters::
      *
-     * @productCode:: The selected product code
-     * @products:: The products detail
+     * @vehicleId:: The selected vehicle id
+     * @vehicles:: The vehicles detail
      * @shoppingCart:: The current shopping cart
      *
      */
-    onChooseSingleProduct: function ( productCode, 
-                                      products, 
-                                      shoppingCart ) {
+    onChooseVehicle: function ( vehicleId, 
+                                vehicles, 
+                                shoppingCart ) {
 
       console.log('transferEngineMediator_chooseSingleProduct');
 
-      if (typeof this.chooseSingleProductDelegate === 'function') {
+      if (typeof this.chooseVehicleDelegate === 'function') {
         // Prepare data
-        var selectedProduct = products.find(function(element) { return element.code === productCode });
+        var selectedVehicle = vehicles.find(function(element) { return element.id === vehicleId });
         var data = { 
-                      productCode: productCode,
-                      product: selectedProduct,
-                      products: products,
+                      vehicleId: vehicleId,
+                      product: selectedVehicle,
+                      vehicles: vehicles,
                       shoppingCart: shoppingCart,
                    };
         // Invoke delegate
-        this.chooseSingleProductDelegate( data, this );
+        this.chooseVehicleDelegate( data, this );
       }
       else {
-        this.continueSelectSingleProduct( productCode );
+        this.continueSelectVehicle( vehicleId );
       }
 
     },
@@ -154,89 +131,13 @@ define('transferEngineMediator', ['jquery', 'YSDEventTarget'],
     /**
      * Select the product
      */
-    continueSelectSingleProduct: function( productCode ) {
+    continueSelectVehicle: function( vehicleId ) {
 
-      if (this.chooseProduct != null) {
-        this.chooseProduct.model.selectProduct( productCode, 1 );
+      if (this.chooseVehicle != null) {
+        this.chooseVehicle.model.selectProduct( vehicleId, 1 );
       }
 
     },
-
-    // --------- Choose Multiple Products
-
-    /**
-     * Choose multiple products => Act to avoid pass to the next step
-     * 
-     * == Parameters::
-     *
-     * @shoppingCart:: The shopping cart
-     *
-     */
-    onChooseMultipleProducts: function( shoppingCart ) {
-
-      console.log('transferEngineMediator_chooseMultipleProducts');
-
-      if (typeof this.chooseMultipleProductsDelegate === 'function') {
-        var data = { 
-                      shoppingCart: shoppingCart
-                   }
-        this.chooseMultipleProductsDelegate( data, this );
-      } 
-      else {
-        this.continueSelectMultipleProducts( );
-      }
-
-    },
-
-    /**
-     * Continue Select Multiple Products
-     */
-    continueSelectMultipleProducts: function() {
-
-      if ( this.chooseProduct != null ) {
-        this.chooseProduct.view.gotoNextStep();
-      }
-
-    },
-
-    // --------- Choose Extras
-
-    /**
-     * Choose Extras
-     *
-     * == Parameters::
-     *
-     * @shoppingCart:: The shopping cart
-     *
-     */
-    onChooseExtras: function( shoppingCart ) {
-
-      console.log('transferEngineMediator_chooseExtras');
-
-      if (typeof this.chooseExtrasDelegate === 'function') {
-        var data = { 
-                      shoppingCart: shoppingCart
-                   }
-        this.chooseExtrasDelegate( data, this );
-      }
-      else {
-        this.continueSelectExtras();
-      }
-
-    },
-
-    /**
-     * Continue select extras
-     */
-    continueSelectExtras: function() {
-
-      if (this.chooseExtras != null) {
-        this.chooseExtras.view.gotoNextStep();
-      }
-
-
-    },
-
 
     // --------- Complete
 
@@ -272,7 +173,7 @@ define('transferEngineMediator', ['jquery', 'YSDEventTarget'],
      */
     continueCheckout: function() {
 
-      if (this.complete != null) {
+      if (this.complete != null) {
         this.complete.model.sendBookingRequest();
       }
 

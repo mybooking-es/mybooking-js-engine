@@ -242,3 +242,11 @@ $(document).ready(function () {
         require('./transfer/summary.js');
     }
 });
+
+// Transfer Page Reservation JS
+$(document).ready(function () {
+    if ($('body').hasClass('mybooking-transfer-reservation')) {
+        require('./transfer/mediator/transferEngineMediator.js');                
+        require('./transfer/reservation.js');
+    }
+});

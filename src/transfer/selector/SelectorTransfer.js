@@ -298,10 +298,23 @@ define('SelectorTransfer', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSourc
      * Init
      */
     this.init = function() {
+
         var self = this;
 
         // Setup request language and settings
         this.selectorModel.requestLanguage = commonSettings.language(document.documentElement.lang);
+
+        // Initialize i18next for translations
+        i18next.init({  
+                        lng: this.selectorModel.requestLanguage,
+                        resources: commonTranslations
+                     }, 
+                     function (error, t) {
+                        // https://github.com/i18next/jquery-i18next#initialize-the-plugin
+                        //jqueryI18next.init(i18next, $);
+                        // Localize UI
+                        //$('.nav').localize();
+                     });
 
         // Setup controls
         this.setupSelectorFormTmpl();
@@ -361,7 +374,7 @@ define('SelectorTransfer', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSourc
               dataSource,
               value, 
               true, 
-              i18next.t('selector.select_pickup_place'));
+              i18next.t('transfer.selectPickupPlace'));
     }
 
     /**
@@ -401,7 +414,7 @@ define('SelectorTransfer', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSourc
               dataSource,
               value, 
               true, 
-              i18next.t('selector.select_pickup_place'));
+              i18next.t('transfer.selectDropOffPlace'));
 
     }
 
@@ -469,7 +482,7 @@ define('SelectorTransfer', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSourc
               dataSource,
               value, 
               true, 
-              i18next.t('selector.select_pickup_place'), function(){
+              i18next.t('transfer.selectPickupPlace'), function(){
                 // Trigger as if the element was changed 
                 if (self.selectorModel.shopping_cart == null && value != null) {
                   $(self.selectorModel.return_origin_point_selector).val(value);
@@ -515,7 +528,7 @@ define('SelectorTransfer', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSourc
               dataSource,
               value, 
               true, 
-              i18next.t('selector.select_pickup_place'));
+              i18next.t('transfer.selectDropOffPlace'));
 
     }
 

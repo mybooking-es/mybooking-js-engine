@@ -464,6 +464,8 @@ define('commonTranslations', [], function() {
               }
             },
             transfer: {
+              selectPickupPlace: 'Select pickup place',
+              selectDropOffPlace: 'Select dropoff place',
               chooseVehicle: {
                 'vehicleFound': '<strong>{{available}}</strong> available vehicles found',
                 'vehicleNotFound': 'We are sorry. Not available vehicles found'
@@ -933,6 +935,8 @@ define('commonTranslations', [], function() {
               }
             },
             transfer: {
+              selectPickupPlace: 'Seleccionar lugar de origen',
+              selectDropOffPlace: 'Seleccionar lugar de destino',
               chooseVehicle: {
                 'vehicleFound': 'Hemos encontrado <strong>{{available}}</strong> vehículos disponibles',
                 'vehicleNotFound': 'Lo sentimos. No hemos encontrados vehículos disponibles en esas fechas'
@@ -1402,6 +1406,8 @@ define('commonTranslations', [], function() {
           }          
         },
         transfer: {
+          selectPickupPlace: 'Escollir punt d&#39;origen',
+          selectDropOffPlace: 'Escollir punt de destí',
           chooseVehicle: {
             'vehicleFound': 'Hem trobat <strong>{{available}}</strong> vehicles disponibles',
             'vehicleNotFound': 'Ho sentim. No em trobat cap vehicle disponible'
@@ -1872,6 +1878,8 @@ define('commonTranslations', [], function() {
 
         },
         transfer: {
+          selectPickupPlace: 'Abholort auswählen',
+          selectDropOffPlace: 'Abgabeort auswählen',          
           chooseVehicle: {
             'vehicleFound': '<strong>{{available}}</strong>verfügbare Fahrzeuge gefunden',
             'vehicleNotFound': 'Es tut uns leid. Nicht verfügbare Fahrzeuge gefunden'
@@ -2341,6 +2349,8 @@ define('commonTranslations', [], function() {
           }          
         },
         transfer: {
+          selectPickupPlace: 'Sélectionnez le lieu de prise en charge',
+          selectDropOffPlace: 'Sélectionnez le lieu de dépôt',               
           chooseVehicle: {
             'vehicleFound': '<strong>{{available}}</strong> véhicules disponibles trouvés',
             'vehicleNotFound': 'Nous sommes désolés. Véhicules non disponibles trouvés'
@@ -2820,6 +2830,8 @@ define('commonTranslations', [], function() {
 
         },
         transfer: {
+          selectPickupPlace: 'Seleziona il luogo di ritiro',
+          selectDropOffPlace: 'Seleziona il luogo di riconsegna',          
           chooseVehicle: {
             'vehicleFound': '<strong>{{available}}</strong> veicoli disponibili trovati',
             'vehicleNotFound': 'Siamo spiacenti. Veicoli non disponibili trovati'
@@ -3032,6 +3044,8 @@ define('commonTranslations', [], function() {
             }
           },
           transfer: {
+            selectPickupPlace: 'Выберите место получения',
+            selectDropOffPlace: 'Выберите место возврата',              
             chooseVehicle: {
               'vehicleFound': 'Найдено <strong>{{available}}</strong> доступных транспортных средства',
               'vehicleNotFound': 'Мы сожалеем. Не найдены доступные автомобили'

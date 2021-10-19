@@ -21,7 +21,7 @@ define(function() {
     this.controller = controller;
     this.selectControlId = selectControlId;
     this.nullOption = nullOption || false;
-    if (nullOptionText) {
+    if (nullOptionText && nullOptionText != null) {
       this.nullOptionText = nullOptionText;
     }
     else {
