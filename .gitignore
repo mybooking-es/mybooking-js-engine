@@ -85,6 +85,9 @@ jspm_packages/
 # Lerna
 lerna-debug.log
 
+# Configuration - development
+config
+
 # System Files
 .DS_Store
 Thumbs.db

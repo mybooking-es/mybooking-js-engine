@@ -18,6 +18,17 @@ Funcionalidades:
 
 `$ npm install`
 
+## Configuración
+
+Crear un fichero config/env.json con el siguiente contenido para indicar la conexión
+con el API
+
+{
+  "baseURL": "http://mbctransfer.test",
+  "apiKey": "",
+  "port": 8000
+}
+
 ## Construir
 
 `$ npm run build`
