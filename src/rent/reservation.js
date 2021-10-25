@@ -83,21 +83,10 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
                contentType : 'application/json; charset=utf-8',
                crossDomain: true,
                success: function(data, textStatus, jqXHR) {
-                 /*
-                 if (model.requestLanguage != data.booking.customer_language &&
-                     data.booking.customer_language != null &&
-                     data.booking.customer_language != '') {
-                   window.location.href = data.booking.customer_language + commonServices.summaryUrl.startsWith('/') ? '' : '/' +
-                                          commonServices.summaryUrl + '?id=' + data.booking.free_access_id;
-                 }
-                 else {
-                 */ 
-                   model.booking = data.booking;
-                   model.bookingFreeAccessId = data.booking.free_access_id;
-                   model.sales_process = data.sales_process;
-                   view.updateBooking();
-                 //}
-
+                 model.booking = data.booking;
+                 model.bookingFreeAccessId = data.booking.free_access_id;
+                 model.sales_process = data.sales_process;
+                 view.updateBooking();
                },
                error: function(data, textStatus, jqXHR) {
                  commonLoader.hide(); 

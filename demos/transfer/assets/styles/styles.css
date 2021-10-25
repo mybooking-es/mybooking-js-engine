@@ -1,0 +1,178 @@
+@import url('https://fonts.googleapis.com/css?family=Open+Sans&display=swap');
+
+body {
+  font-family: 'Open Sans', sans-serif;
+}
+
+@media screen and (min-width: 1024px) {
+	.container {
+		max-width: 960px;
+	}
+}
+
+/* Override jqueryui styles to adapt to Bulma */
+
+input[type="text"], input[type="password"], .ui-autocomplete-input, textarea, .uneditable-input {
+    display: inline-block;
+		padding-bottom: calc(.375em - 1px);
+    padding-left: calc(.625em - 1px);
+    padding-right: calc(.625em - 1px);
+    padding-top: calc(.375em - 1px);
+    font-size: 1rem;
+    line-height: 1.5;
+
+		border-color: #dbdbdb;
+    border-radius: 4px;
+    color: #363636;
+
+}
+
+.form-reservation-error {
+
+  color: hsl(348, 100%, 61%);
+
+}
+
+/** Date Range picker **/
+
+.bg-warning {
+   background-color: #ffbe4a;
+   color: #000000 !important;
+}
+
+.bg-danger {
+   background-color: #f18484;
+   color: #ffffff !important;
+}
+
+.not-selectable-day {
+   color: #ccc !important;
+}
+
+.date-picker-wrapper .month-wrapper table .day {
+  font-size: 14px;
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
+.month-name .month-element {
+  font-size: 24px;
+}
+.date-picker-wrapper .month-wrapper table .caption {
+  height: 90px;
+}  
+.date-picker-wrapper .month-wrapper table .week-name {
+  height: 40px;
+}  
+.week-name th {
+  font-size: 14px; 
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+.date-picker-wrapper {
+  border: none;
+  background-color: none;
+  padding: 0;
+}
+.date-picker-wrapper .month-wrapper {
+  border: none;
+}
+.date-picker-wrapper.no-topbar {
+  padding-top: 0;
+}
+.date-picker-wrapper.no-shortcuts {
+  padding-bottom: 0;
+}
+.date-picker-wrapper{
+  background-color: transparent;
+}
+.date-picker-wrapper .footer {  
+  background-color: transparent;
+  padding-bottom: 0px;
+}
+.date-picker-wrapper .gap {
+  height: 0px !important;
+}
+.disabled-picker {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+/* Loader */
+.gooey {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 142px;
+  height: 40px;
+  margin: -20px 0 0 -71px;
+  background: #fff;
+  filter: contrast(20);
+}
+.gooey .dot {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  top: 12px;
+  left: 15px;
+  filter: blur(4px);
+  background: #000;
+  border-radius: 50%;
+  transform: translateX(0);
+  animation: dot 2.8s infinite;
+}
+.gooey .dots {
+  transform: translateX(0);
+  margin-top: 12px;
+  margin-left: 31px;
+  animation: dots 2.8s infinite;
+}
+.gooey .dots span {
+  display: block;
+  float: left;
+  width: 16px;
+  height: 16px;
+  margin-left: 16px;
+  filter: blur(4px);
+  background: #000;
+  border-radius: 50%;
+}
+@-moz-keyframes dot {
+  50% {
+    transform: translateX(96px);
+  }
+}
+@-webkit-keyframes dot {
+  50% {
+    transform: translateX(96px);
+  }
+}
+@-o-keyframes dot {
+  50% {
+    transform: translateX(96px);
+  }
+}
+@keyframes dot {
+  50% {
+    transform: translateX(96px);
+  }
+}
+@-moz-keyframes dots {
+  50% {
+    transform: translateX(-31px);
+  }
+}
+@-webkit-keyframes dots {
+  50% {
+    transform: translateX(-31px);
+  }
+}
+@-o-keyframes dots {
+  50% {
+    transform: translateX(-31px);
+  }
+}
+@keyframes dots {
+  50% {
+    transform: translateX(-31px);
+  }
+}

@@ -63,6 +63,9 @@ define('commonSettings', ['jquery','commonServices','commonLoader','commonTransl
       selectActivityCategory: false,
       selectActivityDestination: false,
       selectActivityRentalLocation: false,
+      // Transfer
+      transfer_allow_select_return_origin_destination: false,
+      transfer_origin_destination_detailed_info_mode: 'trip',
       formatExtraAmount: function(i18next, oneUnitPrice, priceCalculation, days, hours, amount, currencySymbol, decimals) {
 
         var unitAmountFormatted = this.formatCurrency(oneUnitPrice, currencySymbol, decimals);
@@ -215,6 +218,9 @@ define('commonSettings', ['jquery','commonServices','commonLoader','commonTransl
              mybookingSettings.data.selectActivityCategory = data.select_activity_category;
              mybookingSettings.data.selectActivityDestination = data.select_activity_destination;
              mybookingSettings.data.selectActivityRentalLocation = data.select_activity_rental_location;
+             // Transfer
+             mybookingSettings.data.transfer_allow_select_return_origin_destination = data.transfer_allow_select_return_origin_destination;
+             mybookingSettings.data.transfer_origin_destination_detailed_info_mode = data.transfer_origin_destination_detailed_info_mode;
              // Customer access
              if (typeof data.engine_customer_access !== 'undefined') {
                mybookingSettings.data.engineCustomerAccess = true;

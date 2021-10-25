@@ -91,3 +91,5 @@ config
 # System Files
 .DS_Store
 Thumbs.db
+
+/config/*

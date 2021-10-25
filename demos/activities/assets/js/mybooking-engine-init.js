@@ -1,13 +1,12 @@
-window.mybookingEngine = function(){
-  var baseURL = '';
-  var apiKey = '';    
+const engineInit = async function (){
+  var config = await fetch('../env.json').then(response => response.json());
   var shoppingCartUrl = 'shopping-cart.html';
   var orderUrl = 'summary.html';
   function getBaseURL() {
-    return baseURL;
+    return config.baseURL;
   }
   function getApiKey() {
-    return apiKey;
+    return config.apiKey;
   }  
   function getShoppingCartUrl() {
     return shoppingCartUrl;
@@ -21,4 +20,6 @@ window.mybookingEngine = function(){
     shoppingCartUrl: getShoppingCartUrl,
     orderUrl: getOrderUrl
   }
-}();
+};
+
+export default engineInit;

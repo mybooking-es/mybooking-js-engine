@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Mybooking Basic - Completar reserva</title>
+    <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-ui-bootstrap/0.5pre/css/custom-theme/jquery-ui-1.10.0.custom.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.5/css/bulma.min.css">
+    <link rel="stylesheet" href="./assets/styles/styles.css" />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+  </head>
+  <body class="mybooking-transfer-complete">
+    <section class="section section-padding-large">
+      <div class="container is-desktop">
+        <div class="columns">
+          <h1 class="title">Introduce tus datos para completar la reserva</h1>
+        </div>
+        <hr>
+        <div class="columns">
+          <div class="column is-three-fifths">
+            <!--div id="selected_product">
+            </div-->
+            <div id="mybooking_transfer_extras_listing">
+            </div>
+            <!-- Reservation complete -->
+            <form id="mybooking_transfer_form-reservation" name="mybooking_transfer_reservation_form" autocomplete="off">
+                    
+                    <h4 class="is-size-4 has-text-weight-semibold has-text-grey">Datos del conductor</h4>
+                    <br>
+
+                    <div class="field field-body">
+                      <div class="field">
+                        <label class="label">Nombre*</label>
+                        <div class="control is-expanded">
+                            <input name="customer_name" id="customer_name" type="text" class="input" placeholder="Nombre:*">
+                        </div>
+                      </div>
+                      <div class="field">
+                        <label class="label">Apellidos*</label>
+                        <div class="control is-expanded">
+                            <input name="customer_surname" id="customer_surname" type="text" class="input"  placeholder="Apellidos:*">
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="field field-body">
+                      <div class="field">
+                        <label class="label">Correo electrónico*</label>
+                        <div class="control is-expanded">
+                            <input name="customer_email" id="customer_email" type="text" class="input"  placeholder="Correo electrónico:*">
+                        </div>
+                      </div>
+                      <div class="field">
+                        <label class="label">Confirmación correo electrónico*</label>
+                        <div class="control is-expanded">
+                            <input name="confirm_customer_email" id="confirm_customer_email" class="input"  type="text" placeholder="Confirmación del correo electrónico:*">
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="field field-body">
+                      <div class="field">
+                        <label class="label">Teléfono*</label>
+                        <div class="control is-expanded">
+                            <input name="customer_phone" id="customer_phone" type="text" class="input"  placeholder="Teléfono:*">
+                        </div>
+                      </div>
+                      <div class="field">
+                        <label class="label">Teléfono alternativo</label>
+                        <div class="control is-expanded">
+                            <input name="confirm_customer_email" id="confirm_customer_email" class="input"  type="text" placeholder="Teléfono alternativo:">
+                        </div>
+                      </div>
+                    </div>
+                    <br>
+                    <h4 class="is-size-4 has-text-weight-semibold has-text-grey">Información adicional</h4>
+                    <br>
+                    <div class="field field">
+                      <label class="label">Comentarios</label>
+                      <div class="control is-expanded">
+                          <textarea name="comments" id="comments" class="textarea" placeholder="Comentarios"></textarea>
+                      </div>
+                    </div>
+
+                <!-- Reservation : payment -->
+                <div id="mybooking_transfer_payment_detail">
+                </div>
+            </form>
+
+          </div>
+          <aside class="column is-two-fifths">
+            <div id="mybooking_transfer_reservation_detail" class="tile is-ancestor">
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <!-- Modal to change selection -->
+    <div class="modal" id="mybooking_transfer_modify_reservation_modal">
+      <div class="modal-background">
+      </div>
+      <div class="modal-card" style="width: 800px; max-width: 100%;">
+        <header class="modal-card-head">
+          <p class="modal-card-title">Modificar búsqueda</p>
+          <button id="close_modal_button" class="delete modal-close" aria-label="close"></button>
+        </header>        
+        <section class="modal-card-body">
+          <form
+          name="mybooking_transfer_search_form"
+          method="get"
+          enctype="application/x-www-form-urlencoded"
+        >
+          <div class="field-body">
+            <!-- Date -->
+            <div class="field">
+              <div class="field-body">
+                <div class="field">
+                  <label class="label">Fécha</label>
+                  <div class="control is-fullwidth">
+                    <input
+                      type="text"
+                      id="date"
+                      name="date"
+                      class="input"
+                      autocomplete="off"
+                      placeholder="dd/mm/yyyy"
+                    />
+                  </div>
+                </div>
+                <div class="field">
+                  <div class="control is-expanded">
+                    <label class="label">Hora</label>
+                    <div class="select is-fullwidth">
+                      <select
+                        id="time"
+                        name="time"
+                        placeholder="hh:mm"
+                      ></select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Origin point -->
+            <div class="field">
+              <label class="label">Punto de recogida</label>
+              <div class="control origin_point_id_group">
+                <div class="select is-fullwidth">
+                  <select
+                    id="origin_point"
+                    name="origin_point_id"
+                    placeholder="Seleccionar punto de recogida"
+                  ></select>
+                </div>
+              </div>
+            </div>
+
+            <!-- Destination point -->
+            <div class="field">
+              <label class="label">Punto de entrega</label>
+              <div class="control destination_point_id_group">
+                <div class="select is-fullwidth">
+                  <select
+                    id="destination_point"
+                    name="destination_point_id"
+                    placeholder="Seleccionar punto de entrega"
+                  ></select>
+                </div>
+              </div>
+            </div>
+          </div>
+          <br/>
+          <div id="return_block" class="field-body" style="display: none;">
+            <!-- Return Date -->
+            <div class="field">
+              <div class="field-body">
+                <div class="field">
+                  <label class="label">Fécha</label>
+                  <div class="control is-fullwidth">
+                    <input
+                      type="text"
+                      id="return_date"
+                      name="return_date"
+                      class="input"
+                      autocomplete="off"
+                      placeholder="dd/mm/yyyy"
+                    />
+                  </div>
+                </div>
+                <div class="field">
+                  <div class="control is-expanded">
+                    <label class="label">Hora</label>
+                    <div class="select is-fullwidth">
+                      <select
+                        id="return_time"
+                        name="return_time"
+                        placeholder="hh:mm"
+                      ></select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Return origin point -->
+            <div class="field">
+              <label class="label">Punto de recogida</label>
+              <div class="control return_origin_point_id_group">
+                <div class="select is-fullwidth">
+                  <select
+                    id="return_origin_point"
+                    name="return_origin_point_id"
+                    placeholder="Seleccionar punto de recogida"
+                  ></select>
+                </div>
+              </div>
+            </div>
+
+            <!-- Return destination point -->
+            <div class="field">
+              <label class="label">Punto de entrega</label>
+              <div class="control return_destination_point_id_group">
+                <div class="select is-fullwidth">
+                  <select
+                    id="return_destination_point"
+                    name="return_destination_point_id"
+                    placeholder="Seleccionar punto de entrega"
+                  ></select>
+                </div>
+              </div>
+            </div>
+          </div>
+          <br/>
+          <div class="field-body" style="align-items: center; justify-content: space-between;">
+            <div class="field" style="display: flex; align-items: center;">
+              <div style="display: flex; align-items: center; margin-right: 16px;">
+                <label style="margin-right: 8px;">
+                  Adultos
+                </label>
+                <input
+                  type="text"
+                  id="number_of_adults"
+                  name="number_of_adults"
+                  class="input"
+                  autocomplete="off"
+                  style="max-width: 50px;"
+                />
+              </div>
+              <div style="display: flex; align-items: center; margin-right: 16px;">
+                <label style="margin-right: 8px;">
+                  Niños
+                </label>
+                <input
+                  type="text"
+                  id="number_of_children"
+                  name="number_of_children"
+                  class="input"
+                  autocomplete="off"
+                  style="max-width: 50px;"
+                />
+              </div>
+              <div style="display: flex; align-items: center;">
+                <label style="margin-right: 8px;">
+                  Bebes
+                </label>
+                <input
+                  type="text"
+                  id="number_of_infants"
+                  name="number_of_infants"
+                  class="input"
+                  autocomplete="off"
+                  style="max-width: 50px;"
+                />
+              </div>
+            </div>
+            <div class="field" style="min-width: 20%;">
+              <div class="control">
+                <label class="radio">
+                  <input
+                    type="radio"
+                    class="round_trip"
+                    name="round_trip"
+                    checked
+                    value="false"
+                  />&nbsp;&nbsp;Ida
+                </label>
+                <label class="radio">
+                  <input
+                    type="radio"
+                    class="round_trip"
+                    name="round_trip"
+                    value="true"
+                  />&nbsp;&nbsp;Ida / Vuelta
+                </label>
+              </div>
+            </div>
+
+            <div class="field">
+              <div class="field-body">
+                <div class="field">
+                  <div class="control">
+                    <input
+                      class="button is-primary"
+                      type="submit"
+                      value="Encontrar un transfer"
+                      style="width: 100%;"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+        </section>
+      </div>
+    </div> 
+
+    <!-- Script products -->
+
+    <script type="text/tmpl" id="script_transfer_product_detail">
+      <h4 class="is-size-4 has-text-weight-semibold has-text-grey">Vehículo</h4>
+      <p><%=shopping_cart.item_description_customer_translation%> <span class="is-pulled-right"><%= configuration.formatCurrency(shopping_cart.item_cost)%></span></p>
+      <img src="<%=shopping_cart.item_photo%>"/>  
+    </script>
+
+    <!-- Script extras -->
+    <!--script type="text/tmpl" id="script_detailed_extra">
+      <h4 class="is-size-4 has-text-weight-semibold has-text-grey">Extras</h4>
+      <% for (var idx=0;idx<extras.length;idx++) { %>
+        <% var extra = extras[idx]; %>
+        <section class="hero <% if (idx % 2 == 0) { %>is-light<%}%>">
+          <div class="hero-body">
+            <div class="columns">
+              <div class="column is-one-third">
+                <label for="select<%=extra.code%>" class="is-size-5 has-text-weight-bold"><%=extra.name%></label>
+                <% if (extra.photo_path != null) { %>
+                <img src="<%=extra.photo_path%>"/>
+                <% } %>
+              </div>
+              <div class="column is-one-third">
+                <% if (extra.max_quantity > 1) { %>
+                  <div class="field is-grouped">
+                    <button class="button is-primary btn-minus-extra" 
+                            data-value="<%=extra.code%>"
+                            data-max-quantity="<%=extra.max_quantity%>">-</button>           
+                    <div class="field">
+                      <div class="control">
+                      <% value = (extrasInShoppingCart[extra.code]) ? extrasInShoppingCart[extra.code] : 0; %>
+                      <input type="text" id="extra-<%=extra.code%>-quantity" class="extra-input" data-extra-code="<%=extra.code%>"
+                             class="has-text-centered" readonly size="3" value="<%=value%>"/>
+                      </div>
+                    </div>
+                    <button class="button is-primary btn-plus-extra" 
+                            data-value="<%=extra.code%>"
+                            data-max-quantity="<%=extra.max_quantity%>">+</button>
+                  </div>
+                <% } else { %>
+                  <input id="checkboxl<%=extra.code%>" type="checkbox" class="extra-checkbox" data-value="<%=extra.code%>" <% if (extrasInShoppingCart[extra.code] &&  extrasInShoppingCart[extra.code] > 0) { %> checked="checked" <% } %>>          
+                <% } %>
+              </div>
+              <div class="column is-one-third">
+                <p class="is-size-4 has-text-weight-bold"><%= configuration.formatCurrency(extra.unit_price)%></p>
+              </div>  
+            </div>
+          </div>
+        </div>
+      </section>  
+      <% } %>
+
+    </script-->
+
+    <!-- Script detailed for reservation summary -->
+    <script type="text/tmpl" id="script_transfer_reservation_summary">
+      <div class="tile is-parent is-vertical">
+        <div class="tile is-child notification has-background-light">
+          <p class="title">Reserva</h4>
+          <div class="content">
+            <% if (shopping_cart.round_trip) { %>
+              <p class="subtitle has-text-weight-semibold has-text-grey">Ida</p>
+            <% } else { %>
+              <p class="subtitle has-text-weight-semibold has-text-grey">Solo ida</p>
+            <% } %>
+            <ul>
+              <li>Fecha/hora: <%=shopping_cart.date%> <%=shopping_cart.time%></li>
+              <li>Origen: <%=shopping_cart.origin_point_name%></li>
+              <li>Destino: <%=shopping_cart.destination_point_name%></li>
+            </ul>
+          </div>
+          <% if (shopping_cart.round_trip) { %>
+            <div class="content">
+              <p class="subtitle has-text-weight-semibold has-text-grey">Vuelta</p>
+              <ul>
+                <li>Fecha/hora: <%=shopping_cart.date%> <%=shopping_cart.time%></li>
+                <li>Origen: <%=shopping_cart.return_origin_point_name%></li>
+                <li>Destino: <%=shopping_cart.return_destination_point_name%></li>
+              </ul>
+            </div>
+          <% } %>
+          <div class="content">
+            <p class="subtitle has-text-weight-semibold has-text-grey">Número de personas</p>
+            <ul>
+              <li>Adultos: <%=shopping_cart.number_of_adults%></li>
+              <li>Niños: <%=shopping_cart.number_of_children%></li>
+              <li>Bebes: <%=shopping_cart.number_of_infants%></li>
+            </ul>
+          </div>
+          <div class="content">
+            <div class="is-pulled-right">
+              <button id="mybooking_transfer_modify_reservation_button" class="button is-primary modal-button" data-target="modal">Modificar reserva</button> 
+            </div>  
+          </div> 
+        </div>
+        <div class="tile is-child notification has-background-light">
+          <p class="title">Tu vehículo</h4>
+          <div class="content">
+            <p><%=shopping_cart.item_description_customer_translation%> <span class="is-pulled-right"><%= configuration.formatCurrency(shopping_cart.item_cost)%></span></p>
+            <img src="<%=shopping_cart.item_photo%>"/>
+          </div>
+        </div>
+        <% if (shopping_cart.extras.length > 0) { %>
+        <div class="tile is-child notification has-background-light">
+          <p class="title">Tus extras</h4>
+          <div class="content">
+            <ul>
+          <% for (var idx=0; idx<shopping_cart.extras.length; idx++) { %>
+            <li><%=shopping_cart.extras[idx].extra_description_customer_translation%> <span class="is-pulled-right"><%= configuration.formatCurrency(shopping_cart.extras[idx].extra_cost)%></span></li>
+          <% } %>
+            </ul>          
+          </div>
+        </div>
+        <% } %>
+        <div class="tile is-child notification has-background-light">
+          <p class="title">Importe total</p>
+          <p class="subtitle"><span class="is-pulled-right"><%= configuration.formatCurrency(shopping_cart.total_cost)%></span></p>
+        </div>
+      </div>
+    </script> 
+
+    <!-- Payment detail -->
+    <script type="text/tmpl" id="script_transfer_payment_detail">
+    
+      <% if (sales_process.can_pay && sales_process.can_request) { %>
+
+        <h4 class="is-size-4 has-text-weight-semibold has-text-grey">Confirmar</h4>
+        <br>
+
+        <div class="field">
+          <div class="control">
+            <label class="radio">
+              <input type="radio" id="none" name="payment" value="none" data-payment-method="none">
+              Solicitud de reserva
+            </label>
+            <label class="radio">
+              <input type="radio" id="credit-card" name="payment" value="addon_payment" data-payment-method="addon_payment">
+              Pagar
+            </label>
+          </div>
+        </div>
+
+        <div class="field is-grouped">
+          <div class="control">
+            <button type="submit" class="button is-primary">Confirmar</a>
+          </div>
+        </div>  
+
+      <% } else if (sales_process.can_request) { %>
+
+        <input type="hidden" name="payment" value="none" data-payment-method="none">
+        <div class="field is-grouped">
+          <div class="control">
+            <button type="submit" class="button is-primary">Solicitar reserva</a>
+          </div>
+        </div>  
+
+      <% } else if (sales_process.can_pay) { %>
+
+        <input type="hidden" name="payment" value="addon_payment" data-payment-method="addon_payment">
+        <div class="field is-grouped">
+          <div class="control">
+            <button type="submit" class="button is-primary">Pagar</a>
+          </div>
+        </div>  
+      <% } %>
+    </script> 
+
+    <script type="module">
+      import('./assets/js/mybooking-engine-init.js')
+        .then(async function (module) {
+          return await module.default();
+        })
+        .then(function(module) {
+          window.mybookingEngine = module;
+          var script = document.getElementById('engine');
+          script.setAttribute('src', script.getAttribute('data-src'));
+          script.removeAttribute('data-src');
+        });
+    </script>
+    <script id="engine" async data-src="../js/mybooking-js-engine.js"></script>
+    <script src="/reload/reload.js"></script>
+  </body>
+</html>

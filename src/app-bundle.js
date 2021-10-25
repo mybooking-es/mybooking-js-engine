@@ -214,11 +214,56 @@ $(document).ready(function () {
     }
 });
 
+// == Transfer module
+$(document).ready(function() {
+    if ( $('body').hasClass('mybooking-transfer-selector') &&
+         $('form[name=mybooking_widget_transfer_search_form]').length) {
+        require('./transfer/selector/widget.js');
+    }
+});
+
+// Transfer Page choose_product JS
+$(document).ready(function () {
+    if ($('body').hasClass('mybooking-transfer-choose-product')) {
+        require('./transfer/selector/modify_reservation_selector.js');  
+        require('./transfer/mediator/transferEngineMediator.js');        
+        require('./transfer/choose_product.js');
+    }
+});
+
+// Transfer Page complete JS
+$(document).ready(function () {
+    if ($('body').hasClass('mybooking-transfer-complete')) {
+        require('./transfer/selector/modify_reservation_selector.js');  
+        require('./transfer/mediator/transferEngineMediator.js');                
+        require('./profile/Login.js');
+        require('./transfer/complete.js');
+    }
+});
+
+// Transfer Page summary JS
+$(document).ready(function () {
+    if ($('body').hasClass('mybooking-transfer-summary')) {
+        require('./transfer/mediator/transferEngineMediator.js');                
+        require('./transfer/summary.js');
+    }
+});
+
+// Transfer Page Reservation JS
+$(document).ready(function () {
+    if ($('body').hasClass('mybooking-transfer-reservation')) {
+        require('./transfer/mediator/transferEngineMediator.js');                
+        require('./transfer/reservation.js');
+    }
+});
+
 // Export modules to be able to be used as a Library
 //
 var customSelector = require('./rent/selector/custom_selector.js');
 var SelectorRent = require('./rent/selector/SelectorRent.js');
 var rentEngineMediator = require('./rent/mediator/rentEngineMediator.js');
+var SelectorTransfer = require('./transfer/selector/SelectorTransfer.js');
+var transferEngineMediator = require('./transfer/mediator/transferEngineMediator.js');
 var tmpl = require('./lib/ysdtemplate.js');
 var formatter = require('./lib/YSDFormatter.js');
 
@@ -226,7 +271,9 @@ export default {
     'rent': {
        'customSelector': customSelector,
        'SelectorRent': SelectorRent,
-       'rentEngineMediator': rentEngineMediator
+       'SelectorTransfer': SelectorTransfer,
+       'rentEngineMediator': rentEngineMediator,
+       'transferEngineMediator': transferEngineMediator
     },
     'utils': {
        'tmpl': tmpl,

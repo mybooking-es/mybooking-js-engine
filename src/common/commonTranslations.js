@@ -463,6 +463,14 @@ define('commonTranslations', [], function() {
               myReservation: {
                  'cancelReservationConfirm': 'Do you want to cancel the reservation?',
               }
+            },
+            transfer: {
+              selectPickupPlace: 'Select pickup place',
+              selectDropOffPlace: 'Select dropoff place',
+              chooseVehicle: {
+                'vehicleFound': '<strong>{{available}}</strong> available vehicles found',
+                'vehicleNotFound': 'We are sorry. Not available vehicles found'
+              }
             }
   		}
   	},
@@ -927,8 +935,15 @@ define('commonTranslations', [], function() {
               myReservation: {
                  'cancelReservationConfirm': '¿Está seguro que desea cancelar la reserva?'
               }
+            },
+            transfer: {
+              selectPickupPlace: 'Seleccionar lugar de origen',
+              selectDropOffPlace: 'Seleccionar lugar de destino',
+              chooseVehicle: {
+                'vehicleFound': 'Hemos encontrado <strong>{{available}}</strong> vehículos disponibles',
+                'vehicleNotFound': 'Lo sentimos. No hemos encontrados vehículos disponibles en esas fechas'
+              }
             }
-
   		}
   	},
   	ca: {
@@ -1392,6 +1407,14 @@ define('commonTranslations', [], function() {
           myReservation: {
              'cancelReservationConfirm': 'Vol cancelar la reserva?'
           }          
+        },
+        transfer: {
+          selectPickupPlace: 'Escollir punt d&#39;origen',
+          selectDropOffPlace: 'Escollir punt de destí',
+          chooseVehicle: {
+            'vehicleFound': 'Hem trobat <strong>{{available}}</strong> vehicles disponibles',
+            'vehicleNotFound': 'Ho sentim. No em trobat cap vehicle disponible'
+          }
         }
       }
   	},
@@ -1857,6 +1880,14 @@ define('commonTranslations', [], function() {
              'cancelReservationConfirm': 'Möchten Sie die Reservierung stornieren?'
           }
 
+        },
+        transfer: {
+          selectPickupPlace: 'Abholort auswählen',
+          selectDropOffPlace: 'Abgabeort auswählen',          
+          chooseVehicle: {
+            'vehicleFound': '<strong>{{available}}</strong>verfügbare Fahrzeuge gefunden',
+            'vehicleNotFound': 'Es tut uns leid. Nicht verfügbare Fahrzeuge gefunden'
+          }
         }
       }
   	},
@@ -2321,6 +2352,14 @@ define('commonTranslations', [], function() {
           myReservation: {
              'cancelReservationConfirm': 'Voulez-vous annuler la réservation?'
           }          
+        },
+        transfer: {
+          selectPickupPlace: 'Sélectionnez le lieu de prise en charge',
+          selectDropOffPlace: 'Sélectionnez le lieu de dépôt',               
+          chooseVehicle: {
+            'vehicleFound': '<strong>{{available}}</strong> véhicules disponibles trouvés',
+            'vehicleNotFound': 'Nous sommes désolés. Véhicules non disponibles trouvés'
+          }
         }
       }
   	},
@@ -2795,6 +2834,14 @@ define('commonTranslations', [], function() {
              'cancelReservationConfirm': 'Vuoi cancellare la prenotazione?'
           } 
 
+        },
+        transfer: {
+          selectPickupPlace: 'Seleziona il luogo di ritiro',
+          selectDropOffPlace: 'Seleziona il luogo di riconsegna',          
+          chooseVehicle: {
+            'vehicleFound': '<strong>{{available}}</strong> veicoli disponibili trovati',
+            'vehicleNotFound': 'Siamo spiacenti. Veicoli non disponibili trovati'
+          }
         }
       }
   	},
@@ -2844,50 +2891,50 @@ define('commonTranslations', [], function() {
             'min_time': 'Сбор предыдущего бронирования находится по адресу {{time}}',
             'max_time': 'Доставка следующей брони по адресу {{time}}'
           },
-              selector: {
-              'select': 'селекционер',
-              'select_pickup_place': 'Выберите место получения',
-              'select_return_place': 'Выберите место возврата',
-              'another_place': 'Точный адрес',
-              'error_loading_data': 'Мы сожалеем. При загрузке данных произошла ошибка',
-                      'validations': {
-                'pickupPlaceRequired': 'Требуется место получения',
-                'dateFromRequired': 'Требуется дата',
-                'timeFromRequired': 'Требуется время',
-                'returnPlaceRequired': 'Требуется место возврата',
-                'dateToRequired': 'Требуется дата',
-                'timeToRequired': 'Требуется время',
-                          'sameDayTimeToGreaterTimeFrom': 'Должен быть позже срока доставки',
-                          'acceptAge': 'Вы должны подтвердить, что вам больше {{years}} лет',
-                          'promotionCodeInvalid': 'Промокод недействителен'
-                      }
-              },
-              chooseProduct: {
-                      'loadShoppingCart': {
-                          'error': 'Мы сожалеем. Произошла ошибка при поиске'
-                      },
-                      'selectProduct': {
-                          'productNotSelected': 'Пожалуйста, выберите автомобиль.',
-                          'error': 'Мы сожалеем. При выборе автомобиля произошла ошибка'
-                      },
-              'selectUnits': 'Выберите единицы',
-              'units': '{{count}} Эдиница',
-              'units_plural': '{{count}} Эдиницы',
-              'max_duration': 'Максимальная продолжительность составляет {{duration}}',
-              'min_duration': 'Минимальная продолжительность составляет {{duration}}'
-              },
-              chooseExtras: {
-                      'loadShoppingCart': {
-                          'error': 'Мы сожалеем. При загрузке данных произошла ошибка.'
-                      },
-                      'selectExtra': {
-                          'error': 'Мы сожалеем. При обновлении дополнений произошла ошибка.'
-                      },
-                      'deleteExtra': {
-                          'error': 'Мы сожалеем. При удалении дополнений произошла ошибка.'
-                      }
-              },
-              complete: {
+            selector: {
+            'select': 'селекционер',
+            'select_pickup_place': 'Выберите место получения',
+            'select_return_place': 'Выберите место возврата',
+            'another_place': 'Точный адрес',
+            'error_loading_data': 'Мы сожалеем. При загрузке данных произошла ошибка',
+                    'validations': {
+              'pickupPlaceRequired': 'Требуется место получения',
+              'dateFromRequired': 'Требуется дата',
+              'timeFromRequired': 'Требуется время',
+              'returnPlaceRequired': 'Требуется место возврата',
+              'dateToRequired': 'Требуется дата',
+              'timeToRequired': 'Требуется время',
+                        'sameDayTimeToGreaterTimeFrom': 'Должен быть позже срока доставки',
+                        'acceptAge': 'Вы должны подтвердить, что вам больше {{years}} лет',
+                        'promotionCodeInvalid': 'Промокод недействителен'
+                    }
+            },
+            chooseProduct: {
+                    'loadShoppingCart': {
+                        'error': 'Мы сожалеем. Произошла ошибка при поиске'
+                    },
+                    'selectProduct': {
+                        'productNotSelected': 'Пожалуйста, выберите автомобиль.',
+                        'error': 'Мы сожалеем. При выборе автомобиля произошла ошибка'
+                    },
+            'selectUnits': 'Выберите единицы',
+            'units': '{{count}} Эдиница',
+            'units_plural': '{{count}} Эдиницы',
+            'max_duration': 'Максимальная продолжительность составляет {{duration}}',
+            'min_duration': 'Минимальная продолжительность составляет {{duration}}'
+            },
+            chooseExtras: {
+                    'loadShoppingCart': {
+                        'error': 'Мы сожалеем. При загрузке данных произошла ошибка.'
+                    },
+                    'selectExtra': {
+                        'error': 'Мы сожалеем. При обновлении дополнений произошла ошибка.'
+                    },
+                    'deleteExtra': {
+                        'error': 'Мы сожалеем. При удалении дополнений произошла ошибка.'
+                    }
+            },
+            complete: {
               'loadShoppingCart': {
                 'error': 'Мы сожалеем. При загрузке данных произошла ошибка.'
               },
@@ -2928,12 +2975,12 @@ define('commonTranslations', [], function() {
               'createReservation': {
                 'error': 'Мы сожалеем. При создании бронирования произошла ошибка.'
               }
-              },
-                summary: {
+            },
+          summary: {
             'loadReservation': {
               'error': 'Мы сожалеем. При загрузке бронирования произошла ошибка.'
-            }
-                },
+             }
+          },
           myReservation: {
             'select_country': 'Выберите страну',
             'loadReservation': {
@@ -3002,7 +3049,16 @@ define('commonTranslations', [], function() {
             myReservation: {
                'cancelReservationConfirm': 'Вы хотите отменить бронирование?',
             }
+          },
+          transfer: {
+            selectPickupPlace: 'Выберите место получения',
+            selectDropOffPlace: 'Выберите место возврата',              
+            chooseVehicle: {
+              'vehicleFound': 'Найдено <strong>{{available}}</strong> доступных транспортных средства',
+              'vehicleNotFound': 'Мы сожалеем. Не найдены доступные автомобили'
+            }
           }
+
         }
     }    
 

@@ -76,9 +76,22 @@
         </form>
       </div>
     </section>
+    
     <!-- Javascript -->
-    <script src="./assets/js/mybooking-engine-init.js"></script>
-    <script src="../../dist/js/mybooking-js-engine.js"></script>
+    <script type="module">
+      import('./assets/js/mybooking-engine-init.js')
+        .then(async function (module) {
+          return await module.default();
+        })
+        .then(function(module) {
+          window.mybookingEngine = module;
+          var script = document.getElementById('engine');
+          script.setAttribute('src', script.getAttribute('data-src'));
+          script.removeAttribute('data-src');
+        });
+    </script>
+    <script id="engine" async data-src="../js/mybooking-js-engine.js"></script>
+    <script src="/reload/reload.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
     <script>

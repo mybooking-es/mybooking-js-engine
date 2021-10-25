@@ -1,14 +1,15 @@
-window.mybookingEngine = function(){
-  var baseURL = '';
-  var apiKey = '';  
+const engineInit = async function (){
+  var config = await fetch('../env.json').then(response => response.json());
   function getBaseURL() {
-    return baseURL;
+    return config.baseURL;
   }
   function getApiKey() {
-    return apiKey;
+    return config.apiKey;
   }  
   return{
     baseURL: getBaseURL,
     apiKey: getApiKey,    
   }
-}();
+};
+
+export default engineInit;

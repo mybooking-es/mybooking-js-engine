@@ -209,3 +209,46 @@ $(document).ready(function () {
         require('./activities/Order.js');
     }
 });
+
+// == Transfer module
+$(document).ready(function() {
+    if ( $('body').hasClass('mybooking-transfer-selector') &&
+         $('form[name=mybooking_transfer_search_form]').length) {
+        require('./transfer/selector/widget.js');
+    }
+});
+
+// Transfer Page choose_product JS
+$(document).ready(function () {
+    if ($('body').hasClass('mybooking-transfer-choose-product')) {
+        require('./transfer/selector/modify_reservation_selector.js');  
+        require('./transfer/mediator/transferEngineMediator.js');        
+        require('./transfer/choose_product.js');
+    }
+});
+
+// Transfer Page complete JS
+$(document).ready(function () {
+    if ($('body').hasClass('mybooking-transfer-complete')) {
+        require('./transfer/selector/modify_reservation_selector.js');  
+        require('./transfer/mediator/transferEngineMediator.js');                
+        require('./profile/Login.js');
+        require('./transfer/complete.js');
+    }
+});
+
+// Transfer Page summary JS
+$(document).ready(function () {
+    if ($('body').hasClass('mybooking-transfer-summary')) {
+        require('./transfer/mediator/transferEngineMediator.js');                
+        require('./transfer/summary.js');
+    }
+});
+
+// Transfer Page Reservation JS
+$(document).ready(function () {
+    if ($('body').hasClass('mybooking-transfer-reservation')) {
+        require('./transfer/mediator/transferEngineMediator.js');                
+        require('./transfer/reservation.js');
+    }
+});
