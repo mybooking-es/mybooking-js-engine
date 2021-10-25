@@ -1,5 +1,5 @@
 define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDSelectSelector',
-         'commonServices','commonSettings', 'commonTranslations', 'commonLoader',
+         'commonServices','commonSettings', 'commonTranslations', 'commonLoader','commonUI',
          './../mediator/rentEngineMediator',
          'i18next', 'moment', 'ysdtemplate',
          'jquery.i18next',
@@ -7,7 +7,7 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
          'jquery.ui.datepicker-en', 'jquery.ui.datepicker-ca', 'jquery.ui.datepicker-it',
          'jquery.ui.datepicker.validation'],
          function($, MemoryDataSource, RemoteDataSource, SelectSelector,
-                  commonServices, commonSettings, commonTranslations, commonLoader, rentEngineMediator,
+                  commonServices, commonSettings, commonTranslations, commonLoader, commonUI, rentEngineMediator,
                   i18next, moment, tmpl) {
 
   /***************************************************************************
@@ -635,6 +635,11 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
       }    
 
       $(productModel.add_to_shopping_cart_btn_selector).attr('disabled', true);
+
+      // Show slider
+      if ( $('.mybooking-product-carousel-inner').length ) {  
+        commonUI.showSlider('.mybooking-product-carousel-inner');
+      }
 
     },
 

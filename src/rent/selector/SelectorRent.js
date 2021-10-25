@@ -1,12 +1,12 @@
 define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDSelectSelector',
          'commonServices','commonSettings', 'commonTranslations', 'commonLoader',
-         'i18next', 'moment','ysdtemplate', 'cookie', 'jquery.i18next',
+         'i18next', 'moment','ysdtemplate', 'customCookie', 'jquery.i18next',
          'jquery.validate', 'jquery.ui', 'jquery.ui.datepicker-es',
          'jquery.ui.datepicker-en', 'jquery.ui.datepicker-ca', 'jquery.ui.datepicker-it',
          'jquery.ui.datepicker.validation'],
          function($, MemoryDataSource, RemoteDataSource, SelectSelector,
                   commonServices, commonSettings, commonTranslations, commonLoader, 
-                  i18next, moment, tmpl, cookie) {
+                  i18next, moment, tmpl, customCookie) {
 
   /***************************************************************************
    *
@@ -790,10 +790,10 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
       var agentId = null;  
       if (typeof urlVars['agentId'] != 'undefined') {
         agentId = decodeURIComponent(urlVars['agentId']);
-        cookie.set('__mb_agent_id', agentId, {expires: 14});      
+        customCookie.set('__mb_agent_id', agentId, {expires: 14});      
       }
       else {
-        agentId = cookie.get('__mb_agent_id');  
+        agentId = customCookie.get('__mb_agent_id');  
       }
       if (agentId != null) {
         var input = document.createElement("input");

@@ -1,8 +1,8 @@
 require(['jquery','i18next',
-				 'commonServices', 'commonSettings', 'commonTranslations',
+				 'commonServices', 'commonSettings', 'commonTranslations','commonUI',
 				 './support/ActivityOneTime','./support/ActivityMultipleDates','./support/ActivityCyclic',
 				 'moment'],
-	      function($, i18next, commonServices, commonSettings, commonTranslations,
+	      function($, i18next, commonServices, commonSettings, commonTranslations,commonUI,
 	      				 ActivityOneTime, ActivityMultipleDates, ActivityCyclic,
 	      				 moment) {
 
@@ -70,8 +70,18 @@ require(['jquery','i18next',
 
       activityModel.requestLanguage = commonSettings.language(document.documentElement.lang);
       activityModel.loadActivity($('#buy_selector').attr('data-id'));
+      this.setupControls();
 
   	},
+
+    setupControls: function() {
+
+      // Show slider
+      if ( $('.mybooking-activity-carousel-inner').length ) {  
+        commonUI.showSlider('.mybooking-activity-carousel-inner');
+      }
+
+    },
 
   	updateActivity: function() {
 

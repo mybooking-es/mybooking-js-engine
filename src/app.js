@@ -29,7 +29,7 @@ require('./lib/moment-timezone.js');
 require('./lib/i18next.js');
 require('./lib/loaderSpinner.js');
 require('./lib/select2.js');
-require('./lib/cookie.js');
+require('./lib/customCookie.js');
 
 // Yurak Sisa Dream Libraries
 require('./lib/YSDEventTarget.js');
