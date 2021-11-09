@@ -1,5 +1,5 @@
 require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
-         'commonServices', 'commonSettings', 'commonTranslations', 'commonLoader',
+         'commonServices', 'commonSettings', 'commonTranslations', 'commonLoader', 'commonUI',
          'i18next', 'ysdtemplate', 
          './selector/modify_reservation_selector',
          './mediator/transferEngineMediator',
@@ -8,7 +8,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
          'jquery.ui.datepicker-en', 'jquery.ui.datepicker-ca', 'jquery.ui.datepicker-it',
          'jquery.ui.datepicker.validation'],
        function($, RemoteDataSource, SelectSelector, 
-                commonServices, commonSettings, commonTranslations, commonLoader,
+                commonServices, commonSettings, commonTranslations, commonLoader, commonUI,
                 i18next, tmpl, selector, transferEngineMediator) {
 
   var model = {
@@ -437,17 +437,8 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
                 view.selectorLoaded = true;
               }
               // Show the reservation selector
-              modifyReservationModalSelector = '#mybooking_transfer_modify_reservation_modal'
-              // Compatibility with libraries that overrides $.modal
-              if (commonServices.jsBsModalNoConflict && typeof $.fn.bootstrapModal !== 'undefined') {
-                $(modifyReservationModalSelector).bootstrapModal(commonServices.jsBSModalShowOptions());
-              }
-              else {
-                if ($.fn.modal) {
-                  $(modifyReservationModalSelector).modal(commonServices.jsBSModalShowOptions());
-                }
-              }
-              $(modifyReservationModalSelector).show(); // TODO demo show modal (comment in pro!)
+              var modifyReservationModalSelector = '#mybooking_transfer_modify_reservation_modal';
+              commonUI.showModal(modifyReservationModalSelector);
             });
           }
         

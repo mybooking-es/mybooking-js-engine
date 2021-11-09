@@ -827,7 +827,7 @@ require(['jquery',
           if ($countrySelector.length > 0 && typeof values[idx] !== 'undefined') {
             $countrySelector.select2({
               width: '100%',
-              theme: 'bootstrap4',                  
+              theme: 'classic',                  
               data: countriesArray
             });
             // Assign value
@@ -1105,7 +1105,7 @@ require(['jquery',
             placeholder: i18next.t('common.selectOption'),
             allowClear: true,
             width: '100%',
-            theme: 'bootstrap4',                  
+            theme: 'classic',                  
             data: model.customerClassifiers
           });
           $customerClassifierSelector.val('');

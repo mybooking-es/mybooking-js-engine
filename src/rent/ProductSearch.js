@@ -138,7 +138,7 @@ require(['jquery', 'i18next', 'ysdtemplate',
         var familyValue = $selectorFamilyId.attr('data-value');
         var familySelect = $selectorFamilyId.select2({  
                                     width: '100%',
-                                    theme: 'bootstrap4',
+                                    theme: 'classic',
                                     ajax: {
                                       url: url,
                                       dataType: 'json',

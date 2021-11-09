@@ -466,6 +466,8 @@ define('selector_wizard', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource
 
       // Show the select place step
       $('#step_title').html(i18next.t('selectorWizard.returnPlace'));
+      this.showWizardHeader();
+      
       selectorWizardSelectPlace.model.configuration = selectorWizardModel.configuration;
       selectorWizardSelectPlace.model.mode = 'return';
       selectorWizardSelectPlace.model.pickup_place = selectorWizardModel.selectionData.pickupPlace;

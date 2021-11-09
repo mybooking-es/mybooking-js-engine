@@ -1,5 +1,5 @@
 require(['jquery', 
-         'commonServices', 'commonSettings', 'commonTranslations', 'commonLoader',
+         'commonServices', 'commonSettings', 'commonTranslations', 'commonLoader', 'commonUI',
          'i18next','ysdtemplate','YSDDateControl', 
          './selector/modify_reservation_selector', 'select2', 
          'YSDMemoryDataSource','YSDSelectSelector', './mediator/transferEngineMediator', '../profile/Login',
@@ -9,7 +9,7 @@ require(['jquery',
          'jquery.ui.datepicker-en', 'jquery.ui.datepicker-ca', 'jquery.ui.datepicker-it',
 	       'jquery.ui.datepicker.validation'],
 	     function($, 
-                commonServices, commonSettings, commonTranslations, commonLoader, 
+                commonServices, commonSettings, commonTranslations, commonLoader, commonUI,
                 i18next, tmpl, DateControl, selector, select2,
                 MemoryDataSource, SelectSelector, transferEngineMediator, Login, PasswordForgottenComponent) {
 
@@ -901,19 +901,8 @@ require(['jquery',
               }
               // Show the selector
               // Compatibility with old version of the theme
-              var modifyReservationModalSelector = '#choose_productModal';
-              if ($('#mybooking_transfer_modify_reservation_modal').length) {
-                modifyReservationModalSelector = '#mybooking_transfer_modify_reservation_modal'
-              }
-              // Compatibility with libraries that overrides $.modal
-              if (commonServices.jsBsModalNoConflict && typeof $.fn.bootstrapModal !== 'undefined') {
-                $(modifyReservationModalSelector).bootstrapModal(commonServices.jsBSModalShowOptions());
-              }
-              else {
-                if ($.fn.modal) {
-                  $(modifyReservationModalSelector).modal(commonServices.jsBSModalShowOptions());
-                }
-              }
+              var modifyReservationModalSelector = '#mybooking_transfer_modify_reservation_modal';
+              commonUI.showModal(modifyReservationModalSelector);
          });
        }
 

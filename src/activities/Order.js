@@ -339,7 +339,7 @@ require(['jquery', 'i18next', 'ysdtemplate', 'select2',
                 }
                 $countrySelector.select2({
                   width: '100%',
-                  theme: 'bootstrap4',                  
+                  theme: 'classic',                  
                   data: countriesArray
                 });
                 if (model.order.address_country !== null && model.order.address_country !== '') {
