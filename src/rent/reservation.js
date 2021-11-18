@@ -275,7 +275,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
           if ($countrySelector.length > 0 && typeof values[idx] !== 'undefined') {
             $countrySelector.select2({
               width: '100%',
-              theme: 'classic',                  
+              theme: 'bootstrap4',                  
               data: countriesArray
             });
             // Assign value

@@ -84,7 +84,7 @@ require(['jquery', 'i18next', 'ysdtemplate',
 				var familyValue = $selectorFamilyId.attr('data-value');
 	      var familySelect = $selectorFamilyId.select2({	
 	      													  width: '100%',
-														      	theme: 'classic',
+														      	theme: 'bootstrap4',
 														      	ajax: {
 													            url: url,
 													            dataType: 'json',
@@ -129,7 +129,7 @@ require(['jquery', 'i18next', 'ysdtemplate',
 				var destinationValue = $selectorDestinationId.attr('data-value');
 	      var destinationSelect = $selectorDestinationId.select2({	
 	      													  width: '100%',
-														      	theme: 'classic',
+														      	theme: 'bootstrap4',
 														      	ajax: {
 													            url: url,
 													            dataType: 'json',

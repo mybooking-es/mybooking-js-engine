@@ -1,8 +1,8 @@
-require(['jquery', 'i18next', 'ysdtemplate', 'select2',
+require(['jquery', 'i18next', 'ysdtemplate', 'YSDMemoryDataSource','YSDSelectSelector', 'select2',
         'commonServices', 'commonSettings', 'commonTranslations', 'commonLoader',
         'jquery.validate', 'jquery.ui', 'jquery.ui.datepicker-es',
         'jquery.ui.datepicker.validation','jquery.form'],
-    function($, i18next, tmpl, select2,
+    function($, i18next, tmpl, MemoryDataSource, SelectSelector, select2,
              commonServices, commonSettings, commonTranslations, commonLoader) {
 
         model = { // THE MODEL
@@ -325,26 +325,38 @@ require(['jquery', 'i18next', 'ysdtemplate', 'select2',
                    order: model.order, 
                    configuration: model.configuration});
               $('#reservation_detail').html(reservationInfo);
+              // Load countries
+              var countries = i18next.t('common.countries', {returnObjects: true });
+              if (countries instanceof Object) {
+                var countryCodes = Object.keys(countries);
+                var countriesArray = countryCodes.map(function(value){ 
+                                        return {id: value, text: countries[value], description: countries[value]};
+                                     });
+              } else {
+                var countriesArray = [];
+              }
               // Country selector
-              $countrySelector = $('form[name=order_information_form] select[name=customer_address\\[country\\]]');
-              if ($countrySelector.length > 0 && typeof model.order.address_country !== 'undefined') {
-                var countries = i18next.t('common.countries', {returnObjects: true });
-                if (countries instanceof Object) {
-                  var countryCodes = Object.keys(countries);
-                  var countriesArray = countryCodes.map(function(value){ 
-                                          return {id: value, text: countries[value]};
-                                       });
-                } else {
-                  var countriesArray = [];
+              if (commonServices.jsUseSelect2) {
+                // Selector
+                var $countrySelector = $('form[name=order_information_form] select[name=customer_address\\[country\\]]');
+                if ($countrySelector.length > 0 && typeof model.order.address_country !== 'undefined') {
+                  $countrySelector.select2({
+                    width: '100%',
+                    theme: 'bootstrap4',                  
+                    data: countriesArray
+                  });
+                  if (model.order.address_country !== null && model.order.address_country !== '') {
+                    $countrySelector.val(model.order.address_country);
+                    $countrySelector.trigger('change');
+                  }
                 }
-                $countrySelector.select2({
-                  width: '100%',
-                  theme: 'classic',                  
-                  data: countriesArray
-                });
-                if (model.order.address_country !== null && model.order.address_country !== '') {
-                  $countrySelector.val(model.order.address_country);
-                  $countrySelector.trigger('change');
+              } 
+              else {
+                if (document.getElementById('country')) {
+                  var countriesDataSource = new MemoryDataSource(countriesArray);
+                  var countryModel = model.order.address_country;
+                  var selectorModel = new SelectSelector('country',
+                      countriesDataSource, countryModel, true, i18next.t('myReservation.select_country'));
                 }
               }
 

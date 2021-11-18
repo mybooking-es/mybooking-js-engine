@@ -468,7 +468,7 @@ define('commonTranslations', [], function() {
               selectPickupPlace: 'Select pickup place',
               selectDropOffPlace: 'Select dropoff place',
               chooseVehicle: {
-                'vehicleFound': '<strong>{{available}}</strong> available vehicles found',
+                'vehicleFound': '<strong>{{available}}</strong>&nbsp;available vehicles found',
                 'vehicleNotFound': 'We are sorry. Not available vehicles found'
               }
             }

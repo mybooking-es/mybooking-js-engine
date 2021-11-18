@@ -660,10 +660,11 @@ require(['jquery',
             passwordForgottenComponent.view.init();            
           }
           else { // Show in a modal
+            
             // Compatibility with bootstrap modal replacement (from 0.9.30)
             if ($('#modalExtraDetail_MBM').length) {
-              $('#modalExtraDetail_MBM .modal-title').html('');
-              $('#modalExtraDetail_MBM .modal-body').html(htmlPasswordForgotten);     
+              $('#modalExtraDetail_MBM .mb-modal_title').html('');
+              $('#modalExtraDetail_MBM .mb-modal_body').html(htmlPasswordForgotten);     
             }
             else {
               $('#modalExtraDetail .modal-title').html('');
@@ -827,7 +828,7 @@ require(['jquery',
           if ($countrySelector.length > 0 && typeof values[idx] !== 'undefined') {
             $countrySelector.select2({
               width: '100%',
-              theme: 'classic',                  
+              theme: 'bootstrap4',                  
               data: countriesArray
             });
             // Assign value
@@ -1105,7 +1106,7 @@ require(['jquery',
             placeholder: i18next.t('common.selectOption'),
             allowClear: true,
             width: '100%',
-            theme: 'classic',                  
+            theme: 'bootstrap4',                  
             data: model.customerClassifiers
           });
           $customerClassifierSelector.val('');
