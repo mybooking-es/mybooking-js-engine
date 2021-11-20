@@ -1060,17 +1060,17 @@ require(['jquery',
         var result = tmpl('script_transfer_extra_modal')({
                         extra: model.extraDetail
                       });
-        $('#mybooking_transfer_modalExtraDetail .modal-extra-detail-title').html(model.extraDetail.name);
-        $('#mybooking_transfer_modalExtraDetail .modal-extra-detail-content').html(result);
-        // Compatibility with libraries that overrides $.modal
-        if (commonServices.jsBsModalNoConflict && typeof $.fn.bootstrapModal !== 'undefined') {
-          $('#mybooking_transfer_modalExtraDetail').bootstrapModal(commonServices.jsBSModalShowOptions());
+        // Compatibility with bootstrap modal replacement (from 0.9.30)
+        if ($('#mybooking_transfer_modalExtraDetail_MBM').length) {
+          $('#mybooking_transfer_modalExtraDetail_MBM .modal-extra-detail-title').html(model.extraDetail.name);
+          $('#mybooking_transfer_modalExtraDetail_MBM .modal-extra-detail-content').html(result);
         }
         else {
-          if ($.fn.modal) {
-            $('#mybooking_transfer_modalExtraDetail').modal(commonServices.jsBSModalShowOptions());
-          }
+          $('#mybooking_transfer_modalExtraDetail .modal-extra-detail-title').html(model.extraDetail.name);
+          $('#mybooking_transfer_modalExtraDetail .modal-extra-detail-content').html(result);
         }
+        // Show the modal
+        commonUI.showModal('#mybooking_transfer_modalExtraDetail');
       }      
     },
 

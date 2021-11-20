@@ -478,17 +478,17 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
         var result = tmpl('script_transfer_product_modal')({
                         product: model.productDetail
                       });
-        $('#modalTransferProductDetail .modal-product-detail-title').html(model.productDetail.name);
-        $('#modalTransferProductDetail .modal-product-detail-content').html(result);
-        // Compatibility with libraries that overrides $.modal
-        if (commonServices.jsBsModalNoConflict && typeof $.fn.bootstrapModal !== 'undefined') {
-          $('#modalTransferProductDetail').bootstrapModal(commonServices.jsBSModalShowOptions());
+        // Compatibility with bootstrap modal replacement (from 0.9.30)
+        if ($('#modalTransferProductDetail_MBM').length) {
+          $('#modalTransferProductDetail_MBM .modal-product-detail-title').html(model.productDetail.name);
+          $('#modalTransferProductDetail_MBM .modal-product-detail-content').html(result);
         }
         else {
-          if ($.fn.modal) {
-            $('#modalTransferProductDetail').modal(commonServices.jsBSModalShowOptions());
-          }
-        }                       
+          $('#modalTransferProductDetail .modal-product-detail-title').html(model.productDetail.name);
+          $('#modalTransferProductDetail .modal-product-detail-content').html(result);
+        }
+        // Show the modal
+        commonUI.showModal('#modalTransferProductDetail');
       }
 
     },

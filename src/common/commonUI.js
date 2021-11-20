@@ -30,14 +30,8 @@ define('commonUI',['jquery', 'commonServices', 'jquery.modal'],function($, commo
                                  blockerClass: "mybooking-jquery-modal",});
       }
       else {
-        // Compatibility mode with jquery.modal plugin
-        if (commonServices.jsBsModalNoConflict && typeof $.fn.bootstrapModal !== 'undefined') {
-          $(selector).bootstrapModal(commonServices.jsBSModalShowOptions());
-        }
-        else {
-          if ($.fn.modal) {
-            $(selector).modal(commonServices.jsBSModalShowOptions());
-          }
+        if ($.fn.modal) {
+          $(selector).modal({show: true, backdrop: true});
         }
       }
 
@@ -66,14 +60,8 @@ define('commonUI',['jquery', 'commonServices', 'jquery.modal'],function($, commo
         $.mbModal.close();
       }
       else {
-        // Compatibility mode with jquery.modal plugin
-        if (commonServices.jsBsModalNoConflict && typeof $.fn.bootstrapModal !== 'undefined') {
-          $(selector).bootstrapModal('hide');
-        }
-        else {
-          if ($.fn.modal) {
-            $(selector).modal('hide');
-          }
+        if ($.fn.modal) {
+          $(selector).modal('hide');
         }
       }
 

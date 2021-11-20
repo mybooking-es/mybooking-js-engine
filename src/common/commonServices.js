@@ -32,16 +32,6 @@ define('commonServices',[],function(){
     customLoader: mybookingEngine && mybookingEngine.customLoader ? mybookingEngine.customLoader() : false,
     // Use select2
     jsUseSelect2: mybookingEngine && mybookingEngine.jsUseSelect2 ? mybookingEngine.jsUseSelect2() : false,
-    // Bootstrap Modal compatibility (create $.fn.bootstrapModal to hold noConflict version)
-    jsBsModalNoConflict: mybookingEngine && mybookingEngine.jsBsModalNoConflict ? mybookingEngine.jsBsModalNoConflict() : false,
-    jsBsModalBackdropCompatibility: mybookingEngine && mybookingEngine.jsBsModalBackdropCompatibility ? mybookingEngine.jsBsModalBackdropCompatibility() : false,
-    jsBSModalShowOptions: function() {
-      var opts = {show: true};
-      if (this.jsBsModalBackdropCompatibility) {
-        opts.backdrop = false;
-      }
-      return opts;
-    },
     // Google Maps
     useGoogleMaps: mybookingEngine && mybookingEngine.useGoogleMaps ? mybookingEngine.useGoogleMaps() : false,
     googleMapsSettings: mybookingEngine && mybookingEngine.googleMapsSettings ? mybookingEngine.googleMapsSettings() : null,
