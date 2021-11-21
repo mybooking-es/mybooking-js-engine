@@ -9,7 +9,7 @@ define('commonUI',['jquery', 'commonServices', 'jquery.modal'],function($, commo
      *
      *  It uses bootstrap modal as modal library
      *  
-     *  From version 0.9.30 mbModal (fork of jquery.modal) can be used to show modal. In
+     *  From version 1.0.0 mbModal (fork of jquery.modal) can be used to show modal. In
      *  this case, the selector will have the prefix _MBM
      * 
      * == Parameters::
@@ -44,7 +44,7 @@ define('commonUI',['jquery', 'commonServices', 'jquery.modal'],function($, commo
      * 
      *  It uses bootstrap modal as modal library
      *  
-     *  From version 0.9.30 mbModal (fork of jquery.modal) can be used to show modal. In
+     *  From version 1.0.0 mbModal (fork of jquery.modal) can be used to show modal. In
      *  this case, the selector will have the prefix _MBM
      *
      * == Parameters::

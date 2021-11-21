@@ -705,7 +705,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
                         product: model.productDetail
                       });
 
-        // Compatibility with bootstrap modal replacement (from 0.9.30)
+        // Compatibility with bootstrap modal replacement (from 1.0.0)
         if ($('#modalProductDetail_MBM').length) {
           $('#modalProductDetail_MBM .modal-product-detail-title').html(model.productDetail.name);
           $('#modalProductDetail_MBM .modal-product-detail-content').html(result);      

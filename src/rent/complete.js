@@ -661,7 +661,7 @@ require(['jquery',
           }
           else { // Show in a modal
             
-            // Compatibility with bootstrap modal replacement (from 0.9.30)
+            // Compatibility with bootstrap modal replacement (from 1.0.0)
             if ($('#modalExtraDetail_MBM').length) {
               $('#modalExtraDetail_MBM .mb-modal_title').html('');
               $('#modalExtraDetail_MBM .mb-modal_body').html(htmlPasswordForgotten);     
@@ -1392,7 +1392,7 @@ require(['jquery',
         var result = tmpl('script_extra_modal')({
                         extra: model.extraDetail
                       });
-        // Compatibility with bootstrap modal replacement (from 0.9.30)
+        // Compatibility with bootstrap modal replacement (from 1.0.0)
         if ($('#modalExtraDetail_MBM').length) {
           $('#modalExtraDetail_MBM .modal-extra-detail-title').html(model.extraDetail.name);
           $('#modalExtraDetail_MBM .modal-extra-detail-content').html(result);       

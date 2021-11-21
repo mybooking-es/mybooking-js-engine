@@ -478,7 +478,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
         var result = tmpl('script_transfer_product_modal')({
                         product: model.productDetail
                       });
-        // Compatibility with bootstrap modal replacement (from 0.9.30)
+        // Compatibility with bootstrap modal replacement (from 1.0.0)
         if ($('#modalTransferProductDetail_MBM').length) {
           $('#modalTransferProductDetail_MBM .modal-product-detail-title').html(model.productDetail.name);
           $('#modalTransferProductDetail_MBM .modal-product-detail-content').html(result);
