@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.0.1]
+
+### Added
+
+- Renting Reservation : Control if the reservation form should be shown or not
+
 ## [1.0.0]
 
 ### Added

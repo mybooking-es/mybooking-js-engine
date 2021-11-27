@@ -201,9 +201,14 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
 
     updateBookingSummary: function() { // Updates the shopping cart summary (total)
 
+       var showReservationForm = (model.configuration.rentingFormFillDataAddress || 
+                                  model.configuration.rentingFormFillDataDriverDetail || 
+                                  model.configuration.rentingFormFillDataNamedResources) &&
+                                  model.booking.manager_complete_authorized;
        var reservationDetail = tmpl('script_reservation_summary')(
             {booking: model.booking,
-             configuration: model.configuration});
+             configuration: model.configuration,
+             showReservationForm: showReservationForm});
        $('#reservation_detail').html(reservationDetail);
 
 
