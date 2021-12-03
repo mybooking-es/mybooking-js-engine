@@ -636,13 +636,6 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
                               i18next: i18next});
           $('#product_listing').html(result);
 
-          if (commonServices.chooseProductType === 'grid') {
-            controller.showProductsInGridButtonClick();
-          }
-          else if (commonServices.chooseProductType === 'list') {
-            controller.showProductsInListButtonClick();
-          }
-
           // Bind the event to change to grid
           $('.js-mb-grid').on('click', function(){
             controller.showProductsInGridButtonClick();

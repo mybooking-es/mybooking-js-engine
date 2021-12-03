@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.0.2]
+
+### Fixed
+
+- Renting choose product selection: Default layout by template
+
 ## [1.0.1]
 
 ### Added
