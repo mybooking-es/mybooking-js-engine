@@ -840,7 +840,10 @@ require(['jquery',
       }
       else {
         // Setup country selector
-        var selectors = ['country'];
+        var selectors = ['country',
+                         'driver_driving_license_country',
+                         'additional_driver_1_driving_license_country',
+                         'additional_driver_2_driving_license_country'];
         for (var idx=0; idx<selectors.length; idx++) { 
           if (document.getElementById(selectors[idx])) {
             var countriesDataSource = new MemoryDataSource(countriesArray);
@@ -1403,14 +1406,28 @@ require(['jquery',
         }
 
         // Show the product in a modal
-        setTimeout(function(){
-          commonUI.showModal('#modalExtraDetail', function(event, modal){
-                                                      // Callback on show => show slider
-                                                      if ( $('.mybooking-carousel-inner').length ) {  
-                                                        commonUI.showSlider('.mybooking-carousel-inner');
-                                                      }
+        commonUI.showModal('#modalExtraDetail', function(event, modal){ // On Show
+                                                  setTimeout(function(){ 
+                                                    if ( $('.mybooking-carousel-inner').length ) {  
+                                                      commonUI.showSlider('.mybooking-carousel-inner');
+                                                    }
+                                                    $('#modal_product_photos').on('click', function(){
+                                                      $('.mybooking-modal_product-description').hide();
+                                                      $('.mybooking-modal_product-container').show();
+                                                      commonUI.playSlider('.mybooking-carousel-inner');
                                                     });
-          }, 100);
+                                                    $('#modal_product_info').on('click', function(){
+                                                      $('.mybooking-modal_product-container').hide();
+                                                      $('.mybooking-modal_product-description').show();
+                                                      commonUI.pauseSlider('.mybooking-carousel-inner');
+                                                    });
+                                                  }, 50);
+                                                },
+                                                function(event, modal) { // On hide
+                                                  commonUI.pauseSlider('.mybooking-carousel-inner');
+                                                  commonUI.destroySlider('.mybooking-carousel-inner');
+                                                }  
+                                                );
       }      
     },
 

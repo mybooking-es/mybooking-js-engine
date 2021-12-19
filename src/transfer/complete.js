@@ -623,6 +623,54 @@ require(['jquery',
         $('form[name=mybooking_transfer_reservation_form]').html(reservationForm);                                                                    
       }
 
+      // Configure address country
+      
+      // Load countries
+      var countries = i18next.t('common.countries', {returnObjects: true });
+      if (countries instanceof Object) {
+        var countryCodes = Object.keys(countries);
+        var countriesArray = countryCodes.map(function(value){ 
+                                return {id: value, text: countries[value], description: countries[value]};
+                             });
+      } 
+      else {
+        var countriesArray = [];
+      }
+      var values = ['']; 
+
+      if (commonServices.jsUseSelect2) {
+        // Setup country selector
+        var selectors = ['customer_address_country'];
+        for (var idx=0; idx<selectors.length; idx++) { 
+          $countrySelector = $(selectors[idx]);    
+          if ($countrySelector.length > 0 && typeof values[idx] !== 'undefined') {
+            $countrySelector.select2({
+              width: '100%',
+              theme: 'bootstrap4',                  
+              data: countriesArray
+            });
+            // Assign value
+            var value = (values[idx] !== null && values[idx] !== '' ? values[idx] : '');
+            $countrySelector.val(values[idx]);
+            $countrySelector.trigger('change');
+          }
+        }
+      }
+      else {
+        // Setup country selector
+        var selectors = ['customer_address_country'];
+        for (var idx=0; idx<selectors.length; idx++) { 
+          if (document.getElementById(selectors[idx])) {
+            var countriesDataSource = new MemoryDataSource(countriesArray);
+            var countryModel = (values[idx] == null ? '' : values[idx])
+            var selectorModel = new SelectSelector(selectors[idx],
+                countriesDataSource, countryModel, true, i18next.t('complete.reservationForm.select_country'));
+          }
+        }
+      }
+
+
+
     },
 
     /**

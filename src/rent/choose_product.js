@@ -463,8 +463,22 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
      */
     productDetailIconClick: function(productCode) {
 
-      model.loadProduct(productCode);
+      var externalLink = false;
 
+      // Check if open the product in a tab
+      if (model.products) {
+        var product = model.products.find(element => element.code === productCode);
+        if (product && product.external_detail_url && product.external_detail_url !== '') {
+          externalLink = true;
+          window.open(product.external_detail_url);
+        }
+      }
+
+      if (!externalLink) {
+        // Show a modal with the product
+        model.loadProduct(productCode);
+      }
+      
     },
 
     /**
@@ -709,14 +723,28 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
         }
 
         // Show the product in a modal
-        setTimeout(function(){
-            commonUI.showModal('#modalProductDetail', function(event, modal){
-                                                        // Callback on show => show slider
-                                                        if ( $('.mybooking-carousel-inner').length ) {  
-                                                          commonUI.showSlider('.mybooking-carousel-inner');
-                                                        }
+        commonUI.showModal('#modalProductDetail', function(event, modal){ // on Show
+                                                    setTimeout(function(){  
+                                                      if ( $('.mybooking-carousel-inner').length ) {  
+                                                        commonUI.showSlider('.mybooking-carousel-inner');
+                                                      }
+                                                      $('#modal_product_photos').on('click', function(){
+                                                        $('.mybooking-modal_product-description').hide();
+                                                        $('.mybooking-modal_product-container').show();
+                                                        commonUI.playSlider('.mybooking-carousel-inner');
                                                       });
-          }, 100);
+                                                      $('#modal_product_info').on('click', function(){
+                                                        $('.mybooking-modal_product-container').hide();
+                                                        $('.mybooking-modal_product-description').show();
+                                                        commonUI.pauseSlider('.mybooking-carousel-inner');
+                                                      });
+                                                    },50);
+                                                  },
+                                                  function(event, modal) { // on Hide
+                                                    commonUI.pauseSlider('.mybooking-carousel-inner');
+                                                    commonUI.destroySlider('.mybooking-carousel-inner');
+                                                  } 
+                                                );
                       
       }
 

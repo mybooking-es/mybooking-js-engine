@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.0.3]
+
+### Added
+
+- Transfer supplements
+- Transfer billing address
+
+### Fixed
+
+- Product detail: Show gallery + info
+- Extra detail: Show gallery + info
+- Transfer my reservation : Payment
+
 ## [1.0.2]
 
 ### Fixed

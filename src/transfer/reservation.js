@@ -98,7 +98,22 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
                  $('#sidebar').show();
                }
           });
-    }
+    },
+
+    sendPayRequest: function() {
+      var bookingId = this.bookingFreeAccessId;
+      if (bookingId == '') {
+        bookingId = this.getBookingFreeAccessId();
+      }
+      else {
+        this.setBookingFreeAccessId(bookingId);
+      }
+      var data = $('form[name=payment_form]').formParams();
+      data['id'] = bookingId;
+      // Do payment
+      view.payment( commonServices.URL_PREFIX + '/reserva-transfer/pagar', data );
+    },
+
 
   };
 
@@ -208,6 +223,24 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
         );
 
     },
+
+    /**
+     * Payment
+     */
+    payment: function(url, paymentData) {
+
+      transferEngineMediator.onExistingReservationPayment(url, paymentData);
+
+    },
+    
+    /*
+     * Go to the payment
+     */
+    gotoPayment: function(url, paymentData) {
+
+      $.form(url, paymentData,'POST').submit();
+
+    }
 
   };
 

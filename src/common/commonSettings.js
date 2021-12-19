@@ -66,6 +66,7 @@ define('commonSettings', ['jquery','commonServices','commonLoader','commonTransl
       // Transfer
       transfer_allow_select_return_origin_destination: false,
       transfer_origin_destination_detailed_info_mode: 'trip',
+      transferFormFillBillingAddress: false,
       formatExtraAmount: function(i18next, oneUnitPrice, priceCalculation, days, hours, amount, currencySymbol, decimals) {
 
         var unitAmountFormatted = this.formatCurrency(oneUnitPrice, currencySymbol, decimals);
@@ -221,6 +222,7 @@ define('commonSettings', ['jquery','commonServices','commonLoader','commonTransl
              // Transfer
              mybookingSettings.data.transfer_allow_select_return_origin_destination = data.transfer_allow_select_return_origin_destination;
              mybookingSettings.data.transfer_origin_destination_detailed_info_mode = data.transfer_origin_destination_detailed_info_mode;
+             mybookingSettings.data.transferFormFillBillingAddress = data.transfer_form_fill_billing_address;
              // Customer access
              if (typeof data.engine_customer_access !== 'undefined') {
                mybookingSettings.data.engineCustomerAccess = true;

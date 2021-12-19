@@ -16,7 +16,7 @@ define('commonUI',['jquery', 'commonServices', 'jquery.modal'],function($, commo
      * 
      * @selector [String] The selector 
      */ 
-  	showModal: function(selector, callbackOnShow) {
+  	showModal: function(selector, callbackOnShow, callbackOnHide) {
 
       var selectorMBM = selector + '_MBM';
 
@@ -24,6 +24,9 @@ define('commonUI',['jquery', 'commonServices', 'jquery.modal'],function($, commo
         // Setup the callback on Show
         if (callbackOnShow !== undefined && typeof callbackOnShow === 'function') {
           $(selectorMBM).on($.mbModal.OPEN, callbackOnShow);
+        }
+        if (callbackOnHide !== undefined && typeof callbackOnHide === 'function') {
+          $(selectorMBM).on($.mbModal.AFTER_CLOSE, callbackOnHide);
         }
         // Show the modal
         $(selectorMBM).mbModal({ modalClass: "mybooking-modal",
@@ -57,6 +60,9 @@ define('commonUI',['jquery', 'commonServices', 'jquery.modal'],function($, commo
       var selectorMBM = selector + '_MBM';
 
       if ($(selectorMBM).length > 0) {
+        if (callbackOnHide !== 'undefined' && typeof callbackOnHide === 'function') {
+          $(selectorMBM).on($.mbModal.AFTER_CLOSE, callbackOnHide);
+        }
         $.mbModal.close();
       }
       else {
@@ -84,15 +90,44 @@ define('commonUI',['jquery', 'commonServices', 'jquery.modal'],function($, commo
                 slidesToScroll: 1,
                 autoplay: true,
                 autoplaySpeed: 4000,
+                adaptiveHeight: true,
                 arrows: true,
                 dots: true,
-                //adaptiveHeight: true,
                 prevArrow: '<button type="button" class="slick-prev">&nbsp;</type>',
                 nextArrow: '<button type="button" class="slick-next">&nbsp;</type>'
               });
+        $(selector).slick("setPosition", 0);
       }
       
+    },
+
+    /**
+     * Destroy slider
+     */ 
+    destroySlider: function(selector) {
+
+      $(selector).slick('unslick');
+
+    },
+
+    /**
+     *  Play slider
+     */ 
+    playSlider: function(selector) {
+      if ($.fn.slick) {
+        $(selector).slick('slickPlay');
+      }
+    },
+
+    /**
+     *  Pauses slider
+     */ 
+    pauseSlider: function(selector) {
+      if ($.fn.slick) {
+        $(selector).slick('slickPause');
+      }
     }
+
 
   }
 
