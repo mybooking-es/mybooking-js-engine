@@ -430,6 +430,19 @@ require(['jquery',
           reservation.payment = 'none';
         }
       }
+      // Prepare phone prefix
+      if ($('#customer_phone').length) {
+        var countryData = $('#customer_phone').intlTelInput('getSelectedCountryData');
+        if (countryData != null) {
+          reservation.customer_phone_prefix = countryData.dialCode;
+        }
+      }
+      if ($('#customer_mobile_phone').length) {
+        var countryData = $('#customer_mobile_phone').intlTelInput('getSelectedCountryData');
+        if (countryData != null) {
+          reservation.customer_mobile_phone_prefix = countryData.dialCode;
+        }
+      }      
       var reservationJSON = JSON.stringify(reservation);
       // Prepare the URL
       var url = commonServices.URL_PREFIX + '/api/booking/frontend/shopping-cart';
@@ -854,6 +867,21 @@ require(['jquery',
         }
       }
 
+      // Configure Telephone with prefix
+      var countryCode = commonSettings.countryCode(navigator.language || document.documentElement.lang);
+      $("#customer_phone").intlTelInput({
+        initialCountry: countryCode,
+        separateDialCode: true,        
+        utilsScript: commonServices.phoneUtilsPath,
+        preferredCountries: [countryCode]
+      });
+
+      $("#customer_mobile_phone").intlTelInput({
+        initialCountry: countryCode,
+        separateDialCode: true,
+        utilsScript: commonServices.phoneUtilsPath,
+        preferredCountries: [countryCode]
+      });
 
       // Configure driver document id date
       if (document.getElementById('driver_document_id_date_day')) {

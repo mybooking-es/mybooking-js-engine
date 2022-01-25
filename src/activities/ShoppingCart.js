@@ -126,6 +126,19 @@ require(['jquery','i18next', 'ysdtemplate',
 
               // Request object
               var order = $('form[name=reservation_form]').formParams(false);
+              // Prepare phone prefix
+              if ($('#customer_phone').length) {
+                var countryData = $('#customer_phone').intlTelInput('getSelectedCountryData');
+                if (countryData != null) {
+                  order.customer_phone_prefix = countryData.dialCode;
+                }
+              }
+              if ($('#customer_mobile_phone').length) {
+                var countryData = $('#customer_mobile_phone').intlTelInput('getSelectedCountryData');
+                if (countryData != null) {
+                  order.customer_mobile_phone_prefix = countryData.dialCode;
+                }
+              }
               var orderJSON = JSON.stringify(order);
               var paymentMethod = order.payment;
               var paymentAmount = null;
@@ -423,6 +436,22 @@ require(['jquery','i18next', 'ysdtemplate',
           updateReservationForm: function() { /* Update the reservation form */
               var customerForm = tmpl('script_reservation_form',{language: model.requestLanguage});
               $('#reservation_container').html(customerForm);
+
+              // Configure Telephone with prefix
+              var countryCode = commonSettings.countryCode(navigator.language || document.documentElement.lang);
+              $("#customer_phone").intlTelInput({
+                initialCountry: countryCode,
+                separateDialCode: true,
+                utilsScript: commonServices.phoneUtilsPath,
+                preferredCountries: [countryCode]
+              });
+              $("#customer_mobile_phone").intlTelInput({
+                initialCountry: countryCode,
+                separateDialCode: true,
+                utilsScript: commonServices.phoneUtilsPath,
+                preferredCountries: [countryCode]
+              });
+
           },
 
           updatePayment: function() { /* Update the payment */

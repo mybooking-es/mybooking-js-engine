@@ -32,6 +32,8 @@ define('commonServices',[],function(){
     customLoader: mybookingEngine && mybookingEngine.customLoader ? mybookingEngine.customLoader() : false,
     // Use select2
     jsUseSelect2: mybookingEngine && mybookingEngine.jsUseSelect2 ? mybookingEngine.jsUseSelect2() : false,
+    //
+    phoneUtilsPath: mybookingEngine && mybookingEngine.phoneUtilsPath ? mybookingEngine.phoneUtilsPath() : null,
     // Google Maps
     useGoogleMaps: mybookingEngine && mybookingEngine.useGoogleMaps ? mybookingEngine.useGoogleMaps() : false,
     googleMapsSettings: mybookingEngine && mybookingEngine.googleMapsSettings ? mybookingEngine.googleMapsSettings() : null,

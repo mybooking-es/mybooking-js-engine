@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.0.4]
+
+### Added
+
+- Renting Checkout Form : Phone dial code
+- Activities Checkout Form : Phone dial code
+- Transfer Checkout Form : Phone dial code
+- Transfer selector : Use select2 to choose the pickup and dropoff places
+
+### Updated
+
+- Updated select2 to 4.0.13
+
 ## [1.0.3]
 
 ### Added

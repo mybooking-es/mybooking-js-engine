@@ -290,6 +290,20 @@ require(['jquery',
           reservation.payment = 'none';
         }
       }
+      // Prepare phone prefix
+      if ($('#customer_phone').length) {
+        var countryData = $('#customer_phone').intlTelInput('getSelectedCountryData');
+        if (countryData != null) {
+          reservation.customer_phone_prefix = countryData.dialCode;
+        }
+      }
+      if ($('#customer_mobile_phone').length) {
+        var countryData = $('#customer_mobile_phone').intlTelInput('getSelectedCountryData');
+        if (countryData != null) {
+          reservation.customer_mobile_phone_prefix = countryData.dialCode;
+        }
+      }
+      //
       var reservationJSON = JSON.stringify(reservation);
       // Prepare the URL
       var url = commonServices.URL_PREFIX + '/api/booking-transfer/frontend/shopping-cart';
@@ -669,7 +683,21 @@ require(['jquery',
         }
       }
 
+      // Configure Telephone with prefix
+      var countryCode = commonSettings.countryCode(navigator.language || document.documentElement.lang);
+      $("#customer_phone").intlTelInput({
+        initialCountry: countryCode,
+        separateDialCode: true,
+        utilsScript: commonServices.phoneUtilsPath,
+        preferredCountries: [countryCode]
+      });
 
+      $("#customer_mobile_phone").intlTelInput({
+        initialCountry: countryCode,
+        separateDialCode: true,
+        utilsScript: commonServices.phoneUtilsPath,
+        preferredCountries: [countryCode]
+      });
 
     },
 
@@ -794,19 +822,19 @@ require(['jquery',
                     'customer_document_id': {
                         'required': i18next.t('complete.reservationForm.validations.fieldRequired')
                     },
-                    'street': {
+                    'customer_address_street': {
                         'required': i18next.t('complete.reservationForm.validations.fieldRequired')
                     },
-                    'city': {
+                    'customer_address_city': {
                         'required': i18next.t('complete.reservationForm.validations.fieldRequired')
                     },    
-                    'state': {
+                    'customer_address_state': {
                         'required': i18next.t('complete.reservationForm.validations.fieldRequired')
                     }, 
-                    'zip': {
+                    'customer_address_zip': {
                         'required': i18next.t('complete.reservationForm.validations.fieldRequired')
                     }, 
-                    'country': {
+                    'customer_address_country': {
                         'required': i18next.t('complete.reservationForm.validations.fieldRequired')
                     },                                  
                     'number_of_adults': {

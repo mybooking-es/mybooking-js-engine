@@ -1,12 +1,12 @@
 define('SelectorTransfer', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDSelectSelector',
          'commonServices','commonSettings', 'commonTranslations', 'commonLoader',
-         'i18next', 'moment','ysdtemplate', 'cookie', 'jquery.i18next',
+         'i18next', 'moment','ysdtemplate', 'cookie', 'select2', 'jquery.i18next',
          'jquery.validate', 'jquery.ui', 'jquery.ui.datepicker-es',
          'jquery.ui.datepicker-en', 'jquery.ui.datepicker-ca', 'jquery.ui.datepicker-it',
          'jquery.ui.datepicker.validation'],
          function($, MemoryDataSource, RemoteDataSource, SelectSelector,
                   commonServices, commonSettings, commonTranslations, commonLoader, 
-                  i18next, moment, tmpl, cookie) {
+                  i18next, moment, tmpl, cookie, select2) {
 
   /***************************************************************************
    *
@@ -254,7 +254,7 @@ define('SelectorTransfer', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSourc
     /**
      * Round trip Changed
      */ 
-    this.rountTripChanged = function(event) {
+    this.roundTripChanged = function(event) {
         var value = event.currentTarget.value;
         if (value === 'true') {
           // Setup the return date min value as the date 
@@ -361,25 +361,58 @@ define('SelectorTransfer', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSourc
       url += urlParams.join('&');
       }
 
-      // DataSource
-      var dataSource = new RemoteDataSource(url,
-                                            {
-                                            'id':'id',
-                                            'description': function(data) {
-                                                return data.name;
-                                            }});
-      var value = this.selectorModel.shopping_cart ? this.selectorModel.shopping_cart.origin_point_id : null;
+      // == AUTOCOMPLETE
+
       var self = this;
-      new SelectSelector(this.selectorModel.origin_point_id, 
-              dataSource,
-              value, 
-              true, 
-              i18next.t('transfer.selectPickupPlace'));
+
+      // Origin point selector
+      $(this.selectorModel.origin_point_selector).select2({ width: '100%',
+              placeholder: i18next.t('transfer.selectPickupPlace'),
+              ajax: {
+                url: url,
+                delay: 250,
+                data: function(params) {
+                  var query = {
+                     term: params.term,
+                     page: params.page || 1
+                  }
+                  return query;
+                },
+                processResults: function(data, params) {
+                  var transformedData = [];
+                  var dataResult = data.data;                   
+                  for (var idx=0; idx<dataResult.length; idx++) {
+                    var element = {
+                      'text': dataResult[idx].name,
+                      'id': dataResult[idx].id,
+                      'selected': (self.selectorModel.shopping_cart ? (dataResult[idx].id == self.selectorModel.shopping_cart.origin_point_id) : false)
+                    }
+                    transformedData.push(element);
+                  }
+                  params.page = params.page || 1;
+                  return {results: transformedData,
+                          pagination: {
+                            'more': ((params.page * 15) < data.total)
+                          }};
+                },
+
+              }
+            });
+
+      // Select current value (Create and option)
+      if (this.selectorModel.shopping_cart && this.selectorModel.shopping_cart.origin_point_id) {
+        var selectedOption = new Option(this.selectorModel.shopping_cart.origin_point_name, 
+                                        this.selectorModel.shopping_cart.origin_point_id, 
+                                        true, 
+                                        true);
+        $(this.selectorModel.origin_point_selector).append(selectedOption).trigger('change');
+      }
+
     }
 
     /**
-    * Load destination points
-    */
+     * Load destination points
+     */
     this.loadDestinationPoints = function(originPointId) {
       console.log('loadDestinationPoints');
 
@@ -402,19 +435,52 @@ define('SelectorTransfer', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSourc
         url += urlParams.join('&');
       }
 
-      // DataSource and Selector
-      var dataSource = new RemoteDataSource(url,
-                                            {
-                                            'id':'id',
-                                            'description': function(data) {
-                                                return data.name;
-                                            }});
-      var value = this.selectorModel.shopping_cart ? this.selectorModel.shopping_cart.destination_point_id : null;
-      new SelectSelector(this.selectorModel.destination_point_id, 
-              dataSource,
-              value, 
-              true, 
-              i18next.t('transfer.selectDropOffPlace'));
+      // == AUTOCOMPLETE
+
+      var self = this;
+
+      // Origin point selector
+      $(this.selectorModel.destination_point_selector).select2({ width: '100%',
+              placeholder: i18next.t('transfer.selectDropOffPlace'),
+              ajax: {
+                url: url,          
+                delay: 250,                      
+                data: function(params) {
+                  var query = {
+                     term: params.term,
+                     page: params.page || 1
+                  }
+                  return query;
+                },
+                processResults: function(data, params) {
+                  var dataResult = data.data;                  
+                  var transformedData = [];
+                  for (var idx=0; idx<dataResult.length; idx++) {
+                    var element = {
+                      'text': dataResult[idx].name,
+                      'id': dataResult[idx].id,
+                      'selected': (self.selectorModel.shopping_cart ? (dataResult[idx].id == self.selectorModel.shopping_cart.destination_point_id) : false)
+                    }
+                    transformedData.push(element);
+                  }
+                  params.page = params.page || 1;
+                  return {results: transformedData,
+                          pagination: {
+                            more: (params.page * 15) < data.total
+                          }};
+                },
+
+              }
+            });
+
+      // Select current value (Create and option)
+      if (this.selectorModel.shopping_cart && this.selectorModel.shopping_cart.destination_point_id) {
+        var selectedOption = new Option(this.selectorModel.shopping_cart.destination_point_name, 
+                                        this.selectorModel.shopping_cart.destination_point_id, 
+                                        true, 
+                                        true);
+        $(this.selectorModel.destination_point_selector).append(selectedOption).trigger('change');
+      }
 
     }
 
@@ -469,26 +535,56 @@ define('SelectorTransfer', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSourc
       url += urlParams.join('&');
       }
 
-      // DataSource
-      var dataSource = new RemoteDataSource(url,
-                                            {
-                                            'id':'id',
-                                            'description': function(data) {
-                                                return data.name;
-                                            }});
-      var value = this.selectorModel.shopping_cart ? this.selectorModel.shopping_cart.return_origin_point_id : $(this.selectorModel.destination_point_selector).val();
+      // == AUTOCOMPLETE
+
       var self = this;
-      new SelectSelector(this.selectorModel.return_origin_point_id, 
-              dataSource,
-              value, 
-              true, 
-              i18next.t('transfer.selectPickupPlace'), function(){
-                // Trigger as if the element was changed 
-                if (self.selectorModel.shopping_cart == null && value != null) {
-                  $(self.selectorModel.return_origin_point_selector).val(value);
-                  $(self.selectorModel.return_origin_point_selector).trigger('change');
-                }
-              });
+
+      // Return origin point selector
+      $(this.selectorModel.return_origin_point_selector).select2({ width: '100%',
+              placeholder: i18next.t('transfer.selectPickupPlace'),
+              ajax: {
+                url: url,                
+                data: function(params) {
+                  var query = {
+                     term: params.term,
+                     page: params.page || 1
+                  }
+                  return query;
+                },
+                processResults: function(data, params) {
+                  var dataResult = data.data;
+                  var transformedData = [];
+                  for (var idx=0; idx<dataResult.length; idx++) {
+                    var element = {
+                      'text': dataResult[idx].name,
+                      'id': dataResult[idx].id,
+                      'selected': (self.selectorModel.shopping_cart ? (dataResult[idx].id == self.selectorModel.shopping_cart.return_origin_point_id) : false)
+                    }
+                    transformedData.push(element);
+                  }
+                  params.page = params.page || 1;                  
+                  return {results: transformedData,
+                          pagination: {
+                            more: (params.page * 15) < data.total
+                          }};
+                },
+
+              }
+            });
+
+      var $destinationPointSelectorData = $(this.selectorModel.destination_point_selector).select2('data');
+      var value = this.selectorModel.shopping_cart ? this.selectorModel.shopping_cart.return_origin_point_id : $destinationPointSelectorData[0].id;
+      var text = this.selectorModel.shopping_cart ? this.selectorModel.shopping_cart.return_origin_point_name : $destinationPointSelectorData[0].text;
+
+      // Select current value (Create and option)
+      if (value && text) {
+        var selectedOption = new Option(text, 
+                                        value, 
+                                        true, 
+                                        true);
+        $(this.selectorModel.return_origin_point_selector).append(selectedOption).trigger('change');
+      }
+
     }
 
     /**
@@ -516,19 +612,56 @@ define('SelectorTransfer', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSourc
         url += urlParams.join('&');
       }
 
-      // DataSource and Selector
-      var dataSource = new RemoteDataSource(url,
-                                            {
-                                            'id':'id',
-                                            'description': function(data) {
-                                                return data.name;
-                                            }});
-      var value = this.selectorModel.shopping_cart ? this.selectorModel.shopping_cart.return_destination_point_id : $(this.selectorModel.origin_point_selector).val();
-      new SelectSelector(this.selectorModel.return_destination_point_id, 
-              dataSource,
-              value, 
-              true, 
-              i18next.t('transfer.selectDropOffPlace'));
+      // == AUTOCOMPLETE
+
+      var self = this;
+
+      // Return destination point selector
+      $(this.selectorModel.return_destination_point_selector).select2({ width: '100%',
+              placeholder: i18next.t('transfer.selectDropOffPlace'),
+              ajax: {
+                url: url,   
+                delay: 250,             
+                data: function(params) {
+                  var query = {
+                     term: params.term,
+                     page: params.page || 1
+                  }
+                  return query;
+                },
+                processResults: function(data, params) {
+                  var transformedData = [];
+                  var dataResult = data.data;
+                  for (var idx=0; idx<dataResult.length; idx++) {
+                    var element = {
+                      'text': dataResult[idx].name,
+                      'id': dataResult[idx].id,
+                      'selected': (self.selectorModel.shopping_cart ? (dataResult[idx].id == self.selectorModel.shopping_cart.return_destination_point_id) : false)
+                    }
+                    transformedData.push(element);
+                  }
+                  params.page = params.page || 1;
+                  return {results: transformedData,
+                          pagination: {
+                            more: (params.page * 15) < data.total
+                          }};
+                },
+
+              }
+            });
+
+      var $originPointSelectorData = $(this.selectorModel.origin_point_selector).select2('data');
+      var value = this.selectorModel.shopping_cart ? this.selectorModel.shopping_cart.return_destination_point_id : $originPointSelectorData[0].id;
+      var text = this.selectorModel.shopping_cart ? this.selectorModel.shopping_cart.return_destination_point_name : $originPointSelectorData[0].text;
+
+      // Select current value (Create and option)
+      if (text && value) {
+        var selectedOption = new Option(text, 
+                                        value, 
+                                        true, 
+                                        true);
+        $(this.selectorModel.return_destination_point_selector).append(selectedOption).trigger('change');
+      }
 
     }
 
@@ -571,7 +704,6 @@ define('SelectorTransfer', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSourc
       }
 
     };
-
 
     // ---------------------- Start from shopping cart => Selector modification
 
@@ -657,7 +789,7 @@ define('SelectorTransfer', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSourc
 
       // On Change round trip
       $(this.selectorModel.round_trip_selector).on('change', function(event) {
-        self.selectorController.rountTripChanged(event);
+        self.selectorController.roundTripChanged(event);
       });
       this.setupFormControl();
       $(this.selectorModel.form_selector).attr('action', commonServices.transferChooseProductUrl);
