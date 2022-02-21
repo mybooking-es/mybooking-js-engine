@@ -868,20 +868,25 @@ require(['jquery',
       }
 
       // Configure Telephone with prefix
-      var countryCode = commonSettings.countryCode(navigator.language || document.documentElement.lang);
-      $("#customer_phone").intlTelInput({
-        initialCountry: countryCode,
-        separateDialCode: true,        
-        utilsScript: commonServices.phoneUtilsPath,
-        preferredCountries: [countryCode]
-      });
+      var countryCode = commonUI.intlTelInputCountryCode();
 
-      $("#customer_mobile_phone").intlTelInput({
-        initialCountry: countryCode,
-        separateDialCode: true,
-        utilsScript: commonServices.phoneUtilsPath,
-        preferredCountries: [countryCode]
-      });
+      if ($('#customer_phone').length) {
+        $("#customer_phone").intlTelInput({
+          initialCountry: countryCode,
+          separateDialCode: true,        
+          utilsScript: commonServices.phoneUtilsPath,
+          preferredCountries: [countryCode]
+        });
+      }
+
+      if ($("#customer_mobile_phone").length) {
+        $("#customer_mobile_phone").intlTelInput({
+          initialCountry: countryCode,
+          separateDialCode: true,
+          utilsScript: commonServices.phoneUtilsPath,
+          preferredCountries: [countryCode]
+        });
+      }
 
       // Configure driver document id date
       if (document.getElementById('driver_document_id_date_day')) {

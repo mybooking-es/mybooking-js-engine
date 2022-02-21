@@ -835,18 +835,19 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
           not_hidden_rental_location_code = !this.selectorModel.shopping_cart.engine_fixed_rental_location;
         }
         else {
-          // Check if forced hidden rental_location_code
-          not_hidden_rental_location_code = ($(this.selectorModel.form_selector).find('input[type=hidden][name=rental_location_code]').length == 0);
           // Check if forced hidden family_id
           not_hidden_family_id = ($(this.selectorModel.form_selector).find('input[type=hidden][name=family_id]').length == 0);
+          // Check if forced hidden rental_location_code
+          not_hidden_rental_location_code = ($(this.selectorModel.form_selector).find('input[type=hidden][name=rental_location_code]').length == 0);
         }
 
         // Load the template
         var html = tmpl(this.selectorModel.form_selector_tmpl)({configuration: this.selectorModel.configuration,
                                                                 not_hidden_family_id: not_hidden_family_id,
                                                                 not_hidden_rental_location_code: not_hidden_rental_location_code,
-                                                                rental_location_code: (this.selectorModel.shopping_cart ? this.selectorModel.shopping_cart.rental_location_code : null),
-                                                                family_id:  (this.selectorModel.shopping_cart ? this.selectorModel.shopping_cart.family_id : null) });
+                                                                family_id:  (this.selectorModel.shopping_cart ? this.selectorModel.shopping_cart.family_id : null),
+                                                                rental_location_code: (this.selectorModel.shopping_cart ? this.selectorModel.shopping_cart.rental_location_code : null)
+                                                               });
         // Assign to the form
         $(this.selectorModel.form_selector).append(html);
       }
@@ -972,7 +973,7 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
 
       $.datepicker.setDefaults( $.datepicker.regional[this.selectorModel.requestLanguage || 'es'] );
       var locale = $.datepicker.regional[this.selectorModel.requestLanguage || 'es'];
-      var maxDate = moment().add(365, 'days').tz(this.selectorModel.configuration.timezone).format(this.selectorModel.configuration.dateFormat);
+      var maxDate = moment().add(650, 'days').tz(this.selectorModel.configuration.timezone).format(this.selectorModel.configuration.dateFormat);
 
       // Date From
       $(this.selectorModel.date_from_selector).datepicker({

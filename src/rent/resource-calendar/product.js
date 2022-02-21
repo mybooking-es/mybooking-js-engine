@@ -115,6 +115,8 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
       if (commonServices.apiKey && commonServices.apiKey != '') {
         url += '&api_key='+commonServices.apiKey;
       }    
+      // Get the firstday
+      url += "&firstday=true";      
 
       $.ajax({
         type: 'GET',
@@ -122,7 +124,18 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
         contentType : 'application/json; charset=utf-8',
         success: function(data, textStatus, jqXHR) {
             productModel.availabilityData = data;
-            // Rebuild calendar
+            // Setup the first available date
+            if (productModel.availabilityData && typeof productModel.availabilityData.first_day !== 'undefined' && 
+                productModel.availabilityData.first_day) {
+              var firstDay = moment(productModel.availabilityData.first_day);
+              var firstMonth = moment($('#date').data('dateRangePicker').opt.month1);
+              if (firstMonth.isBefore(firstDay)) {
+                // This selects the first day
+                $('#date').data('dateRangePicker').setStart(productModel.availabilityData.first_day);
+                // This clear the selection (but holds the month on screen)
+                $('#date').data('dateRangePicker').clear();
+              }
+            }
             $('#date').data('dateRangePicker').redraw();
             // Activate the control
             $('#date-container').removeClass('disabled-picker');
@@ -687,6 +700,7 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
           showTopbar: false,
           customTopBar: '',
           extraClass: '',
+          selectForward: true,
           beforeShowDay: function(date) {
             var theDate = moment(date.setHours(0,0,0,0)).format('YYYY-MM-DD');
             // Before showing a date
@@ -730,6 +744,36 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
               }
             }
             return [true, (info == null ? 'date-available' : 'bg-warning'), (info == null ? '' : info)];
+          },
+          showDateFilter: function(time, date)
+          {
+            var dateStr = moment(time).format('YYYY-MM-DD');
+            var renderPrice = "<div class=\"mybooking-product_calendar-price\">&nbsp;</div>";
+            var renderMinDays =  "<div class=\"mybooking-product_calendar-mindays\">&nbsp;</div>";
+            if (productModel.availabilityData && typeof productModel.availabilityData.prices !== 'undefined') {
+              var prices = productModel.availabilityData.prices;
+              if (prices[dateStr] && productModel.availabilityData.occupation[dateStr].selectable_day) {
+                var priceStr = productModel.configuration.formatCurrency(prices[dateStr],
+                                                                         productModel.configuration.currencySymbol,
+                                                                         productModel.configuration.currencyDecimals,
+                                                                         productModel.configuration.currencyThousandsSeparator,
+                                                                         productModel.configuration.currencyDecimalMark,
+                                                                         productModel.configuration.currencySymbolPosition);
+                priceStr = priceStr.replace(' ', '');
+                renderPrice = "<div class=\"mybooking-product_calendar-price\">"+priceStr+"</div>";
+              }
+            }
+            var renderMin = '';
+            if (productModel.availabilityData && typeof productModel.availabilityData.min_days !== 'undefined') {
+              var minDays = productModel.availabilityData.min_days;
+              if (minDays[dateStr] && minDays[dateStr] > 1 && productModel.availabilityData.occupation[dateStr].selectable_day) {
+                minDaysLiteral = i18next.t('calendar_selector.min_duration', {days: minDays[dateStr]});
+                renderMinDays = "<div class=\"mybooking-product_calendar-mindays mybooking-product_calendar-mindays-data\">"+minDaysLiteral+"</div>";
+              }
+            }
+            return '<div class=\"mybooking-product_calendar-date\"><span>'+date+'</span>'+
+                   renderPrice + renderMinDays;
+                   '</div>';
           },
           hoveringTooltip: false         
       })

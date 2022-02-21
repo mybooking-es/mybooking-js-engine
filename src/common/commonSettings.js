@@ -248,21 +248,7 @@ define('commonSettings', ['jquery','commonServices','commonLoader','commonTransl
         }
       }
     },
-    countryCode: function(documentLang) {
-      var countryCode = null;
-      if (typeof documentLang != 'undefined' && documentLang != null) {
-        if (documentLang.indexOf('-') > -1) {
-          var documentLangParts = documentLang.split('-');
-          if (documentLangParts.length > 0) {
-            countryCode = documentLangParts[documentLangParts.length-1];
-            if (countryCode != null) {
-              countryCode = countryCode.toLowerCase();
-            }
-          }
-        }
-      }
-      return countryCode;
-    },
+
     getUrlVars: function() {
           var vars = [], hash;
           var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');

@@ -8,6 +8,8 @@
 - Activities Checkout Form : Phone dial code
 - Transfer Checkout Form : Phone dial code
 - Transfer selector : Use select2 to choose the pickup and dropoff places
+- Activities Cyclic Calendar: First Date
+- Product Calendar: First date + Show daily prices + Show minimum dates
 
 ### Updated
 

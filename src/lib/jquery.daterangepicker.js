@@ -1051,6 +1051,7 @@
             redraw: redrawDatePicker,
             getDatePicker: getDatePicker,
             resetMonthsView: resetMonthsView,
+            show: showSelectedDays,
             opt: opt,
             destroy: function() {
                 $(self).off('.datepicker');

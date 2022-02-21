@@ -33,7 +33,10 @@ define('ActivityCyclic', ['jquery','ysdtemplate', 'YSDRemoteDataSource','YSDSele
                 }
                 if (commonServices.apiKey && commonServices.apiKey != '') {
                   url += '&api_key='+commonServices.apiKey;
-                }                 
+                }       
+                // Get the firstday
+                url += "&firstday=true"; 
+
                 $.ajax({
                     type: 'GET',
                     url: url,
@@ -275,8 +278,14 @@ define('ActivityCyclic', ['jquery','ysdtemplate', 'YSDRemoteDataSource','YSDSele
                 $('#buy_selector').html(result);
                 $.datepicker.setDefaults( $.datepicker.regional[activityCyclicModel.requestLanguage] );
                 $.datepicker.regional[activityCyclicModel.requestLanguage].dateFormat = 'dd/mm/yy';  
+
+                var minDate = moment().format('DD/MM/YYYY');
+                if (activityCyclicModel.performances && typeof activityCyclicModel.performances.first_day !== 'undefined') {
+                  minDate = moment(activityCyclicModel.performances.first_day).format('DD/MM/YYYY');
+                }
+
                 $("#datepicker").datepicker({
-                    minDate: new Date(),
+                    minDate: minDate,
                     dateFormat: 'dd/mm/yy',
                     beforeShowDay: function(date) {
                        var dateStr = moment(date).format('YYYY-MM-DD');

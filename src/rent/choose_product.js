@@ -40,6 +40,8 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
     sales_channel_code: null,
     engine_fixed_family: false,
     family_id: null,
+    engine_fixed_product: false,
+    category_code: null,
     driver_age_rule_id: null,
     number_of_adults: null,
     number_of_children: null,
@@ -107,6 +109,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
      * - promotion_code
      * - sales_channel_code
      * - family_id
+     * - category_code
      * - agent_id
      * - driver_age_rule_id
      * - number_of_adults
@@ -141,6 +144,11 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
       if (typeof url_vars['engine_fixed_family'] !== 'undefined' && 
           url_vars['engine_fixed_family'] === 'true') {
         this.engine_fixed_family = true;
+      }
+      this.category_code = decodeURIComponent(url_vars['category_code']);
+      if (typeof url_vars['engine_fixed_product'] !== 'undefined' && 
+          url_vars['engine_fixed_product'] === 'true') {
+        this.engine_fixed_product = true;
       }
       this.driver_age_rule_id = decodeURIComponent(url_vars['driver_age_rule_id']);
       this.number_of_adults = decodeURIComponent(url_vars['number_of_adults']);

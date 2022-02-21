@@ -2,6 +2,55 @@ define('commonUI',['jquery', 'commonServices', 'jquery.modal'],function($, commo
 
   var commonUI = {
 
+
+    intlTelInputCountryCode: function() {
+
+      var countryCode = null;
+
+      // Extract the language from the document.documentElement or the navigator.language
+      var lang = null;
+      if (document && document.documentElement && document.documentElement.lang) {
+        lang = document.documentElement.lang;
+      }
+      else {
+        lang = navigator.language;
+      }
+
+      // Process the language
+      if (typeof lang != 'undefined' && lang != null) {
+        if (lang.indexOf('-') > -1) { // Language with country code
+          var langParts = lang.split('-');
+          if (langParts.length > 0) {
+            countryCode = langParts[langParts.length-1];
+            if (countryCode != null) {
+              countryCode = countryCode.toLowerCase();
+            }
+          }
+        }
+        else {
+          countryCode = lang;
+        }
+      }
+
+      // Check if country code exist in CountryData
+      if (countryCode && 
+          window.intlTelInputGlobals && 
+          typeof window.intlTelInputGlobals.getCountryData !== 'undefined') {
+        var findCountry = window.intlTelInputGlobals.getCountryData().find(element => element.iso2 === countryCode);
+        if (findCountry === undefined) {
+          countryCode = null;
+        }
+      }
+
+      if (countryCode == null) {
+        countryCode = "auto";
+      }
+
+      // Return the country code
+
+      return countryCode;
+    },
+
     /**
      * Show a modal
      * 

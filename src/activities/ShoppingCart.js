@@ -1,9 +1,9 @@
 require(['jquery','i18next', 'ysdtemplate', 
-        'commonServices', 'commonSettings', 'commonTranslations', 'commonLoader',
+        'commonServices', 'commonSettings', 'commonTranslations', 'commonLoader', 'commonUI',
         'jquery.ui', 'jquery.validate',
         'jquery.form', 'jquery.formparams'],
     function($, i18next, tmpl,
-             commonServices, commonSettings, commonTranslations, commonLoader) {
+             commonServices, commonSettings, commonTranslations, commonLoader, commonUI) {
 
       model = { // THE MODEL
 
@@ -438,19 +438,25 @@ require(['jquery','i18next', 'ysdtemplate',
               $('#reservation_container').html(customerForm);
 
               // Configure Telephone with prefix
-              var countryCode = commonSettings.countryCode(navigator.language || document.documentElement.lang);
-              $("#customer_phone").intlTelInput({
-                initialCountry: countryCode,
-                separateDialCode: true,
-                utilsScript: commonServices.phoneUtilsPath,
-                preferredCountries: [countryCode]
-              });
-              $("#customer_mobile_phone").intlTelInput({
-                initialCountry: countryCode,
-                separateDialCode: true,
-                utilsScript: commonServices.phoneUtilsPath,
-                preferredCountries: [countryCode]
-              });
+              var countryCode = commonUI.intlTelInputCountryCode();
+
+              if ($('#customer_phone').length) {
+                $("#customer_phone").intlTelInput({
+                  initialCountry: countryCode,
+                  separateDialCode: true,
+                  utilsScript: commonServices.phoneUtilsPath,
+                  preferredCountries: [countryCode]
+                });
+              }
+
+              if ($('#customer_mobile_phone').length) {
+                $("#customer_mobile_phone").intlTelInput({
+                  initialCountry: countryCode,
+                  separateDialCode: true,
+                  utilsScript: commonServices.phoneUtilsPath,
+                  preferredCountries: [countryCode]
+                });
+              }
 
           },
 
