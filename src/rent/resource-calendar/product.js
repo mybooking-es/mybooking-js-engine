@@ -115,6 +115,9 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
       if (commonServices.apiKey && commonServices.apiKey != '') {
         url += '&api_key='+commonServices.apiKey;
       }    
+      if (productModel.salesChannelCode && productModel.salesChannelCode != '') {
+        url += '&sales_channel_code='+productModel.salesChannelCode;
+      }
       // Get the firstday
       url += "&firstday=true";      
 
@@ -753,9 +756,10 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
             if (productModel.availabilityData && typeof productModel.availabilityData.prices !== 'undefined') {
               var prices = productModel.availabilityData.prices;
               if (prices[dateStr] && productModel.availabilityData.occupation[dateStr].selectable_day) {
+                var priceValue = new Number(prices[dateStr]);
                 var priceStr = productModel.configuration.formatCurrency(prices[dateStr],
                                                                          productModel.configuration.currencySymbol,
-                                                                         productModel.configuration.currencyDecimals,
+                                                                         0,
                                                                          productModel.configuration.currencyThousandsSeparator,
                                                                          productModel.configuration.currencyDecimalMark,
                                                                          productModel.configuration.currencySymbolPosition);
