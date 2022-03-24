@@ -304,7 +304,8 @@ define('commonTranslations', [], function() {
             calendar_selector: {
               'min_time': 'The collection of the previous reservation is at {{time}}',
               'max_time': 'The delivery of the next reservation is at {{time}}',
-              'min_duration': 'min {{days}}d'
+              'min_duration': 'min {{days}}d',
+              'busy': 'Busy',
             },
         		selector: {
                 'select': 'Select',
@@ -777,7 +778,8 @@ define('commonTranslations', [], function() {
             calendar_selector: {
               'min_time': 'La devolución de la reserva anterior es a las {{time}}',
               'max_time': 'La entrega de la siguiente reserva es a las {{time}}',
-              'min_duration': 'min {{days}}d'
+              'min_duration': 'min {{days}}d',
+              'busy': 'Ocupado',
             },  		
             selector: {
               'select': 'Seleccionar',              
@@ -1250,7 +1252,8 @@ define('commonTranslations', [], function() {
         calendar_selector: {
           'min_time': 'La recollida de la reserva anterior és a les {{time}}',
           'max_time': "L'entrega de la propera reserva és a les {{time}}",
-          'min_duration': 'min {{days}}d'
+          'min_duration': 'min {{days}}d',
+          'busy': 'Ocupat',
         },      
         selector: {
           'select': 'Seleccionar',          
@@ -1723,7 +1726,8 @@ define('commonTranslations', [], function() {
         calendar_selector: {
           'min_time': 'Die Abholung der vorherigen Reservierung erfolgt um {{time}} Uhr',
           'max_time': 'Die Lieferung der nächsten Reservierung erfolgt um {{time}} Uhr',
-          'min_duration': 'min {{days}}d'
+          'min_duration': 'min {{days}}d',
+          'busy': 'Belegt'
         },
         selector: {
           'select': 'Selektionär',          
@@ -2197,7 +2201,8 @@ define('commonTranslations', [], function() {
         calendar_selector: {
           'min_time': 'La collecte de la réservation précédente est à {{time}}',
           'max_time': 'La livraison de la prochaine réservation est à {{time}}',
-          'min_duration': 'min {{days}}d'
+          'min_duration': 'min {{days}}d',
+          'busy': 'Occupé'
         },
         selector: {
           'select': 'Sélectionnez',
@@ -2670,7 +2675,8 @@ define('commonTranslations', [], function() {
         calendar_selector: {
           'min_time': 'La raccolta della prenotazione precedente è alle  {{time}}',
           'max_time': 'La consegna della prossima prenotazione è alle {{time}}',
-          'min_duration': 'min {{days}}d'
+          'min_duration': 'min {{days}}d',
+          'busy': 'Occupato'
         },  
         selector: {
           'select': 'Seleziona',
@@ -2896,7 +2902,8 @@ define('commonTranslations', [], function() {
           calendar_selector: {
             'min_time': 'Сбор предыдущего бронирования находится по адресу {{time}}',
             'max_time': 'Доставка следующей брони по адресу {{time}}',
-            'min_duration': 'мин {{days}}'
+            'min_duration': 'мин {{days}}',
+            'busy': "занятый"
           },
             selector: {
             'select': 'селекционер',

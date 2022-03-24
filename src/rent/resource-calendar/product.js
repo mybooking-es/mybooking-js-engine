@@ -26,6 +26,7 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
     code: null, // Product code
     salesChannelCode: null, // Sales channel code
     rentalLocationCode: null, // Rental location code
+    checkHourlyOccupation: false, // Check hourly occupation
     pickupPlace: null, // Selected pickup/place
     selectedDateFrom: null, // Selected date from
     selectedDateTo: null, // Selected date to
@@ -142,6 +143,16 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
             $('#date').data('dateRangePicker').redraw();
             // Activate the control
             $('#date-container').removeClass('disabled-picker');
+            // Setup check hourly
+            if (productModel.checkHourlyOccupation) {
+              $('button.mybooking-product_calendar-check-hourly').off('click');
+              $('button.mybooking-product_calendar-check-hourly').on('click', function(event){
+                // Avoid the event to propagate and select the date
+                event.stopPropagation();
+                // Process the button click to show the occupation
+                productController.checkHourlyOccupationButtonClick($(this).attr('data-date'));
+              });
+            }
         },
         error: function(data, textStatus, jqXHR) {
             alert(i18next.t('selector.error_loading_data'));
@@ -152,6 +163,46 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
         complete: function(jqXHR, textStatus) {
             commonLoader.hide();
         }
+      });
+
+    },
+
+    /**
+     * Check day occupation
+     */ 
+    checkDayOccupation: function(date) { 
+
+      var url = commonServices.URL_PREFIX + '/api/booking/frontend/products/' + this.code + '/daily-occupation';
+      url += '?date='+date;      
+      if (commonServices.apiKey && commonServices.apiKey != '') {
+        url += '&api_key='+commonServices.apiKey;
+      }  
+
+      $.ajax({
+        type: 'GET',
+        url : url,
+        contentType : 'application/json; charset=utf-8',
+        success: function(data, textStatus, jqXHR) {      
+          if (data && data.occupation) {
+            if (document.getElementById('script_daily_occupation')) {
+              console.log('format::'+productModel.configuration.dateFormat);
+              var result = tmpl('script_daily_occupation')({data: data.occupation, 
+                                                            moment: moment, 
+                                                            timezone: productModel.configuration.timezone,
+                                                            format: productModel.configuration.dateFormat});
+              if ($('#modalDailyOccupation_MBM').length) {
+                $('#modalDailyOccupation_MBM .modal-product-detail-title').html(i18next.t('calendar_selector.busy'));
+                $('#modalDailyOccupation_MBM .modal-product-detail-content').html(result);      
+              }
+              else {
+                $('#modalDailyOccupation_MBM .modal-product-detail-title').html(i18next.t('calendar_selector.busy'));
+                $('#modalDailyOccupation .modal-product-detail-content').html(result);                 
+              }
+              commonUI.showModal('#modalDailyOccupation');
+            }
+          }
+        }
+
       });
 
     },
@@ -545,6 +596,13 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
      console.log('time to changed');
      productView.calculatePriceAvailability();
 
+    },
+
+    // --------- Check hourly
+
+    checkHourlyOccupationButtonClick: function(date) {
+      console.log("check hourly occupation " + date);
+      productModel.checkDayOccupation(date);
     }
 
   };
@@ -568,6 +626,13 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
         }
         if (typeof rentalLocationCodeAttr !== 'undefined') {
           productModel.rentalLocationCode = $('#product_selector').attr('data-rental-location-code');
+        }
+        var checkHourlyOccupationAttr = $('#product_selector').attr('data-check-hourly-occupation');
+        if (typeof checkHourlyOccupationAttr !== 'undefined') {
+          if ($('#product_selector').attr('data-check-hourly-occupation') === 'true') {
+            productModel.checkHourlyOccupation = true;
+            console.log('check-hourly-occupation');
+          }
         }
         productModel.today = moment().format('YYYY-MM-DD');
 
@@ -753,6 +818,8 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
             var dateStr = moment(time).format('YYYY-MM-DD');
             var renderPrice = "<div class=\"mybooking-product_calendar-price\">&nbsp;</div>";
             var renderMinDays =  "<div class=\"mybooking-product_calendar-mindays\">&nbsp;</div>";
+            var renderCheckHourlyOccupation = "";
+            // Show prices
             if (productModel.availabilityData && typeof productModel.availabilityData.prices !== 'undefined') {
               var prices = productModel.availabilityData.prices;
               if (prices[dateStr] && productModel.availabilityData.occupation[dateStr].selectable_day) {
@@ -767,7 +834,7 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
                 renderPrice = "<div class=\"mybooking-product_calendar-price\">"+priceStr+"</div>";
               }
             }
-            var renderMin = '';
+            // Min days
             if (productModel.availabilityData && typeof productModel.availabilityData.min_days !== 'undefined') {
               var minDays = productModel.availabilityData.min_days;
               if (minDays[dateStr] && minDays[dateStr] > 1 && productModel.availabilityData.occupation[dateStr].selectable_day) {
@@ -775,8 +842,23 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
                 renderMinDays = "<div class=\"mybooking-product_calendar-mindays mybooking-product_calendar-mindays-data\">"+minDaysLiteral+"</div>";
               }
             }
+            // Check hourly occupation
+            if (productModel.checkHourlyOccupation) {
+              if (productModel.availabilityData && productModel.availabilityData['occupation'][dateStr] && 
+                  productModel.availabilityData['occupation'][dateStr].selectable_day &&
+                  productModel.availabilityData['occupation'][dateStr].warning_occupied) {
+                renderCheckHourlyOccupation = "<div class=\"mybooking-product_calendar-check-hourly-container\">"+
+                                            "<button class=\"mb-button mybooking-product_calendar-check-hourly\" data-date=\""+
+                                            dateStr+"\" type=\"button\"><span class='dashicons dashicons-clock'></span></button></div>";
+              }
+              else {
+                renderCheckHourlyOccupation = "<div class=\"mybooking-product_calendar-check-hourly-container\">&nbsp;</div>";
+              }
+            }
+
+            // Return the date and extras
             return '<div class=\"mybooking-product_calendar-date\"><span>'+date+'</span>'+
-                   renderPrice + renderMinDays;
+                   renderPrice + renderMinDays + renderCheckHourlyOccupation;
                    '</div>';
           },
           hoveringTooltip: false         
