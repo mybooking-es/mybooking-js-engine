@@ -1,14 +1,14 @@
 define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDSelectSelector',
          'commonServices','commonSettings', 'commonTranslations', 'commonLoader','commonUI',
          './../mediator/rentEngineMediator',
-         'i18next', 'moment', 'ysdtemplate',
+         'i18next', 'moment', 'ysdtemplate', './ProductCalendar',
          'jquery.i18next',
          'jquery.validate', 'jquery.ui', 'jquery.ui.datepicker-es',
          'jquery.ui.datepicker-en', 'jquery.ui.datepicker-ca', 'jquery.ui.datepicker-it',
          'jquery.ui.datepicker.validation'],
          function($, MemoryDataSource, RemoteDataSource, SelectSelector,
                   commonServices, commonSettings, commonTranslations, commonLoader, commonUI, rentEngineMediator,
-                  i18next, moment, tmpl) {
+                  i18next, moment, tmpl, ProductCalendar) {
 
   /***************************************************************************
    *
@@ -35,6 +35,8 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
     availabilityData: null, // Availability data
     pickupHours: [],  // Available pickup hours
     returnHours: [],  // Available return hours
+    turns: [],       // Available turns
+    showHoursTurns: false, // ShowHoursTurns
 
     dataSourcePickupPlaces: null, // Pickup places datasource
     dataSourceReturnPlaces: null, // Return places datasource
@@ -57,8 +59,6 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
     pickup_place_group_selector: '.pickup_place_group',    
     custom_pickup_place_selector: 'input[name=custom_pickup_place]',
     another_pickup_place_group_selector: '#another_pickup_place_group',
-    // same pickup/return place
-    same_pickup_return_place_selector: '#same_pickup_return_place',
     // return place
     return_place_id: 'return_place',
     return_place_selector: '#return_place',
@@ -68,7 +68,11 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
     custom_return_place_selector: 'input[name=custom_pickup_place]',
     another_return_place_group_selector: '#another_pickup_place_group',
     // == Date selector
+    productCalendar: null,
     date_selector: '#date',
+    duration_scope_selector: 'form[name=search_form] input[name=duration_scope]',
+    // Do not use the selector directly => Use productView.getDurationScopeVal
+    duration_scope_selector_val: 'form[name=search_form] input[name=duration_scope]:checked', 
     // == Time From / To selector
     // time from
     time_from_id: 'time_from',
@@ -76,6 +80,9 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
     // time to
     time_to_id: 'time_to',        
     time_to_selector: '#time_to',  
+    // turn
+    turn_selector: 'form[name=search_form] input[name=turn]',
+    turn_selector_val: 'form[name=search_form] input[name=turn]:checked',
     // == Other fields
     // promotion code    
     promotion_code_selector: '#promotion_code',
@@ -95,7 +102,7 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
       commonSettings.loadSettings(function(data){
         productModel.configuration = data;
         productView.init();
-      });
+      }, 'rent', this.code );
     },   
 
     // -------------- Check availability -----------------------
@@ -127,32 +134,10 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
         url : url,
         contentType : 'application/json; charset=utf-8',
         success: function(data, textStatus, jqXHR) {
+            // Hold the availability data
             productModel.availabilityData = data;
-            // Setup the first available date
-            if (productModel.availabilityData && typeof productModel.availabilityData.first_day !== 'undefined' && 
-                productModel.availabilityData.first_day) {
-              var firstDay = moment(productModel.availabilityData.first_day);
-              var firstMonth = moment($('#date').data('dateRangePicker').opt.month1);
-              if (firstMonth.isBefore(firstDay)) {
-                // This selects the first day
-                $('#date').data('dateRangePicker').setStart(productModel.availabilityData.first_day);
-                // This clear the selection (but holds the month on screen)
-                $('#date').data('dateRangePicker').clear();
-              }
-            }
-            $('#date').data('dateRangePicker').redraw();
-            // Activate the control
-            $('#date-container').removeClass('disabled-picker');
-            // Setup check hourly
-            if (productModel.checkHourlyOccupation) {
-              $('button.mybooking-product_calendar-check-hourly').off('click');
-              $('button.mybooking-product_calendar-check-hourly').on('click', function(event){
-                // Avoid the event to propagate and select the date
-                event.stopPropagation();
-                // Process the button click to show the occupation
-                productController.checkHourlyOccupationButtonClick($(this).attr('data-date'));
-              });
-            }
+            // Update the calendar
+            productModel.productCalendar.view.update(productModel.availabilityData);
         },
         error: function(data, textStatus, jqXHR) {
             alert(i18next.t('selector.error_loading_data'));
@@ -227,7 +212,7 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
         dataType: 'json',
         success: function(data, textStatus, jqXHR) {
           self.pickupHours = data;
-          productView.update('hours', id, data);
+          productView.update('hours', id);
         },
         error: function(data, textStatus, jqXHR) {
           alert(i18next.t('selector.error_loading_data'));
@@ -255,12 +240,41 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
         dataType: 'json',
         success: function(data, textStatus, jqXHR) {
           self.returnHours = data;
-          productView.update('hours', id, data);
+          productView.update('hours', id);
         },
         error: function(data, textStatus, jqXHR) {
           alert(i18next.t('selector.error_loading_data'));
         }
       });
+    },
+
+    /**
+     * Access the API to get the available turns
+     */ 
+    loadTurns: function(date) { /* Load turns */
+    
+      var self=this;
+      var url = commonServices.URL_PREFIX + '/api/booking/frontend/products/'+this.code+'/turns?date='+date;  
+      if (this.configuration.pickupReturnPlace && $(this.return_place_selector).val() != '') {
+        url += '&place='+$(this.return_place_selector).val();
+      }        
+      if (commonServices.apiKey && commonServices.apiKey != '') {
+        url += '&api_key='+commonServices.apiKey;
+      }    
+      // Request                  
+      $.ajax({
+        type: 'GET',
+        url: url,
+        dataType: 'json',
+        success: function(data, textStatus, jqXHR) {
+          self.turns = data;
+          productView.update('turns');
+        },
+        error: function(data, textStatus, jqXHR) {
+          alert(i18next.t('selector.error_loading_data'));
+        }
+      });
+
     },
 
     /* ---------------- Calculate price and ShoppingCart management -------- */
@@ -369,9 +383,30 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
         data.return_place = $(this.return_place_selector).val();
       }
 
-      if (this.configuration.timeToFrom) {
-        data.time_from = $(this.time_from_selector).val();
-        data.time_to = $(this.time_to_selector).val();
+      // If uses times
+      if (this.configuration.timeToFrom || this.configuration.timeToFromInOneDay) {
+
+        if (this.showHoursTurns) { // Only if hours or turns are being shown
+
+          if (this.configuration.rentTimesSelector === 'hours') { 
+            // Hours
+            data.time_from = $(this.time_from_selector).val();
+            data.time_to = $(this.time_to_selector).val();
+          }
+          else if (this.configuration.rentTimesSelector === 'time_range') {
+            // Time Range
+            var timeRange = $(this.turn_selector_val).val();
+            if (timeRange != '') {
+              var times = timeRange.split('-');
+              if (times.length == 2) {
+                data.time_from = times[0];
+                data.time_to = times[1]; 
+              }
+            }
+          }
+
+        }  
+
       }
 
       return data;
@@ -403,12 +438,6 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
          $(productModel.return_place_selector).attr('disabled', false);
        }
 
-       if (productModel.configuration.pickupReturnPlace) {
-         if (!$(productModel.same_pickup_return_place_selector).is(':checked')) {
-           $(productModel.return_place_selector).val('');
-         }
-       }
-
        // Custom places
        if (productModel.configuration.customPickupReturnPlaces) {
          if ($(productModel.pickup_place_selector).val() == 'other') {
@@ -429,19 +458,7 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
 
     },
 
-    /**
-     * Pickup place custom address autocomplete changed
-     */
-    pickupPlaceAnotherChanged: function() {
-
-     if ($(productModel.same_pickup_return_place_selector).is(':checked')) {
-        $(productModel.return_place_selector).val('other');
-        $(productModel.custom_return_place_selector).val('true');
-        $(productModel.return_place_other_selector).val($(productModel.pickup_place_other_selector).val());
-     }
-
-    },
-
+    
     /**
      * Pickup place custom address close click
      */
@@ -451,21 +468,6 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
       $(productModel.custom_pickup_place_selector).val('false');
       $(productModel.pickup_place_group_selector).show();
       $(productModel.another_pickup_place_group_selector).hide();
-    },
-
-    /**
-     * Same pickup / return place changed
-     */
-    samePickupReturnPlaceChanged: function() {
-
-      if ($(productModel.same_pickup_return_place_selector).is(':checked')) {
-        $(productModel.return_place_selector).val($(productModel.pickup_place_selector).val());
-        $(productModel.return_place_container_selector).hide();
-      }
-      else {
-        $(productModel.return_place_container_selector).show();
-      }
-
     },
 
     /**
@@ -487,24 +489,40 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
           }
         }
 
-       // Enable date from        
-       if ($(productModel.date_selector).attr('disabled')) {
-         $(productModel.date_selector).attr('disabled', false);
-       }
+       // Enable date
+       productModel.productCalendar.enable();
 
        // Initialize date, time from, return place and time to
-       $(productModel.date_selector).datepicker('setDate', null);
+       productModel.productCalendar.clear();
        if (productModel.configuration.timeToFrom) {
          $(productModel.time_from_selector).val('');
          $(productModel.time_to_selector).val('');
        }
 
        // Load availability
-       productView.checkAvailability();
+       var dates = productModel.productCalendar.currentCalendarDates();
+       productView.checkAvailability(dates.dateFrom, dates.dateTo);
 
     },
 
     /* -------------------- Dates events ------------------------------------*/
+
+    durationScopeChanged: function(value) { /* The user selects duration scope */
+
+      $('.js-mybooking-product_calendar-time-hours, .js-mybooking-product_calendar-time-ranges').hide();
+      $('#reservation_detail').empty();
+
+      // Selected a range of dates => configurationtimeToFrom
+      if (value === 'days') {
+        productModel.showHoursTurns = productModel.configuration.timeToFrom;
+      }
+      else if (value === 'in_one_day') {
+        productModel.showHoursTurns = productModel.configuration.timeToFromInOneDay;
+      }
+
+      productModel.productCalendar.view.setDurationScope(value);
+
+    },
 
     /**
      * First date selected
@@ -529,6 +547,7 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
         productModel.selectedDateFrom = dateFrom;
         productModel.selectedDateTo = dateTo;    
 
+        // == Calculate minTimeFrom and maxTimeTo
         if (productModel.availabilityData) {
           var dateFromStr = moment(dateFrom).format('YYYY-MM-DD');
           var dateToStr = moment(dateTo).format('YYYY-MM-DD');
@@ -550,40 +569,70 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
           }  
         }
 
-        // ==Time From
-        if (productModel.configuration.timeToFrom) {
-          // Enable time from     
-          if ($(productModel.time_from_selector).attr('disabled')) {   
-            $(productModel.time_from_selector).attr('disabled', false);
+        // == Time From
+
+        // Control if hours or turns should be shown
+        productModel.showHoursTurns = false;
+
+        if (productModel.configuration.timeToFrom || productModel.configuration.timeToFromInOneDay) {
+
+          // Selected a range of dates => configurationtimeToFrom
+          if (productView.getDurationScopeVal() === 'days') {
+            productModel.showHoursTurns = productModel.configuration.timeToFrom;
           }
-          // Initialize time from
-          $(productModel.time_from_selector).val('');
-          // Enable time to
-          if ($(productModel.time_to_selector).attr('disabled')) {   
-            $(productModel.time_to_selector).attr('disabled', false);
+          else if (productView.getDurationScopeVal() === 'in_one_day') {
+            productModel.showHoursTurns = productModel.configuration.timeToFromInOneDay;
           }
-          // Initialize time from
-          $(productModel.time_to_selector).val('');          
-          // Load pickup / return hours
-          productView.loadPickupHours();
-          productView.loadReturnHours();          
+
+          if (productModel.showHoursTurns) {
+            if (productModel.configuration.rentTimesSelector === 'hours') { // Select pickup/return time
+              // Enable and initilize time from     
+              if ($(productModel.time_from_selector).attr('disabled')) {   
+                $(productModel.time_from_selector).attr('disabled', false);
+              }
+              $(productModel.time_from_selector).val('');
+              // Enable and initialize time to
+              if ($(productModel.time_to_selector).attr('disabled')) {   
+                $(productModel.time_to_selector).attr('disabled', false);
+              }
+              $(productModel.time_to_selector).val('');          
+              // Load pickup / return hours
+              productView.loadPickupHours();
+              productView.loadReturnHours();          
+            }
+            else if (productModel.configuration.rentTimesSelector === 'time_range') { // Select date/range
+              // Load turns
+              productView.loadTurns();
+            }
+          }
+          else {
+            // Do not show hours
+            $('.js-mybooking-product_calendar-time-hours').hide();
+            $('.js-mybooking-product_calendar-time-ranges').hide();
+          }
+        
+
         }
 
-        // Calculate price
-        productView.calculatePriceAvailability();
-
+        // If no show hours/turns => Calculate price and availability
+        if (!productModel.showHoursTurns) {
+          productView.calculatePriceAvailability();
+        }
     },
 
     /**
      * Month changed (check availability)
      */
-    monthChanged: function() {
+    monthChanged: function(dateFrom, dateTo) {
 
       console.log('month changed');
-      productView.checkAvailability();
+      productView.checkAvailability(dateFrom, dateTo);
 
     },
 
+    /**
+     * Time from changed
+     */  
     timeFromChanged: function() {
 
      console.log('time from changed');
@@ -591,11 +640,22 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
 
     },
 
+    /**
+     * Time to changed
+     */  
     timeToChanged: function() {
 
      console.log('time to changed');
      productView.calculatePriceAvailability();
 
+    },
+
+    /**
+     * Turn selector click
+     */  
+    turnSelectorClick: function() {
+      console.log('turn changed');
+      productView.calculatePriceAvailability();
     },
 
     // --------- Check hourly
@@ -662,7 +722,8 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
           this.loadPickupPlaces();   
         }
         else {
-          productView.checkAvailability();
+          var dates = productModel.productCalendar.currentCalendarDates();
+          productView.checkAvailability(dates.dateFrom, dates.dateTo);
         }
 
     },
@@ -706,7 +767,6 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
       
       // Setup Date control
       this.setupDateControl();
-      $('#date-container').addClass('disabled-picker');
 
       // Setup time from/to controls
       if (productModel.configuration.timeToFrom) {
@@ -735,10 +795,6 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
       var returnTime = new SelectSelector(productModel.return_place_id, 
           new MemoryDataSource([]), null, true, i18next.t('selector.select_return_place'));  
 
-      $(productModel.same_pickup_return_place_selector).bind('change', function(){
-        productController.samePickupReturnPlaceChanged();
-      });
-
       var returnPlace = new SelectSelector(productModel.return_place_id, 
           new MemoryDataSource([]), null, true, i18next.t('selector.select_return_place'));    
 
@@ -749,145 +805,64 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
      */
     setupDateControl: function() {
 
-      // For index Page coding
-      $('#date').dateRangePicker(
-      {
-          inline:true,
-          container: '#date-container',
-          alwaysOpen: true,
-          stickyMonths: true,
-          allowSelectBetweenInvalid: true,
-          singleDate: (productModel.configuration.datesSelector === 'single_date'), /* Single date selector */
-          singleMonth: (productModel.configuration.datesSelector === 'single_date' ? true : false), /* Single date one month */
-          time: {
-            enabled: false
-          },
-          startOfWeek: 'monday',
-          language: productModel.requestLanguage,
-          minDays: productModel.configuration.minDays,
-          showTopbar: false,
-          customTopBar: '',
-          extraClass: '',
-          selectForward: true,
-          beforeShowDay: function(date) {
-            var theDate = moment(date.setHours(0,0,0,0)).format('YYYY-MM-DD');
-            // Before showing a date
-            // Check the past
-            if (theDate< productModel.today) {
-              return [false];
-            }
-            var info = null;
-            // Check the availability
-            if (productModel.availabilityData) {
-              // Day is not selectable [calendar]
-              if (productModel.availabilityData['occupation'][theDate] && !productModel.availabilityData['occupation'][theDate].selectable_day) {
-                return [false, 'not-selectable-day']; // The reservation can not start or end on the date 
-              }    
-              // Product is not available [rent]
-              else if (productModel.availabilityData['occupation'][theDate] && !productModel.availabilityData['occupation'][theDate].free) {
-                return [false, 'busy-data bg-danger'];
-              }
-              // If a reservation starts/end the the date [info message]
-              if (productModel.availabilityData['occupation'][theDate]) {
-                if (productModel.availabilityData['occupation'][theDate]['warning_occupied']) {
-                  info = productModel.availabilityData['occupation'][theDate]['warning_occupied_message'];
-                }
-              }
-            }
-            // Make sure that when the daterangepicker is refreshed to hold the selection
-            var startDate = productModel.selectedDateFrom ? moment(productModel.selectedDateFrom).format('YYYY-MM-DD') : null;
-            var endDate = productModel.selectedDateTo ? moment(productModel.selectedDateTo).format('YYYY-MM-DD') : null;
-            if (startDate && endDate) {
-              if (theDate == startDate && theDate == endDate) {
-                return [true, 'checked last-date-selected first-date-selected'];
-              }
-              else if (theDate == startDate) {
-                return [true, 'checked first-date-selected'];
-              }
-              else if (theDate == endDate) {
-                return [true, 'checked last-date-selected'];
-              }
-              else if (theDate >= startDate && theDate <= endDate) {
-                return [true, 'checked'];
-              }
-            }
-            return [true, (info == null ? 'date-available' : 'bg-warning'), (info == null ? '' : info)];
-          },
-          showDateFilter: function(time, date)
-          {
-            var dateStr = moment(time).format('YYYY-MM-DD');
-            var renderPrice = "<div class=\"mybooking-product_calendar-price\">&nbsp;</div>";
-            var renderMinDays =  "<div class=\"mybooking-product_calendar-mindays\">&nbsp;</div>";
-            var renderCheckHourlyOccupation = "";
-            // Show prices
-            if (productModel.availabilityData && typeof productModel.availabilityData.prices !== 'undefined') {
-              var prices = productModel.availabilityData.prices;
-              if (prices[dateStr] && productModel.availabilityData.occupation[dateStr].selectable_day) {
-                var priceValue = new Number(prices[dateStr]);
-                var priceStr = productModel.configuration.formatCurrency(prices[dateStr],
-                                                                         productModel.configuration.currencySymbol,
-                                                                         0,
-                                                                         productModel.configuration.currencyThousandsSeparator,
-                                                                         productModel.configuration.currencyDecimalMark,
-                                                                         productModel.configuration.currencySymbolPosition);
-                priceStr = priceStr.replace(' ', '');
-                renderPrice = "<div class=\"mybooking-product_calendar-price\">"+priceStr+"</div>";
-              }
-            }
-            // Min days
-            if (productModel.availabilityData && typeof productModel.availabilityData.min_days !== 'undefined') {
-              var minDays = productModel.availabilityData.min_days;
-              if (minDays[dateStr] && minDays[dateStr] > 1 && productModel.availabilityData.occupation[dateStr].selectable_day) {
-                minDaysLiteral = i18next.t('calendar_selector.min_duration', {days: minDays[dateStr]});
-                renderMinDays = "<div class=\"mybooking-product_calendar-mindays mybooking-product_calendar-mindays-data\">"+minDaysLiteral+"</div>";
-              }
-            }
-            // Check hourly occupation
-            if (productModel.checkHourlyOccupation) {
-              if (productModel.availabilityData && productModel.availabilityData['occupation'][dateStr] && 
-                  productModel.availabilityData['occupation'][dateStr].selectable_day &&
-                  productModel.availabilityData['occupation'][dateStr].warning_occupied) {
-                renderCheckHourlyOccupation = "<div class=\"mybooking-product_calendar-check-hourly-container\">"+
-                                            "<button class=\"mb-button mybooking-product_calendar-check-hourly\" data-date=\""+
-                                            dateStr+"\" type=\"button\"><span class='dashicons dashicons-clock'></span></button></div>";
-              }
-              else {
-                renderCheckHourlyOccupation = "<div class=\"mybooking-product_calendar-check-hourly-container\">&nbsp;</div>";
-              }
-            }
-
-            // Return the date and extras
-            return '<div class=\"mybooking-product_calendar-date\"><span>'+date+'</span>'+
-                   renderPrice + renderMinDays + renderCheckHourlyOccupation;
-                   '</div>';
-          },
-          hoveringTooltip: false         
-      })
-      .bind('datepicker-first-date-selected', function(event, obj){
-        productController.firstDateSelected(obj.date1);
-      })
-      .bind('datepicker-change',function(event,obj) {
-        productController.datesChanged(obj.date1, obj.date2 || obj.date1);
-      });
-      // Avoid Google Automatic Translation
-      $('#date-container').addClass('notranslate');
-      // Bind navigation events
-      $('#date-container .next').bind('click', function(){
-        productController.monthChanged();
-      });
-      $('#date-container .prev').bind('click', function(){
-        productController.monthChanged();
+      $(productModel.duration_scope_selector).off('change');
+      $(productModel.duration_scope_selector).on('change', function(e){
+        productController.durationScopeChanged(productView.getDurationScopeVal());
       });
 
-      setTimeout(function(){
-        var width = $('#date-container').width();
-        $('.date-picker-wrapper').css('width', '100%');
-        $('.month-wrapper').css('width', 'inherit');
-        $('.month-wrapper table').css('width', 'inherit');
-        $('.month-wrapper table th').css('width', width/7+'px');
-      }, 100);
+      // Create the product Calendar
+      productModel.productCalendar = new ProductCalendar();
+
+      // Setup the events
+      productModel.productCalendar.model.removeListeners('firstDateSelected');
+      productModel.productCalendar.model.removeListeners('datesChanged');
+      productModel.productCalendar.model.removeListeners('monthChanged');
+      productModel.productCalendar.model.removeListeners('checkHourlyOccupationButtonClick');
+
+      var self = this;
+
+      productModel.productCalendar.model.addListener('firstDateSelected', function(event){
+
+        if (event && event.type === 'firstDateSelected') {
+          productController.firstDateSelected(event.data.dateFrom);
+        }
+
+      });
+
+      productModel.productCalendar.model.addListener('datesChanged', function(event){
+
+        if (event && event.type === 'datesChanged') {
+          productController.datesChanged(event.data.dateFrom, event.data.dateTo);
+        }
+
+      });
+
+      productModel.productCalendar.model.addListener('monthChanged', function(event){
+
+        if (event && event.type === 'monthChanged') {
+          productController.monthChanged(event.data.dateFrom, event.data.dateTo);
+        }
+
+      });
+
+      productModel.productCalendar.model.addListener('checkHourlyOccupationButtonClick', function(event){
+
+        if (event && event.type === 'checkHourlyOccupationButtonClick') {
+          productController.checkHourlyOccupationButtonClick(event.data.date);
+        }
+
+      });
+
+      // Initialize the calendar
+      productModel.productCalendar.view.init(productModel.date_selector,
+                                             i18next, 
+                                             productModel.configuration, 
+                                             productModel.requestLanguage,
+                                             productModel.minDays,
+                                             productModel.availabilityData,
+                                             productModel.checkHourlyOccupation,
+                                             productView.getDurationScopeVal());
       
-
     },
 
     /**
@@ -947,9 +922,10 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
                       return true;
         });
 
-
+        // Validation
         $(productModel.form_selector).validate({
            submitHandler: function(form) {
+             // Go to complete Step
              productView.gotoNextStep();
            },
            invalidHandler: function(form)
@@ -1087,13 +1063,20 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
         return false;
       }
 
-      if (productModel.configuration.timeToFrom) {
-        if ($(productModel.time_from_selector).val() == '') {
-          return false;
+      if (productModel.configuration.timeToFrom || productModel.configuration.timeToFromInOneDay ) {
+        if (productModel.rentTimesSelector === 'hours') { 
+          if ($(productModel.time_from_selector).val() == '') {
+            return false;
+          }
+          if ($(productModel.time_to_selector).val() == '') {
+            return false;
+          }      
+        }  
+        else if (productModel.rentTimesSelector === 'time_range') {
+          if ($(this.turn_selector_val).val() == '') {
+            return false;
+          }
         }
-        if ($(productModel.time_to_selector).val() == '') {
-          return false;
-        }        
       }
 
       return true;
@@ -1102,20 +1085,10 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
     /**
      * Check availability
      */
-    checkAvailability: function() {
+    checkAvailability: function(dateFrom, dateTo) {
 
-        var month1 = $('#date').data('dateRangePicker').opt.month1;
-        var month2 = month1;
-        
-        if (productModel.configuration.datesSelector === 'start_end_date') {
-          month2 = $('#date').data('dateRangePicker').opt.month2;
-        }
+      productModel.checkAvailability(dateFrom, dateTo);
 
-        var m1 = moment(month1).format('YYYY-MM-DD');
-        var m2 = moment(month2).add(1, 'month').format('YYYY-MM-DD');
-
-        // Chek availibility
-        productModel.checkAvailability(m1, m2);
     },
 
     /*
@@ -1132,6 +1105,14 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
     loadReturnHours: function() {
       var date = moment(productModel.selectedDateTo).format('YYYY-MM-DD');  
       productModel.loadReturnHours('time_to', date);
+    },
+
+    /**
+     * Load turns
+     */  
+    loadTurns: function() {
+      var date = moment(productModel.selectedDateFrom).format('YYYY-MM-DD');
+      productModel.loadTurns(date);
     },
 
     /**
@@ -1292,6 +1273,18 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
 
     },
 
+    getDurationScopeVal: function() { /* Get duration scope value */
+
+      if (productModel.configuration.rentingProductOneJournal && 
+          productModel.configuration.rentingProductMultipleJournals) {
+        return $(productModel.duration_scope_selector_val).val();
+      } else {
+        return $(productModel.duration_scope_selector).val();
+      }
+
+
+    },
+
     update: function(action, id) {
 
       switch (action) {
@@ -1318,6 +1311,31 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
                     }
                 } );
           }
+          // Show the time from / to selectors
+          $('.js-mybooking-product_calendar-time-hours').show();
+          // Scroll the time ranges container
+          $('html, body').animate({
+                  scrollTop: $(".js-mybooking-product_calendar-time-hours").offset().top
+          }, 2000);          
+          break;
+        case 'turns':
+          var turns = productModel.turns;
+          if (turns === null) {
+            turns = [];
+          }
+          var html = tmpl('form_calendar_selector_turns_tmpl')({turns: turns});
+          $('#mb_product_calendar_time_ranges_container').html(html);
+          $(productModel.turn_selector).off('change');
+          $(productModel.turn_selector).on('change', function(){
+            console.log('Turn selector changed');
+            productController.turnSelectorClick();
+          });
+          // Show the time
+          $('.js-mybooking-product_calendar-time-ranges').show();
+          // Scroll the time ranges container
+          $('html, body').animate({
+                scrollTop: $(".js-mybooking-product_calendar-time-ranges").offset().top
+          }, 2000);
           break;
         case 'shopping_cart':
           var html = tmpl('script_reservation_summary')({shopping_cart: productModel.shopping_cart,
@@ -1331,6 +1349,10 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
           if ($(productModel.add_to_shopping_cart_btn_selector).attr('disabled')) {
             $(productModel.add_to_shopping_cart_btn_selector).attr('disabled', false);
           }
+          // Scroll the time ranges container
+          $('html, body').animate({
+                  scrollTop: $("#reservation_detail").offset().top
+          }, 2000); 
           break;
       }
 
@@ -1362,6 +1384,7 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
 
   // Check the product_selector and its data-code attribute
   if ($('#product_selector').length && $('#product_selector').attr('data-code') != 'undefined') {
+    productModel.code = $('#product_selector').attr('data-code');
     productModel.loadSettings();
   }
 

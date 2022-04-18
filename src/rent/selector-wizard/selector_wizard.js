@@ -2,7 +2,7 @@ define('selector_wizard', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource
          'commonServices','commonSettings',
          'commonTranslations', 'i18next', 'moment', 
          './selector_wizard_select_place', './selector_wizard_select_date', './selector_wizard_select_time',
-         'ysdtemplate', 'cookie',
+         'ysdtemplate', 'customCookie',
          'jquery.i18next',
          'jquery.validate', 'jquery.ui', 'jquery.ui.datepicker-es',
          'jquery.ui.datepicker-en', 'jquery.ui.datepicker-ca', 'jquery.ui.datepicker-it',
@@ -10,7 +10,7 @@ define('selector_wizard', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource
          function($, MemoryDataSource, RemoteDataSource, SelectSelector,commonServices, commonSettings, 
                   commonTranslations, i18next, moment, 
                   selectorWizardSelectPlace, selectorWizardSelectDate, selectorWizardSelectTime,
-                  tmpl, cookie) {
+                  tmpl, customCookie) {
 
   selectorWizardModel = {
 
@@ -185,22 +185,20 @@ define('selector_wizard', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource
      */
     extractAgentId: function() {
 
+      console.log('extract_agent_id');
+
       var urlVars = commonSettings.getUrlVars();
       var agentId = null;  
-      if (typeof urlVars['agentId'] != 'undefined') {
+      if (typeof urlVars['agentId'] !== 'undefined') {
         agentId = decodeURIComponent(urlVars['agentId']);
-        if (cookie.set) {
-          cookie.set('__mb_agent_id', agentId, {expires: 14});
-        }   
+        customCookie.set('__mb_agent_id', agentId, {expires: 14});      
       }
       else {
-        if (cookie.get) {
-          agentId = cookie.get('__mb_agent_id');
-        }
+        agentId = customCookie.get('__mb_agent_id');  
       }
-      if (agentId != null) {
-        selectorWizardModel.selectionData.agentId = agentId;
-      }
+
+      selectorWizardModel.selectionData.agentId = agentId;
+      console.log(selectorWizardModel.selectionData.agentId);
 
     },
 

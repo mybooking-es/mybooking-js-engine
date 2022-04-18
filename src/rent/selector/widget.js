@@ -89,6 +89,9 @@ require(['jquery', 'commonSettings', 'commonLoader', './SelectorRent'],
         // Time To
         this.selector.model.time_to_id = 'widget_time_to';      
         this.selector.model.time_to_selector = '#widget_time_to';  
+        // Duration
+        this.selector.model.duration_id = 'widget_renting_duration';
+        this.selector.model.duration_selector = '#widget_renting_duration';
         // Driver age
         this.selector.model.driver_age_rule_selector = '#widget_driver_age_rule';
         // Number of products

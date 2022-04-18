@@ -170,7 +170,8 @@ $(document).ready(function () {
     if ($('body').hasClass('mybooking-product') &&
         $('form[name=search_form]').length) {
         require('./lib/jquery.daterangepicker.js');     
-        require('./rent/mediator/rentEngineMediator.js');            
+        require('./rent/mediator/rentEngineMediator.js');
+        require('./rent/resource-calendar/ProductCalendar.js');            
         require('./rent/resource-calendar/product.js');
     }
 });

@@ -30,9 +30,13 @@ define('commonSettings', ['jquery','commonServices','commonLoader','commonTransl
       // - Renting dates
       minDays   : 1,
       timeToFrom: true,
+      timeToFromInOneDay: false,
+      halfDay: false,
       cycleOf24Hours: true,
       defaultTimeStart: null,
       defaultTimeEnd: null,
+      rentDateSelector: 'date_from_date_to',
+      rentTimesSelector: 'hours',
       // - Renting pickup/return place
       pickupReturnPlace: true,
       pickupReturnPlacesSameRentalLocation: false,
@@ -42,6 +46,8 @@ define('commonSettings', ['jquery','commonServices','commonLoader','commonTransl
       multipleProductsSelection: false,
       multipleProductsReplicateBooking: false,
       multipleProductsReplicateBookingMax: 1,
+      rentingProductOneJournal: false,
+      rentingProductMultipleJournals: true,
       // - Fill data
       rentingFormFillDataAddress: false,
       rentingFormFillDataDriverDetail: false,
@@ -135,11 +141,23 @@ define('commonSettings', ['jquery','commonServices','commonLoader','commonTransl
       }
 
     },
-    loadSettings: function(callback) {
+    loadSettings: function(callback, productType, productId) {
       var url = commonServices.URL_PREFIX + '/api/booking/frontend/settings';
+      var urlParams = [];
       if (commonServices.apiKey && commonServices.apiKey != '') {
-        url += '?api_key='+commonServices.apiKey;
+        urlParams.push('api_key='+commonServices.apiKey);
       }       
+      // Load product setup information
+      if (typeof productType !== 'undefined' && productType && productType !='') {
+        urlParams.push('product_type='+productType);
+      }
+      if (typeof productId !== 'undefined' && productId && productId !='') {
+        urlParams.push('product_id='+productId);
+      }
+      if (urlParams.length > 0) {
+        url += '?';
+        url += urlParams.join('&');
+      }
       $.ajax({
            type: 'GET',
            url : url,
@@ -168,9 +186,11 @@ define('commonSettings', ['jquery','commonServices','commonLoader','commonTransl
              // - Renting dates
              mybookingSettings.data.minDays = data.min_days;
              mybookingSettings.data.timeToFrom = data.time_to_from;
+             mybookingSettings.data.timeToFromInOneDay = data.time_to_from_in_one_day;
+             mybookingSettings.data.halfDay = data.half_day;
              mybookingSettings.data.cycleOf24Hours = data.cycle_of_24_hours;
              mybookingSettings.data.defaultTimeStart = data.default_time_start;
-             if (typeof mybookingSettings.data.defaultTimeStart === 'undefined' ||
+             if (typeof mybookingSettings.data.defaultTimeStart === 'undefined' ||
                  mybookingSettings.data.defaultTimeStart === null || 
                  mybookingSettings.data.defaultTimeStart === '') {
                mybookingSettings.data.defaultTimeStart = DEFAULT_TIME_START;
@@ -185,7 +205,9 @@ define('commonSettings', ['jquery','commonServices','commonLoader','commonTransl
                else {
                  mybookingSettings.data.defaultTimeEnd = DEFAULT_TIME_END;
                }
-             }             
+             }     
+             mybookingSettings.data.rentDateSelector = data.rent_dates_selector;
+             mybookingSettings.data.rentTimesSelector = data.rent_times_selector;
              // - Renting places
              mybookingSettings.data.multipleDestinations = data.multiple_destinations;
              mybookingSettings.data.pickupReturnPlace = data.pickup_return_place;
@@ -196,6 +218,8 @@ define('commonSettings', ['jquery','commonServices','commonLoader','commonTransl
              mybookingSettings.data.multipleProductsSelection = data.multiple_products_selection || false;
              mybookingSettings.data.multipleProductsReplicateBooking = data.multiple_products_replicate_booking || false;
              mybookingSettings.data.multipleProductsReplicateBookingMax = data.multiple_products_replicate_booking_max || 1;
+             mybookingSettings.data.rentingProductOneJournal = data.renting_product_one_journal;
+             mybookingSettings.data.rentingProductMultipleJournals = data.renting_product_multiple_journals;
              // - Renting fill data
              mybookingSettings.data.rentingFormFillDataAddress = data.renting_form_fill_data_address || false;
              mybookingSettings.data.rentingFormFillDataDriverDetail = data.renting_form_fill_data_driver_detail || false;

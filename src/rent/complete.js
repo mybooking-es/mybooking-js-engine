@@ -637,9 +637,9 @@ require(['jquery',
       if (model.configuration.engineCustomerAccess) {
         this.setupLoginForm();
       }
-      else {
-        this.prepareReservationForm();
-      }
+//      else {
+//        this.prepareReservationForm(); // It requires to LOAD the shopping Cart
+//      }
       // Load shopping cart
       model.loadShoppingCart();
   	},
@@ -648,7 +648,7 @@ require(['jquery',
      * Setup the login form
      */
     setupLoginForm: function() {
-      this.prepareReservationForm();
+//      this.prepareReservationForm(); // It requires to LOAD the shopping Cart
       var self = this;
       // Complete hide
       $('#form-reservation').hide();
@@ -795,11 +795,13 @@ require(['jquery',
       var locale = model.requestLanguage;
       var localeReservationFormScript = 'script_renting_complete_form_tmpl_'+locale;
       if (locale != null && document.getElementById(localeReservationFormScript)) {
-        var reservationForm = tmpl(localeReservationFormScript)({configuration: model.configuration});
+        var reservationForm = tmpl(localeReservationFormScript)({configuration: model.configuration,
+                                                                 shopping_cart: model.shopping_cart});
         $('form[name=reservation_form]').html(reservationForm);           
       }
       else if (document.getElementById('script_renting_complete_form_tmpl')) {
-        var reservationForm = tmpl('script_renting_complete_form_tmpl')({configuration: model.configuration});
+        var reservationForm = tmpl('script_renting_complete_form_tmpl')({configuration: model.configuration,
+                                                                         shopping_cart: model.shopping_cart});
         $('form[name=reservation_form]').html(reservationForm);                                                                    
       }
 
@@ -1168,6 +1170,8 @@ require(['jquery',
      * Updates the shopping card when the shopping cart is loaded
      */
     updateShoppingCart: function() { // Updates the shopping cart
+
+      this.prepareReservationForm();
 
     	// Show the product information   
       this.updateProducts();

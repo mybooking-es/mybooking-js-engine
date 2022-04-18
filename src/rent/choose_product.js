@@ -19,6 +19,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
     shopping_cart: null,   // Shopping cart
     products: null,        // Search products
     sales_process: null,   // Sales process information
+    half_day_turns: null,  // Half day turns
     // Product detail
     productDetail: null,   // product detail instance
     // Selected coverage
@@ -28,6 +29,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
     time_from : null,
     date_to : null,
     time_to : null,
+    renting_duration: null,
     engine_fixed_rental_location: false,
     rental_location_code: null,
     pickup_place: null,
@@ -104,6 +106,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
      * - time_from
      * - date_to
      * - time_to
+     * - renting_duration
      * - pickup_place
      * - return_place
      * - promotion_code
@@ -125,6 +128,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
       this.time_from = decodeURIComponent(url_vars['time_from']);
       this.date_to = decodeURIComponent(url_vars['date_to']);
       this.time_to = decodeURIComponent(url_vars['time_to']);
+      this.renting_duration = decodeURIComponent(url_vars['renting_duration']);
       if (this.configuration.selectRentalLocation) {
         this.rental_location_code = decodeURIComponent(url_vars['rental_location_code']);
         if (typeof url_vars['engine_fixed_rental_location'] !== 'undefined' && 
@@ -171,8 +175,16 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
 
     isShoppingCartData: function() {
 
-      return (this.date_from != 'undefined' && this.date_from != '' &&
-              this.date_to != 'undefined' && this.date_to != '');
+      if (this.configuration.rentDateSelector === 'date_from_date_to') {
+        // Dates => check Start and End date
+        return (this.date_from != 'undefined' && this.date_from != '' &&
+                this.date_to != 'undefined' && this.date_to != '');
+      }
+      else if (this.configuration.rentDateSelector === 'date_from_duration') {
+        // Date and duration
+        return (this.date_from != 'undefined' && this.date_from != '' &&
+                this.renting_duration != 'undefined' && this.renting_duration != '');
+      }
 
     },
 
@@ -190,6 +202,10 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
        
       if (this.time_to != 'undefined' && this.time_to != '') {
         data.time_to = this.time_to;
+      }
+
+      if (this.renting_duration != 'undefined' && this.renting_duration != '') {
+        data.renting_duration = this.renting_duration;
       }
 
       if (this.rental_location_code != 'undefined' && this.rental_location_code != '') {
@@ -331,6 +347,10 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
        model.shopping_cart = data.shopping_cart;
        model.products = data.products;
        model.sales_process = data.sales_process;
+       // Half day turns
+       if (typeof data.half_day_turns !== 'undefined') {
+         model.half_day_turns = data.half_day_turns;
+       }
        // Store the shopping cart free access id in the session
        var free_access_id = model.getShoppingCartFreeAccessId();
        if (free_access_id == null || free_access_id != model.shopping_cart.free_access_id) {
@@ -607,12 +627,33 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
         if (document.getElementById('script_reservation_summary')) {
           var reservationDetail = tmpl('script_reservation_summary')({
                 shopping_cart: model.shopping_cart,
-                configuration: model.configuration});
+                configuration: model.configuration,
+                halfDayTurns: model.half_day_turns});
           $('#reservation_detail').html(reservationDetail);
 
+          // Half day turns
+          if ($('form[name=mybooking-choose-product_duration-form] input[name=turn]').length) {
+            $('form[name=mybooking-choose-product_duration-form] input[name=turn]').on('change', function(){
+              var value = $(this).val();
+              if (typeof value !== 'undefined' && value != '') {
+                var period = value.split('-');
+                if (period && period.length == 2) {
+                  // Change the shopping cart time_from and time_to and force reload to
+                  // get availability and prices
+                  model.time_from = period[0];
+                  model.date_to = model.date_from;
+                  model.time_to = period[1];
+                  commonLoader.show();
+                  model.loadShoppingCart();
+                }
+              }
+            });
+          }
+
+          // Modify reservation button
           if ($('#modify_reservation_button').length) {
             // The user clicks on the modify reservation button
-            $('#modify_reservation_button').bind('click', function() {
+            $('#modify_reservation_button').on('click', function() {
               // Setup the wizard
               if (!view.selectorLoaded) {
                 if (commonServices.selectorInProcess == 'wizard') {
