@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.5]
+
+### Added
+
+- Product duration : selector, choose product, complete, summary, my reservation
+- Product calendar turns
+- Product calendar duration scope : In One Day vs Days
+
 ## [1.0.4]
 
 ### Added
