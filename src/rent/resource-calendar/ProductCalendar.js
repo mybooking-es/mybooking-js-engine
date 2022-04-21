@@ -382,6 +382,7 @@ define('ProductCalendar', ['jquery', 'YSDEventTarget',
     /**
      * Change the duration Scope
      */ 
+    /*
     this.setDurationScope = function(durationScope) {
 
       // Clear current selection
@@ -404,6 +405,7 @@ define('ProductCalendar', ['jquery', 'YSDEventTarget',
       this.redraw();
 
     }
+    */
 
     /**
      * Redraw the calendar

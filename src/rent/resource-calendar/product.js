@@ -82,6 +82,7 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
     time_to_selector: '#time_to',  
     // turn
     turn_selector: 'form[name=search_form] input[name=turn]',
+    turn_selector_hidden: 'form[name=search_form] input[type=hidden][name=turn]',
     turn_selector_val: 'form[name=search_form] input[name=turn]:checked',
     // == Other fields
     // promotion code    
@@ -126,6 +127,8 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
       if (productModel.salesChannelCode && productModel.salesChannelCode != '') {
         url += '&sales_channel_code='+productModel.salesChannelCode;
       }
+      url += '&duration_scope='+productView.getDurationScopeVal();
+
       // Get the firstday
       url += "&firstday=true";      
 
@@ -205,6 +208,9 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
       if (commonServices.apiKey && commonServices.apiKey != '') {
         url += '&api_key='+commonServices.apiKey;
       }       
+      if (typeof this.code !== 'undefined' && this.code !== null && this.code !== '') {
+        url += '&product='+this.code;
+      }
       // Request             
       $.ajax({
         type: 'GET',
@@ -232,7 +238,10 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
       }        
       if (commonServices.apiKey && commonServices.apiKey != '') {
         url += '&api_key='+commonServices.apiKey;
-      }    
+      } 
+      if (typeof this.code !== 'undefined' && this.code !== null && this.code !== '') {
+        url += '&product='+this.code;
+      }   
       // Request                  
       $.ajax({
         type: 'GET',
@@ -394,9 +403,16 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
             data.time_to = $(this.time_to_selector).val();
           }
           else if (this.configuration.rentTimesSelector === 'time_range') {
-            // Time Range
-            var timeRange = $(this.turn_selector_val).val();
-            if (timeRange != '') {
+            var timeRange = null;
+            if ($(this.turn_selector_hidden).length) {
+              // Hidden with one value
+              var timeRange = $(this.turn_selector_hidden).val();
+            }
+            else {
+              // Radio with multiple values
+              var timeRange = $(this.turn_selector_val).val();
+            }
+            if (timeRange != null && timeRange != '') {
               var times = timeRange.split('-');
               if (times.length == 2) {
                 data.time_from = times[0];
@@ -511,6 +527,7 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
 
       $('.js-mybooking-product_calendar-time-hours, .js-mybooking-product_calendar-time-ranges').hide();
       $('#reservation_detail').empty();
+/*
 
       // Selected a range of dates => configurationtimeToFrom
       if (value === 'days') {
@@ -521,6 +538,10 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
       }
 
       productModel.productCalendar.view.setDurationScope(value);
+*/
+
+      var dates = productModel.productCalendar.currentCalendarDates();
+      productView.checkAvailability(dates.dateFrom, dates.dateTo);
 
     },
 
@@ -1325,17 +1346,24 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
           }
           var html = tmpl('form_calendar_selector_turns_tmpl')({turns: turns});
           $('#mb_product_calendar_time_ranges_container').html(html);
-          $(productModel.turn_selector).off('change');
-          $(productModel.turn_selector).on('change', function(){
-            console.log('Turn selector changed');
-            productController.turnSelectorClick();
-          });
-          // Show the time
-          $('.js-mybooking-product_calendar-time-ranges').show();
-          // Scroll the time ranges container
-          $('html, body').animate({
-                scrollTop: $(".js-mybooking-product_calendar-time-ranges").offset().top
-          }, 2000);
+          if (turns.length == 1 && turns[0].full_day) {
+            // Only one turn and full day => Select it and calculate
+            productView.calculatePriceAvailability();
+          }
+          else {
+            // More than one turn or one that is half day => Let the user choose
+            $(productModel.turn_selector).off('change');
+            $(productModel.turn_selector).on('change', function(){
+              console.log('Turn selector changed');
+              productController.turnSelectorClick();
+            });
+            // Show the time
+            $('.js-mybooking-product_calendar-time-ranges').show();
+            // Scroll the time ranges container
+            $('html, body').animate({
+                  scrollTop: $(".js-mybooking-product_calendar-time-ranges").offset().top
+            }, 2000);
+          }
           break;
         case 'shopping_cart':
           var html = tmpl('script_reservation_summary')({shopping_cart: productModel.shopping_cart,
