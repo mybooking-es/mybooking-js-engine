@@ -192,9 +192,12 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
 
       var data = {
         date_from : this.date_from,
-        date_to : this.date_to,
         include_products: true
       };
+
+      if (this.date_to != 'undefined' && this.date_to != '') {
+        data.date_to = this.date_to;
+      }
 
       if (this.time_from != 'undefined' && this.time_to != '') {
         data.time_from = this.time_from;
