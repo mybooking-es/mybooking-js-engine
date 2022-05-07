@@ -100,7 +100,9 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
           });
     },
 
-    sendPayRequest: function() {
+    sendPayRequest: function(paymentAmount, paymentMethod) {
+
+      // Booking free access ID
       var bookingId = this.bookingFreeAccessId;
       if (bookingId == '') {
         bookingId = this.getBookingFreeAccessId();
@@ -108,8 +110,12 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
       else {
         this.setBookingFreeAccessId(bookingId);
       }
-      var data = $('form[name=payment_form]').formParams();
-      data['id'] = bookingId;
+      
+      // Prepare data
+      var data = {id: bookingId,
+                  payment: paymentAmount,
+                  payment_method_id: paymentMethod};
+
       // Do payment
       view.payment( commonServices.URL_PREFIX + '/reserva/pagar', data );
     },
@@ -158,9 +164,6 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
   };
 
   var controller = { // THE CONTROLLER
-    btnPaymentClick: function(paymentMethod) {
-       model.sendPayRequest();
-    },
     btnUpdateClick: function() {
        model.update();
     }
@@ -386,19 +389,48 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
         $('form[name=payment_form]').validate(
             {
                 submitHandler: function(form) {
-                    controller.btnPaymentClick();
+
+                    $('#payment_error').hide();
+                    $('#payment_error').html('');
+                    
+                    // Payment amount
+                    var paymentAmount = $('input[name=payment]').val();                        
+                    
+                    // Payment method
+                    var paymentMethod = null;
+                    if ($('input[name=payment_method_id]').length == 1) { // Just 1 payment method
+                      paymentMethod = $('input[name=payment_method_id]').val();
+                    }
+                    else { // Multiple payment methods
+                      paymentMethod = $('input[name=payment_method_select]:checked').val();
+                    }
+
+                    // Do pay
+                    if (paymentMethod && paymentAmount) {
+                      model.sendPayRequest(paymentAmount, paymentMethod);
+                    }
                     return false;
+
                 },
                 errorClass: 'text-danger',
                 rules : {
-                    'payment_method_id': 'required'
+                    'payment_method_id': {
+                        required: 'input[name=payment_method_id]:visible'
+                    },
+                    'payment_method_select': {
+                        required: 'input[name=payment_method_select]:visible'
+                    }
                 },
                 messages: {
-                    'payment_method_id': i18next.t('myReservation.pay.paymentMethodRequired')
+                    'payment_method_id': i18next.t('myReservation.pay.paymentMethodRequired'),
+                    'payment_method_select': i18next.t('myReservation.pay.paymentMethodRequired')
                 },
                 errorPlacement : function(error, element) {
                   if (element.attr('name') == 'payment_method_id')  {
                      error.insertBefore('#btn_pay');
+                  }
+                  else if (element.attr('name') == 'payment_method_select')  {
+                     error.insertAfter(document.getElementById('payment_method_select_error'));
                   }
                   else {
                      error.insertAfter(element);

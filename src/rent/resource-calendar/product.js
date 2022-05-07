@@ -140,7 +140,7 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
             // Hold the availability data
             productModel.availabilityData = data;
             // Update the calendar
-            productModel.productCalendar.view.update(productModel.availabilityData);
+            productModel.productCalendar.view.update(productModel.availabilityData, productView.getDurationScopeVal());
         },
         error: function(data, textStatus, jqXHR) {
             alert(i18next.t('selector.error_loading_data'));
@@ -158,7 +158,7 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
     /**
      * Check day occupation
      */ 
-    checkDayOccupation: function(date) { 
+    checkDayOccupation: function(date, mode) { 
 
       var url = commonServices.URL_PREFIX + '/api/booking/frontend/products/' + this.code + '/daily-occupation';
       url += '?date='+date;      
@@ -173,20 +173,29 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
         success: function(data, textStatus, jqXHR) {      
           if (data && data.occupation) {
             if (document.getElementById('script_daily_occupation')) {
-              console.log('format::'+productModel.configuration.dateFormat);
               var result = tmpl('script_daily_occupation')({data: data.occupation, 
                                                             moment: moment, 
                                                             timezone: productModel.configuration.timezone,
-                                                            format: productModel.configuration.dateFormat});
-              if ($('#modalDailyOccupation_MBM').length) {
-                $('#modalDailyOccupation_MBM .modal-product-detail-title').html(i18next.t('calendar_selector.busy'));
-                $('#modalDailyOccupation_MBM .modal-product-detail-content').html(result);      
+                                                            format: productModel.configuration.dateShortFormat});
+              if (mode == 'modal') { 
+                // Show in modal
+                if ($('#modalDailyOccupation_MBM').length) {
+                  $('#modalDailyOccupation_MBM .modal-product-detail-title').html(i18next.t('calendar_selector.busy'));
+                  $('#modalDailyOccupation_MBM .modal-product-detail-content').html(result);      
+                }
+                else {
+                  $('#modalDailyOccupation_MBM .modal-product-detail-title').html(i18next.t('calendar_selector.busy'));
+                  $('#modalDailyOccupation .modal-product-detail-content').html(result);                 
+                }
+                commonUI.showModal('#modalDailyOccupation');
               }
-              else {
-                $('#modalDailyOccupation_MBM .modal-product-detail-title').html(i18next.t('calendar_selector.busy'));
-                $('#modalDailyOccupation .modal-product-detail-content').html(result);                 
+              else if (mode == 'inpage') {
+                // Show in page
+                if (data.occupation.length > 0) {
+                  $('#mybooking_product_widget_occupation_detail_container').html(result);
+                  $('#mybooking_product_widget_occupation_container').show();
+                }
               }
-              commonUI.showModal('#modalDailyOccupation');
             }
           }
         }
@@ -267,6 +276,9 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
       if (this.configuration.pickupReturnPlace && $(this.return_place_selector).val() != '') {
         url += '&place='+$(this.return_place_selector).val();
       }        
+      if (this.rentalLocationCode) {
+        url += '&rental_location_code='+encodeURIComponent(this.rentalLocationCode);
+      }      
       if (commonServices.apiKey && commonServices.apiKey != '') {
         url += '&api_key='+commonServices.apiKey;
       }    
@@ -527,19 +539,8 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
 
       $('.js-mybooking-product_calendar-time-hours, .js-mybooking-product_calendar-time-ranges').hide();
       $('#reservation_detail').empty();
-/*
 
-      // Selected a range of dates => configurationtimeToFrom
-      if (value === 'days') {
-        productModel.showHoursTurns = productModel.configuration.timeToFrom;
-      }
-      else if (value === 'in_one_day') {
-        productModel.showHoursTurns = productModel.configuration.timeToFromInOneDay;
-      }
-
-      productModel.productCalendar.view.setDurationScope(value);
-*/
-
+      // Reload availability
       var dates = productModel.productCalendar.currentCalendarDates();
       productView.checkAvailability(dates.dateFrom, dates.dateTo);
 
@@ -602,7 +603,8 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
             productModel.showHoursTurns = productModel.configuration.timeToFrom;
           }
           else if (productView.getDurationScopeVal() === 'in_one_day') {
-            productModel.showHoursTurns = productModel.configuration.timeToFromInOneDay;
+            productModel.showHoursTurns = productModel.configuration.timeToFrom || 
+                                          productModel.configuration.timeToFromInOneDay;
           }
 
           if (productModel.showHoursTurns) {
@@ -616,10 +618,31 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
               if ($(productModel.time_to_selector).attr('disabled')) {   
                 $(productModel.time_to_selector).attr('disabled', false);
               }
-              $(productModel.time_to_selector).val('');          
-              // Load pickup / return hours
-              productView.loadPickupHours();
-              productView.loadReturnHours();          
+              $(productModel.time_to_selector).val('');   
+              // Load date reservations
+              if (productView.getDurationScopeVal() === 'in_one_day') {
+                productView.loadDayOccupation();
+              }       
+              // Load pickup hours
+              if (productModel.availabilityData && 
+                  typeof productModel.availabilityData.occupation[dateFromStr]['partial_delivery'] !== 'undefined' &&
+                  productModel.availabilityData.occupation[dateFromStr]['partial_delivery'].length > 0) {
+                productModel.pickupHours = productModel.availabilityData.occupation[dateFromStr]['partial_delivery']; 
+                productView.update('hours', 'time_from');
+              } 
+              else {
+                productView.loadPickupHours();
+              }
+              // Load return hours
+              if (productModel.availabilityData && 
+                  typeof productModel.availabilityData.occupation[dateFromStr]['partial_collection'] !== 'undefined' &&
+                  productModel.availabilityData.occupation[dateFromStr]['partial_collection'].length > 0) {
+                productModel.returnHours = productModel.availabilityData.occupation[dateFromStr]['partial_collection']; 
+                productView.update('hours', 'time_to');
+              } 
+              else {
+                productView.loadReturnHours();
+              }          
             }
             else if (productModel.configuration.rentTimesSelector === 'time_range') { // Select date/range
               // Load turns
@@ -683,7 +706,7 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
 
     checkHourlyOccupationButtonClick: function(date) {
       console.log("check hourly occupation " + date);
-      productModel.checkDayOccupation(date);
+      productModel.checkDayOccupation(date, 'modal');
     }
 
   };
@@ -882,7 +905,9 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
                                              productModel.minDays,
                                              productModel.availabilityData,
                                              productModel.checkHourlyOccupation,
-                                             productView.getDurationScopeVal());
+                                             productView.getDurationScopeVal(),
+                                             $(productModel.duration_scope_selector) && $(productModel.duration_scope_selector).is(':visible') 
+                                            );
       
     },
 
@@ -1110,6 +1135,11 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
 
       productModel.checkAvailability(dateFrom, dateTo);
 
+    },
+
+    loadDayOccupation: function() { /** Load day occupation **/
+      var date = moment(productModel.selectedDateFrom).format('YYYY-MM-DD'); 
+      productModel.checkDayOccupation(date, 'inpage');
     },
 
     /*

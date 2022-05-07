@@ -306,6 +306,9 @@ define('commonTranslations', [], function() {
               'max_time': 'The delivery of the next reservation is at {{time}}',
               'min_duration': '{{days}}d',
               'busy': 'Busy',
+              'no_deliveries_collection': 'Day does not accept delivery or collection',
+              'delivery_not_allowed': 'It is not possible to deliver on the date. Only return times are available',
+              'collection_not_allowed': 'It is not possible to return on the date. Only delivery times are available'
             },
         		selector: {
                 'select': 'Select',
@@ -780,6 +783,9 @@ define('commonTranslations', [], function() {
               'max_time': 'La entrega de la siguiente reserva es a las {{time}}',
               'min_duration': '{{days}}d',
               'busy': 'Ocupado',
+              'no_deliveries_collection': 'El día no acepta entregas ni devoluciones',
+              'delivery_not_allowed': 'No es posible entregar en la fecha. Sólo hay disponibles horarios de devolución',
+              'collection_not_allowed': 'No es posible devolver en la fecha. Sólo hay disponibles horarios de entrega'
             },  		
             selector: {
               'select': 'Seleccionar',              
@@ -1254,6 +1260,9 @@ define('commonTranslations', [], function() {
           'max_time': "L'entrega de la propera reserva és a les {{time}}",
           'min_duration': '{{days}}d',
           'busy': 'Ocupat',
+          'no_deliveries_collection': 'El dia no accepte lliraments ni devolucions',
+          'delivery_not_allowed': 'No es pot lliurar en la data. Només estan disponibles els horaris de tornada',
+          'collection_not_allowed': 'No és possible tornar a la data. Només estan disponibles els horaris de lliurament.'
         },      
         selector: {
           'select': 'Seleccionar',          
@@ -1727,7 +1736,10 @@ define('commonTranslations', [], function() {
           'min_time': 'Die Abholung der vorherigen Reservierung erfolgt um {{time}} Uhr',
           'max_time': 'Die Lieferung der nächsten Reservierung erfolgt um {{time}} Uhr',
           'min_duration': '{{days}}d',
-          'busy': 'Belegt'
+          'busy': 'Belegt',
+          'no_deliveries_collection': 'Day akzeptiert keine Lieferung oder Abholung',
+          'delivery_not_allowed': 'Eine Lieferung zum Termin ist nicht möglich. Nur Rückfahrtzeiten sind verfügbar',
+          'collection_not_allowed': 'Eine Rückgabe am Datum ist nicht möglich. Es sind nur Lieferzeiten verfügbar'
         },
         selector: {
           'select': 'Selektionär',          
@@ -2202,7 +2214,10 @@ define('commonTranslations', [], function() {
           'min_time': 'La collecte de la réservation précédente est à {{time}}',
           'max_time': 'La livraison de la prochaine réservation est à {{time}}',
           'min_duration': '{{days}}d',
-          'busy': 'Occupé'
+          'busy': 'Occupé',
+          'no_deliveries_collection': "Day n'accepte pas la livraison ou la collecte",
+          'delivery_not_allowed': "Il n'est pas possible de livrer à la date. Seuls les horaires de retour sont disponibles",
+          'collection_not_allowed': "Il n'est pas possible de revenir à la date. Seuls les délais de livraison sont disponibles"
         },
         selector: {
           'select': 'Sélectionnez',
@@ -2676,7 +2691,10 @@ define('commonTranslations', [], function() {
           'min_time': 'La raccolta della prenotazione precedente è alle  {{time}}',
           'max_time': 'La consegna della prossima prenotazione è alle {{time}}',
           'min_duration': '{{days}}d',
-          'busy': 'Occupato'
+          'busy': 'Occupato',
+          'no_deliveries_collection': 'Day non accetta consegna o ritiro',
+          'delivery_not_allowed': 'Non è possibile consegnare in data. Sono disponibili solo i tempi di ritorno',
+          'collection_not_allowed': 'Non è possibile restituire la data. Sono disponibili solo i tempi di consegna'
         },  
         selector: {
           'select': 'Seleziona',
@@ -2903,7 +2921,10 @@ define('commonTranslations', [], function() {
             'min_time': 'Сбор предыдущего бронирования находится по адресу {{time}}',
             'max_time': 'Доставка следующей брони по адресу {{time}}',
             'min_duration': '{{days}}d',
-            'busy': "занятый"
+            'busy': "занятый",
+            'no_deliveries_collection': "День не принимает доставку или самовывоз",
+            'delivery_not_allowed': "Доставка в указанный день невозможна. Доступно только время возврата",
+            'collection_not_allowed': "Вернуть дату невозможно. Доступны только сроки доставки"
           },
             selector: {
             'select': 'селекционер',

@@ -178,7 +178,8 @@ define('ProductCalendar', ['jquery', 'YSDEventTarget',
                          minDays, 
                          availabilityData, 
                          checkHourlyOccupation,
-                         durationScope) {
+                         durationScope,
+                         selectDurationScope) {
 
       // Disable Container
       $('#date-container').addClass('disabled-picker');
@@ -202,6 +203,11 @@ define('ProductCalendar', ['jquery', 'YSDEventTarget',
         singleDate = true;
       }
 
+      // Reservation in one day without selector => One month
+      if (!selectDurationScope && durationScope == 'in_one_day') {
+        singleMonth = true;
+      }
+
       console.log('durationScope :' + durationScope);
 
       // For index Page coding
@@ -211,7 +217,7 @@ define('ProductCalendar', ['jquery', 'YSDEventTarget',
           container: '#date-container',
           alwaysOpen: true,
           stickyMonths: true,
-          allowSelectBetweenInvalid: true,
+          allowSelectBetweenInvalid: false, //true,
           singleDate: singleDate, /* Single date selector */
           singleMonth: singleMonth, /* Single date one month */
           time: {
@@ -236,7 +242,7 @@ define('ProductCalendar', ['jquery', 'YSDEventTarget',
             if (self.productCalendarModel.availabilityData) {
               // Day is not selectable [calendar]
               if (self.productCalendarModel.availabilityData['occupation'][theDate] && !self.productCalendarModel.availabilityData['occupation'][theDate].selectable_day) {
-                return [false, 'not-selectable-day']; // The reservation can not start or end on the date 
+                return [true, 'not-selectable-day']; // The reservation can not start or end on the date 
               }    
               // Product is not available [rent]
               else if (self.productCalendarModel.availabilityData['occupation'][theDate] && !self.productCalendarModel.availabilityData['occupation'][theDate].free) {
@@ -319,6 +325,29 @@ define('ProductCalendar', ['jquery', 'YSDEventTarget',
           hoveringTooltip: false         
       })
       .bind('datepicker-first-date-selected', function(event, obj){
+        var dateStr = moment(obj.date1).format('YYYY-MM-DD');
+        // Check that the day can not start if not available delivery hours
+        if (typeof self.productCalendarModel.availabilityData.occupation[dateStr]['during_the_day_periods'] !== 'undefined' &&
+            self.productCalendarModel.availabilityData.occupation[dateStr]['during_the_day_periods'].length > 0 && 
+            typeof self.productCalendarModel.availabilityData.occupation[dateStr]['partial_delivery'] !== 'undefined') {
+          if (self.productCalendarModel.availabilityData.occupation[dateStr]['partial_delivery'].length == 0) {
+            event.stopPropagation();
+            // Clear the selection
+            $(self.productCalendarModel.dateSelector).data('dateRangePicker').clear();
+            // Shows an message
+            alert(self.productCalendarModel.i18next.t('calendar_selector.delivery_not_allowed'));
+            return;
+          }
+        }
+        // Check that the day can not start if not selectable (holidays)
+        if (!self.productCalendarModel.availabilityData.occupation[dateStr].selectable_day) {
+            event.stopPropagation();
+            // Clear the selection
+            $(self.productCalendarModel.dateSelector).data('dateRangePicker').clear();
+            // Shows an message
+            alert(self.productCalendarModel.i18next.t('calendar_selector.no_deliveries_collection'));
+            return;          
+        }
         self.productCalendarController.firstDateSelected(obj.date1);
       })
       .bind('datepicker-change',function(event,obj) {
@@ -351,7 +380,7 @@ define('ProductCalendar', ['jquery', 'YSDEventTarget',
     /**
      * Update data
      */  
-    this.update = function(availabilityData) {
+    this.update = function(availabilityData, durationScope) {
 
       this.productCalendarModel.updatingData = true;
 
@@ -372,8 +401,13 @@ define('ProductCalendar', ['jquery', 'YSDEventTarget',
         }
       }
 
-      // Redraw the calendar
-      this.redraw();
+      if (durationScope != this.productCalendarModel.durationScope) {
+        this.setDurationScope(durationScope);
+      }
+      else {
+        // Redraw the calendar
+        this.redraw();
+      }
 
       this.productCalendarModel.updatingData = false;
 
@@ -382,7 +416,6 @@ define('ProductCalendar', ['jquery', 'YSDEventTarget',
     /**
      * Change the duration Scope
      */ 
-    /*
     this.setDurationScope = function(durationScope) {
 
       // Clear current selection
@@ -405,7 +438,6 @@ define('ProductCalendar', ['jquery', 'YSDEventTarget',
       this.redraw();
 
     }
-    */
 
     /**
      * Redraw the calendar

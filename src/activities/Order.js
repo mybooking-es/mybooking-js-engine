@@ -121,7 +121,6 @@ require(['jquery', 'i18next', 'ysdtemplate', 'YSDMemoryDataSource','YSDSelectSel
              */
             pay: function(paymentAmount, paymentMethodId) {
   
-
                 var data = {id: this.orderFreeAccessId,
                             payment: paymentAmount,
                             payment_method_id: paymentMethodId};
@@ -268,6 +267,10 @@ require(['jquery', 'i18next', 'ysdtemplate', 'YSDMemoryDataSource','YSDSelectSel
             btnUpdateClick: function() {
                 model.update();
             },
+
+            /**
+             * Cancel reservation button click
+             */  
             btnCancelReservationClick: function(){
                 if (confirm(i18next.t('activities.myReservation.cancelReservationConfirm'))) {
                   model.cancelReservation();
@@ -365,10 +368,6 @@ require(['jquery', 'i18next', 'ysdtemplate', 'YSDMemoryDataSource','YSDSelectSel
             },
 
             setupEvents: function() {
-                // Payment
-                $('#btn_pay').bind('click', function(){
-                    controller.btnPayClick();
-                });
                 // Upate order
                 $('#btn_update_order').bind('click', function(){
                     controller.btnUpdateClick();
@@ -387,8 +386,8 @@ require(['jquery', 'i18next', 'ysdtemplate', 'YSDMemoryDataSource','YSDSelectSel
                   {
 
                       submitHandler: function(form) {
-                          $('#reservation_error').hide();
-                          $('#reservation_error').html('');
+                          $('#payment_error').hide();
+                          $('#payment_error').html('');
                           
                           // Payment amount
                           var paymentAmount = null;
@@ -408,7 +407,7 @@ require(['jquery', 'i18next', 'ysdtemplate', 'YSDMemoryDataSource','YSDSelectSel
                             paymentMethod = $('input[name=payment_method_value]').val();
                           }
                           else { // Multiple payment methods
-                            paymentMethod = $('input[name=payment_method_value]:checked').val();
+                            paymentMethod = $('input[name=payment_method_select]:checked').val();
                           }
 
                           // Do pay
@@ -425,18 +424,32 @@ require(['jquery', 'i18next', 'ysdtemplate', 'YSDMemoryDataSource','YSDSelectSel
 
                       rules : {
 
-                          'payment_method_value': 'required'
+                          'payment_method_value': {
+                              required: 'input[name=payment_method_value]:visible'
+                           },
+                          'payment_method_select': {
+                              required: 'input[name=payment_method_select]:visible'
+                           },
 
                       },
 
                       messages : {
 
-                          'payment_method_value': i18next.t('activities.payment.paymentMethodNotSelected')
+                          'payment_method_value': i18next.t('activities.payment.paymentMethodNotSelected'),
+                          'payment_method_select': i18next.t('activities.payment.paymentMethodNotSelected')
 
                       },
 
                       errorPlacement: function (error, element) {
+                        if (element.attr('name') == 'payment_method_value')  {
+                          error.insertBefore('#btn_pay');
+                        }
+                        else if (element.attr('name') == 'payment_method_select')  {
                           error.insertAfter(document.getElementById('payment_method_select_error'));
+                        }
+                        else {
+                          error.insertAfter(element);
+                        }
                       },
 
                       errorClass : 'form-reservation-error'

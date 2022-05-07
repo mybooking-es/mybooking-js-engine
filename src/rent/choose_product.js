@@ -211,7 +211,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
         data.renting_duration = this.renting_duration;
       }
 
-      if (this.rental_location_code != 'undefined' && this.rental_location_code != '') {
+      if (this.rental_location_code != 'undefined' && this.rental_location_code != null && this.rental_location_code != '') {
         data.rental_location_code = this.rental_location_code;
         data.engine_fixed_rental_location = this.engine_fixed_rental_location;
       }

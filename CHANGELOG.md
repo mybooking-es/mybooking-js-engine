@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.0.6]
+
+### Fixed
+
+- Activities my reservation : Paypal + Credit Card payment method
+- Renting my reservation : Paypal + Credit Card payment method
+- Product calendar : Send rental location to API (multiple rental locations)
+- Renting choose product : Send rental location to API (multiple rental locations)
+
 ## [1.0.5]
 
 ### Added
