@@ -5,7 +5,13 @@ define('commonSettings', ['jquery','commonServices','commonLoader','commonTransl
   const DEFAULT_TIME_END = '20:00';      
 
   var mybookingSettings = {
+
+    /**
+     * Settings data
+     */  
     data: {
+      // Duplicated Tab 
+      duplicatedTab: false,      
       // Server
       serverDate: null,
       serverTime: null,
@@ -141,6 +147,11 @@ define('commonSettings', ['jquery','commonServices','commonLoader','commonTransl
       }
 
     },
+
+
+    /**
+     * Load mybooking settings
+     */ 
     loadSettings: function(callback, productType, productId) {
       var url = commonServices.URL_PREFIX + '/api/booking/frontend/settings';
       var urlParams = [];
@@ -262,6 +273,10 @@ define('commonSettings', ['jquery','commonServices','commonLoader','commonTransl
            }
       });
     },
+
+    /**
+     * Get page language
+     */ 
     language: function(language) {
       if (typeof language != 'undefined' && language != null) {
         if (language.length && language.length > 2) {
@@ -273,6 +288,9 @@ define('commonSettings', ['jquery','commonServices','commonLoader','commonTransl
       }
     },
 
+    /**
+     * Get URL vars from location
+     */ 
     getUrlVars: function() {
           var vars = [], hash;
           var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
@@ -283,6 +301,10 @@ define('commonSettings', ['jquery','commonServices','commonLoader','commonTransl
           }
           return vars;
     },
+
+    /**
+     * Get URL vars from string
+     */ 
     getUrlVarsFromString: function(address) {
           var vars = [], hash;
           var hashes = address.slice(address.indexOf('?') + 1).split('&');
@@ -292,6 +314,13 @@ define('commonSettings', ['jquery','commonServices','commonLoader','commonTransl
           }
           return vars;
     },
+
+    /**
+     * Append common validators
+     * 
+     * - pwcheck
+     * 
+     */ 
     appendValidators: function() {
 
         $.validator.addMethod("pwcheck", function(value, element) {
@@ -307,6 +336,30 @@ define('commonSettings', ['jquery','commonServices','commonLoader','commonTransl
       
     }
   };
+
+  /**
+   * On load => Check it is a sessionStorage item mbDuplicatedTab
+   */ 
+  $(window).on('load', function(){
+    // If exists a duplicated Tab item in season => 
+    if (sessionStorage.getItem('mbDuplicatedTab') === 'duplicatedTab') {
+      console.log('duplicated TAB');
+      mybookingSettings.data.duplicatedTab = true;
+    }
+    else {
+      sessionStorage.setItem('mbDuplicatedTab', 'duplicatedTab');
+      console.log('Not duplicated TAB');
+      mybookingSettings.data.duplicatedTab = false;
+    }
+  });
+
+  /**
+   * Before unload => Remove mbDuplicatedTab (it is not executed when duplicate tab)
+   */ 
+  $(window).on('beforeunload', function(){
+    sessionStorage.removeItem('mbDuplicatedTab');
+    mybookingSettings.data.duplicatedTab = false;
+  });
 
   return mybookingSettings;
 });

@@ -304,7 +304,7 @@ define('rentEngineMediator', ['jquery', 'YSDEventTarget'],
      */
     continueCheckout: function() {
 
-      if (this.complete != null) {
+      if (this.complete != null) {
         this.complete.model.sendBookingRequest();
       }
 

@@ -57,6 +57,12 @@ require('./common/commonTranslations.js');
 require('./common/commonLoader.js');
 require('./common/commonUI.js');
 
+
+// == Agent (extract URL into cookie)
+$(document).ready(function() {
+    require('./common/commonAgent.js');
+});
+
 // == Contact module
 
 $(document).ready(function() {

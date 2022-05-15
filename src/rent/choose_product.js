@@ -59,7 +59,24 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
     loadSettings: function() {
       commonSettings.loadSettings(function(data){
         model.configuration = data;
-        view.init();
+        // Check duplicated Tab
+        if (model.configuration.duplicatedTab) {
+          // Initialize i18next for translations
+          i18next.init({  
+                          lng: document.documentElement.lang,
+                          resources: commonTranslations
+                       }, 
+                       function (error, t) {
+                       });
+          alert(i18next.t('common.duplicateTab'));
+          // Clear the session for this tab so it can start a new process
+          sessionStorage.clear();
+          commonLoader.hide();
+          $('#product_listing').html(i18next.t('common.duplicateTab'));
+        }
+        else {
+          view.init();
+        }
       });
     },   
 

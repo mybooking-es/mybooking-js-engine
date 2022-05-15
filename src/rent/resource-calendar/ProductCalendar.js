@@ -197,7 +197,9 @@ define('ProductCalendar', ['jquery', 'YSDEventTarget',
       // Duraction scope => Select hours / turn in a date or select date ranges
       var singleDate = false;
       var singleMonth = false;
-      durationScope ||= 'days';
+      if (typeof durationScope === 'undefined' || durationScope === null || durationScope === '') {
+        durationScope = 'days';
+      }
       this.productCalendarModel.durationScope = durationScope;
       if ( this.productCalendarModel.durationScope === 'in_one_day' ) {
         singleDate = true;

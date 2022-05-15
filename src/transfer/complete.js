@@ -14,6 +14,7 @@ require(['jquery',
                 MemoryDataSource, SelectSelector, transferEngineMediator, Login, PasswordForgottenComponent) {
 
   var model = { // THE MODEL
+    reservationFormSubmitted: false,
     requestLanguage: null,
     configuration: null,     
     // The shopping cart    
@@ -377,6 +378,9 @@ require(['jquery',
                 }
             },
             error: function(data, textStatus, jqXHR) {
+                // Allow to send the form again
+                $('form[name=mybooking_transfer_reservation_form] button[type=submit]').removeAttr('disabled'); 
+                model.reservationFormSubmitted = false;             
                 // Hide Loader (ERROR)
                 commonLoader.hide();
                 alert(i18next.t('complete.createReservation.error'));
@@ -717,13 +721,25 @@ require(['jquery',
             {
                 errorClass: 'text-danger',
                 submitHandler: function(form) {
-                    $('#reservation_error').hide();
-                    $('#reservation_error').html('');
-                    controller.sendReservationButtonClick();
+                    console.log('COMPLETE - submit');
+                    if (!model.reservationFormSubmitted) {
+                      model.reservationFormSubmitted = true; 
+                      // Disable submit to avoid double click
+                      $('form[name=mybooking_transfer_reservation_form] button[type=submit]').attr('disabled', 'disabled');
+                      // Hide errors
+                      $('#reservation_error').hide();
+                      $('#reservation_error').html('');
+                      controller.sendReservationButtonClick();
+                    }
                     return false;
                 },
 
                 invalidHandler : function (form, validator) {
+                    console.log('COMPLETE - invalidHandler');
+                    // Enable submit again
+                    $('form[name=mybooking_transfer_reservation_form] button[type=submit]').removeAttr('disabled');
+                    model.reservationFormSubmitted = false; 
+                    // Show errors                  
                     $('#reservation_error').html(i18next.t('complete.reservationForm.errors'));
                     $('#reservation_error').show();
                 },

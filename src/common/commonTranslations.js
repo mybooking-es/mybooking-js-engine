@@ -273,7 +273,8 @@ define('commonTranslations', [], function() {
               'invalid_user_password': 'Invalid user or password',
               'no_necessary_url_params': 'The URL does not contain the information necessary to carry out the process',
               'required': 'Required',
-              'selectOption': 'Select an option'             
+              'selectOption': 'Select an option',
+              'duplicateTab': "You cannot duplicate the tab in the reservation process. Please go to the home page and start the process again."         
             },
             password_forgotten: {
               'message': "A message has been sent to your email address in order to reset the password",
@@ -750,7 +751,8 @@ define('commonTranslations', [], function() {
               'invalid_user_password': 'El usuario o el password no son válidos',
               'no_necessary_url_params': 'La URL no contiene la información necesaria para llevar a cabo el proceso',
               'required': 'Obligatorio',
-              'selectOption': 'Seleccionar una opción'                   
+              'selectOption': 'Seleccionar una opción',  
+              'duplicateTab': "No se puede duplicar la pestaña en el proceso de reserva. Por favor, vaya a la página de inicio e inicie el proceso de nuevo." 
             },
             password_forgotten: {
               'message': "Se ha enviado un mensaje a su dirección de correo electrónico para restablecer la contraseña.",
@@ -1227,7 +1229,8 @@ define('commonTranslations', [], function() {
           'invalid_user_password': "L'usuari o la clau no són correctes",      
           'no_necessary_url_params': "La URL no conté la informació necessària per dur a terme el procés",                                
           'required': 'Obligatori',
-          'selectOption': 'Escollir una opció'  
+          'selectOption': 'Escollir una opció',
+          'duplicateTab': "No podeu duplicar la pestanya en el procés de reserva. Aneu a la pàgina d'inici i torneu a iniciar el procés." 
         },
         password_forgotten: {
           'message': "S'ha enviat un missatge a la vostra adreça de correu electrònic per restablir la contrasenya",
@@ -1704,7 +1707,8 @@ define('commonTranslations', [], function() {
           'invalid_user_password': 'Ungültiger Benutzer oder Passwort',
           'no_necessary_url_params': "Die URL enthält nicht die Informationen, die zur Durchführung des Prozesses erforderlich sind", 
           'required': 'Erforderlich',
-          'selectOption': 'Wähle eine Option' 
+          'selectOption': 'Wähle eine Option',
+          'duplicateTab': "Sie können die Registerkarte im Reservierungsprozess nicht duplizieren. Gehen Sie bitte auf die Startseite und starten Sie den Vorgang erneut."  
         },
         password_forgotten: {
           'message': "Eine Nachricht wurde an Ihre E-Mail-Adresse gesendet, um das Passwort zurückzusetzen",
@@ -2182,7 +2186,8 @@ define('commonTranslations', [], function() {
           'invalid_user_password': 'Utilisateur ou mot de passe invalide',
           'no_necessary_url_params': "L'URL ne contient pas les informations nécessaires pour mener à bien le processus", 
           'required': "Obligatoire",
-          'selectOption': "Sélectionner une option"
+          'selectOption': "Sélectionner une option",
+          'duplicateTab': "Vous ne pouvez pas dupliquer l'onglet dans le processus de réservation. Veuillez vous rendre sur la page d'accueil et recommencer le processus."
         },
         password_forgotten: {
           'message': "Un message a été envoyé à votre adresse e-mail afin de réinitialiser le mot de passe",
@@ -2659,7 +2664,8 @@ define('commonTranslations', [], function() {
           'invalid_user_password': 'Utente o password non validi',
           'no_necessary_url_params': "L'URL non contiene le informazioni necessarie per eseguire il processo",
           'required': "Richiesto",
-          'selectOption': "Seleziona un'opzione"                                                       
+          'selectOption': "Seleziona un'opzione",
+          'duplicateTab': "Non è possibile duplicare la scheda nel processo di prenotazione. Si prega di andare alla home page e ricominciare il processo."                                                       
         },
         password_forgotten: {
           'message': "È stato inviato un messaggio al tuo indirizzo email per reimpostare la password",
@@ -2889,7 +2895,8 @@ define('commonTranslations', [], function() {
             'invalid_user_password': 'Неверный пользователь или пароль',
             'no_necessary_url_params': "URL-адрес не содержит информации, необходимой для выполнения процесса.",             
             'required': "обязательный",
-            'selectOption': "Выберите вариант"
+            'selectOption': "Выберите вариант",
+            'duplicateTab': "Вы не можете дублировать вкладку в процессе бронирования. Перейдите на главную страницу и повторите процесс."
           },
           password_forgotten: {
             'message': "На ваш адрес электронной почты было отправлено сообщение для сброса пароля.",

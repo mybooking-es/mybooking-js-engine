@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.0.7]
+
+### Added
+
+- AgentId extraction outside renting selector
+
+### Fixed
+
+- Manage duplicate Tabs during the renting reservation process
+- Renting: Manage stock not available when creating renting reservation
+- Avoid double click on create reservation form
+
 ## [1.0.6]
 
 ### Fixed

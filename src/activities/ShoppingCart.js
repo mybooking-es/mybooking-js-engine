@@ -6,7 +6,7 @@ require(['jquery','i18next', 'ysdtemplate',
              commonServices, commonSettings, commonTranslations, commonLoader, commonUI) {
 
       model = { // THE MODEL
-
+          reservationFormSubmitted: false,
           requestLanguage: null,
           configuration: null,
           shoppingCart: null,
@@ -192,7 +192,17 @@ require(['jquery','i18next', 'ysdtemplate',
                       }
                   },
                   error: function(data, textStatus, jqXHR) {
-                      alert('Error creando el pedido');
+                      // Allow to send the form again
+                      $('form[name=reservation_form] button[type=submit]').removeAttr('disabled');
+                      model.reservationFormSubmitted = false;
+                      // Show message
+                      alert(i18next.t('complete.createReservation.error'));
+                  },
+                  beforeSend: function(jqXHR) {
+                       commonLoader.show();
+                  },
+                  complete: function(jqXHR, textStatus) {
+                       commonLoader.hide();
                   }
               });
 
@@ -299,14 +309,26 @@ require(['jquery','i18next', 'ysdtemplate',
                   {
 
                       submitHandler: function(form) {
+                        console.log('SHOPPING-CART - submit');
+                        if (!model.reservationFormSubmitted) {
+                          model.reservationFormSubmitted = true;                        
+                          // Disable submit to avoid double click
+                          $('form[name=reservation_form] button[type=submit]').attr('disabled', 'disabled');
+                          // Hide errors
                           $('#reservation_error').hide();
                           $('#reservation_error').html('');
                           // Create order from the shopping cart
                           model.createOrder();
-                          return false;
+                        }
+                        return false;
                       },
 
                       invalidHandler : function (form, validator) {
+                          console.log('SHOPPING-CART - invalidHandler');
+                          // Enable submit again
+                          $('form[name=reservation_form] button[type=submit]').removeAttr('disabled');
+                          model.reservationFormSubmitted = false; 
+                          // Show errors                        
                           $('#reservation_error').html(i18next.t('activities.checkout.errors'));
                           $('#reservation_error').show();
                       },

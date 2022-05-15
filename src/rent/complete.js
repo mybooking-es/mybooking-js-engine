@@ -14,6 +14,8 @@ require(['jquery',
                 MemoryDataSource, SelectSelector, rentEngineMediator, Login, PasswordForgottenComponent) {
 
   var model = { // THE MODEL
+    reservationFormSubmitted: false,
+    //
     requestLanguage: null,
     configuration: null,     
     customerClassifiers: null,
@@ -33,7 +35,24 @@ require(['jquery',
     loadSettings: function() {
       commonSettings.loadSettings(function(data){
         model.configuration = data;
-        view.init();
+        // Check duplicated Tab
+        if (model.configuration.duplicatedTab) {
+          // Initialize i18next for translations
+          i18next.init({  
+                          lng: document.documentElement.lang,
+                          resources: commonTranslations
+                       }, 
+                       function (error, t) {
+                       });          
+          alert(i18next.t('common.duplicateTab'));
+          // Clear the session for this tab so it can start a new process
+          sessionStorage.clear();
+          commonLoader.hide();
+          $('form[name=reservation_form]').html(i18next.t('common.duplicateTab'));
+        }
+        else {
+          view.init();
+        }
       });
     },      
 
@@ -515,9 +534,24 @@ require(['jquery',
                 }
             },
             error: function(data, textStatus, jqXHR) {
+                // Allow to send the form again
+                $('form[name=reservation_form] button[type=submit]').removeAttr('disabled');
+                model.reservationFormSubmitted = false;
                 // Hide Loader (ERROR)
                 commonLoader.hide();
-                alert(i18next.t('complete.createReservation.error'));
+                // Check the error
+                if (data && typeof data.responseJSON !== 'undefined' && typeof data.responseJSON.code !== 'undefined') {
+                  if (data.responseJSON.code === 'CRBOOK002' && data.responseJSON.error !== 'undefined') {
+                    // Not available
+                    alert(data.responseJSON.error);
+                  }
+                  else {
+                    alert(i18next.t('complete.createReservation.error'));
+                  }
+                }
+                else {
+                  alert(i18next.t('complete.createReservation.error'));
+                }
             }
         });
 
@@ -637,9 +671,7 @@ require(['jquery',
       if (model.configuration.engineCustomerAccess) {
         this.setupLoginForm();
       }
-//      else {
-//        this.prepareReservationForm(); // It requires to LOAD the shopping Cart
-//      }
+
       // Load shopping cart
       model.loadShoppingCart();
   	},
@@ -648,7 +680,6 @@ require(['jquery',
      * Setup the login form
      */
     setupLoginForm: function() {
-//      this.prepareReservationForm(); // It requires to LOAD the shopping Cart
       var self = this;
       // Complete hide
       $('#form-reservation').hide();
@@ -840,7 +871,7 @@ require(['jquery',
         console.log(selectors);
         for (var idx=0; idx<selectors.length; idx++) { 
           $countrySelector = $(selectors[idx]);    
-          if ($countrySelector.length > 0 && typeof values[idx] !== 'undefined') {
+          if ($countrySelector.length > 0 && $countrySelector.prop('tagName') === 'SELECT' && typeof values[idx] !== 'undefined') {
             $countrySelector.select2({
               width: '100%',
               theme: 'bootstrap4',                  
@@ -860,7 +891,8 @@ require(['jquery',
                          'additional_driver_1_driving_license_country',
                          'additional_driver_2_driving_license_country'];
         for (var idx=0; idx<selectors.length; idx++) { 
-          if (document.getElementById(selectors[idx])) {
+          var countryElement = document.getElementById(selectors[idx]);
+          if (countryElement && countryElement.tagName === 'SELECT') {
             var countriesDataSource = new MemoryDataSource(countriesArray);
             var countryModel = (values[idx] == null ? '' : values[idx])
             var selectorModel = new SelectSelector(selectors[idx],
@@ -948,13 +980,25 @@ require(['jquery',
                 ignore: '', // To be able to validate driver date of birth
                 errorClass: 'text-danger',
                 submitHandler: function(form) {
-                    $('#reservation_error').hide();
-                    $('#reservation_error').html('');
-                    controller.sendReservationButtonClick();
+                    console.log('COMPLETE - submit');
+                    if (!model.reservationFormSubmitted) {
+                      model.reservationFormSubmitted = true;
+                      // Disable submit to avoid double click
+                      $('form[name=reservation_form] button[type=submit]').attr('disabled', 'disabled');
+                      // Hide errors
+                      $('#reservation_error').hide();
+                      $('#reservation_error').html('');
+                      controller.sendReservationButtonClick();
+                    }
                     return false;
                 },
 
                 invalidHandler : function (form, validator) {
+                    console.log('COMPLETE - invalidHandler');
+                    // Enable submit again
+                    $('form[name=reservation_form] button[type=submit]').removeAttr('disabled');
+                    model.reservationFormSubmitted = false; 
+                    // Show errors
                     $('#reservation_error').html(i18next.t('complete.reservationForm.errors'));
                     $('#reservation_error').show();
                 },
@@ -1402,10 +1446,6 @@ require(['jquery',
                      configuration: model.configuration,
                      i18next: i18next });
       $('#payment_detail').html(paymentInfo);
-
-      $('#btn_reservation').bind('click', function() {
-         $('form[name=reservation_form]').submit();
-      });
 
       // Choose complete action between different options:
       //  - request reservation

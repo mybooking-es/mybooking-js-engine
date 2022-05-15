@@ -1,14 +1,14 @@
 define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDSelectSelector',
          'commonServices','commonSettings', 'commonTranslations', 'commonLoader','commonUI',
          './../mediator/rentEngineMediator',
-         'i18next', 'moment', 'ysdtemplate', './ProductCalendar',
+         'i18next', 'moment', 'ysdtemplate', './ProductCalendar', 'customCookie',
          'jquery.i18next',
          'jquery.validate', 'jquery.ui', 'jquery.ui.datepicker-es',
          'jquery.ui.datepicker-en', 'jquery.ui.datepicker-ca', 'jquery.ui.datepicker-it',
          'jquery.ui.datepicker.validation'],
          function($, MemoryDataSource, RemoteDataSource, SelectSelector,
                   commonServices, commonSettings, commonTranslations, commonLoader, commonUI, rentEngineMediator,
-                  i18next, moment, tmpl, ProductCalendar) {
+                  i18next, moment, tmpl, ProductCalendar, customCookie) {
 
   /***************************************************************************
    *
@@ -102,7 +102,25 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
     loadSettings: function() {
       commonSettings.loadSettings(function(data){
         productModel.configuration = data;
-        productView.init();
+        // Check duplicated Tab
+        if (productModel.configuration.duplicatedTab) {
+          // Initialize i18next for translations
+          i18next.init({  
+                          lng: document.documentElement.lang,
+                          resources: commonTranslations
+                       }, 
+                       function (error, t) {
+                       });
+          alert(i18next.t('common.duplicateTab'));
+          // Clear the session for this tab so it can start a new process
+          sessionStorage.clear();
+          commonLoader.hide();
+          $('#product_selector').html(i18next.t('common.duplicateTab'));
+        }
+        else {
+          productView.init();
+        }
+        
       }, 'rent', this.code );
     },   
 
@@ -323,10 +341,13 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
       if (commonServices.apiKey && commonServices.apiKey != '') {
         urlParams.push('api_key='+commonServices.apiKey);
       } 
+      // Build URL
       if (urlParams.length > 0) {
         url += '?';
         url += urlParams.join('&');
       }
+
+
       // Request  
       var self = this;
       commonLoader.show();
@@ -402,6 +423,12 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
       if (this.configuration.pickupReturnPlace) {
         data.pickup_place = $(this.pickup_place_selector).val();
         data.return_place = $(this.return_place_selector).val();
+      }
+
+      // Agent (from cookies)
+      var agentId = customCookie.get('__mb_agent_id'); 
+      if (agentId != null) {
+        data.agent_id = agentId; 
       }
 
       // If uses times
