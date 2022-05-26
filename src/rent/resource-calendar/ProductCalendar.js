@@ -205,10 +205,10 @@ define('ProductCalendar', ['jquery', 'YSDEventTarget',
         singleDate = true;
       }
 
-      // Reservation in one day without selector => One month
-      if (!selectDurationScope && durationScope == 'in_one_day') {
+      // Reservation in one day without selector => One month      
+      //if (!selectDurationScope && durationScope == 'in_one_day') {
         singleMonth = true;
-      }
+      //}
 
       console.log('durationScope :' + durationScope);
 
@@ -355,6 +355,44 @@ define('ProductCalendar', ['jquery', 'YSDEventTarget',
       .bind('datepicker-change',function(event,obj) {
         // Avoid trigger the event while updating calendar data
         if (!self.productCalendarModel.updatingData) {
+
+          var dateStr = moment(obj.date2 || obj.date1).format('YYYY-MM-DD');  
+
+          // Check min days (only duration scope days)
+          if (self.productCalendarModel.durationScope == 'days') {
+            var cycleOf24Hours = self.productCalendarModel.configuration.cycleOf24Hours;
+            var d1 = moment(obj.date1);
+            var d2 = moment(obj.date2);
+            var days = d2.diff(d1, 'days');
+            if (!cycleOf24Hours) {
+              days += 1;
+            }
+            if (typeof self.productCalendarModel.availabilityData.min_days[dateStr] !== 'undefined') {
+              var minDays = self.productCalendarModel.availabilityData.min_days[dateStr];
+              if (days < minDays) {
+                event.stopPropagation();
+                // Clear the selection
+                $(self.productCalendarModel.dateSelector).data('dateRangePicker').clear();
+                alert(self.productCalendarModel.i18next.t('chooseProduct.min_duration',{duration: minDays}));
+                return;
+              }
+            }
+          }
+
+          // Check that the day can not end if not available collection hours
+          if (typeof self.productCalendarModel.availabilityData.occupation[dateStr]['during_the_day_periods'] !== 'undefined' &&
+              self.productCalendarModel.availabilityData.occupation[dateStr]['during_the_day_periods'].length > 0 && 
+              typeof self.productCalendarModel.availabilityData.occupation[dateStr]['partial_collection'] !== 'undefined') {
+            if (self.productCalendarModel.availabilityData.occupation[dateStr]['partial_collection'].length == 0) {
+              event.stopPropagation();
+              // Clear the selection
+              $(self.productCalendarModel.dateSelector).data('dateRangePicker').clear();
+              // Shows an message
+              alert(self.productCalendarModel.i18next.t('calendar_selector.collection_not_allowed'));
+              return;
+            }
+          }
+          // Process dates Changed
           self.productCalendarController.datesChanged(obj.date1, obj.date2 || obj.date1);
         }
       });

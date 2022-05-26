@@ -357,9 +357,16 @@ define('commonSettings', ['jquery','commonServices','commonLoader','commonTransl
    * Before unload => Remove mbDuplicatedTab (it is not executed when duplicate tab)
    */ 
   $(window).on('beforeunload', function(){
+    console.log('Clear duplicated tab - beforeunload');
     sessionStorage.removeItem('mbDuplicatedTab');
     mybookingSettings.data.duplicatedTab = false;
   });
+  // ios compatibility
+  $(window).on('pagehide', function(){
+    console.log('Clear duplicated tab - pagehide');
+    sessionStorage.removeItem('mbDuplicatedTab');
+    mybookingSettings.data.duplicatedTab = false;
+  })
 
   return mybookingSettings;
 });

@@ -90,7 +90,7 @@ require(['jquery', 'i18next', 'ysdtemplate', 'YSDMemoryDataSource','YSDSelectSel
                        contentType : 'application/json; charset=utf-8',
                        crossDomain: true,
                        success: function(data, textStatus, jqXHR) {
-
+                         /*
                          if (model.requestLanguage != data.customer_language &&
                              data.customer_language != null &&
                              data.customer_language != '') {
@@ -98,9 +98,10 @@ require(['jquery', 'i18next', 'ysdtemplate', 'YSDMemoryDataSource','YSDSelectSel
                                                   commonServices.orderUrl + '?id=' + data.free_access_id;
                          }
                          else {
+                         */ 
                            model.order = data;
                            view.updateOrder();
-                         }
+                         //}
 
                        },
                        error: function(data, textStatus, jqXHR) {

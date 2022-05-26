@@ -51,6 +51,11 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
     // form selector
     form_selector: 'form[name=search_form]',
     form_selector_tmpl: 'form_calendar_selector_tmpl',
+    
+    // == Rental location selector
+    rental_location_id: 'rental_location',
+    rental_location_selector: '#rental_location',
+    
     // == Pickup / Return place selector
     // pickup place   
     pickup_place_id: 'pickup_place',
@@ -67,12 +72,14 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
     return_place_group_selector: '.return_place_group',   
     custom_return_place_selector: 'input[name=custom_pickup_place]',
     another_return_place_group_selector: '#another_pickup_place_group',
+    
     // == Date selector
     productCalendar: null,
     date_selector: '#date',
     duration_scope_selector: 'form[name=search_form] input[name=duration_scope]',
     // Do not use the selector directly => Use productView.getDurationScopeVal
     duration_scope_selector_val: 'form[name=search_form] input[name=duration_scope]:checked', 
+    
     // == Time From / To selector
     // time from
     time_from_id: 'time_from',
@@ -84,6 +91,7 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
     turn_selector: 'form[name=search_form] input[name=turn]',
     turn_selector_hidden: 'form[name=search_form] input[type=hidden][name=turn]',
     turn_selector_val: 'form[name=search_form] input[name=turn]:checked',
+    
     // == Other fields
     // promotion code    
     promotion_code_selector: '#promotion_code',
@@ -415,6 +423,7 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
       if (this.salesChannelCode != null) {
         data.sales_channel_code = this.salesChannelCode;
       }
+
       if (this.rentalLocationCode != null) {
         data.rental_location_code = this.rentalLocationCode;
         data.engine_fixed_rental_location = ($(this.form_selector).find('input[type=hidden][name=rental_location_code]').length == 0);
@@ -476,6 +485,17 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
    *
    ***************************************************************************/
   var productController = {
+
+    /* --------------- Rental location events ------------------------------ */
+    
+    rentalLocationChanged: function(rentalLocationCode) {
+      console.log('rental location changed : ' + rentalLocationCode);
+
+      productModel.rentalLocationCode = rentalLocationCode;
+
+      productView.updateCalendar();
+
+    },
 
     /* --------------- Pickup / Return places events ----------------------- */
 
@@ -544,6 +564,9 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
           }
         }
 
+        productView.updateCalendar();
+
+/*
        // Enable date
        productModel.productCalendar.enable();
 
@@ -557,6 +580,7 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
        // Load availability
        var dates = productModel.productCalendar.currentCalendarDates();
        productView.checkAvailability(dates.dateFrom, dates.dateTo);
+*/
 
     },
 
@@ -580,9 +604,17 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
 
       console.log('first date selected');
 
+      // Clear selection
       productModel.selectedDateFrom = null;
       productModel.selectedDateTo = null;
+      // Hide reservation detail
       $('#reservation_detail').html('');
+      // Hide hours and tours
+      $('.js-mybooking-product_calendar-time-hours').hide();
+      $('.js-mybooking-product_calendar-time-ranges').hide();
+      // Clear period
+      $('#mb-date-container-header').html('');
+      $('#mb-date-container-header').hide();
 
     },
 
@@ -595,6 +627,19 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
 
         productModel.selectedDateFrom = dateFrom;
         productModel.selectedDateTo = dateTo;    
+
+        // == Show period
+        var dateFromStr = moment(dateFrom).format('DD/MM/YY');
+        var dateToStr = moment(dateTo).format('DD/MM/YY');
+        var dateRange = [];
+        dateRange.push(dateFromStr);
+        if (dateToStr != dateFromStr) {
+          dateRange.push(dateToStr);
+          var dateRangeStr = dateRange.join(' - ');
+          dateRangeStr = '<h2 class="mybooking-product_calendar-date-range">'+dateRangeStr+'</h2>';
+          $('#mb-date-container-header').html(dateRangeStr);
+          $('#mb-date-container-header').show();
+        }
 
         // == Calculate minTimeFrom and maxTimeTo
         if (productModel.availabilityData) {
@@ -652,6 +697,7 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
               }       
               // Load pickup hours
               if (productModel.availabilityData && 
+                  typeof productModel.availabilityData.occupation[dateFromStr] !== 'undefined' &&
                   typeof productModel.availabilityData.occupation[dateFromStr]['partial_delivery'] !== 'undefined' &&
                   productModel.availabilityData.occupation[dateFromStr]['partial_delivery'].length > 0) {
                 productModel.pickupHours = productModel.availabilityData.occupation[dateFromStr]['partial_delivery']; 
@@ -662,9 +708,10 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
               }
               // Load return hours
               if (productModel.availabilityData && 
-                  typeof productModel.availabilityData.occupation[dateFromStr]['partial_collection'] !== 'undefined' &&
-                  productModel.availabilityData.occupation[dateFromStr]['partial_collection'].length > 0) {
-                productModel.returnHours = productModel.availabilityData.occupation[dateFromStr]['partial_collection']; 
+                  typeof productModel.availabilityData.occupation[dateFromStr] !== 'undefined' &&
+                  typeof productModel.availabilityData.occupation[dateToStr]['partial_collection'] !== 'undefined' &&
+                  productModel.availabilityData.occupation[dateToStr]['partial_collection'].length > 0) {
+                productModel.returnHours = productModel.availabilityData.occupation[dateToStr]['partial_collection']; 
                 productView.update('hours', 'time_to');
               } 
               else {
@@ -789,12 +836,21 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
         this.setupValidation();
 
         // Start loading data
+
         if (productModel.configuration.pickupReturnPlace) {
+          // Load pickup places
           this.loadPickupPlaces();   
         }
         else {
-          var dates = productModel.productCalendar.currentCalendarDates();
-          productView.checkAvailability(dates.dateFrom, dates.dateTo);
+          if (this.applyRentalLocationSelector()) {
+            // Load rental locations
+            this.loadRentalLocations();
+          }
+          else {
+            // Check availability => There are not places or branch office
+            var dates = productModel.productCalendar.currentCalendarDates();
+            productView.checkAvailability(dates.dateFrom, dates.dateTo);
+          }
         }
 
     },
@@ -820,14 +876,20 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
 
       // The selector form fields are defined in a micro-template
       if (document.getElementById(productModel.form_selector_tmpl)) {
+        // Check if forced hidden rental_location_code
+        var not_hidden_rental_location_code = ($(productModel.form_selector).find('input[type=hidden][name=rental_location_code]').length == 0);
         // Load the template
-        var html = tmpl(productModel.form_selector_tmpl)({configuration: productModel.configuration});
+        var html = tmpl(productModel.form_selector_tmpl)({configuration: productModel.configuration,
+                                                          not_hidden_rental_location_code: not_hidden_rental_location_code,});
         // Assign to the form
         $(productModel.form_selector).append(html);
       }
 
     },
 
+    /**
+     * Setup controls
+     */  
     setupControls: function() {
 
       // Setup pickup/return places
@@ -1098,6 +1160,16 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
     },
 
 
+    /**
+     *  Check if rental location is not hidden and should apply
+     */ 
+    applyRentalLocationSelector: function() {
+
+      var not_hidden_rental_location_code = ($(productModel.form_selector).find('input[type=hidden][name=rental_location_code]').length == 0);
+      return (not_hidden_rental_location_code && productModel.configuration.selectRentalLocation);
+
+    },
+
     // ------------------------------------------------------------------------
 
     /**
@@ -1164,9 +1236,33 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
 
     },
 
+    /**
+     * Load Day occupation
+     */ 
     loadDayOccupation: function() { /** Load day occupation **/
       var date = moment(productModel.selectedDateFrom).format('YYYY-MM-DD'); 
       productModel.checkDayOccupation(date, 'inpage');
+    },
+
+    /**
+     * Update calendar
+     */ 
+    updateCalendar: function() { 
+
+       // Enable date
+       productModel.productCalendar.enable();
+
+       // Initialize date, time from, return place and time to
+       productModel.productCalendar.clear();
+       if (productModel.configuration.timeToFrom) {
+         $(productModel.time_from_selector).val('');
+         $(productModel.time_to_selector).val('');
+       }
+
+       // Load availability
+       var dates = productModel.productCalendar.currentCalendarDates();
+       productView.checkAvailability(dates.dateFrom, dates.dateTo);
+
     },
 
     /*
@@ -1191,6 +1287,40 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
     loadTurns: function() {
       var date = moment(productModel.selectedDateFrom).format('YYYY-MM-DD');
       productModel.loadTurns(date);
+    },
+
+    /**
+     * Load rental locations
+     */
+    loadRentalLocations: function() {
+
+        // Setup the event
+        $(productModel.rental_location_selector).on('change', function() {
+           productController.rentalLocationChanged($(this).val());
+        });
+
+        // Build URL
+        var url = commonServices.URL_PREFIX + '/api/booking/frontend/rental-locations';
+        var urlParams = [];
+        if (productModel.requestLanguage != null) {
+          urlParams.push('lang='+productModel.requestLanguage);
+        }
+        if (commonServices.apiKey && commonServices.apiKey != '') {
+          urlParams.push('api_key='+commonServices.apiKey);
+        }    
+        if (urlParams.length > 0) {
+          url += '?';
+          url += urlParams.join('&');
+        }
+        // DataSource
+        productModel.dataSourcePickupPlaces = new RemoteDataSource(url,
+                                                          {'id':'code',
+                                                           'description':'name'
+                                                          });
+        var self = this;
+        var rentalLocation = new SelectSelector(productModel.rental_location_id, 
+                                                productModel.dataSourcePickupPlaces, null, true, i18next.t('selector.select'));
+        
     },
 
     /**

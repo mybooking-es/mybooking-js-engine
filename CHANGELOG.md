@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.8]
+
+### Added
+
+- Renting Product Calendar: Rental Location selector
+- Renting Product Calendar: Show selected period
+- Renting Product Calendar: Show only 1 month
+
 ## [1.0.7]
 
 ### Added
