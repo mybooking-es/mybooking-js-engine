@@ -725,10 +725,7 @@ require(['jquery',
             commonUI.showModal('#modalExtraDetail');
           }
         });
-        // Signup form
-        var htmlSignup = tmpl('script_create_account');
-        $('#payment_detail').before(htmlSignup);
-        //
+        // Prepare login
         this.login = new Login();
         // Setup event listener
         this.login.model.addListener('login', function(event) {
@@ -783,33 +780,47 @@ require(['jquery',
             $('#extras_listing').show();
             $('.reservation_form_container').show();            
           }
-        });
-        // Setup create account components
-        this.setupCreateAccountComponents();        
+        });    
       }
 
     },
+
     /**
-     * Setup create account components
-     */
-    setupCreateAccountComponents: function() {
-      $('input[name=create_customer_account]').on('change', function(){
-        if ($(this).val() === 'true') {
-          $('.mybooking_rent_create_account_fields_container').show();
-        }
-        else {
-          $('.mybooking_rent_create_account_fields_container').hide();
-        }
-      });
+     * Setup signup form
+     */ 
+    setupSignupForm: function() {
+
+      var self = this;
+      if (document.getElementById('script_create_account')) {
+        // Signup form
+        var htmlSignup = tmpl('script_create_account');
+        $('#payment_detail').before(htmlSignup);
+        // Setup create account components
+        $('input[name=create_customer_account]').on('change', function(){
+          if ($(this).val() === 'true') {
+            $('.mybooking_rent_create_account_fields_container').show();
+          }
+          else {
+            $('.mybooking_rent_create_account_fields_container').hide();
+          }
+        });      
+      }
+
     },
 
-
+    /**
+     * Prepare reservation form
+     */ 
     prepareReservationForm: function() {
         // Setup UI
         this.setupReservationForm();
         $('.complete-section-title.customer_component').show();
         $('#form-reservation').show();
         this.setupReservationFormValidation();
+        // Setup signup form
+        if (model.configuration.engineCustomerAccess) {
+          this.setupSignupForm();
+        }
     },
 
     /**

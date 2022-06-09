@@ -25,6 +25,7 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
     maxTimeFrom: null, // Max time to
     code: null, // Product code
     salesChannelCode: null, // Sales channel code
+    fixedRentalLocationCode: false, // Fixed rental location by attr
     rentalLocationCode: null, // Rental location code
     checkHourlyOccupation: false, // Check hourly occupation
     pickupPlace: null, // Selected pickup/place
@@ -804,6 +805,9 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
         }
         if (typeof rentalLocationCodeAttr !== 'undefined') {
           productModel.rentalLocationCode = $('#product_selector').attr('data-rental-location-code');
+          if (productModel.rentalLocationCode != '') {
+            productModel.fixedRentalLocationCode = true;
+          }
         }
         var checkHourlyOccupationAttr = $('#product_selector').attr('data-check-hourly-occupation');
         if (typeof checkHourlyOccupationAttr !== 'undefined') {
@@ -877,7 +881,7 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
       // The selector form fields are defined in a micro-template
       if (document.getElementById(productModel.form_selector_tmpl)) {
         // Check if forced hidden rental_location_code
-        var not_hidden_rental_location_code = ($(productModel.form_selector).find('input[type=hidden][name=rental_location_code]').length == 0);
+        var not_hidden_rental_location_code = !productModel.fixedRentalLocationCode;
         // Load the template
         var html = tmpl(productModel.form_selector_tmpl)({configuration: productModel.configuration,
                                                           not_hidden_rental_location_code: not_hidden_rental_location_code,});
@@ -1165,7 +1169,7 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
      */ 
     applyRentalLocationSelector: function() {
 
-      var not_hidden_rental_location_code = ($(productModel.form_selector).find('input[type=hidden][name=rental_location_code]').length == 0);
+      var not_hidden_rental_location_code = !productModel.fixedRentalLocationCode;
       return (not_hidden_rental_location_code && productModel.configuration.selectRentalLocation);
 
     },

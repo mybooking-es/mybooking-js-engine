@@ -1,12 +1,12 @@
 require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelector', 'select2',
-         'commonServices', 'commonSettings', 'commonTranslations', 'commonLoader',  
+         'commonServices', 'commonSettings', 'commonTranslations', 'commonLoader', 'commonUI',  
          './mediator/rentEngineMediator',
          'i18next','ysdtemplate', 'YSDDateControl', 'moment',
          'jquery.i18next',   
          'jquery.validate', 'jquery.ui', 'jquery.form'],
     function($, RemoteDataSource, MemoryDataSource, SelectSelector, select2,
-             commonServices, commonSettings, commonTranslations, commonLoader, rentEngineMediator,
-             i18next, tmpl, DateControl, moment) {
+             commonServices, commonSettings, commonTranslations, commonLoader, commonUI,
+             rentEngineMediator, i18next, tmpl, DateControl, moment) {
 
   var model = { // THE MODEL
     requestLanguage: null,
@@ -152,6 +152,10 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
             contentType : 'application/json; charset=utf-8',
             crossDomain: true,
             success: function(data, textStatus, jqXHR) {
+                // Update reservation
+                if (typeof data.booking !== 'undefined') {
+                  model.booking = data.booking;
+                }
                 alert(i18next.t('myReservation.updateReservation.success'));
             },
             error: function(data, textStatus, jqXHR) {
@@ -164,8 +168,41 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
   };
 
   var controller = { // THE CONTROLLER
+
+    /**
+     * Update click
+     */ 
     btnUpdateClick: function() {
        model.update();
+    },
+    
+    /**
+     * Electronic signature link click
+     */ 
+    electronicSignatureLinkClick: function(){
+      if (model.booking && typeof model.booking.required_data_completed !== 'undefined') {
+
+        if (model.booking.required_data_completed) {
+          window.open(model.booking.electronic_signature_url, '_blank');
+        }
+        else {
+          var html = tmpl('script_contract_required_data')(
+            {contract_errors: model.booking.contract_errors});
+
+          // Compatibility with bootstrap modal replacement (from 1.0.0)
+          if ($('#modalSignatureValidation_MBM').length) {
+            $('#modalSignatureValidation_MBM .mb-modal_title').html('');
+            $('#modalSignatureValidation_MBM .mb-modal_body').html(html);     
+          }
+          else {
+            $('#modalSignatureValidation .modal-title').html('');
+            $('#modalSignatureValidation .modal-body').html(html);
+          }
+          // Show the modal
+          commonUI.showModal('#modalSignatureValidation');
+        }
+
+      }
     }
   };
 
@@ -194,6 +231,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
       this.updateTitle();
       this.updateBookingSummary();
       this.setupReservationForm();
+      this.setupEvents();
       commonLoader.hide();
 
     },
@@ -382,6 +420,15 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
       );
 
 
+    },
+
+    setupEvents: function() {
+      // Electronic signature
+      if ($('#js_mb_electronic_signature_link').length) {
+        $('#js_mb_electronic_signature_link').on('click', function(){
+          controller.electronicSignatureLinkClick();
+        });
+      }
     },
 
     setupPaymentFormValidation: function() {
