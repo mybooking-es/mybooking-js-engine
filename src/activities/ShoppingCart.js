@@ -460,8 +460,12 @@ require(['jquery','i18next', 'ysdtemplate',
               $('#reservation_container').html(customerForm);
 
               // Configure Telephone with prefix
-              var countryCode = commonUI.intlTelInputCountryCode();
-
+              //var countryCode = commonUI.intlTelInputCountryCode();
+              var countryCode = model.configuration.countryCode;
+              if (typeof countryCode === 'undefined' || countryCode == null) {
+                countryCode = commonUI.intlTelInputCountryCode(); 
+              }
+      
               if ($('#customer_phone').length) {
                 $("#customer_phone").intlTelInput({
                   initialCountry: countryCode,

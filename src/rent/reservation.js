@@ -155,6 +155,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
                 // Update reservation
                 if (typeof data.booking !== 'undefined') {
                   model.booking = data.booking;
+                  view.updateBooking();
                 }
                 alert(i18next.t('myReservation.updateReservation.success'));
             },

@@ -17,6 +17,7 @@ define('commonSettings', ['jquery','commonServices','commonLoader','commonTransl
       serverTime: null,
       // Company
       timezone  : null,
+      countryCode: null,
       currency: null,
       currencyDecimals: null,
       currencyDecimalsMark: null,
@@ -61,6 +62,8 @@ define('commonSettings', ['jquery','commonServices','commonLoader','commonTransl
       rentingFormFillDataNamedResources: false,
       rentingFormFillDataNamedResourcesHeight: false,
       rentingFormFillDataNamedResourcesWeight: false,
+      rentingFormFillDataAdditionalDriver1: false,
+      rentingFormFillDataAdditionalDriver2: false,      
       hidePriceIfZero: false,
       useCustomerClassifier: false,
       // - Product Calendar
@@ -179,6 +182,7 @@ define('commonSettings', ['jquery','commonServices','commonLoader','commonTransl
              mybookingSettings.data.serverDate = data.server_date;
              mybookingSettings.data.serverTime = data.server_time;
              // Company information
+             mybookingSettings.data.countryCode = data.country_code;
              mybookingSettings.data.timezone = data.timezone;
              mybookingSettings.data.currency = data.currency;
              mybookingSettings.data.currencyDecimals = data.currency_decimals;
@@ -232,12 +236,14 @@ define('commonSettings', ['jquery','commonServices','commonLoader','commonTransl
              mybookingSettings.data.rentingProductOneJournal = data.renting_product_one_journal;
              mybookingSettings.data.rentingProductMultipleJournals = data.renting_product_multiple_journals;
              // - Renting fill data
-             mybookingSettings.data.rentingFormFillDataAddress = data.renting_form_fill_data_address || false;
+             mybookingSettings.data.rentingFormFillDataAddress = data.renting_form_fill_data_address || false;
              mybookingSettings.data.rentingFormFillDataDriverDetail = data.renting_form_fill_data_driver_detail || false;
-             mybookingSettings.data.rentingFromFillDataFlight = data.renting_form_fill_data_flight || false;
+             mybookingSettings.data.rentingFromFillDataFlight = data.renting_form_fill_data_flight || false;
              mybookingSettings.data.rentingFormFillDataNamedResources = data.renting_form_fill_data_named_resources || false;
              mybookingSettings.data.rentingFormFillDataNamedResourcesHeight = data.renting_form_fill_data_named_resources_height || false;
-             mybookingSettings.data.rentingFormFillDataNamedResourcesWeight = data.renting_form_fill_data_named_resources_weight || false;
+             mybookingSettings.data.rentingFormFillDataNamedResourcesWeight = data.renting_form_fill_data_named_resources_weight || false;
+             mybookingSettings.data.rentingFormFillDataAdditionalDriver1 = data.renting_form_fill_data_additional_driver_1 || false;
+             mybookingSettings.data.rentingFormFillDataAdditionalDriver2 = data.renting_form_fill_data_additional_driver_2 || false;     
              // - Hide price if zero
              mybookingSettings.data.hidePriceIfZero = data.hide_price_if_zero || false;
              // - Use customer classifier

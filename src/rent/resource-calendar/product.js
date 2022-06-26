@@ -567,22 +567,6 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
 
         productView.updateCalendar();
 
-/*
-       // Enable date
-       productModel.productCalendar.enable();
-
-       // Initialize date, time from, return place and time to
-       productModel.productCalendar.clear();
-       if (productModel.configuration.timeToFrom) {
-         $(productModel.time_from_selector).val('');
-         $(productModel.time_to_selector).val('');
-       }
-
-       // Load availability
-       var dates = productModel.productCalendar.currentCalendarDates();
-       productView.checkAvailability(dates.dateFrom, dates.dateTo);
-*/
-
     },
 
     /* -------------------- Dates events ------------------------------------*/
@@ -1312,6 +1296,9 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
         if (commonServices.apiKey && commonServices.apiKey != '') {
           urlParams.push('api_key='+commonServices.apiKey);
         }    
+        // Filter by product
+        urlParams.push('product='+productModel.code);
+
         if (urlParams.length > 0) {
           url += '?';
           url += urlParams.join('&');

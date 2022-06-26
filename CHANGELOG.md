@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.0.9]
+
+### Added
+
+- Additional driver 1 and 2 information on my reservation
+
+### Fixed
+
+- Rent Product Calendar: Filter rental location by product
+- Complete : Use mybooking company country code for phone numbers
+
 ## [1.0.8]
 
 ### Added
