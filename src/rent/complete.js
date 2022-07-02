@@ -1072,6 +1072,12 @@ require(['jquery',
                         required: '#account_password:visible',
                         pwcheck: '#account_password:visible',
                         minlength: 8
+                    },
+                    'slot_time_from': {
+                        required: '#slot_time_from:visible'
+                    },
+                    'with_optional_external_driver': {
+                        required: '#with_optional_external_driver:visible'
                     }
                 },
 
@@ -1143,7 +1149,13 @@ require(['jquery',
                         'required': i18next.t('complete.reservationForm.validations.fieldRequired'),
                         'pwcheck': i18next.t('complete.reservationForm.validations.passwordCheck'),
                         'minlength': i18next.t('complete.reservationForm.validations.minLength', {minlength: 8}),
-                    },                     
+                    },
+                    'slot_time_from': {
+                        required: i18next.t('complete.reservationForm.validations.fieldRequired')
+                    },
+                    'with_optional_external_driver': {
+                        required: i18next.t('complete.reservationForm.validations.fieldRequired')
+                    }                     
 
                 },
 
@@ -1161,6 +1173,14 @@ require(['jquery',
                     else if (element.attr('name') == 'customer_classifier_id' && 
                              $('#customer_classifier_id + span.select2-container').length) {
                         error.insertAfter('#customer_classifier_id + span.select2-container');
+                    }
+                    else if (element.attr('name') == 'slot_time_from' && 
+                             $('#slot_time_from + span.select2-container').length) {
+                        error.insertAfter('#slot_time_from + span.select2-container');
+                    }
+                    else if (element.attr('name') == 'with_optional_external_driver' && 
+                             $('#with_optional_external_driver + span.select2-container').length) {
+                        error.insertAfter('#with_optional_external_driver + span.select2-container');
                     }
                     else
                     {
@@ -1186,6 +1206,87 @@ require(['jquery',
            controller.applyPromotionCodeBtnClick($('#promotion_code').val());
         });
       }
+
+    },
+
+    /**
+     * Setup optional external driver
+     */ 
+    setupOptionalExternalDriver: function() {
+      $('.js-mb-delivery-slot-skipper-container').show();
+      $('.js-mb-optional-external-driver').show();
+      $('form[name=reservation_form] select[name=with_optional_external_driver]').select2({
+        placeholder: i18next.t('common.selectOption'),
+        allowClear: true,
+        width: '100%',
+        theme: 'bootstrap4'
+      });
+
+    },
+
+    /**
+     * Delivery slots
+     */ 
+    setupDeliverySlots: function() {
+
+      $('.js-mb-delivery-slot-skipper-container').show();
+      $('.js-mb-delivery-slot').show();
+
+      // Prepare hours available End Point call
+      var url = commonServices.URL_PREFIX + '/api/booking/frontend/delivery-slots/hours-available';
+      var urlParams = []
+      if (commonServices.apiKey && commonServices.apiKey != '') {
+        urlParams.push('api_key='+commonServices.apiKey);
+      }  
+      if (model.requestLanguage != null) {
+        urlParams.push('lang='+model.requestLanguage);
+      }
+      if (model.shopping_cart) {
+        urlParams.push('date='+moment(model.shopping_cart.date_from).format('YYYY-MM-DD'));
+        urlParams.push('time='+model.shopping_cart.time_from); 
+        if (model.shopping_cart.date_from === model.shopping_cart.date_to) {
+          urlParams.push('minutes_duration='+model.shopping_cart.total_minutes);
+        }
+        if (model.shopping_cart.items && model.shopping_cart.items.length === 1) {
+          var product = model.shopping_cart.items[0].item_id;
+          urlParams.push('product='+product);
+        }
+        else {
+          if (model.configuration.pickupReturnPlace) {
+            if (model.shopping_cart.pickup_place && model.shopping_cart.pickup_place !== '') {
+              urlParams.push('place='+model.shopping_cart.pickup_place);
+            }
+          }
+          else if (model.shopping_cart.rental_location_code && model.shopping_cart.rental_location_code !== '') {
+            urlParams.push('rental_location_code='+model.shopping_cart.rental_location_code);
+          }
+        }
+      }
+      if (urlParams.length > 0) {
+        url += '?';
+        url += urlParams.join('&');
+      }
+      // Setup select2 component
+      $('form[name=reservation_form] select[name=slot_time_from]').select2({ width: '100%',
+              ajax: {
+                placeholder: i18next.t('common.selectOption'),
+                allowClear: true,
+                url: url,
+                theme: 'bootstrap4',
+                processResults: function(data) {
+                  var transformedData = [];
+                  for (var idx=0; idx<data.length; idx++) {
+                    var element = {
+                      'text': data[idx].text,
+                      'id': data[idx].value
+                    }
+                    transformedData.push(element);
+                  }
+                  return {results: transformedData};
+                },
+
+              }
+            });
 
     },
 
@@ -1244,7 +1345,14 @@ require(['jquery',
       if (model.configuration.promotionCode) {
         this.setupPromotionCode();
       }
-
+      // Setup slot
+      if (model.configuration.deliverySlots) {
+        this.setupDeliverySlots();
+      }
+      // External driver (skipper)
+      if (model.configuration.optionalExternalDriver) {
+        this.setupOptionalExternalDriver();
+      }
 
     },
 

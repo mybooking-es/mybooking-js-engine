@@ -188,7 +188,6 @@ define('ProductCalendar', ['jquery', 'YSDEventTarget',
       this.productCalendarModel.i18next = i18next;
       this.productCalendarModel.configuration = configuration;
       this.productCalendarModel.availabilityData = availabilityData;
-      this.productCalendarModel.availabilityData = availabilityData;
       this.productCalendarModel.checkHourlyOccupation = checkHourlyOccupation;
       var today = moment().format('YYYY-MM-DD');
 
@@ -243,12 +242,23 @@ define('ProductCalendar', ['jquery', 'YSDEventTarget',
             // Check the availability
             if (self.productCalendarModel.availabilityData) {
               // Day is not selectable [calendar]
-              if (self.productCalendarModel.availabilityData['occupation'][theDate] && !self.productCalendarModel.availabilityData['occupation'][theDate].selectable_day) {
+              if (self.productCalendarModel.availabilityData['occupation'][theDate] && 
+                !self.productCalendarModel.availabilityData['occupation'][theDate].selectable_day) {
                 return [true, 'not-selectable-day']; // The reservation can not start or end on the date 
               }    
               // Product is not available [rent]
-              else if (self.productCalendarModel.availabilityData['occupation'][theDate] && !self.productCalendarModel.availabilityData['occupation'][theDate].free) {
-                return [false, 'busy-data bg-danger'];
+              else if (self.productCalendarModel.availabilityData['occupation'][theDate] && 
+                !self.productCalendarModel.availabilityData['occupation'][theDate].free) {
+                return [false, 'busy-data bg-danger']; // Busy
+              }
+              // Check hourly occupation
+              else if (self.productCalendarModel.checkHourlyOccupation) {
+                if (self.productCalendarModel.availabilityData && self.productCalendarModel.availabilityData['occupation'][theDate] && 
+                  self.productCalendarModel.availabilityData['occupation'][theDate].selectable_day &&
+                  typeof self.productCalendarModel.availabilityData.occupation[theDate]['during_the_day_periods'] !== 'undefined' &&
+                  self.productCalendarModel.availabilityData.occupation[theDate]['during_the_day_periods'].length > 0) {
+                  return [true, 'bg-warning']; // Reservations in the period
+                }
               }
               // If a reservation starts/end the the date [info message]
               if (self.productCalendarModel.availabilityData['occupation'][theDate]) {
@@ -309,7 +319,10 @@ define('ProductCalendar', ['jquery', 'YSDEventTarget',
             if (self.productCalendarModel.checkHourlyOccupation) {
               if (self.productCalendarModel.availabilityData && self.productCalendarModel.availabilityData['occupation'][dateStr] && 
                   self.productCalendarModel.availabilityData['occupation'][dateStr].selectable_day &&
-                  self.productCalendarModel.availabilityData['occupation'][dateStr].warning_occupied) {
+                  typeof self.productCalendarModel.availabilityData.occupation[dateStr]['during_the_day_periods'] !== 'undefined' &&
+                  self.productCalendarModel.availabilityData.occupation[dateStr]['during_the_day_periods'].length > 0 && 
+                  typeof self.productCalendarModel.availabilityData.occupation[dateStr]['free'] !== 'undefined' &&
+                  self.productCalendarModel.availabilityData.occupation[dateStr]['free']) {
                 renderCheckHourlyOccupation = "<div class=\"mybooking-product_calendar-check-hourly-container\">"+
                                             "<button class=\"mb-button mybooking-product_calendar-check-hourly\" data-date=\""+
                                             dateStr+"\" type=\"button\"><span class='dashicons dashicons-clock'></span></button></div>";
@@ -490,6 +503,17 @@ define('ProductCalendar', ['jquery', 'YSDEventTarget',
       // Activate the control
       $('#date-container').removeClass('disabled-picker');
 
+      // Setup the check hourly event
+      this.setupCheckHourlyEvent();
+
+
+    },
+
+    /**
+     * Setup check hourly event
+     */ 
+    this.setupCheckHourlyEvent = function() {
+
       // Setup check hourly
       if (this.productCalendarModel.checkHourlyOccupation) {
         var self = this;
@@ -500,7 +524,7 @@ define('ProductCalendar', ['jquery', 'YSDEventTarget',
           // Process the button click to show the occupation
           self.productCalendarController.checkHourlyOccupationButtonClick($(this).attr('data-date'));
         });
-      }     
+      }    
 
     }
 
@@ -515,6 +539,19 @@ define('ProductCalendar', ['jquery', 'YSDEventTarget',
     this.controller.setProductCalendarView(this.view);
     this.controller.setProductCalendarModel(this.model);
     this.model.setProductCalendarView(this.view);
+
+    /**
+     * set selected dates
+     */ 
+    this.setSelectedDates = function(dateFrom, dateTo) {
+
+      // Set the period
+      $(this.model.dateSelector).data('dateRangePicker').setDateRange(dateFrom, dateTo);
+      
+      // Setup hourly event
+      this.view.setupCheckHourlyEvent();
+
+    }
 
     /**
      * Current Calendar Dates

@@ -452,7 +452,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
                  model.shopping_cart = data.shopping_cart;
                  commonLoader.hide();
                  if (!model.sales_process.multiple_products) {
-                    view.gotoNextStep();
+                    view.gotoNextStep(productCode);
                  }
                },
                error: function(data, textStatus, jqXHR) {
@@ -832,18 +832,49 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
     /**
      * Go to the next step
      */
-    gotoNextStep: function() {
+    gotoNextStep: function(productCode) {
 
       // Notify the event
       var event = {type: 'productChoosen',
                    data: model.shopping_cart};
       rentEngineMediator.notifyEvent(event);
 
+      // Go to product detail page
+      if (!model.sales_process.multiple_products) { 
+        // Single product detail page
+        if (typeof productCode !== 'undefined' && 
+            $('#product_listing').length && 
+            $('#product_listing').attr('data-use-renting-detail-page') === 'true') {
+          var product = model.products.find(product => product.code === productCode);
+          if (product) {
+            if (typeof product.external_detail_url !== 'undefined' && product.external_detail_url &&
+                product.external_detail_url !== '') {
+              // Detail page defined in external detail URL
+              window.location.href = product.external_detail_url;
+              return;
+            }
+            else if (commonServices.rentingDetailPageUrlPrefix !== '') {
+              // Virtual detail page
+              var url = commonServices.siteURL;
+              url += '/';
+              url += commonServices.rentingDetailPageUrlPrefix;
+              url += '/';
+              url += productCode;
+              window.location.href = url;
+              return;
+            }
+          }
+        }
+      }
+
       // Go to next step
+
       if (commonServices.extrasStep) {
+        // Go to extras page
         window.location.href= commonServices.chooseExtrasUrl;
       }
       else {
+        // Go to complete page
         window.location.href= commonServices.completeUrl;
       }
 

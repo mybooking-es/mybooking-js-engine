@@ -20,6 +20,15 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
     requestLanguage: null, // Request language
     configuration: null, // The platform configuration
 
+    preselectedData: false,
+    preselectedPickupPlace: null,
+    preselectedReturnPlace: null,
+    preselectedRentalLocation: null,
+    preselectedDateFrom: null,
+    preselectedDateTo: null,
+    preselectedTimeFrom: null,
+    preselectedTimeTo: null,
+
     today: null,       // Today (to manage the calendar)
     minTimeFrom: null, // Min time from
     maxTimeFrom: null, // Max time to
@@ -127,18 +136,111 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
           $('#product_selector').html(i18next.t('common.duplicateTab'));
         }
         else {
-          productView.init();
+          var freeAccessId = productModel.getShoppingCartFreeAccessId();
+          if (typeof freeAccessId !== 'undefined' && freeAccessId && freeAccessId !== '') {
+            // If does exists a shopping cart, load it
+            productModel.loadShoppingCart();
+          }
+          else {
+            // Regular behaviour : Init product view
+            commonLoader.hide();            
+            productView.init();
+          }
         }
         
       }, 'rent', this.code );
     },   
+
+    // -------------- Load Shopping Cart -----------------------
+
+    /**
+     * Load the shopping cart
+     */ 
+    loadShoppingCart: function() { 
+
+       console.log('Load shopping cart');
+       // Build the URL
+       var url = commonServices.URL_PREFIX + '/api/booking/frontend/shopping-cart';
+       var freeAccessId = this.getShoppingCartFreeAccessId();
+       if (freeAccessId) {
+         url += '/' + freeAccessId;
+       }
+       var urlParams = [];
+       urlParams.push('include_extras=false');
+       urlParams.push('include_coverage=false');
+
+       var requestLanguage = commonSettings.language(document.documentElement.lang);
+       if (requestLanguage != null) {
+        urlParams.push('lang='+requestLanguage);
+       }
+       if (commonServices.apiKey && commonServices.apiKey != '') {
+         urlParams.push('api_key='+commonServices.apiKey);
+       }        
+       if (urlParams.length > 0) {
+         url += '?';
+         url += urlParams.join('&');
+       }
+       // Action to the URL
+       $.ajax({
+               type: 'GET',
+               url : url,
+               dataType : 'json',
+               contentType : 'application/json; charset=utf-8',
+               crossDomain: true,
+               success: function(data, textStatus, jqXHR) {
+                 // If the shopping cart contains the product (hold it)
+                 if (data.shopping_cart && data.shopping_cart.items && data.shopping_cart.items.length === 1) {
+                   var productCode = $('#product_selector').attr('data-code');
+                   // If shopping cart items contains the current product => Hold it to 
+                   // automatically make the selection
+                   product = data.shopping_cart.items.find(item => item.item_id === productCode);
+                   if (product) {
+                     productModel.preselectedData = true;
+                     productModel.preselectedPickupPlace = data.shopping_cart.pickup_place;
+                     productModel.preselectedReturnPlace = data.shopping_cart.return_place;
+                     productModel.preselectedRentalLocation = data.shopping_cart.rental_location_code;
+                     productModel.preselectedDateFrom = data.shopping_cart.date_from;
+                     productModel.preselectedDateTo = data.shopping_cart.date_to;
+                     productModel.preselectedTimeFrom = data.shopping_cart.time_from;
+                     productModel.preselectedTimeTo = data.shopping_cart.time_to;
+                     productModel.shopping_cart = data.shopping_cart;
+                   }
+                 }
+                 // Hide the loader
+                 commonLoader.hide();                 
+                 // Init the component
+                 productView.init();
+               },
+               error: function(data, textStatus, jqXHR) {
+                 commonLoader.hide();
+                 // If the shopping cart can not be loaded => Start the process
+                 sessionStorage.removeItem('shopping_cart_free_access_id');
+                 // Hide the loader
+                 commonLoader.hide();                 
+                 // Init the component
+                 productView.init();                 
+               },
+               complete: function(jqXHR, textStatus) {
+                 $('#content').show();
+                 $('#sidebar').show();
+               }
+          });
+
+    },
+
+    /**
+     * Get the shopping cart id from the session storage
+     */  
+    getShoppingCartFreeAccessId: function() { /* Get the shopping cart id */
+      return sessionStorage.getItem('shopping_cart_free_access_id');
+    },
 
     // -------------- Check availability -----------------------
 
     /**
      * Check product availability
      */
-    checkAvailability: function(dateFrom, dateTo) {
+    checkAvailability: function(dateFrom, dateTo, callback) {
 
       var url = commonServices.URL_PREFIX + '/api/booking/frontend/products/' + this.code + '/occupation';
       url += '?from='+dateFrom+'&to='+dateTo;      
@@ -164,10 +266,23 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
         url : url,
         contentType : 'application/json; charset=utf-8',
         success: function(data, textStatus, jqXHR) {
+            // Reset preselected data
+            if (productModel.preselectedData) {
+              productModel.preselectedData = false;
+              productModel.preselectedPickupPlace = null;
+              productModel.preselectedReturnPlace = null;
+              productModel.preselectedRentalLocation = null;
+              productModel.preselectedDateFrom = null;
+              productModel.preselectedDateTo = null;
+            }            
             // Hold the availability data
             productModel.availabilityData = data;
             // Update the calendar
             productModel.productCalendar.view.update(productModel.availabilityData, productView.getDurationScopeVal());
+            // Callback
+            if (callback) {
+              callback();
+            }
         },
         error: function(data, textStatus, jqXHR) {
             alert(i18next.t('selector.error_loading_data'));
@@ -343,7 +458,6 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
         url+= '/'+this.shoppingCartId;
       }
       var urlParams = [];
-      urlParams.push('include_products=true');
       if (this.requestLanguage != null) {
         urlParams.push('lang='+this.requestLanguage);
       }
@@ -689,7 +803,10 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
                 productView.update('hours', 'time_from');
               } 
               else {
-                productView.loadPickupHours();
+                if (productModel.preselectedTimeFrom !== null) {
+                  // Load pickup hours if not preselected time from
+                  productView.loadPickupHours();
+                }
               }
               // Load return hours
               if (productModel.availabilityData && 
@@ -700,12 +817,17 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
                 productView.update('hours', 'time_to');
               } 
               else {
-                productView.loadReturnHours();
+                if (productModel.preselectedTimeTo !== null) {
+                  // Load return times if not preselected time to
+                  productView.loadReturnHours();
+                }
               }          
             }
             else if (productModel.configuration.rentTimesSelector === 'time_range') { // Select date/range
-              // Load turns
-              productView.loadTurns();
+              // Load turns if not preselected time from
+              if (productModel.preselectedTimeFrom !== null) {
+                productView.loadTurns();
+              }
             }
           }
           else {
@@ -826,18 +948,36 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
         // Start loading data
 
         if (productModel.configuration.pickupReturnPlace) {
-          // Load pickup places
+          // Allow to select pickup/return place => Load them
           this.loadPickupPlaces();   
         }
         else {
           if (this.applyRentalLocationSelector()) {
-            // Load rental locations
+            // Allow to select rental locations => Load them
             this.loadRentalLocations();
           }
           else {
-            // Check availability => There are not places or branch office
-            var dates = productModel.productCalendar.currentCalendarDates();
-            productView.checkAvailability(dates.dateFrom, dates.dateTo);
+
+            if (productModel.preselectedData) { 
+              // Preselected data from shopping cart
+              var dateFrom = productModel.preselectedDateFrom;
+              var dateTo = productModel.preselectedDateTo;
+              var startDate = moment(dateFrom).startOf('month').format('YYYY-MM-DD');
+              var endDate = moment(dateFrom).endOf('month').format('YYYY-MM-DD');
+              productView.checkAvailability(startDate, endDate, function(){
+                // Callback to select dates
+                productModel.productCalendar.setSelectedDates(dateFrom, dateTo);
+              });
+            }
+            else {
+              // No preselected data => Load regular
+              var dates = productModel.productCalendar.currentCalendarDates();
+              var dateFrom = dates.dateFrom;
+              var dateTo = dates.dateTo;
+              // Check availability => There are not places or branch office
+              productView.checkAvailability(dateFrom, dateTo);
+            }
+          
           }
         }
 
@@ -925,6 +1065,19 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
      * Setup date control
      */
     setupDateControl: function() {
+
+      // Preselected data => Duration scope  
+      if (productModel.configuration.rentingProductOneJournal && 
+          productModel.configuration.rentingProductMultipleJournals) {
+        if (productModel.preselectedData) { 
+          if (productModel.preselectedDateFrom == productModel.preselectedDateTo) {
+            $(productModel.duration_scope_selector+'[value=in_one_day]').prop('checked', true);
+          }
+          else {
+            $(productModel.duration_scope_selector+'[value=days]').prop('checked', true);
+          }
+        }
+      }
 
       $(productModel.duration_scope_selector).off('change');
       $(productModel.duration_scope_selector).on('change', function(e){
@@ -1218,9 +1371,9 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
     /**
      * Check availability
      */
-    checkAvailability: function(dateFrom, dateTo) {
+    checkAvailability: function(dateFrom, dateTo, callback) {
 
-      productModel.checkAvailability(dateFrom, dateTo);
+      productModel.checkAvailability(dateFrom, dateTo, callback);
 
     },
 
@@ -1248,8 +1401,28 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
        }
 
        // Load availability
-       var dates = productModel.productCalendar.currentCalendarDates();
-       productView.checkAvailability(dates.dateFrom, dates.dateTo);
+       var dateFrom = dateTo = null;
+
+       if (productModel.preselectedData) { 
+         // Preselected data from shopping cart
+         var dFrom = productModel.preselectedDateFrom;
+         var dTo = productModel.preselectedDateTo;
+         dateFrom = moment(productModel.preselectedDateFrom).startOf('month').format('YYYY-MM-DD');
+         dateTo = moment(productModel.preselectedDateTo).endOf('month').format('YYYY-MM-DD');
+         productView.checkAvailability(dateFrom, dateTo, function(){
+                // Callback to select dates
+                productModel.productCalendar.setSelectedDates(dFrom, 
+                                                              dTo);
+              });
+       }
+       else {
+         var dates = productModel.productCalendar.currentCalendarDates();
+         dateFrom = dates.dateFrom;
+         dateTo = dates.dateTo;
+         productView.checkAvailability(dateFrom, dateTo);
+       }
+
+       
 
     },
 
@@ -1310,7 +1483,18 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
                                                           });
         var self = this;
         var rentalLocation = new SelectSelector(productModel.rental_location_id, 
-                                                productModel.dataSourcePickupPlaces, null, true, i18next.t('selector.select'));
+                                                productModel.dataSourcePickupPlaces, 
+                                                null, 
+                                                true, 
+                                                i18next.t('selector.select'), function(){
+
+                                    // If preselected data => Select it
+                                    if (productModel.preselectedData && productModel.preselectedRentalLocation !== null) {
+                                      $(productModel.rental_location_selector).val(productModel.preselectedRentalLocation);
+                                      $(productModel.rental_location_selector).trigger('change');
+                                    }
+
+                                 });
         
     },
 
@@ -1357,7 +1541,10 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
                                                            }});
         var self = this;
         var pickupPlace = new SelectSelector(productModel.pickup_place_id, 
-            productModel.dataSourcePickupPlaces, null, true, i18next.t('selector.select_pickup_place'),
+                                             productModel.dataSourcePickupPlaces, 
+                                             null, 
+                                             true, 
+                                             i18next.t('selector.select_pickup_place'),
                 function() {
                   // Add other place option to the pickup places if the configuration accept custom places
                   if (productModel.configuration.customPickupReturnPlaces) {
@@ -1381,6 +1568,11 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
                               text: i18next.t('selector.another_place')
                           }));
                       }
+                  }
+                  // If preselected data => Select it
+                  if (productModel.preselectedData && productModel.preselectedPickupPlace !== null) {
+                    $(productModel.pickup_place_selector).val(productModel.preselectedPickupPlace);
+                    $(productModel.pickup_place_selector).trigger('change');
                   }
                   
                 } );
@@ -1437,7 +1629,10 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
 
         var self = this;
         var returnPlace = new SelectSelector(productModel.return_place_id, 
-            productModel.dataSourceReturnPlaces, null, true, i18next.t('selector.select_return_place'),
+                                             productModel.dataSourceReturnPlaces, 
+                                             null, 
+                                             true, 
+                                             i18next.t('selector.select_return_place'),
                 function() {
                   // Add other place option to the pickup places if the configuration accept custom places
                   if (productModel.configuration.customPickupReturnPlaces) {
@@ -1464,8 +1659,16 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
                   }
 
                   // Initialize
-                  $(productModel.return_place_selector).val($(productModel.pickup_place_selector).val());
-                  $(productModel.return_place_selector).trigger('change');
+                  if (productModel.preselectedData && productModel.preselectedPickupPlace !== null) {
+                    // If preselected data => Select it
+                    $(productModel.return_place_selector).val(productModel.preselectedReturnPlace);
+                    $(productModel.return_place_selector).trigger('change');
+                  }
+                  else {
+                    $(productModel.return_place_selector).val($(productModel.pickup_place_selector).val());
+                    $(productModel.return_place_selector).trigger('change');
+                  }
+
                 } );
 
 
@@ -1490,7 +1693,11 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
         case 'hours':
           if (id == 'time_from') {
             var dataSource = new MemoryDataSource(productModel.pickupHours);
-            var timeFrom = null;      
+            var timeFrom = null;
+            if (productModel.preselectedTimeFrom) {
+              timeFrom = productModel.preselectedTimeFrom;
+              productModel.preselectedTimeFrom = null;
+            }      
             var pickupTime = new SelectSelector(productModel.time_from_id,
                 dataSource, timeFrom, true, 'hh:mm',
                 function() {
@@ -1502,11 +1709,18 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
           else if (id == 'time_to') {
             var dataSource = new MemoryDataSource(productModel.returnHours);
             var timeTo =  null;
+            if (productModel.preselectedTimeTo) {
+              timeTo = productModel.preselectedTimeTo;
+              productModel.preselectedTimeTo = null;
+            }
             var pickupTime = new SelectSelector(productModel.time_to_id,
                 dataSource, timeTo, true, 'hh:mm',
                 function() {
                     if (timeTo != null) {
                       $(productModel.time_to_selector).val(timeTo);
+                      // Show the summary (because it is preloaded)
+                      productModel.product_available = true;
+                      productView.update('shopping_cart');
                     }
                 } );
           }
@@ -1514,7 +1728,7 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
           $('.js-mybooking-product_calendar-time-hours').show();
           // Scroll the time ranges container
           $('html, body').animate({
-                  scrollTop: $(".js-mybooking-product_calendar-time-hours").offset().top
+                  scrollTop: $(".js-mybooking-product_calendar-time-hours").offset().top - 100
           }, 2000);          
           break;
         case 'turns':
@@ -1539,8 +1753,23 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
             $('.js-mybooking-product_calendar-time-ranges').show();
             // Scroll the time ranges container
             $('html, body').animate({
-                  scrollTop: $(".js-mybooking-product_calendar-time-ranges").offset().top
+                  scrollTop: $(".js-mybooking-product_calendar-time-ranges").offset().top - 100
             }, 2000);
+            // Pre selection
+            if (productModel.preselectedTimeFrom && productModel.preselectedTimeFrom !== '' &&
+                productModel.preselectedTimeTo && productModel.preselectedTimeTo !== '') {
+              var turnValue = productModel.preselectedTimeFrom;
+              turnValue += '-';
+              turnValue += productModel.preselectedTimeTo;
+              // Select the turn
+              $(productModel.turn_selector + '[value="'+turnValue+'"]').prop('checked', true);
+              // Show the summary (because it is preloaded)
+              productModel.product_available = true;
+              productView.update('shopping_cart');
+              // Clear
+              productModel.preselectedTimeFrom = null;
+              productModel.preselectedTimeTo = null;
+            }            
           }
           break;
         case 'shopping_cart':
@@ -1591,6 +1820,7 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
   // Check the product_selector and its data-code attribute
   if ($('#product_selector').length && $('#product_selector').attr('data-code') != 'undefined') {
     productModel.code = $('#product_selector').attr('data-code');
+    commonLoader.show();
     productModel.loadSettings();
   }
 

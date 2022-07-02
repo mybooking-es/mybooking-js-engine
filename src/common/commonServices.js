@@ -45,6 +45,8 @@ define('commonServices',[],function(){
     summaryUrl: mybookingEngine && mybookingEngine.summaryUrl ? formatURL(mybookingEngine.summaryUrl(), siteURL) : '',
     termsUrl: mybookingEngine && mybookingEngine.termsUrl ? formatURL(mybookingEngine.termsUrl(), siteURL) : '',
     selectorInProcess: mybookingEngine && mybookingEngine.selectorInProcess ? mybookingEngine.selectorInProcess() : 'form',
+    rentingDetailPages: mybookingEngine && mybookingEngine.rentingDetailPages ? mybookingEngine.rentingDetailPages() : false,
+    rentingDetailPageUrlPrefix: mybookingEngine && mybookingEngine.rentingDetailPageUrlPrefix ? mybookingEngine.rentingDetailPageUrlPrefix() : '',
     // Activities
     shoppingCartUrl: mybookingEngine && mybookingEngine.shoppingCartUrl ? formatURL(mybookingEngine.shoppingCartUrl(), siteURL) : '',
     orderUrl: mybookingEngine && mybookingEngine.orderUrl ? formatURL(mybookingEngine.orderUrl(), siteURL) : '',

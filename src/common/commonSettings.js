@@ -49,6 +49,10 @@ define('commonSettings', ['jquery','commonServices','commonLoader','commonTransl
       pickupReturnPlacesSameRentalLocation: false,
       customPickupReturnPlaces: false,
       customPickupReturnPlacePrice: 0,
+      // - Optional external driver
+      optionalExternalDriver: false,
+      // - Delivery slots
+      deliverySlots: false,
       // - Products
       multipleProductsSelection: false,
       multipleProductsReplicateBooking: false,
@@ -223,6 +227,10 @@ define('commonSettings', ['jquery','commonServices','commonLoader','commonTransl
              }     
              mybookingSettings.data.rentDateSelector = data.rent_dates_selector;
              mybookingSettings.data.rentTimesSelector = data.rent_times_selector;
+             // - Optional external driver
+             mybookingSettings.data.optionalExternalDriver = data.optional_external_driver;
+             // - Delivery slots
+             mybookingSettings.data.deliverySlots = data.delivery_slots;
              // - Renting places
              mybookingSettings.data.multipleDestinations = data.multiple_destinations;
              mybookingSettings.data.pickupReturnPlace = data.pickup_return_place;
