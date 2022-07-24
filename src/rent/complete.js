@@ -462,6 +462,12 @@ require(['jquery',
           reservation.customer_mobile_phone_prefix = countryData.dialCode;
         }
       }      
+      if (!$('.js-mb-delivery-slot').is(':visible')) {
+        delete reservation.slot_time_from;
+      }
+      if (!$('.js-mb-optional-external-driver').is(':visible')) {
+        delete reservation.with_optional_external_driver;
+      }
       var reservationJSON = JSON.stringify(reservation);
       // Prepare the URL
       var url = commonServices.URL_PREFIX + '/api/booking/frontend/shopping-cart';

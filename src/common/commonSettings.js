@@ -82,6 +82,7 @@ define('commonSettings', ['jquery','commonServices','commonLoader','commonTransl
       selectActivityCategory: false,
       selectActivityDestination: false,
       selectActivityRentalLocation: false,
+      activityCustomerVehicle: false,
       // Transfer
       transfer_allow_select_return_origin_destination: false,
       transfer_origin_destination_detailed_info_mode: 'trip',
@@ -265,6 +266,7 @@ define('commonSettings', ['jquery','commonServices','commonLoader','commonTransl
              mybookingSettings.data.samePickupReturnTime = data.same_pickup_return_time;
              // Activities / Appointments
              mybookingSettings.data.activityReservationMultipleItems = data.activity_reservation_multiple_items;
+             mybookingSettings.data.activityCustomerVehicle = data.activity_customer_vehicle;
              mybookingSettings.data.selectActivityCategory = data.select_activity_category;
              mybookingSettings.data.selectActivityDestination = data.select_activity_destination;
              mybookingSettings.data.selectActivityRentalLocation = data.select_activity_rental_location;

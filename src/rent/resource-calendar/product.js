@@ -731,14 +731,19 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
         var dateFromStr = moment(dateFrom).format('DD/MM/YY');
         var dateToStr = moment(dateTo).format('DD/MM/YY');
         var dateRange = [];
+        var dateRangeStr = '';
         dateRange.push(dateFromStr);
         if (dateToStr != dateFromStr) {
           dateRange.push(dateToStr);
-          var dateRangeStr = dateRange.join(' - ');
-          dateRangeStr = '<h2 class="mybooking-product_calendar-date-range">'+dateRangeStr+'</h2>';
-          $('#mb-date-container-header').html(dateRangeStr);
-          $('#mb-date-container-header').show();
+          dateRangeStr = dateRange.join(' - ');
         }
+        else {
+          dateRangeStr = dateFromStr;
+        }
+
+        dateRangeStr = '<h2 class="mybooking-product_calendar-date-range">'+dateRangeStr+'</h2>';
+        $('#mb-date-container-header').html(dateRangeStr);
+        $('#mb-date-container-header').show();
 
         // == Calculate minTimeFrom and maxTimeTo
         if (productModel.availabilityData) {
@@ -803,10 +808,8 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
                 productView.update('hours', 'time_from');
               } 
               else {
-                if (productModel.preselectedTimeFrom !== null) {
-                  // Load pickup hours if not preselected time from
-                  productView.loadPickupHours();
-                }
+                // Load pickup hours if not preselected time from
+                productView.loadPickupHours();
               }
               // Load return hours
               if (productModel.availabilityData && 
@@ -817,17 +820,13 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
                 productView.update('hours', 'time_to');
               } 
               else {
-                if (productModel.preselectedTimeTo !== null) {
-                  // Load return times if not preselected time to
-                  productView.loadReturnHours();
-                }
+                // Load return times if not preselected time to
+                productView.loadReturnHours();
               }          
             }
             else if (productModel.configuration.rentTimesSelector === 'time_range') { // Select date/range
-              // Load turns if not preselected time from
-              if (productModel.preselectedTimeFrom !== null) {
-                productView.loadTurns();
-              }
+              // Load turns
+              productView.loadTurns();
             }
           }
           else {
@@ -1517,6 +1516,8 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
         if (commonServices.apiKey && commonServices.apiKey != '') {
           urlParams.push('api_key='+commonServices.apiKey);
         }    
+        // Filter by product
+        urlParams.push('product='+productModel.code);        
         if (urlParams.length > 0) {
           url += '?';
           url += urlParams.join('&');
@@ -1604,6 +1605,8 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
         if (commonServices.apiKey && commonServices.apiKey != '') {
           urlParams.push('api_key='+commonServices.apiKey);
         }    
+        // Filter by product
+        urlParams.push('product='+productModel.code);        
         if (urlParams.length > 0) {
           url += '?';
           url += urlParams.join('&');

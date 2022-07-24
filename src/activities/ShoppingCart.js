@@ -305,6 +305,10 @@ require(['jquery','i18next', 'ysdtemplate',
 
           setupReservationFormValidation: function() {
 
+              jQuery.extend(jQuery.validator.messages, {
+                required: i18next.t('complete.reservationForm.validations.fieldRequired')
+              });
+
               $('form[name=reservation_form]').validate(
                   {
 
@@ -350,6 +354,15 @@ require(['jquery','i18next', 'ysdtemplate',
                               required: true,
                               minlength: 9
                           },
+                          'customer_stock_brand': {
+                              required: '#customer_stock_brand:visible'
+                          },
+                          'customer_stock_model': {
+                              required: '#customer_stock_model:visible'
+                          },
+                          'customer_stock_plate': {
+                              required: '#customer_stock_plate:visible'
+                          },
                           'payment_method_value': {
                               required: 'input[name=payment_method_value]:visible'
                           },
@@ -383,6 +396,15 @@ require(['jquery','i18next', 'ysdtemplate',
                           'customer_phone': {
                               'required': i18next.t('activities.checkout.validations.customerPhoneNumberRequired'),
                               'minlength': i18next.t('activities.checkout.validations.customerPhoneNumberMinLength')
+                          },
+                          'customer_stock_brand': {
+                              required: i18next.t('complete.reservationForm.validations.fieldRequired')
+                          },
+                          'customer_stock_model': {
+                              required: i18next.t('complete.reservationForm.validations.fieldRequired')
+                          },
+                          'customer_stock_plate': {
+                              required: i18next.t('complete.reservationForm.validations.fieldRequired')
                           },
                           'payment_method_value': {
                               required: i18next.t('activities.checkout.validations.selectPaymentMethod')
@@ -456,7 +478,8 @@ require(['jquery','i18next', 'ysdtemplate',
           },
 
           updateReservationForm: function() { /* Update the reservation form */
-              var customerForm = tmpl('script_reservation_form',{language: model.requestLanguage});
+              var customerForm = tmpl('script_reservation_form',{language: model.requestLanguage,
+                                                                 configuration: model.configuration });
               $('#reservation_container').html(customerForm);
 
               // Configure Telephone with prefix
