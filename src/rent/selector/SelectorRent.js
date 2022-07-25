@@ -108,9 +108,20 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
       console.log('loadFamilies');
       var self = this;
       var url = commonServices.URL_PREFIX + '/api/booking/frontend/families';
+
+      var urlParams = [];
       if (commonServices.apiKey && commonServices.apiKey != '') {
-        url += '?api_key='+commonServices.apiKey;
+        urlParams.push('api_key='+commonServices.apiKey);
       }  
+      if (this.requestLanguage != null) {
+        urlParams.push('lang='+this.requestLanguage);
+      }
+
+      if (urlParams.length > 0) {
+        url += '?';
+        url += urlParams.join('&');
+      }
+
       // Request
       $.ajax({
         type: 'GET',
