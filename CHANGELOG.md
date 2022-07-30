@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.0.10] 2022-07-30
+
+### Added
+
+- Renting Product calendar : Load shopping cart
+- Renting Product calendar : Turns
+- Renting Complete : Time slots and skipper if necessary
+- Renting my reservation : Additional drivers
+
 ## [1.0.9]
 
 ### Added
