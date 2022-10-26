@@ -69,12 +69,9 @@ define('commonSettings', ['jquery','commonServices','commonLoader','commonTransl
       rentingFormFillDataAdditionalDriver1: false,
       rentingFormFillDataAdditionalDriver2: false,      
       hidePriceIfZero: false,
+      hidePriceIfNotAvailable: true,
       useCustomerClassifier: false,
       // - Product Calendar
-      datesSelector: 'start_end_date',
-      singleDateTimeSelector: 'start_end_time',
-      singleDateSlotDurationUnits: 'hours',
-      singleDateSlotDurationTime: 1,
       calendarShowDailyPrices: false,
       samePickupReturnTime: false,
       // Activities/Appointments MODULE
@@ -255,13 +252,12 @@ define('commonSettings', ['jquery','commonServices','commonLoader','commonTransl
              mybookingSettings.data.rentingFormFillDataAdditionalDriver2 = data.renting_form_fill_data_additional_driver_2 || false;     
              // - Hide price if zero
              mybookingSettings.data.hidePriceIfZero = data.hide_price_if_zero || false;
+             if (typeof data.hide_price_if_not_available !== 'undefined') {
+               mybookingSettings.data.hidePriceIfNotAvailable = data.hide_price_if_not_available;
+             }
              // - Use customer classifier
              mybookingSettings.data.useCustomerClassifier = data.use_customer_classifier || false;
              // - Renting calendar
-             mybookingSettings.data.datesSelector = data.dates_selector;
-             mybookingSettings.data.singleDateTimeSelector = data.single_date_time_selector;
-             mybookingSettings.data.singleDateSlotDurationUnits = data.single_date_slot_duration_units;
-             mybookingSettings.data.singleDateSlotDurationTime = data.single_date_slot_duration_time;
              mybookingSettings.data.calendarShowDailyPrices = data.calendar_show_daily_prices;
              mybookingSettings.data.samePickupReturnTime = data.same_pickup_return_time;
              // Activities / Appointments

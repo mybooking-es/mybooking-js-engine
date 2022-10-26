@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.0.11] 2022-10-26
+
+### Added
+
+- Configuration : Added hidePriceIfNotAvailable
+
 ## [1.0.10] 2022-07-30
 
 ### Added
