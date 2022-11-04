@@ -22,6 +22,7 @@ require('./lib/jquery.form.js');
 require('./lib/jquery.formparams.js');
 require('./lib/jquery.i18next.js');
 require('./lib/jquery.modal.js');
+require('./lib/intlTelInput-jquery.js');
 
 // SUPPORT
 require('./lib/moment.js');
