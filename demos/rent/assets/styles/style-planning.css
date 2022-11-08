@@ -1,0 +1,172 @@
+.mybooking-planning-table-content {
+	margin: 1em;
+	position: relative;
+}
+
+.mybooking-planning-table-content .mybooking-planning-head {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	background-color: lightgray;
+	margin: -1em;
+	margin-bottom: 1em;
+	padding: 1em;
+}
+
+.mybooking-planning-table-content .mybooking-planning-head input {
+	width: 65%;
+}
+
+.mybooking-planning-table-content .mybooking-planning-head .button-box {
+	float: right;
+}
+
+@media (max-width: 768px) {
+	.mybooking-planning-table-content .mybooking-planning-head {
+		flex-direction: column;
+	}
+
+	.mybooking-planning-table-content .mybooking-planning-head > div,
+	.mybooking-planning-table-content .mybooking-planning-head select,
+	.mybooking-planning-table-content .mybooking-planning-head .select {
+		width: 100%;
+	}
+}
+
+.mybooking-planning-table-content .mybooking-planning-head .button {
+	color: gray;
+}
+
+.mybooking-planning {
+	margin: 0;
+	display: inline-block;
+	position: relative;
+	overflow: hidden;
+}
+
+.mybooking-planning .mybooking-planning-scrollable {
+	overflow-y: visible;
+	overflow-x: auto;
+	margin-left: 100px;
+	transition: width 0.5s;
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.mybooking-planning .mybooking-planning-scrollable::-webkit-scrollbar {
+	display: none;
+}
+/* Hide scrollbar for IE, Edge and Firefox */
+.mybooking-planning .mybooking-planning-scrollable {
+	-ms-overflow-style: none;  /* IE and Edge */
+	scrollbar-width: none;  /* Firefox */
+}
+
+.mybooking-planning table {
+	border-collapse: separate;
+	border-spacing: 0;
+	table-layout: fixed;
+	width: 100%;
+	margin-left: 0;
+}
+
+.mybooking-planning table thead th {
+	padding: 1em;
+	word-break: break-all;
+	vertical-align: middle;
+	text-align: center;
+}
+
+.mybooking-planning table tbody th, 
+.mybooking-planning table tbody td {
+	height: 40px;
+	padding: 0 1em;
+	text-align: center;
+	word-break: break-all;
+	z-index: 0;
+}
+
+.mybooking-planning table  th, 
+.mybooking-planning table  td {
+	font-size: 0.8em;
+	font-weight: 200;
+}
+
+.mybooking-planning table td {
+	position: relative;
+}
+
+.mybooking-planning table th.mybooking-planning-td-fix {
+	position: absolute;
+	width: 100px;
+	left: 0;
+	top: auto;
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+	z-index: 1;
+}
+
+.mybooking-planning table td .mybooking-planning-td-content {
+	position: absolute;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+	background-color: lightgray;
+	border-radius: 5px;
+	cursor: pointer;
+	margin: 2px;
+}
+
+.mybooking-planning table td .mybooking-planning-range-text {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	color: white;
+  font-weight: bold;
+}
+
+.mybooking-planning table td .mybooking-planning-td-content.full {
+	background-color: red;
+	border-radius: 0;
+	margin: 2px;
+	cursor: default;
+}
+
+.mybooking-planning table.mybooking-planning-table-direction-columns td .mybooking-planning-td-content.full {
+	margin: 0 2px;
+}
+
+.mybooking-planning table.mybooking-planning-table-direction-columns td .mybooking-planning-td-content.full.from {
+	border-top-left-radius: 5px;
+	border-top-right-radius: 5px;
+	margin-top: 2px;
+}
+
+.mybooking-planning table.mybooking-planning-table-direction-columns td .mybooking-planning-td-content.full.to {
+	border-bottom-left-radius: 5px;
+	border-bottom-right-radius: 5px;
+	margin-bottom: 2px;
+}
+
+.mybooking-planning table.mybooking-planning-table-direction-rows td .mybooking-planning-td-content.full {
+	margin: 2px 0;
+}
+
+.mybooking-planning table.mybooking-planning-table-direction-rows td .mybooking-planning-td-content.full.from {
+	border-top-left-radius: 5px;
+	border-bottom-left-radius: 5px;
+	margin-left: 2px;
+}
+
+.mybooking-planning table.mybooking-planning-table-direction-rows td .mybooking-planning-td-content.full.to {
+	border-top-right-radius: 5px;
+	border-bottom-right-radius: 5px;
+	margin-right: 2px;
+}

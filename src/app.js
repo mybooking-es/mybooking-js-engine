@@ -171,6 +171,13 @@ $(document).ready(function () {
     }
 });
 
+// Rent planning
+$(document).ready(function () {
+    if ($('body').hasClass('mybooking-rent-planning')) {
+        require('./rent/planning/planning.js');
+    }
+});
+
 // == Activities module
 
 // Activity Search JS

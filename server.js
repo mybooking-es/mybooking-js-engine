@@ -1,6 +1,6 @@
 var http = require('http');
 var express = require('express');
-var reload = require('reload');
+// var reload = require('reload');
 
 var app = express();
 
@@ -16,10 +16,14 @@ app.use('/', express.static(__dirname + '/demos'));
 
 var server = http.createServer(app);
 
-reload(app).then(function () {
-  server.listen(process.env.port, function () {
-    console.log(`listening ${process.env.baseURL} on port: ${process.env.port}`);
-  });
-}).catch(function (err) {
-  console.error('Reload could not start, could not start server', err)
+server.listen(process.env.port, function () {
+  console.log(`listening ${process.env.baseURL} on port: ${process.env.port}`);
 });
+
+// reload(app).then(function () {
+//   server.listen(process.env.port, function () {
+//     console.log(`listening ${process.env.baseURL} on port: ${process.env.port}`);
+//   });
+// }).catch(function (err) {
+//   console.error('Reload could not start, could not start server', err)
+// });

@@ -955,6 +955,11 @@ define('commonTranslations', [], function() {
                 'vehicleFound': 'Hemos encontrado <strong>{{available}}</strong> vehículos disponibles',
                 'vehicleNotFound': 'Lo sentimos. No hemos encontrados vehículos disponibles en esas fechas'
               }
+            },
+            planning: {
+              api_conexion_error: 'Lo lamentamos, se ha producido un error de conexión',
+              no_schedules_found: 'No se han encontrado horarios',
+              no_resources_found: 'No se han encontrado recursos'
             }
   		}
   	},
