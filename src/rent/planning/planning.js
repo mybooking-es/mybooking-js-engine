@@ -57,27 +57,38 @@
 		*/
 		getSchedule: function({ date }){
 			var that = this;
-			var url;
+			var url = commonServices.URL_PREFIX;
+			var urlParams = [];
+
+      if (commonServices.apiKey && commonServices.apiKey != '') {
+        urlParams.push('api_key='+commonServices.apiKey);
+      }  
+      urlParams.push('date='+date);
 
 			switch (this.model.configuration.rentTimesSelector) {
 				case 'hours':
 					if (this.model.category === 'all') {
-						url = commonServices.URL_PREFIX + '/api/booking/frontend/times?api_key=' + commonServices.apiKey + '&date=' + date;
+						url = '/api/booking/frontend/times';
 					} else {
-						url = commonServices.URL_PREFIX + '/api/booking/frontend/' + this.model.category + '/times?api_key=' + commonServices.apiKey + '&date=' + date;
+						url = '/api/booking/frontend/' + this.model.category + '/times';
 					}
-					break;
+				break;
 				
-					case 'time_range':
+				case 'time_range':
 						if (this.model.category === 'all') {
-							url = commonServices.URL_PREFIX + '/api/booking/frontend/turns?api_key=' + commonServices.apiKey + '&date=' + date;
+							url = commonServices.URL_PREFIX + '/api/booking/frontend/turns';
 						} else {
-							url = commonServices.URL_PREFIX + '/api/booking/frontend/products/' + this.model.category + '/turns?api_key=' + commonServices.apiKey + '&date=' + date;
+							url = commonServices.URL_PREFIX + '/api/booking/frontend/products/' + this.model.category + '/turns';
 						}
-					break;
+				break;
 				default:
 					break;
 			}
+
+      if (urlParams.length > 0) {
+        url += '?';
+        url += urlParams.join('&');
+      }
 
 			return new Promise(resolve => {
 				$.ajax({
