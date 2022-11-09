@@ -27,6 +27,9 @@ define('planningActionBar', ['jquery', 'YSDEventTarget', 'commonSettings',
 	};
 
 	var controller = {
+		/**
+		 * Set category
+		*/
 		setCategory: function(event){
 			var value = $(event.currentTarget).val();
 
@@ -34,6 +37,17 @@ define('planningActionBar', ['jquery', 'YSDEventTarget', 'commonSettings',
 
 			var target = document.getElementById(this.model.parent.model.target);
 			target.dispatchEvent(new CustomEvent('refresh', { detail: { callback: this.refresh.bind(this) }} ));
+		},
+
+		/**
+		 * Initialize category
+		*/
+		initializeCategory: function(){
+			var categorySelector = $('#' + this.model.target + ' select[name=category]');
+
+			this.model.parent.model.categories.forEach(function(item) {
+				categorySelector.append('<option value="' + item.id + '">' + item.name + '</option>')
+			});
 		},
 
 		/**
@@ -200,7 +214,6 @@ define('planningActionBar', ['jquery', 'YSDEventTarget', 'commonSettings',
 				$(scrollButtons[1]).removeAttr('disabled');
 			}
 		},
-
 		scroll: function(event) {
 			var target = $(event.currentTarget);
 			var direction = target.attr('data-direction');
@@ -275,8 +288,9 @@ define('planningActionBar', ['jquery', 'YSDEventTarget', 'commonSettings',
 		init:  function ({ total, category }) {
 			this.refresh({ total, category });
 			this.initializeDate();
-			this.setValidations();
+			this.initializeCategory();
 			this.setEvents();
+			this.setValidations();
 		}
 	};
 

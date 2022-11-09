@@ -22,6 +22,7 @@
 			resources: [],
 			ocupation: [],
 			calendar: [],
+			categories: [],
 			api_date_format: 'YYYY-MM-DD',
 			date: {
 				actual: undefined,
@@ -36,17 +37,29 @@
 
 	var model = {
 		/**
-		 * Get calendar
-		*/
-		getCalendar: function({from, to}) {
-			url = commonServices.URL_PREFIX + '/api/booking/frontend/dates?api_key=' + commonServices.apiKey + '&from=' + from + '&to=' + to;
+		 * Get categories
+		 */
+		 getCategories: function() {
+			var url = commonServices.URL_PREFIX + '/api/booking/frontend/categories?api_key=' + commonServices.apiKey;
 
 			return new Promise(resolve => {
 				$.ajax({
 					url: url
 				}).done(function(data) {
-					console.log('Calendar: ', data);
+					resolve(data);
+				});
+			});
+		},
+		/**
+		 * Get calendar
+		*/
+		getCalendar: function({from, to}) {
+			var url = commonServices.URL_PREFIX + '/api/booking/frontend/dates?api_key=' + commonServices.apiKey + '&from=' + from + '&to=' + to;
 
+			return new Promise(resolve => {
+				$.ajax({
+					url: url
+				}).done(function(data) {
 					resolve(data);
 				});
 			});
@@ -68,17 +81,17 @@
 			switch (this.model.configuration.rentTimesSelector) {
 				case 'hours':
 					if (this.model.category === 'all') {
-						url = '/api/booking/frontend/times';
+						url += '/api/booking/frontend/times';
 					} else {
-						url = '/api/booking/frontend/' + this.model.category + '/times';
+						url += '/api/booking/frontend/' + this.model.category + '/times';
 					}
 				break;
 				
 				case 'time_range':
 						if (this.model.category === 'all') {
-							url = commonServices.URL_PREFIX + '/api/booking/frontend/turns';
+							url += commonServices.URL_PREFIX + '/api/booking/frontend/turns';
 						} else {
-							url = commonServices.URL_PREFIX + '/api/booking/frontend/products/' + this.model.category + '/turns';
+							url += commonServices.URL_PREFIX + '/api/booking/frontend/products/' + this.model.category + '/turns';
 						}
 				break;
 				default:
@@ -113,13 +126,24 @@
 		 * Get day planning
 		*/
 		getPlanning: function({ from, to }){
-			var url;
+			var url = commonServices.URL_PREFIX + '/api/booking/frontend/planning';
+			var urlParams = [];
 
-			if (this.model.category === 'all') {
-				url = commonServices.URL_PREFIX + '/api/booking/frontend/planning?api_key=' + commonServices.apiKey + '&from=' + from + '&to=' + to;
-			} else {
-				url = commonServices.URL_PREFIX + '/api/booking/frontend/planning?api_key=' + commonServices.apiKey + '&from=' + from + '&to=' + to + '&category=' + this.model.category;
+      if (commonServices.apiKey && commonServices.apiKey != '') {
+        urlParams.push('api_key='+commonServices.apiKey);
+      }  
+      urlParams.push('from='+from);
+			urlParams.push('to='+to);
+			urlParams.push('rental_location_code='+1); // TODO
+
+			if (this.model.category !== 'all') {
+				urlParams.push('category='+this.model.category);
 			}
+
+			if (urlParams.length > 0) {
+        url += '?';
+        url += urlParams.join('&');
+      }
 
 			return new Promise(resolve => {
 				$.ajax({
@@ -251,7 +275,7 @@
 			this.model.resources.forEach(function(element) {
 				if (element.urges.length > 0) {
 					element.urges.forEach(function(item) {
-						var formatDate = moment(paramDate);
+						var formatDate = moment(YSDFormatter.formatDate(paramDate, that.model.api_date_format) );
 						var from = moment(item.date_from);
 						var to = moment(item.date_to);
 
@@ -352,6 +376,8 @@
 
 				var calendarDate = new Date(this.model.configuration.serverDate);
 				this.model.calendar = await this.getCalendar({ from: YSDFormatter.formatDate(calendarDate, this.model.api_date_format), to: YSDFormatter.formatDate(moment(calendarDate).add(1, 'M'), this.model.api_date_format)});
+
+				this.model.categories = await this.getCategories();
 
 				if (this.model.schedule.length > 0) {
 					var settings;
