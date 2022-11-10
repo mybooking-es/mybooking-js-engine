@@ -9,12 +9,14 @@
 	/**
 	 * Contructor
 	*/
-	function Planning ({ target, type, category, direction, cells }) {
+	function Planning ({ planningHTML, target, targetId, type, category, direction, rentalLocationCode, cells }) {
 		/**
 		 * Planning data model
 		*/
 		this.model = {
-			target: target || 'mybooking-planning',
+			planningHTML,
+			target,
+			targetId,
 			type: type || 'diary',
 			category: category || 'all',
 			direction: direction || 'columns',
@@ -23,6 +25,7 @@
 			ocupation: [],
 			calendar: [],
 			categories: [],
+			rentalLocationCode,
 			api_date_format: 'YYYY-MM-DD',
 			date: {
 				actual: undefined,
@@ -111,7 +114,7 @@
 						var formatData = [];
 
 						data.forEach(function(item) {
-							formatData.push(...that.getRanges({ from: item.time_from, to: item.time_to, interval: 30 }));
+							formatData.push(...that.getTimeRanges({ from: item.time_from, to: item.time_to, interval: 30 }));
 						});
 
 						resolve(formatData);
@@ -156,7 +159,44 @@
 	};
 
 	var controller = {
-		getRanges: function({ from, to, interval }) {
+		/**
+		 * Get ocupation range and put in list data 
+		*/
+		getOcupation15Range: function({from, to}) {
+			var that = this;
+			var serverDate = moment(this.model.configuration.serverDate);
+			if (moment(to).isBefore(serverDate)) {
+				return [];
+			}
+			var range = [];
+
+			if (from === to) {
+				range.push(from);
+				return range;
+			}
+
+			var init = false;
+			var finish = false;
+			this.model.calendar.forEach(function(item) {
+				if (moment(from).isBefore(serverDate) || item === from) {
+					init = true;
+				}
+
+				if (init && !finish) {
+					range.push(item);
+
+					if (item === to) {
+						finish = true;
+					}
+				}
+			});
+
+			return range;
+		},
+		/**
+		 * Get ranges between from and to time
+		*/
+		getTimeRanges: function({ from, to, interval }) {
 			function getMinutes(time) {
 				var arrayTime = time.split(':').map(Number);
 				return arrayTime[0] * 60 + arrayTime[1];
@@ -184,11 +224,10 @@
 
 			return range;
 		},
-
 		/**
 		 * Get ocupation range and put in list data
 		*/
-		getOcupationRange: function({from, to, interval, actualDay}) {
+		getOcupationDiaryRange: function({from, to, interval, actualDay}) {
 			if(!from || !to || !interval) {
 				return [];
 			}
@@ -202,16 +241,49 @@
 				var from = this.model.schedule[0];
 			}
 
-			return this.getRanges({ from, to, interval });
+			return this.getTimeRanges({ from, to, interval });
+		},
+		paintRanges: function({ length, item }) {
+			var that = this;
+			
+			var centralItem = Math.floor( length / 2);
+			var isEven = length % 2 == 0 ? 'even' : 'odd';
+
+			item.range.forEach(function(range, index) {
+				var classes = '';
+				if (index === 0) {
+					classes += 'from';
+				} 
+				if (index === length - 1) {
+					classes += ' to';
+				}
+
+				var label = item.label !== undefined ? item.label : '';
+				var time_from = item.time_from !== undefined ? item.time_from : '';
+				var time_to = item.time_to !== undefined ? item.time_to : '';
+				var time = time_from !== '' && time_to !== '' ? time_from + ' - ' + time_to + '<br>' : '';
+
+				that.model.target.find('div.mybooking-planning-td-content[data-id="' + item.id + '"][data-time="' + range + '"]').addClass('full').addClass(classes);
+
+				if (index === centralItem) {
+					that.model.target.find('div.mybooking-planning-td-content[data-id="' + item.id + '"][data-time="' + range + '"]').parent().append('<div class="mybooking-planning-range-text ' + isEven  + '">' + time + '<small>' + label + '</small></div>');
+				}
+			});
 		},
 
 		/**
 		 * Draw ocupation status 
 		*/
-		showOcupation: function(paramDate) {
-			$('#' + this.model.target + ' table').addClass('mybooking-planning-table-direction-' + this.model.direction);
-
+		showOcupation15: function(paramDate) {
 			var that = this;
+
+			this.model.ocupation.forEach(function(item) {
+				that.paintRanges({ length: item.range.length, item});
+			});
+		},
+		showOcupationDiary: function(paramDate) {
+			var that = this;
+
 			this.model.ocupation.forEach(function(item) {
 				var length = item.range.length;
 				var range = [...item.range];
@@ -231,39 +303,30 @@
 				}
 
 				if (hourIsMinor || minutesAreMinor) {
-					range = that.getOcupationRange({from: that.model.schedule[0], to: item.range.slice(-1).pop(), interval: 30, actualDay: paramDate});
+					range = that.getOcupationDiaryRange({from: that.model.schedule[0], to: item.range.slice(-1).pop(), interval: 30, actualDay: paramDate});
 					length = range.length;
 				}
 
-				var centralItem = Math.floor( length / 2);
-				var isEven = length % 2 == 0 ? 'even' : 'odd';
-
-				range.forEach(function(range, index) {
-					var classes = '';
-					if (index === 0) {
-						classes += 'from';
-					} 
-					if (index === length - 1) {
-						classes += ' to';
-					}
-
-					var dates = item.date !== undefined ? item.date : '';
-
-					$('#' + that.model.target + ' div.mybooking-planning-td-content[data-id="' + item.id + '"][data-time="' + range + '"]').addClass('full').addClass(classes);
-
-					if (index === centralItem) {
-						$('#' + that.model.target + ' div.mybooking-planning-td-content[data-id="' + item.id + '"][data-time="' + range + '"]').parent().append('<div class="mybooking-planning-range-text ' + isEven  + '">' + item.time_from + ' - ' + item.time_to + '<br><small>' + dates + '</small></div>');
-					}
-				});
+				that.paintRanges({ length: length, item});
 			});
+		},
+		showOcupation: function(paramDate) {
+			if (this.model.type === 'diary') {
+				this.showOcupationDiary(paramDate);
+			} else {
+				this.showOcupation15(paramDate);
+			}
 
-			$('#' + this.model.target + ' table tbody th').css('height', this.model.cells.height + 'px');
-			$('#' + this.model.target + ' table tbody td').css('height', this.model.cells.height + 'px');
+			/*
+			* Format 
+			*/
+			this.model.target.find('table tbody th').css('height', this.model.cells.height + 'px');
+			this.model.target.find('table tbody td').css('height', this.model.cells.height + 'px');
 
+			this.model.target.find('table').addClass('mybooking-planning-table-direction-' + this.model.direction);
+			this.model.target.find('table.mybooking-planning-table-direction-columns tbody td .mybooking-planning-range-text.even').css('margin-top', (this.model.cells.height * -1) + 'px');
 
-			$('#' + this.model.target + ' table.mybooking-planning-table-direction-columns tbody td .mybooking-planning-range-text.even').css('margin-top', (this.model.cells.height * -1) + 'px');
-
-			$('#' + this.model.target + ' table.mybooking-planning-table-direction-rows tbody td .mybooking-planning-range-text.even').css('margin-left', (this.model.cells.width * -1) + 'px');
+			this.model.target.find('table.mybooking-planning-table-direction-rows tbody td .mybooking-planning-range-text.even').css('margin-left', (this.model.cells.width * -1) + 'px');
 		},
 
 		/**
@@ -278,6 +341,7 @@
 						var formatDate = moment(YSDFormatter.formatDate(paramDate, that.model.api_date_format) );
 						var from = moment(item.date_from);
 						var to = moment(item.date_to);
+						var label = '';
 
 						if (formatDate.isSame(from) ||  formatDate.isSame(to) || (formatDate.isAfter(from) && formatDate.isBefore(to))) {
 							if (!from.isSame(to)) {
@@ -293,12 +357,28 @@
 								/** Text in box */
 								var dateFromString = that.model.configuration.formatDate(item.date_from);
 								var dateToString = that.model.configuration.formatDate(item.date_to);
-								var date = dateFromString + ' - ' + dateToString;
+								var label = dateFromString + ' - ' + dateToString;
 							}
 
 							var newElement = {
-								time_from: item.time_from, time_to: item.time_to, id: element.id, range: that.getOcupationRange({ from: item.time_from, to: item.time_to, interval: 30, actualDay }), date
+								 id: element.id, 
+								 label
 							};
+							if (that.model.type === 'diary') {
+								newElement = {
+									...newElement,
+									time_from: item.time_from, 
+									time_to: item.time_to,
+									 range: that.getOcupationDiaryRange({ from: item.time_from, to: item.time_to, interval: 30, actualDay })
+								};
+							} else {
+								newElement = {
+									...newElement,
+									date_from: item.date_from,
+									date_to: item.date_to,
+									range: that.getOcupation15Range({ from: item.date_from, to: item.date_to }),
+								};
+							}
 
 							that.model.ocupation.push(newElement);
 						}
@@ -322,6 +402,9 @@
 
 				columns.forEach(function(item) {
 					var description = item.id ? item.description : item;
+					if (!item.id && !description.includes(':')) {
+						description = YSDFormatter.formatDate(description);
+					}
 
 					html += '<th>';
 						html += description;
@@ -337,6 +420,9 @@
 				html += '<tbody>';
 					rows.forEach(function(item) {
 						var fixHead = item.description ? item.description : item;
+						if (!item.id && !fixHead.includes(':')) {
+							fixHead = YSDFormatter.formatDate(fixHead);
+						}
 
 						html += '<tr>';
 						html += '<th class="mybooking-planning-td-fix">' + fixHead + '</th>';
@@ -371,7 +457,12 @@
 			var date = this.model.date.actual;
 
 			if (commonServices.URL_PREFIX && commonServices.URL_PREFIX !== '' && commonServices.apiKey && commonServices.apiKey !== '') {
-				this.model.schedule = await this.getSchedule({ date: YSDFormatter.formatDate(date, this.model.api_date_format) });
+				if (this.model.type === 'diary') {
+					this.model.schedule = await this.getSchedule({ date: YSDFormatter.formatDate(date, this.model.api_date_format) });
+				} else {
+					this.model.schedule = await this.getCalendar({ from: YSDFormatter.formatDate(this.model.date.actual, this.model.api_date_format), to: YSDFormatter.formatDate(moment(this.model.date.actual).add(15, 'd'), this.model.api_date_format)});
+				}
+
 				this.model.resources = await this.getPlanning({ from: YSDFormatter.formatDate(date, this.model.api_date_format), to: YSDFormatter.formatDate(date, this.model.api_date_format)});
 
 				var calendarDate = new Date(this.model.configuration.serverDate);
@@ -379,7 +470,7 @@
 
 				this.model.categories = await this.getCategories();
 
-				if (this.model.schedule.length > 0) {
+				if (this.model.resources.length > 0 && this.model.schedule.length > 0) {
 					var settings;
 					switch (this.model.direction) {
 						case 'rows':
@@ -398,12 +489,12 @@
 					}
 
 					var html = this.drawPlanning(settings);
-					$('#' + this.model.target).html(html);
+					this.model.target.html(html);
 					this.getOcupation(date);
 				} else {
-					var html = i18next.t('planning.no_schedules_found');
+					var html = i18next.t('planning.no_data_found');
 
-					$('#' + this.model.target).html(html);
+					this.model.target.html(html);
 				}	
 
 				if (event && event.detail && event.detail.callback) {
@@ -415,7 +506,7 @@
 			} else {
 				var html = i18next.t('planning.api_conexion_error');
 
-				$('#' + this.model.target).html(html);
+				this.model.target.html(html);
 			}	
 
 			console.log('Model: ', this.model);
@@ -427,7 +518,7 @@
 		 * Set Events
 		*/
 		setEvents: function(settings) {
-			var target = document.getElementById(settings.parent.model.target);
+			var target = document.getElementById(settings.parent.model.targetId);
 
 			target.addEventListener('refresh', settings.parent.refresh.bind(settings.parent));
 
@@ -466,7 +557,7 @@
 					}
 				};
 
-				that.setEvents({ parent: that, columnsWidth: that.model.cells.width });
+				that.setEvents({ parent: that, target: that.model.planningHTML.find('.mybooking-planning-head'), columnsWidth: that.model.cells.width });
 
 				commonLoader.hide();
 			});
@@ -491,10 +582,20 @@
 		 * Initizialize
 		*/
 		init: function() {
+			var id = 'planning-1'; /** Unique id for instance */
+			var targetId =  id + '-table';
+			var planningHTML = $('#' + id);
+
 			var settings = {
-				category: 'all',
-				direction: 'columns'
+				planningHTML,
+				target: planningHTML.find('.mybooking-planning-table'),
+				targetId,
+				category: planningHTML.attr('data-category-code'),
+				rentalLocationCode: planningHTML.attr('data-rental-location-code'),
+				direction: planningHTML.attr('data-direction'),
+				type: planningHTML.attr('data-type'),
 			};
+			settings.target.attr('id', targetId);
 
 			var diary = this.factory(settings);
 			diary.init();

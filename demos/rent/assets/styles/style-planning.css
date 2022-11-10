@@ -1,9 +1,9 @@
-.mybooking-planning-table-content {
+.mybooking-planning-content {
 	margin: 1em;
 	position: relative;
 }
 
-.mybooking-planning-table-content .mybooking-planning-head {
+.mybooking-planning-content .mybooking-planning-head {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
@@ -13,38 +13,38 @@
 	padding: 1em;
 }
 
-.mybooking-planning-table-content .mybooking-planning-head input {
+.mybooking-planning-content .mybooking-planning-head input {
 	width: 65%;
 }
 
-.mybooking-planning-table-content .mybooking-planning-head .button-box {
+.mybooking-planning-content .mybooking-planning-head .button-box {
 	float: right;
 }
 
 @media (max-width: 768px) {
-	.mybooking-planning-table-content .mybooking-planning-head {
+	.mybooking-planning-content .mybooking-planning-head {
 		flex-direction: column;
 	}
 
-	.mybooking-planning-table-content .mybooking-planning-head > div,
-	.mybooking-planning-table-content .mybooking-planning-head select,
-	.mybooking-planning-table-content .mybooking-planning-head .select {
+	.mybooking-planning-content .mybooking-planning-head > div,
+	.mybooking-planning-content .mybooking-planning-head select,
+	.mybooking-planning-content .mybooking-planning-head .select {
 		width: 100%;
 	}
 }
 
-.mybooking-planning-table-content .mybooking-planning-head .button {
+.mybooking-planning-content .mybooking-planning-head .button {
 	color: gray;
 }
 
-.mybooking-planning {
+.mybooking-planning-table {
 	margin: 0;
 	display: inline-block;
 	position: relative;
 	overflow: hidden;
 }
 
-.mybooking-planning .mybooking-planning-scrollable {
+.mybooking-planning-table .mybooking-planning-scrollable {
 	overflow-y: visible;
 	overflow-x: auto;
 	margin-left: 100px;
@@ -52,16 +52,16 @@
 }
 
 /* Hide scrollbar for Chrome, Safari and Opera */
-.mybooking-planning .mybooking-planning-scrollable::-webkit-scrollbar {
+.mybooking-planning-table .mybooking-planning-scrollable::-webkit-scrollbar {
 	display: none;
 }
 /* Hide scrollbar for IE, Edge and Firefox */
-.mybooking-planning .mybooking-planning-scrollable {
+.mybooking-planning-table .mybooking-planning-scrollable {
 	-ms-overflow-style: none;  /* IE and Edge */
 	scrollbar-width: none;  /* Firefox */
 }
 
-.mybooking-planning table {
+.mybooking-planning-table table {
 	border-collapse: separate;
 	border-spacing: 0;
 	table-layout: fixed;
@@ -69,33 +69,33 @@
 	margin-left: 0;
 }
 
-.mybooking-planning table thead th {
+.mybooking-planning-table table thead th {
 	padding: 1em;
-	word-break: break-all;
+	word-break: break-word;
 	vertical-align: middle;
 	text-align: center;
 }
 
-.mybooking-planning table tbody th, 
-.mybooking-planning table tbody td {
+.mybooking-planning-table table tbody th, 
+.mybooking-planning-table table tbody td {
 	height: 40px;
 	padding: 0 1em;
 	text-align: center;
-	word-break: break-all;
+	word-break: break-word;
 	z-index: 0;
 }
 
-.mybooking-planning table  th, 
-.mybooking-planning table  td {
+.mybooking-planning-table table  th, 
+.mybooking-planning-table table  td {
 	font-size: 0.8em;
 	font-weight: 200;
 }
 
-.mybooking-planning table td {
+.mybooking-planning-table table td {
 	position: relative;
 }
 
-.mybooking-planning table th.mybooking-planning-td-fix {
+.mybooking-planning-table table th.mybooking-planning-td-fix {
 	position: absolute;
 	width: 100px;
 	left: 0;
@@ -106,7 +106,7 @@
 	z-index: 1;
 }
 
-.mybooking-planning table td .mybooking-planning-td-content {
+.mybooking-planning-table table td .mybooking-planning-td-content {
 	position: absolute;
 	top: 0;
 	left: 0;
@@ -114,11 +114,11 @@
 	right: 0;
 	background-color: lightgray;
 	border-radius: 5px;
-	cursor: pointer;
+	cursor: default; /* pointer */
 	margin: 2px;
 }
 
-.mybooking-planning table td .mybooking-planning-range-text {
+.mybooking-planning-table table td .mybooking-planning-range-text {
 	position: absolute;
 	top: 0;
 	left: 0;
@@ -132,40 +132,40 @@
   font-weight: bold;
 }
 
-.mybooking-planning table td .mybooking-planning-td-content.full {
+.mybooking-planning-table table td .mybooking-planning-td-content.full {
 	background-color: red;
 	border-radius: 0;
 	margin: 2px;
 	cursor: default;
 }
 
-.mybooking-planning table.mybooking-planning-table-direction-columns td .mybooking-planning-td-content.full {
+.mybooking-planning-table table.mybooking-planning-table-direction-columns td .mybooking-planning-td-content.full {
 	margin: 0 2px;
 }
 
-.mybooking-planning table.mybooking-planning-table-direction-columns td .mybooking-planning-td-content.full.from {
+.mybooking-planning-table table.mybooking-planning-table-direction-columns td .mybooking-planning-td-content.full.from {
 	border-top-left-radius: 5px;
 	border-top-right-radius: 5px;
 	margin-top: 2px;
 }
 
-.mybooking-planning table.mybooking-planning-table-direction-columns td .mybooking-planning-td-content.full.to {
+.mybooking-planning-table table.mybooking-planning-table-direction-columns td .mybooking-planning-td-content.full.to {
 	border-bottom-left-radius: 5px;
 	border-bottom-right-radius: 5px;
 	margin-bottom: 2px;
 }
 
-.mybooking-planning table.mybooking-planning-table-direction-rows td .mybooking-planning-td-content.full {
+.mybooking-planning-table table.mybooking-planning-table-direction-rows td .mybooking-planning-td-content.full {
 	margin: 2px 0;
 }
 
-.mybooking-planning table.mybooking-planning-table-direction-rows td .mybooking-planning-td-content.full.from {
+.mybooking-planning-table table.mybooking-planning-table-direction-rows td .mybooking-planning-td-content.full.from {
 	border-top-left-radius: 5px;
 	border-bottom-left-radius: 5px;
 	margin-left: 2px;
 }
 
-.mybooking-planning table.mybooking-planning-table-direction-rows td .mybooking-planning-td-content.full.to {
+.mybooking-planning-table table.mybooking-planning-table-direction-rows td .mybooking-planning-td-content.full.to {
 	border-top-right-radius: 5px;
 	border-bottom-right-radius: 5px;
 	margin-right: 2px;

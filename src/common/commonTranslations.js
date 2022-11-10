@@ -959,7 +959,8 @@ define('commonTranslations', [], function() {
             planning: {
               api_conexion_error: 'Lo lamentamos, se ha producido un error de conexión',
               no_schedules_found: 'No se han encontrado horarios',
-              no_resources_found: 'No se han encontrado recursos'
+              no_resources_found: 'No se han encontrado recursos',
+              no_data_found: 'No se han encontrado datos'
             }
   		}
   	},

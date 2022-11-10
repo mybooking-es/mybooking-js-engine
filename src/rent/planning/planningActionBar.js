@@ -7,13 +7,13 @@ define('planningActionBar', ['jquery', 'YSDEventTarget', 'commonSettings',
 	/**
 	 * Contructor
 	*/
-	function ActionBar({ target, parent, columnsWidth, columnsTotal  }) {
+	function ActionBar({ target, parent, columnsWidth, total  }) {
 		/**
 		 * PlanningActionBar data model
 		*/
 		this.model = {
 			parent,
-			target: target || 'mybooking-head',
+			target,
 			columns: {
 				width: columnsWidth || 150,
 				visibles: 0,
@@ -35,7 +35,7 @@ define('planningActionBar', ['jquery', 'YSDEventTarget', 'commonSettings',
 
 			this.model.parent.model.category = value;
 
-			var target = document.getElementById(this.model.parent.model.target);
+			var target = document.getElementById(this.model.parent.model.targetId);
 			target.dispatchEvent(new CustomEvent('refresh', { detail: { callback: this.refresh.bind(this) }} ));
 		},
 
@@ -43,11 +43,15 @@ define('planningActionBar', ['jquery', 'YSDEventTarget', 'commonSettings',
 		 * Initialize category
 		*/
 		initializeCategory: function(){
-			var categorySelector = $('#' + this.model.target + ' select[name=category]');
+			var categorySelector = this.model.target.find('select[name=category]');
 
-			this.model.parent.model.categories.forEach(function(item) {
-				categorySelector.append('<option value="' + item.id + '">' + item.name + '</option>')
-			});
+			if (this.model.parent.model.categories.length > 0) {
+				this.model.parent.model.categories.forEach(function(item) {
+					categorySelector.append('<option value="' + item.id + '">' + item.name + '</option>')
+				});
+			} else {
+				categorySelector.attr('disabled', 'disabled');
+			}
 		},
 
 		/**
@@ -56,7 +60,7 @@ define('planningActionBar', ['jquery', 'YSDEventTarget', 'commonSettings',
 		setDate:  function(paramDate) {
 			this.model.parent.model.date.actual = paramDate;
 
-			var target = document.getElementById(this.model.parent.model.target);
+			var target = document.getElementById(this.model.parent.model.targetId);
 			target.dispatchEvent(new CustomEvent('refresh', { detail: { callback: this.refresh.bind(this) }} ));
 		},
 
@@ -66,7 +70,7 @@ define('planningActionBar', ['jquery', 'YSDEventTarget', 'commonSettings',
 		initializeDate: function(paramDate) {
 			$.datepicker.setDefaults( $.datepicker.regional[commonSettings.language(document.documentElement.lang) || 'es'] );
 			
-			var inputDate = $('#' + this.model.target + ' input[name=date]');
+			var inputDate = this.model.target.find('input[name=date]');
 			inputDate.datepicker({
 				minDate: this.model.parent.model.date.actual,
 			});
@@ -74,8 +78,8 @@ define('planningActionBar', ['jquery', 'YSDEventTarget', 'commonSettings',
 			inputDate.datepicker('setDate', this.model.parent.model.date.actual);
 
 			var that = this;
-			$('#' + this.model.target + ' input[name=date]').off('change');
-			$('#' + this.model.target + ' input[name=date]').on('change', function() {
+			this.model.target.find('input[name=date]').off('change');
+			this.model.target.find('input[name=date]').on('change', function() {
 				var value = $(this).datepicker('getDate');
 
 				that.setDate(value);
@@ -87,10 +91,13 @@ define('planningActionBar', ['jquery', 'YSDEventTarget', 'commonSettings',
 				this.setColumns(total);
 			}
 
-			this.setScrollCalendarButtonsState();
+			if (this.model.parent.model.calendar.length > 0) {
+				this.setScrollCalendarButtonsState();
+			}
+
 			this.setScrollButtonsState();
 
-			$('#' + this.model.target + ' select[name=category]').val(category);
+			this.model.target.find('select[name=category]').val(category);
 		},
 	};
 
@@ -101,11 +108,11 @@ define('planningActionBar', ['jquery', 'YSDEventTarget', 'commonSettings',
 		setColumns: function(total) {
 			this.model.columns.total = total;
 
-			var target = $('#' + this.model.parent.model.target);
+			var target = this.model.parent.model.target;
 			var container = $(target).find('.mybooking-planning-scrollable');
 			var ths = $(target).find('thead th:not(.mybooking-planning-td-fix)');
 			var tds = $(target).find('tbody td');
-			var containerWidth = $('#' + this.model.parent.model.target).closest('.mybooking-planning-table-content').width() - window.parseInt(container.css('margin-left'));
+			var containerWidth = this.model.parent.model.target.closest('.mybooking-planning-content').width() - window.parseInt(container.css('margin-left'));
 
 			this.model.columns.visibles = Math.floor(containerWidth / this.model.columns.width);
 
@@ -126,7 +133,7 @@ define('planningActionBar', ['jquery', 'YSDEventTarget', 'commonSettings',
 		 * Scroll calendar
 		*/
 		setScrollCalendarButtonsState: function(){
-			var dateButtons = $('#' + this.model.target + ' button[data-action=date]');
+			var dateButtons = this.model.target.find('button[data-action=date]');
 			var firstDate = moment(this.model.parent.model.calendar[0]).add(1, 'd');
 			var lastDate = moment(this.model.parent.model.calendar.slice(-1).pop()).subtract(1, 'd');
 
@@ -161,7 +168,7 @@ define('planningActionBar', ['jquery', 'YSDEventTarget', 'commonSettings',
 		
 						var isInclude = this.model.parent.model.calendar.includes(formateDate);
 						if (isInclude){
-							var inputDate = $('#' + this.model.target + ' input[name=date]');
+							var inputDate = this.model.target.find('input[name=date]');
 							inputDate.datepicker('setDate', newInstanceDate);
 							this.setDate(newInstanceDate);
 							return;
@@ -180,7 +187,7 @@ define('planningActionBar', ['jquery', 'YSDEventTarget', 'commonSettings',
 		
 						var isInclude = this.model.parent.model.calendar.includes(formateDate);
 						if (isInclude){
-							var inputDate = $('#' + this.model.target + ' input[name=date]');
+							var inputDate = this.model.target.find('input[name=date]');
 							inputDate.datepicker('setDate', newInstanceDate);
 							this.setDate(newInstanceDate);
 							return;
@@ -197,10 +204,9 @@ define('planningActionBar', ['jquery', 'YSDEventTarget', 'commonSettings',
 		 * Horizontal scroll
 		*/
 		setScrollButtonsState: function(){
-			console.log(this.model.columns.total, this.model.columns.visibles, this.model.columns.width);
 			var actualMargin = this.model.columns.actualMargin;
 
-			var scrollButtons = $('#' + this.model.target + ' button[data-action=scroll]');
+			var scrollButtons = this.model.target.find('button[data-action=scroll]');
 
 			if (actualMargin >= 0) {
 				$(scrollButtons[0]).attr('disabled', 'disabled');
@@ -218,7 +224,7 @@ define('planningActionBar', ['jquery', 'YSDEventTarget', 'commonSettings',
 			var target = $(event.currentTarget);
 			var direction = target.attr('data-direction');
 
-			var container = $('#' + this.model.parent.model.target).find('.mybooking-planning-scrollable table');
+			var container = this.model.parent.model.target.find('.mybooking-planning-scrollable table');
 
 			var actualMargin = 0;
 			if (direction === 'next') {
@@ -244,7 +250,7 @@ define('planningActionBar', ['jquery', 'YSDEventTarget', 'commonSettings',
 			/*
 			* Button next events
 			*/
-			var scrollButtons = $('#' + this.model.target + ' button[data-action=scroll]');
+			var scrollButtons = this.model.target.find('button[data-action=scroll]');
 
 			this.setScrollButtonsState();
 			scrollButtons.off('click');
@@ -253,21 +259,25 @@ define('planningActionBar', ['jquery', 'YSDEventTarget', 'commonSettings',
 			/*
 			* Category selector
 			*/
-			var categorySelector = $('#' + this.model.target + ' select[name=category]');
+			var categorySelector = this.model.target.find('select[name=category]');
 			categorySelector.off('change');
 			categorySelector.on('change', this.setCategory.bind(this));
 
 			/*
 			* Calendar scroll
 			*/
-			var dateButtons = $('#' + this.model.target + ' button[data-action=date]');
+			var dateButtons = this.model.target.find('button[data-action=date]');
 
-			dateButtons.off('click');
-			dateButtons.on('click', this.scrollCalendar.bind(this));
+			if (this.model.parent.model.calendar.length > 0) {
+				dateButtons.off('click');
+				dateButtons.on('click', this.scrollCalendar.bind(this));
+			} else {
+				dateButtons.attr('disabled', 'disabled');
+			}
 		},
 
 		setValidations: function() {
-			$('#' + this.model.target).validate({
+			this.model.target.validate({
 				submitHandler: function(form, event) {
 					event.preventDefault();
 				},
