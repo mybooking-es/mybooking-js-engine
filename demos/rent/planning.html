@@ -16,7 +16,8 @@
     />
   </head>
 	<body class="mybooking-rent-planning">
-		<div class="mybooking-planning-content" data-category-code="all" data-rental-location-code="A" data-direction="columns" data-type="15" id="planning-1">
+    <!-- Planning init -->
+		<div class="mybooking-planning-content" data-category-code="all" data-rental-location-code="A" data-direction="columns" data-type="diary" id="planning-1">
 			<form class="mybooking-planning-head">
         <div class="field">
           <label for="date" class="label">Fecha</label>
@@ -52,6 +53,45 @@
 			</form>
 			<div class="mybooking-planning-table"></div>
 		</div>
+    <!-- Planning end -->
+    <!-- Planning init -->
+		<div class="mybooking-planning-content" data-category-code="all" data-rental-location-code="A" data-direction="rows" data-type="15" id="planning-2">
+			<form class="mybooking-planning-head">
+        <div class="field">
+          <label for="date" class="label">Fecha</label>
+          <div class="control">
+            <input type="text" name="date"  />
+            <div class="button-box">
+              <button data-action="date" data-direction="back" class="button"><i class="fa fa-arrow-left"></i></button>
+              <button data-action="date" data-direction="next" class="button"><i class="fa fa-arrow-right"></i></button>
+            </div>
+          </div>
+        </div>
+        <div class="field">
+          <label for="date" class="label">Categoría</label>
+          <div class="control">
+            <div class="select">
+              <select name="category" style="min-width: 300px;">
+                <option value="all">
+                  Todas
+                </option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="field">
+          <label for="date" class="label"></label>
+          <div class="control" style="top: 6px;">
+            <div class="button-box">
+              <button data-action="scroll" data-direction="back" class="button"><i class="fa fa-arrow-left"></i></button>
+              <button data-action="scroll" data-direction="next" class="button"><i class="fa fa-arrow-right"></i></button>
+            </div>
+          </div>
+        </div>
+			</form>
+			<div class="mybooking-planning-table"></div>
+		</div>
+    <!-- Planning end -->
 		
 		<script type="module">
       import('./assets/js/mybooking-engine-init.js')

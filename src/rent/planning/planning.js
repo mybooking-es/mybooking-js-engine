@@ -92,9 +92,9 @@
 				
 				case 'time_range':
 						if (this.model.category === 'all') {
-							url += commonServices.URL_PREFIX + '/api/booking/frontend/turns';
+							url += '/api/booking/frontend/turns';
 						} else {
-							url += commonServices.URL_PREFIX + '/api/booking/frontend/products/' + this.model.category + '/turns';
+							url += '/api/booking/frontend/products/' + this.model.category + '/turns';
 						}
 				break;
 				default:
@@ -137,7 +137,7 @@
       }  
       urlParams.push('from='+from);
 			urlParams.push('to='+to);
-			urlParams.push('rental_location_code='+1); // TODO
+			urlParams.push('rental_location_code='+ this.model.rentalLocationCode);
 
 			if (this.model.category !== 'all') {
 				urlParams.push('category='+this.model.category);
@@ -163,13 +163,16 @@
 		 * Get ocupation range and put in list data 
 		*/
 		getOcupation15Range: function({from, to}) {
-			var that = this;
+			if(!from || !to) {
+				return [];
+			}
+
 			var serverDate = moment(this.model.configuration.serverDate);
 			if (moment(to).isBefore(serverDate)) {
 				return [];
 			}
-			var range = [];
 
+			var range = [];
 			if (from === to) {
 				range.push(from);
 				return range;
@@ -178,7 +181,7 @@
 			var init = false;
 			var finish = false;
 			this.model.calendar.forEach(function(item) {
-				if (moment(from).isBefore(serverDate) || item === from) {
+				if (moment(from).isBefore(serverDate) || moment(from).isSame(serverDate) || item === from) {
 					init = true;
 				}
 
@@ -228,94 +231,71 @@
 		 * Get ocupation range and put in list data
 		*/
 		getOcupationDiaryRange: function({from, to, interval, actualDay}) {
-			if(!from || !to || !interval) {
+			if(!from || !to || !interval || !actualDay) {
 				return [];
 			}
 
-			if (actualDay == 'from') {
+			if (actualDay == 'from' || actualDay == 'both') {
 				var to = this.model.schedule.slice(-1).pop();
-			} else if(actualDay == 'to') {
-				var from = this.model.schedule[0];
-			} else if(actualDay == 'both') {
-				var to = this.model.schedule.slice(-1).pop();
+			}
+
+			if (actualDay != 'from' || moment(from, 'hh:mm').isBefore(moment(this.model.schedule[0], 'hh:mm'))) {
 				var from = this.model.schedule[0];
 			}
 
 			return this.getTimeRanges({ from, to, interval });
 		},
-		paintRanges: function({ length, item }) {
+		paintRanges: function(item) {
 			var that = this;
-			
-			var centralItem = Math.floor( length / 2);
-			var isEven = length % 2 == 0 ? 'even' : 'odd';
 
 			item.range.forEach(function(range, index) {
 				var classes = '';
-				if (index === 0) {
-					classes += 'from';
-				} 
-				if (index === length - 1) {
-					classes += ' to';
+
+				if (that.model.type === 'diary') {
+					if (index === 0 && item.actualDay === 'from') {
+						classes += 'from';
+					} 
+	
+					if (index === item.range.length - 1 && item.actualDay === 'to') {
+						classes += ' to';
+					}
+				} else {
+					if (index === 0) {
+						classes += 'from';
+					} 
+	
+					if (index === item.range.length - 1) {
+						classes += ' to';
+					}
 				}
 
 				var label = item.label !== undefined ? item.label : '';
 				var time_from = item.time_from !== undefined ? item.time_from : '';
 				var time_to = item.time_to !== undefined ? item.time_to : '';
-				var time = time_from !== '' && time_to !== '' ? time_from + ' - ' + time_to + '<br>' : '';
+				var time = time_from !== '' && time_to !== '' ? time_from + ' - ' + time_to : '';
+				var total = label !== '' ? label + ' - ' + time : time;
 
-				that.model.target.find('div.mybooking-planning-td-content[data-id="' + item.id + '"][data-time="' + range + '"]').addClass('full').addClass(classes);
+				var activeCells = that.model.target.find('div.mybooking-planning-td-content[data-id="' + item.id + '"][data-time="' + range + '"]');
+				activeCells.addClass('full').addClass(classes);
+				activeCells.attr('title', total);
 
-				if (index === centralItem) {
-					that.model.target.find('div.mybooking-planning-td-content[data-id="' + item.id + '"][data-time="' + range + '"]').parent().append('<div class="mybooking-planning-range-text ' + isEven  + '">' + time + '<small>' + label + '</small></div>');
-				}
+				// var centralItem = Math.floor( length / 2);
+				// var isEven = length % 2 == 0 ? 'even' : 'odd';
+				// if (index === centralItem) {
+				// 	that.model.target.find('div.mybooking-planning-td-content[data-id="' + item.id + '"][data-time="' + range + '"]').parent().append('<div class="mybooking-planning-range-text ' + isEven  + '">' + time + '<small>' + label + '</small></div>');
+				// }
 			});
 		},
 
 		/**
 		 * Draw ocupation status 
 		*/
-		showOcupation15: function(paramDate) {
-			var that = this;
-
-			this.model.ocupation.forEach(function(item) {
-				that.paintRanges({ length: item.range.length, item});
-			});
-		},
-		showOcupationDiary: function(paramDate) {
-			var that = this;
-
-			this.model.ocupation.forEach(function(item) {
-				var length = item.range.length;
-				var range = [...item.range];
-
-				var [scheduleHour, scheduleMinutes] = that.model.schedule[0].split(':');
-				var [itemFromHour, itemFromMinutes] = item.range[0].split(':');
-				var [itemToHour, itemToMinutes] = item.range.slice(-1).pop().split(':');
-
-				var hourIsMinor = false;
-				var minutesAreMinor = false;
-
-				if (window.parseInt(scheduleHour) < window.parseInt(itemToHour) || (window.parseInt(scheduleHour) == window.parseInt(itemToHour) && window.parseInt(scheduleMinutes) <= window.parseInt(itemToMinutes))){
-					hourIsMinor = window.parseInt(scheduleHour) > window.parseInt(itemFromHour);
-					if (!hourIsMinor) {
-						minutesAreMinor = window.parseInt(scheduleMinutes) > window.parseInt(itemFromMinutes);
-					}
-				}
-
-				if (hourIsMinor || minutesAreMinor) {
-					range = that.getOcupationDiaryRange({from: that.model.schedule[0], to: item.range.slice(-1).pop(), interval: 30, actualDay: paramDate});
-					length = range.length;
-				}
-
-				that.paintRanges({ length: length, item});
-			});
-		},
 		showOcupation: function(paramDate) {
-			if (this.model.type === 'diary') {
-				this.showOcupationDiary(paramDate);
-			} else {
-				this.showOcupation15(paramDate);
-			}
+			var that = this;
+
+			this.model.ocupation.forEach(function(item) {
+				that.paintRanges(item);
+			});
 
 			/*
 			* Format 
@@ -327,6 +307,7 @@
 			this.model.target.find('table.mybooking-planning-table-direction-columns tbody td .mybooking-planning-range-text.even').css('margin-top', (this.model.cells.height * -1) + 'px');
 
 			this.model.target.find('table.mybooking-planning-table-direction-rows tbody td .mybooking-planning-range-text.even').css('margin-left', (this.model.cells.width * -1) + 'px');
+			this.model.target.find('table.mybooking-planning-table-direction-rows tbody td .mybooking-planning-range-text.even').css('margin-right', this.model.cells.width + 'px');
 		},
 
 		/**
@@ -362,14 +343,15 @@
 
 							var newElement = {
 								 id: element.id, 
-								 label
+								 label,
+								 actualDay
 							};
 							if (that.model.type === 'diary') {
 								newElement = {
 									...newElement,
 									time_from: item.time_from, 
 									time_to: item.time_to,
-									 range: that.getOcupationDiaryRange({ from: item.time_from, to: item.time_to, interval: 30, actualDay })
+									range: that.getOcupationDiaryRange({ from: item.time_from, to: item.time_to, interval: 30, actualDay })
 								};
 							} else {
 								newElement = {
@@ -582,23 +564,40 @@
 		 * Initizialize
 		*/
 		init: function() {
-			var id = 'planning-1'; /** Unique id for instance */
-			var targetId =  id + '-table';
-			var planningHTML = $('#' + id);
+			var that = this;
 
-			var settings = {
-				planningHTML,
-				target: planningHTML.find('.mybooking-planning-table'),
-				targetId,
-				category: planningHTML.attr('data-category-code'),
-				rentalLocationCode: planningHTML.attr('data-rental-location-code'),
-				direction: planningHTML.attr('data-direction'),
-				type: planningHTML.attr('data-type'),
-			};
-			settings.target.attr('id', targetId);
+			$('.mybooking-rent-planning .mybooking-planning-content').each(function(index, item) {
+				var id = $(item).attr('id'); /** Unique id for instance */
 
-			var diary = this.factory(settings);
-			diary.init();
+				var planningHTML = $('#' + id);
+
+				var cells;
+				if (planningHTML.attr('data-direction') === 'columns') {
+					cells = {
+						width: 150,
+						height: 40,
+					};
+				} else {
+					cells = {
+						width: 100,
+						height: 60,
+					};
+				}
+
+				var settings = {
+					planningHTML,
+					target: planningHTML.find('.mybooking-planning-table'),
+					targetId:  id + '-table',
+					category: planningHTML.attr('data-category-code'),
+					rentalLocationCode: planningHTML.attr('data-rental-location-code'),
+					direction: planningHTML.attr('data-direction'),
+					type: planningHTML.attr('data-type'),
+					cells,
+				};
+				settings.target.attr('id', settings.targetId);
+
+				that.factory(settings).init();
+			});
 		},
 	};
 
