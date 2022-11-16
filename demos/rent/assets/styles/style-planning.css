@@ -132,6 +132,10 @@
   font-weight: bold;
 }
 
+.mybooking-planning-table table td .mybooking-planning-td-content.closed {
+	opacity: 0.4;
+}
+
 .mybooking-planning-table table td .mybooking-planning-td-content.full {
 	background-color: red;
 	border-radius: 0;

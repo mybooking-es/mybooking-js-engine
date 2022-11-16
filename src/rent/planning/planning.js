@@ -23,6 +23,7 @@
 			schedule: [],
 			resources: [],
 			ocupation: [],
+			realCalendar: [],
 			calendar: [],
 			categories: [],
 			rentalLocationCode,
@@ -379,10 +380,17 @@
 				html += '<thead><tr>';
 				html += '<th class="mybooking-planning-td-fix"></th>';
 
-				columns.forEach(function(item) {
+				columns.forEach(function(item, index) {
 					var description = item.id ? item.description : item;
+
 					if (!item.id && !description.includes(':')) {
-						description = YSDFormatter.formatDate(description);
+						var mydate = new Date(description);
+						var year = mydate.getFullYear();
+						var month = mydate.toLocaleString(commonSettings.language(document.documentElement.lang) || 'es', { month: 'short' }).toUpperCase();
+						var day = mydate.getDate();
+						var weekday = mydate.toLocaleString(commonSettings.language(document.documentElement.lang) || 'es', { weekday: 'short' }).toUpperCase();
+
+						description = month + ' ' + year + '<br>' + '<b style="font-size: 20px;">' + day + '</b><br>' + weekday;
 					}
 
 					html += '<th>';
@@ -400,7 +408,13 @@
 					rows.forEach(function(item) {
 						var fixHead = item.description ? item.description : item;
 						if (!item.id && !fixHead.includes(':')) {
-							fixHead = YSDFormatter.formatDate(fixHead);
+							var mydate = new Date(fixHead);
+							var year = mydate.getFullYear();
+							var month = mydate.toLocaleString(commonSettings.language(document.documentElement.lang) || 'es', { month: 'short' }).toUpperCase();
+							var day = mydate.getDate();
+							var weekday = mydate.toLocaleString(commonSettings.language(document.documentElement.lang) || 'es', { weekday: 'short' }).toUpperCase();
+
+							fixHead = '<b style="font-size: 20px;">' + day + '</b>&nbsp;&nbsp;&nbsp;' + weekday;
 						}
 
 						html += '<tr>';
@@ -408,9 +422,11 @@
 						columns.forEach(function(element) {
 							var time = element.id ? item : element;
 							var id = element.id ? element.id : item.id;
+							var isClosed = !time.includes(':') && !that.model.calendar.includes(time);
+							var closedClass = isClosed ? ' closed' : '';
 
 							html += '<td>';
-								html += '<div data-id="'+ id +'" data-time="' + time  + '" class="mybooking-planning-td-content"></div>';
+								html += '<div data-id="'+ id +'" data-time="' + time  + '" class="mybooking-planning-td-content'+ closedClass +'"></div>';
 							html += '</td>';
 						});
 						html += '</tr>';
@@ -419,6 +435,16 @@
 			html += '</table></div>';
 			
 			return html;
+		},
+
+		getDatesBetweenTwoDates: function({ from, to}) {
+			let dates = [];
+
+			for (let m = moment(from); m.isBefore(to); m.add(1, 'd')) {
+					dates.push(m.format(this.model.api_date_format));
+			}
+
+			return dates;
 		},
 
 		/**
@@ -430,30 +456,30 @@
 				schedule: [],
 				resources: [],
 				ocupation: [],
+				realCalendar: [],
 				calendar: [],
 			};
 
-			
-
 			if (commonServices.URL_PREFIX && commonServices.URL_PREFIX !== '' && commonServices.apiKey && commonServices.apiKey !== '') {
-				var calendarDate = this.model.date.server;
-				this.model.calendar = await this.getCalendar({ from: calendarDate, to: YSDFormatter.formatDate(moment(new Date(calendarDate)).add(1, 'M'), this.model.api_date_format)});
-
-				this.model.date.server = moment(calendarDate).isSame(moment(this.model.calendar[0])) ? calendarDate : this.model.calendar[0];
-				if (moment(this.model.date.server).isAfter(moment(this.model.date.actual))) {
+				if (!this.model.date.actual) {
+					this.model.calendar = await this.getCalendar({ from:this.model.date.server, to: YSDFormatter.formatDate(moment(new Date(this.model.date.server)).add(60, 'd'), this.model.api_date_format)});
+					this.model.date.server = this.model.calendar[0];
 					this.model.date.actual = this.model.date.server;
+
+					this.model.realCalendar = this.getDatesBetweenTwoDates({ from: this.model.calendar[0], to: YSDFormatter.formatDate(moment(new Date(this.model.calendar[0])).add(15, 'd'), this.model.api_date_format)});
+				} else {
+					this.model.calendar = await this.getCalendar({ from: this.model.date.actual, to: YSDFormatter.formatDate(moment(new Date(this.model.date.actual)).add(60, 'd'), this.model.api_date_format)});
+					this.model.realCalendar = this.getDatesBetweenTwoDates({ from:  this.model.date.actual, to: YSDFormatter.formatDate(moment(new Date( this.model.date.actual)).add(15, 'd'), this.model.api_date_format)});
 				}
 
 				var date = this.model.date.actual;
-
 				if (this.model.type === 'diary') {
-					this.model.schedule = await this.getSchedule({ date: date });
+					this.model.schedule = await this.getSchedule({ date });
 				} else {
-					this.model.schedule = await this.getCalendar({ from: date, to: YSDFormatter.formatDate(moment(new Date(date)).add(15, 'd'), this.model.api_date_format)});
+					this.model.schedule = this.model.realCalendar;
 				}
 
 				this.model.resources = await this.getPlanning({ from: date, to: date});
-
 				this.model.categories = await this.getCategories();
 
 				if (this.model.resources.length > 0 && this.model.schedule.length > 0) {
@@ -539,7 +565,6 @@
 					requestLanguage,
 					date: {
 						...that.model.date,
-						actual: data.serverDate,
 						server: data.serverDate,
 					}
 				};

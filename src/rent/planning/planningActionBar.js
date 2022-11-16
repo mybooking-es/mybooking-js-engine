@@ -93,7 +93,7 @@ define('planningActionBar', ['jquery', 'YSDEventTarget', 'commonSettings',
 				this.setColumns(total);
 			}
 
-			if (this.model.parent.model.calendar.length > 0) {
+			if (this.model.parent.model.realCalendar.length > 0) {
 				this.setScrollCalendarButtonsState();
 			}
 
@@ -136,18 +136,12 @@ define('planningActionBar', ['jquery', 'YSDEventTarget', 'commonSettings',
 		*/
 		setScrollCalendarButtonsState: function(){
 			var dateButtons = this.model.target.find('button[data-action=date]');
-			var firstDate = moment(this.model.parent.model.calendar[0]).add(1, 'd');
-			var lastDate = moment(this.model.parent.model.calendar.slice(-1).pop()).subtract(1, 'd');
+			var firstDate = moment(new Date(this.model.parent.model.configuration.serverDate)).add(1, 'd');
 
 			if(moment(this.model.parent.model.date.actual).isBefore(firstDate)) {
 				$(dateButtons[0]).attr('disabled', 'disabled');
 			} else {
 				$(dateButtons[0]).removeAttr('disabled');
-			}
-			if(moment(this.model.parent.model.date.actual).isAfter(lastDate)) {
-				$(dateButtons[1]).attr('disabled', 'disabled');
-			} else {
-				$(dateButtons[1]).removeAttr('disabled');
 			}
 		},
 
@@ -155,51 +149,16 @@ define('planningActionBar', ['jquery', 'YSDEventTarget', 'commonSettings',
 			var target = $(event.currentTarget);
 			var direction = target.attr('data-direction');
 
-			if (this.model.parent.model.calendar.length > 0){
+			if (this.model.parent.model.realCalendar.length > 0){
 				var date = new Date (this.model.parent.model.date.actual);
 
-				var firstDate = this.model.parent.model.calendar[0];
-				var lastDate = this.model.parent.model.calendar.slice(-1).pop();
+				var newDate = direction === 'next' ? moment(date).add(1, 'd') : moment(date).subtract(1, 'd');
+				var formateDate = YSDFormatter.formatDate(newDate, this.model.parent.model.api_date_format);
+				var newInstanceDate = new Date(formateDate);
 
-				if (direction === 'next') {
-					var newDate = moment(date).add(1, 'd');
-					var index1 = 1;
-
-					while (index1 < 60 && newDate.isBefore(lastDate)) {
-						var formateDate = YSDFormatter.formatDate(newDate, this.model.parent.model.api_date_format);
-						var newInstanceDate = new Date(formateDate);
-		
-						var isInclude = this.model.parent.model.calendar.includes(formateDate);
-						if (isInclude){
-							var inputDate = this.model.target.find('input[name=date]');
-							inputDate.datepicker('setDate', newInstanceDate);
-							this.setDate(newInstanceDate);
-							return;
-						}
-						
-						index1 += 1;
-						newDate = moment(date).add(index1, 'd');
-					}
-				} else if (direction === 'back') {
-					var newDate = moment(date).subtract(1, 'd');
-					var index2 = 1;
-
-					while (index2 < 60 && newDate.isAfter(firstDate)) {
-						var formateDate = YSDFormatter.formatDate(newDate, this.model.parent.model.api_date_format);
-						var newInstanceDate = new Date(formateDate);
-		
-						var isInclude = this.model.parent.model.calendar.includes(formateDate);
-						if (isInclude){
-							var inputDate = this.model.target.find('input[name=date]');
-							inputDate.datepicker('setDate', newInstanceDate);
-							this.setDate(newInstanceDate);
-							return;
-						}
-
-						index2 += 1;
-						newDate = moment(date).subtract(index2, 'd');
-					}
-				}
+				var inputDate = this.model.target.find('input[name=date]');
+				inputDate.datepicker('setDate', newInstanceDate);
+				this.setDate(newInstanceDate);
 			}
 		},
 
@@ -272,7 +231,7 @@ define('planningActionBar', ['jquery', 'YSDEventTarget', 'commonSettings',
 			*/
 			var dateButtons = this.model.target.find('button[data-action=date]');
 
-			if (this.model.parent.model.calendar.length > 0) {
+			if (this.model.parent.model.realCalendar.length > 0) {
 				dateButtons.off('click');
 				dateButtons.on('click', this.scrollCalendar.bind(this));
 			} else {
