@@ -29,7 +29,7 @@
 			api_date_format: 'YYYY-MM-DD',
 			date: {
 				actual: undefined,
-				range: [],
+				server: undefined,
 			},
 			cells: cells || {
 				width: 150,
@@ -43,16 +43,17 @@
 		 * Get categories
 		 */
 		 getCategories: function() {
-			var url = commonServices.URL_PREFIX + '/api/booking/frontend/categories?api_key=' + commonServices.apiKey;
+			var url = commonServices.URL_PREFIX + '/api/booking/frontend/products?api_key=' + commonServices.apiKey;
 
 			return new Promise(resolve => {
 				$.ajax({
 					url: url
-				}).done(function(data) {
-					resolve(data);
+				}).done(function(response) {
+					resolve(response.data);
 				});
 			});
 		},
+
 		/**
 		 * Get calendar
 		*/
@@ -80,22 +81,17 @@
         urlParams.push('api_key='+commonServices.apiKey);
       }  
       urlParams.push('date='+date);
+			if (this.model.category !== 'all') {
+				urlParams.push('product='+this.model.category);
+			}
 
 			switch (this.model.configuration.rentTimesSelector) {
 				case 'hours':
-					if (this.model.category === 'all') {
-						url += '/api/booking/frontend/times';
-					} else {
-						url += '/api/booking/frontend/' + this.model.category + '/times';
-					}
+					url += '/api/booking/frontend/times';
 				break;
 				
 				case 'time_range':
-						if (this.model.category === 'all') {
-							url += '/api/booking/frontend/turns';
-						} else {
-							url += '/api/booking/frontend/products/' + this.model.category + '/turns';
-						}
+					url += '/api/booking/frontend/turns';
 				break;
 				default:
 					break;
@@ -167,7 +163,7 @@
 				return [];
 			}
 
-			var serverDate = moment(this.model.configuration.serverDate);
+			var serverDate = moment(this.model.date.server);
 			if (moment(to).isBefore(serverDate)) {
 				return [];
 			}
@@ -196,6 +192,7 @@
 
 			return range;
 		},
+
 		/**
 		 * Get ranges between from and to time
 		*/
@@ -227,31 +224,35 @@
 
 			return range;
 		},
+
 		/**
 		 * Get ocupation range and put in list data
 		*/
 		getOcupationDiaryRange: function({from, to, interval, actualDay}) {
-			if(!from || !to || !interval || !actualDay) {
+			if(!from || !to || !interval) {
 				return [];
 			}
 
-			if (actualDay == 'from' || actualDay == 'both') {
-				var to = this.model.schedule.slice(-1).pop();
-			}
-
-			if (actualDay != 'from' || moment(from, 'hh:mm').isBefore(moment(this.model.schedule[0], 'hh:mm'))) {
-				var from = this.model.schedule[0];
+			if (actualDay) {
+				if (actualDay == 'from' || actualDay == 'both') {
+					var to = this.model.schedule.slice(-1).pop();
+				}
+	
+				if (actualDay != 'from' || moment(from, 'hh:mm').isBefore(moment(this.model.schedule[0], 'hh:mm'))) {
+					var from = this.model.schedule[0];
+				}
 			}
 
 			return this.getTimeRanges({ from, to, interval });
 		},
+
 		paintRanges: function(item) {
 			var that = this;
 
 			item.range.forEach(function(range, index) {
 				var classes = '';
 
-				if (that.model.type === 'diary') {
+				if (item.actualDay) {
 					if (index === 0 && item.actualDay === 'from') {
 						classes += 'from';
 					} 
@@ -273,17 +274,12 @@
 				var time_from = item.time_from !== undefined ? item.time_from : '';
 				var time_to = item.time_to !== undefined ? item.time_to : '';
 				var time = time_from !== '' && time_to !== '' ? time_from + ' - ' + time_to : '';
-				var total = label !== '' ? label + ' - ' + time : time;
+				label += label !== '' && time !== '' ? ' - ': '';
+				label += time;
 
 				var activeCells = that.model.target.find('div.mybooking-planning-td-content[data-id="' + item.id + '"][data-time="' + range + '"]');
 				activeCells.addClass('full').addClass(classes);
-				activeCells.attr('title', total);
-
-				// var centralItem = Math.floor( length / 2);
-				// var isEven = length % 2 == 0 ? 'even' : 'odd';
-				// if (index === centralItem) {
-				// 	that.model.target.find('div.mybooking-planning-td-content[data-id="' + item.id + '"][data-time="' + range + '"]').parent().append('<div class="mybooking-planning-range-text ' + isEven  + '">' + time + '<small>' + label + '</small></div>');
-				// }
+				activeCells.attr('title', label);
 			});
 		},
 
@@ -319,7 +315,7 @@
 			this.model.resources.forEach(function(element) {
 				if (element.urges.length > 0) {
 					element.urges.forEach(function(item) {
-						var formatDate = moment(YSDFormatter.formatDate(paramDate, that.model.api_date_format) );
+						var formatDate = moment(paramDate);
 						var from = moment(item.date_from);
 						var to = moment(item.date_to);
 						var label = '';
@@ -329,7 +325,7 @@
 								var actualDay;
 								if (formatDate.isSame(from)){
 									actualDay = 'from';
-								} else if(formatDate.isSame(to)){
+								} else if (formatDate.isSame(to)){
 									actualDay = 'to';
 								} else {
 									actualDay = 'both';
@@ -343,12 +339,13 @@
 
 							var newElement = {
 								 id: element.id, 
-								 label,
-								 actualDay
+								 label
 							};
+
 							if (that.model.type === 'diary') {
 								newElement = {
 									...newElement,
+									actualDay,
 									time_from: item.time_from, 
 									time_to: item.time_to,
 									range: that.getOcupationDiaryRange({ from: item.time_from, to: item.time_to, interval: 30, actualDay })
@@ -436,19 +433,26 @@
 				calendar: [],
 			};
 
-			var date = this.model.date.actual;
+			
 
 			if (commonServices.URL_PREFIX && commonServices.URL_PREFIX !== '' && commonServices.apiKey && commonServices.apiKey !== '') {
-				if (this.model.type === 'diary') {
-					this.model.schedule = await this.getSchedule({ date: YSDFormatter.formatDate(date, this.model.api_date_format) });
-				} else {
-					this.model.schedule = await this.getCalendar({ from: YSDFormatter.formatDate(this.model.date.actual, this.model.api_date_format), to: YSDFormatter.formatDate(moment(this.model.date.actual).add(15, 'd'), this.model.api_date_format)});
+				var calendarDate = this.model.date.server;
+				this.model.calendar = await this.getCalendar({ from: calendarDate, to: YSDFormatter.formatDate(moment(new Date(calendarDate)).add(1, 'M'), this.model.api_date_format)});
+
+				this.model.date.server = moment(calendarDate).isSame(moment(this.model.calendar[0])) ? calendarDate : this.model.calendar[0];
+				if (moment(this.model.date.server).isAfter(moment(this.model.date.actual))) {
+					this.model.date.actual = this.model.date.server;
 				}
 
-				this.model.resources = await this.getPlanning({ from: YSDFormatter.formatDate(date, this.model.api_date_format), to: YSDFormatter.formatDate(date, this.model.api_date_format)});
+				var date = this.model.date.actual;
 
-				var calendarDate = new Date(this.model.configuration.serverDate);
-				this.model.calendar = await this.getCalendar({ from: YSDFormatter.formatDate(calendarDate, this.model.api_date_format), to: YSDFormatter.formatDate(moment(calendarDate).add(1, 'M'), this.model.api_date_format)});
+				if (this.model.type === 'diary') {
+					this.model.schedule = await this.getSchedule({ date: date });
+				} else {
+					this.model.schedule = await this.getCalendar({ from: date, to: YSDFormatter.formatDate(moment(new Date(date)).add(15, 'd'), this.model.api_date_format)});
+				}
+
+				this.model.resources = await this.getPlanning({ from: date, to: date});
 
 				this.model.categories = await this.getCategories();
 
@@ -535,7 +539,8 @@
 					requestLanguage,
 					date: {
 						...that.model.date,
-						actual: new Date(data.serverDate),
+						actual: data.serverDate,
+						server: data.serverDate,
 					}
 				};
 

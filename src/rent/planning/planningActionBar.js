@@ -47,7 +47,7 @@ define('planningActionBar', ['jquery', 'YSDEventTarget', 'commonSettings',
 
 			if (this.model.parent.model.categories.length > 0) {
 				this.model.parent.model.categories.forEach(function(item) {
-					categorySelector.append('<option value="' + item.id + '">' + item.name + '</option>')
+					categorySelector.append('<option value="' + item.code + '">' + item.name + '</option>')
 				});
 			} else {
 				categorySelector.attr('disabled', 'disabled');
@@ -58,7 +58,7 @@ define('planningActionBar', ['jquery', 'YSDEventTarget', 'commonSettings',
 		 * Set new date and refresh planning
 		*/
 		setDate:  function(paramDate) {
-			this.model.parent.model.date.actual = paramDate;
+			this.model.parent.model.date.actual = YSDFormatter.formatDate(paramDate, this.model.parent.model.api_date_format);
 
 			var target = document.getElementById(this.model.parent.model.targetId);
 			target.dispatchEvent(new CustomEvent('refresh', { detail: { callback: this.refresh.bind(this) }} ));
@@ -67,15 +67,17 @@ define('planningActionBar', ['jquery', 'YSDEventTarget', 'commonSettings',
 		/**
 		 * Initialize and refresh planning
 		*/
-		initializeDate: function(paramDate) {
+		initializeDate: function() {
 			$.datepicker.setDefaults( $.datepicker.regional[commonSettings.language(document.documentElement.lang) || 'es'] );
 			
 			var inputDate = this.model.target.find('input[name=date]');
+			var date = new Date (this.model.parent.model.date.actual);
+			
 			inputDate.datepicker({
-				minDate: this.model.parent.model.date.actual,
+				minDate: date,
 			});
 
-			inputDate.datepicker('setDate', this.model.parent.model.date.actual);
+			inputDate.datepicker('setDate', date);
 
 			var that = this;
 			this.model.target.find('input[name=date]').off('change');
@@ -148,15 +150,16 @@ define('planningActionBar', ['jquery', 'YSDEventTarget', 'commonSettings',
 				$(dateButtons[1]).removeAttr('disabled');
 			}
 		},
+
 		scrollCalendar: function(event) {
 			var target = $(event.currentTarget);
 			var direction = target.attr('data-direction');
 
 			if (this.model.parent.model.calendar.length > 0){
-				var date = this.model.parent.model.date.actual;
+				var date = new Date (this.model.parent.model.date.actual);
 
-				var firstDate = moment(this.model.parent.model.calendar[0]);
-				var lastDate = moment(this.model.parent.model.calendar.slice(-1).pop());
+				var firstDate = this.model.parent.model.calendar[0];
+				var lastDate = this.model.parent.model.calendar.slice(-1).pop();
 
 				if (direction === 'next') {
 					var newDate = moment(date).add(1, 'd');
@@ -220,6 +223,7 @@ define('planningActionBar', ['jquery', 'YSDEventTarget', 'commonSettings',
 				$(scrollButtons[1]).removeAttr('disabled');
 			}
 		},
+
 		scroll: function(event) {
 			var target = $(event.currentTarget);
 			var direction = target.attr('data-direction');
