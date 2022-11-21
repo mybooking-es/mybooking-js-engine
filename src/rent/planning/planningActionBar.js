@@ -45,7 +45,11 @@ define('planningActionBar', ['jquery', 'YSDEventTarget', 'commonSettings',
 		initializeCategory: function(){
 			var categorySelector = this.model.target.find('select[name=category]');
 
-			if (this.model.parent.model.categories.length > 0) {
+			if (typeof this.model.parent.model.category !== 'undefined'){
+				categorySelector.closest('.field').css('display', 'block');
+			}
+
+			if (typeof this.model.parent.model.category !== 'undefined' && this.model.parent.model.categories.length > 0) {
 				this.model.parent.model.categories.forEach(function(item) {
 					categorySelector.append('<option value="' + item.code + '">' + item.name + '</option>')
 				});
@@ -136,9 +140,9 @@ define('planningActionBar', ['jquery', 'YSDEventTarget', 'commonSettings',
 		*/
 		setScrollCalendarButtonsState: function(){
 			var dateButtons = this.model.target.find('button[data-action=date]');
-			var firstDate = moment(new Date(this.model.parent.model.configuration.serverDate)).add(1, 'd');
+			var firstDate = moment(new Date(this.model.parent.model.configuration.serverDate));
 
-			if(moment(this.model.parent.model.date.actual).isBefore(firstDate)) {
+			if(moment(this.model.parent.model.date.actual).isSame(firstDate) || moment(this.model.parent.model.date.actual).isBefore(firstDate)) {
 				$(dateButtons[0]).attr('disabled', 'disabled');
 			} else {
 				$(dateButtons[0]).removeAttr('disabled');

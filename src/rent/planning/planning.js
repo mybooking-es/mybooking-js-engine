@@ -9,7 +9,7 @@
 	/**
 	 * Contructor
 	*/
-	function Planning ({ planningHTML, target, targetId, type, category, direction, rentalLocationCode, cells }) {
+	function Planning ({ planningHTML, target, targetId, type, category, items, direction, rentalLocationCode, cells }) {
 		/**
 		 * Planning data model
 		*/
@@ -18,7 +18,8 @@
 			target,
 			targetId,
 			type: type || 'diary',
-			category: category || 'all',
+			category,
+			items: items || 15,
 			direction: direction || 'columns',
 			schedule: [],
 			resources: [],
@@ -82,7 +83,7 @@
         urlParams.push('api_key='+commonServices.apiKey);
       }  
       urlParams.push('date='+date);
-			if (this.model.category !== 'all') {
+			if (typeof this.model.category !== 'undefined' && this.model.category !== 'all') {
 				urlParams.push('product='+this.model.category);
 			}
 
@@ -136,7 +137,7 @@
 			urlParams.push('to='+to);
 			urlParams.push('rental_location_code='+ this.model.rentalLocationCode);
 
-			if (this.model.category !== 'all') {
+			if (typeof this.model.category !== 'undefined' && this.model.category !== 'all') {
 				urlParams.push('category='+this.model.category);
 			}
 
@@ -262,7 +263,7 @@
 						classes += ' to';
 					}
 				} else {
-					if (index === 0) {
+					if (index === 0 && moment(item.date_from).isSame(moment(range))) {
 						classes += 'from';
 					} 
 	
@@ -451,6 +452,8 @@
 		 * Refresh table
 		*/
 		refresh: async function(event) {
+			commonLoader.show();
+
 			this.model = {
 				...this.model,
 				schedule: [],
@@ -462,14 +465,14 @@
 
 			if (commonServices.URL_PREFIX && commonServices.URL_PREFIX !== '' && commonServices.apiKey && commonServices.apiKey !== '') {
 				if (!this.model.date.actual) {
-					this.model.calendar = await this.getCalendar({ from:this.model.date.server, to: YSDFormatter.formatDate(moment(new Date(this.model.date.server)).add(60, 'd'), this.model.api_date_format)});
+					this.model.calendar = await this.getCalendar({ from: this.model.date.server, to: YSDFormatter.formatDate(moment(new Date(this.model.date.server)).add(this.model.items * 2, 'd'), this.model.api_date_format)});
 					this.model.date.server = this.model.calendar[0];
 					this.model.date.actual = this.model.date.server;
 
-					this.model.realCalendar = this.getDatesBetweenTwoDates({ from: this.model.calendar[0], to: YSDFormatter.formatDate(moment(new Date(this.model.calendar[0])).add(15, 'd'), this.model.api_date_format)});
+					this.model.realCalendar = this.getDatesBetweenTwoDates({ from: this.model.calendar[0], to: YSDFormatter.formatDate(moment(new Date(this.model.calendar[0])).add(this.model.items, 'd'), this.model.api_date_format)});
 				} else {
-					this.model.calendar = await this.getCalendar({ from: this.model.date.actual, to: YSDFormatter.formatDate(moment(new Date(this.model.date.actual)).add(60, 'd'), this.model.api_date_format)});
-					this.model.realCalendar = this.getDatesBetweenTwoDates({ from:  this.model.date.actual, to: YSDFormatter.formatDate(moment(new Date( this.model.date.actual)).add(15, 'd'), this.model.api_date_format)});
+					this.model.calendar = await this.getCalendar({ from: this.model.date.actual, to: YSDFormatter.formatDate(moment(new Date(this.model.date.actual)).add(this.model.items * 2, 'd'), this.model.api_date_format)});
+					this.model.realCalendar = this.getDatesBetweenTwoDates({ from:  this.model.date.actual, to: YSDFormatter.formatDate(moment(new Date( this.model.date.actual)).add(this.model.items, 'd'), this.model.api_date_format)});
 				}
 
 				var date = this.model.date.actual;
@@ -521,7 +524,9 @@
 				this.model.target.html(html);
 			}	
 
-			console.log('Model: ', this.model);
+			// console.log('Model: ', this.model);
+			
+			commonLoader.hide();
 		},
 	};
 
@@ -541,8 +546,6 @@
 		 * Initizialize
 		*/
 		init: function() {
-			commonLoader.show();
-
 			var that = this;
 
 			var requestLanguage = commonSettings.language(document.documentElement.lang);
@@ -570,8 +573,6 @@
 				};
 
 				that.setEvents({ parent: that, target: that.model.planningHTML.find('.mybooking-planning-head'), columnsWidth: that.model.cells.width });
-
-				commonLoader.hide();
 			});
 		}
 	};
@@ -594,6 +595,8 @@
 		 * Initizialize
 		*/
 		init: function() {
+			commonLoader.show();
+			
 			var that = this;
 
 			$('.mybooking-rent-planning .mybooking-planning-content').each(function(index, item) {
@@ -619,6 +622,7 @@
 					target: planningHTML.find('.mybooking-planning-table'),
 					targetId:  id + '-table',
 					category: planningHTML.attr('data-category-code'),
+					items: planningHTML.attr('data-items'),
 					rentalLocationCode: planningHTML.attr('data-rental-location-code'),
 					direction: planningHTML.attr('data-direction'),
 					type: planningHTML.attr('data-type'),
