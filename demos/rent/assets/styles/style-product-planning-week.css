@@ -1,0 +1,119 @@
+.mybooking-product-planning-week-content {
+	margin: 1em;
+	position: relative;
+}
+
+.mybooking-product-planning-week-content .text-center {
+	text-align: center;
+	display: block;
+	padding: 1em;
+}
+
+.mybooking-product-planning-week-content .mybooking-product-planning-week-head {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding-bottom: 1em;
+	border-bottom: 1px solid lightgray;
+}
+
+.mybooking-product-planning-week-content .mybooking-product-planning-week-head .h1 {
+	font-size: 1.3em;
+	font-weight: bold;
+}
+
+@media (max-width: 768px) {
+	.mybooking-product-planning-week-content .mybooking-product-planning-week-head {
+		flex-direction: column;
+		justify-content: center;
+	}
+}
+
+.mybooking-product-planning-week-content .mybooking-product-planning-week-head input {
+	text-align: center;
+}
+
+.mybooking-product-planning-week-content .mybooking-product-planning-week-head .button {
+	color: gray;
+}
+
+.mybooking-product-planning-week-table {
+	margin: 0;
+	display: block;
+	position: relative;
+}
+
+.mybooking-product-planning-week-table table {
+	border-collapse: separate;
+	border-spacing: 0;
+	table-layout: fixed;
+	width: 100%;
+	margin-left: 0;
+}
+
+.mybooking-product-planning-week-table table thead th {
+	padding: 1em;
+	word-break: break-word;
+	vertical-align: middle;
+	text-align: center;
+}
+
+.mybooking-product-planning-week-table table tbody th, 
+.mybooking-product-planning-week-table table tbody td {
+	height: 40px;
+	padding: 0 1em;
+	text-align: center;
+	word-break: break-word;
+	z-index: 0;
+}
+
+.mybooking-product-planning-week-table table  th, 
+.mybooking-product-planning-week-table table  td {
+	font-size: 0.8em;
+	font-weight: 200;
+}
+
+.mybooking-product-planning-week-table table td {
+	position: relative;
+}
+
+.mybooking-product-planning-week-table table td .mybooking-product-planning-week-td-content {
+	position: absolute;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+	background-color: lightgray;
+	border-radius: 5px;
+	cursor: default; /* pointer */
+	margin: 2px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.mybooking-product-planning-week-table table td .mybooking-product-planning-week-range-text {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	color: white;
+  font-weight: bold;
+}
+
+.mybooking-product-planning-week-table table td .mybooking-product-planning-week-td-content.full {
+	background-color: red;
+	margin: 2px;
+	cursor: default;
+	color: white;
+}
+
+.mybooking-product-planning-week-table table td .mybooking-product-planning-week-td-content.closed {
+	opacity: 0.4;
+	background-color: lightgray;
+}

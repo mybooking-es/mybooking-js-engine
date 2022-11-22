@@ -1,0 +1,174 @@
+define('productPlanningWeekActionBar', ['jquery', 'YSDEventTarget', 'commonSettings',
+       'moment', 'YSDFormatter', 'jquery.validate', 'jquery.ui', 'jquery.ui.datepicker-es',
+       'jquery.ui.datepicker-en', 'jquery.ui.datepicker-ca', 'jquery.ui.datepicker-it',
+       'jquery.ui.datepicker.validation'],
+       function($, YSDEventTarget, commonSettings, moment, YSDFormatter) {
+
+	/**
+	 * Contructor
+	*/
+	function WeekActionBar({ parent, target }) {
+		/**
+		 * ProductPlanningWeekActionBar data model
+		*/
+		this.model = {
+			parent,
+			target
+		};
+	}
+
+	const model = {
+	};
+
+	const controller = {
+		/**
+		 * Set new date and refresh planning
+		*/
+		setDate:  function(paramDate) {
+			this.model.parent.model.date.actual = YSDFormatter.formatDate(paramDate, this.model.parent.model.api_date_format);
+
+			const target = document.getElementById(this.model.parent.model.targetId);
+			target.dispatchEvent(new CustomEvent('refresh', { detail: { callback: this.refresh.bind(this) }} ));
+		},
+
+		/**
+		 * Initialize and refresh planning
+		*/
+		initializeDate: function() {
+			$.datepicker.setDefaults( $.datepicker.regional[commonSettings.language(document.documentElement.lang) || 'es'] );
+			
+			const inputDate = this.model.target.find('input[name=date]');
+			const date = new Date (this.model.parent.model.date.actual);
+			
+			inputDate.datepicker({
+				minDate: date,
+			});
+
+			inputDate.datepicker('setDate', date);
+
+			this.model.target.find('input[name=date]').off('change');
+			this.model.target.find('input[name=date]').on('change', () => {
+				const value = $(this).datepicker('getDate');
+
+				this.setDate(value);
+			});
+		},
+
+		/**
+		 *Refresh
+		 */
+		refresh: function() {
+			if (this.model.parent.model.realCalendar.length > 0) {
+				this.setScrollCalendarButtonsState();
+			}
+		},
+	};
+
+	const view = {
+		/**
+		 * Scroll calendar
+		*/
+		setScrollCalendarButtonsState: function(){
+			const dateButtons = this.model.target.find('button[data-action=date]');
+			const firstDate = moment(new Date(this.model.parent.model.configuration.serverDate));
+
+			if(moment(this.model.parent.model.date.actual).isSame(firstDate) || moment(this.model.parent.model.date.actual).isBefore(firstDate)) {
+				$(dateButtons[0]).attr('disabled', 'disabled');
+			} else {
+				$(dateButtons[0]).removeAttr('disabled');
+			}
+		},
+		scrollCalendar: function(event) {
+			const target = $(event.currentTarget);
+			const direction = target.attr('data-direction');
+
+			if (this.model.parent.model.realCalendar.length > 0){
+				const date = new Date (this.model.parent.model.date.actual);
+
+				const newDate = direction === 'next' ? moment(date).add(1, 'd') : moment(date).subtract(1, 'd');
+				const formateDate = YSDFormatter.formatDate(newDate, this.model.parent.model.api_date_format);
+				const newInstanceDate = new Date(formateDate);
+
+				const inputDate = this.model.target.find('input[name=date]');
+				inputDate.datepicker('setDate', newInstanceDate);
+				this.setDate(newInstanceDate);
+			}
+		},
+		
+		/**
+		 * Events
+		*/
+		setEvents: function() {
+			/*
+			* Calendar scroll
+			*/
+			const dateButtons = this.model.target.find('button[data-action=date]');
+
+			if (this.model.parent.model.realCalendar.length > 0) {
+				dateButtons.off('click');
+				dateButtons.on('click', this.scrollCalendar.bind(this));
+			} else {
+				dateButtons.attr('disabled', 'disabled');
+			}
+		},
+
+		/**
+		 * Validations
+		*/
+		setValidations: function() {
+			this.model.target.validate({
+				submitHandler: function(form, event) {
+					event.preventDefault();
+				},
+				rules: {         
+				},
+				messages: {
+				},
+				errorPlacement: function (error, element) {
+					error.insertAfter(element.parent());
+				},
+				errorClass : 'form-reservation-error'
+		 });
+		},
+
+		/**
+		 * Initizialize
+		*/
+		init:  function () {
+			this.refresh();
+			this.initializeDate();
+			this.setEvents();
+			this.setValidations();
+		}
+	};
+
+	const ProductPlanningWeekActionBar = {
+		/**
+		 * Factory
+		*/
+		factory: function(obj) {
+			WeekActionBar.prototype = {
+				...model,
+				...controller,
+				...view,
+			};
+
+			return new WeekActionBar(obj); 
+		},
+
+		/**
+		 * Initizialize
+		*/
+		init: function({ parent, settings }) {
+			const initSettings = {
+				parent,
+				...settings,
+			};
+
+			const  WeekActionBar = this.factory(initSettings);
+			WeekActionBar.init();
+		},
+	};
+
+	return ProductPlanningWeekActionBar;
+});

@@ -178,6 +178,13 @@ $(document).ready(function () {
     }
 });
 
+// Rent week planning
+$(document).ready(function () {
+    if ($('body').hasClass('mybooking-rent-product-planning-week')) {
+        require('./rent/planning/productPlanningWeek.js');
+    }
+});
+
 // == Activities module
 
 // Activity Search JS

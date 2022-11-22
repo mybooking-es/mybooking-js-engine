@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+	<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+		<title>Mybooking product week planning</title>
+		<script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-ui-bootstrap/0.5pre/css/custom-theme/jquery-ui-1.10.0.custom.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.5/css/bulma.min.css">
+    <link rel="stylesheet" href="./assets/styles/styles.css" />
+    <link rel="stylesheet" href="./assets/styles/style-product-planning-week.css" />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+  </head>
+	<body class="mybooking-rent-product-planning-week">
+
+		<!-- Planning init -->
+		<div class="mybooking-product-planning-week-content" data-category-code="B" id="planning-1">
+			<form class="mybooking-product-planning-week-head">
+        <h1 class="h1 mybooking-product-planning-week-title"></h1>
+        <div class="field">
+          <div class="control">
+            <div class="button-box">
+              <button data-action="date" data-direction="back" class="button"><i class="fa fa-arrow-left"></i></button>
+              <input type="text" name="date"  />
+              <button data-action="date" data-direction="next" class="button"><i class="fa fa-arrow-right"></i></button>
+            </div>
+          </div>
+        </div>
+			</form>
+			<div class="mybooking-product-planning-week-table"></div>
+		</div>
+    <!-- Planning end -->
+		
+		<script type="module">
+      import('./assets/js/mybooking-engine-init.js')
+        .then(async function (module) {
+          return await module.default();
+        })
+        .then(function(module) {
+          window.mybookingEngine = module;
+          var script = document.getElementById('engine');
+          script.setAttribute('src', script.getAttribute('data-src'));
+          script.removeAttribute('data-src');
+        });
+    </script>
+    <script id="engine" async data-src="../js/mybooking-js-engine.js"></script>
+	</body>
+</html>
