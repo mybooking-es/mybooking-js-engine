@@ -28,6 +28,8 @@
 				actual: undefined,
 				server: undefined,
 			},
+			selectedRange: [],
+			isDragActive: false,
 		};
 	}
 
@@ -126,6 +128,90 @@
 	};
 
 	const controller = {
+		/**
+		 * Send selected ranges
+		*/
+		sendSelectedRanges: function(){
+			/**
+			 * Format
+			 */
+			const data = {};
+			this.model.selectedRange.forEach(({date, time})=> {
+				if (!data[date]){
+					data[date] = [];
+				}
+
+				data[date].push(time);
+			});
+
+			const formatedData = {}
+			for (const key in data) {
+				data[key] = data[key].sort();
+				formatedData[key] = [];
+
+				let nextArray = {};
+				let timesArray = {};
+				data[key].forEach((time, index) => {
+					const prev = index === 0 ? 0 : index - 1;
+	
+					if (index === 0) {
+						timesArray.time_from = data[key][index];
+					} else if (nextArray.time_from){
+						timesArray.time_from = nextArray.time_from;
+						nextArray = {};
+					} 
+
+					if (this.getTimeRanges({from: data[key][prev], to:  data[key][index]}).length > 2) {
+						timesArray.time_to = data[key][prev];
+						formatedData[key].push(timesArray);
+						timesArray = {};
+						nextArray.time_from = data[key][index];
+					}
+
+					if ( index === data[key].length - 1) {
+						if (nextArray.time_from) {
+							timesArray.time_from = data[key][index];
+						} 
+
+						timesArray.time_to = data[key][index];
+						formatedData[key].push(timesArray);
+						timesArray = {};
+					}
+				});
+			}
+			console.log(formatedData);
+		},
+
+		/**
+		 * Paint selected hours
+		*/
+		paintHours: function() {
+			this.model.selectedRange.forEach(({date, time}) => {
+				const activeCells = this.model.target.find('div.mybooking-product-planning-week-td-content[data-date="' + date + '"][data-time="' + time + '"]');
+						activeCells.addClass('selected');
+			});
+		},
+
+		/**
+		 * Select hours
+		*/
+		selectHours: function(event) {
+			const target = $(event.currentTarget);
+			
+			const data = {
+				date: target.attr('data-date'),
+				time: target.attr('data-time'),
+			};
+
+			if (target.hasClass('selected')) {
+				this.model.selectedRange = this.model.selectedRange.filter((item) => item.date !== data.date || item.time !== data.time );
+				target.removeClass('selected');
+			} else {
+				this.model.selectedRange.push(data);
+				target.addClass('selected');
+			}
+		},
+
 		/**
 		 * Paint ocupations
 		*/
@@ -253,7 +339,7 @@
 							const closedClass = isClosed ? ' closed' : '';
 		
 							html += '<td>';
-								html += '<div data-time="' + item + '" data-date="' + element  + '" class="mybooking-product-planning-week-td-content' + closedClass + '">' + item +  '</div>';
+								html += '<div data-time="' + item + '" data-date="' + element  + '" class="mybooking-product-planning-week-td-content noselect' + closedClass + '">' + item +  '</div>';
 							html += '</td>';
 						});
 						html += '</tr>';
@@ -268,6 +354,14 @@
 		 * Get ranges between from and to time
 		*/
 		getTimeRanges: function({ from, to, interval }) {
+			if (!from || !to){
+				return [];
+			} 
+
+			if (!interval){
+				interval = 30;
+			}
+
 			function getMinutes(time) {
 				const arrayTime = time.split(':').map(Number);
 				return arrayTime[0] * 60 + arrayTime[1];
@@ -345,6 +439,7 @@
 					this.model.target.html(html);
 
 					this.getOcupation(startDate);
+					this.paintHours();
 				} else {
 					const html = i18next.t('planning.no_data_found');
 
@@ -367,6 +462,10 @@
 	};
 
 	const view = {
+		isMobile: function(){
+			return window.matchMedia('only screen and (hover: none) and (pointer: coarse)').matches;
+		},
+
 		/**
 		 * Set Events
 		*/
@@ -376,6 +475,48 @@
 			target.addEventListener('refresh', settings.parent.refresh.bind(settings.parent));
 
 			target.dispatchEvent(new CustomEvent('refresh', { detail: { settings, callback: productPlanningWeekActionBar.init.bind(productPlanningWeekActionBar) }}));
+
+			const selectorTarget = '.mybooking-product-planning-week-td-content:not(.full):not(.closed)';
+
+			if (this.isMobile()) {
+				this.model.target.off('touchmove');
+				this.model.target.on('touchmove', 'tbody', (event) => {
+					// console.log('touchmove', event);
+					// TODO
+				});
+			} else {
+				this.model.target.off('mousedown');
+				this.model.target.on('mousedown', selectorTarget, (event) => {
+					// console.log('mousedown', event);
+					this.selectHours(event);
+					this.model.isDragActive = true;
+				});
+
+				this.model.target.off('mouseover');
+				this.model.target.on('mouseover', selectorTarget, (event) => {
+					if (this.model.isDragActive) {
+						// console.log('mouseover', event);
+						this.selectHours(event);
+					}
+				});
+
+				this.model.target.off('mouseup');
+				this.model.target.on('mouseup', selectorTarget, (event) => {
+					// console.log('mouseup', event);
+					this.model.isDragActive = false;
+				});
+
+				this.model.target.off('mouseleave');
+				this.model.target.on('mouseleave', 'tbody, .mybooking-product-planning-week-td-content.full, .mybooking-product-planning-week-td-content.closed', (event) => {
+					// console.log('mouseleave', event);
+					this.model.isDragActive = false;
+				});
+			}
+
+			this.model.planningHTML.find('.mybooking-send-btn').off('click');
+			this.model.planningHTML.find('.mybooking-send-btn').on('click', (event) => {
+				this.sendSelectedRanges();
+			});
 		},
 
 		/**
