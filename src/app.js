@@ -174,13 +174,14 @@ $(document).ready(function () {
 // Rent planning
 $(document).ready(function () {
     if ($('body').hasClass('mybooking-rent-planning')) {
+        require('./rent/planning/planningActionBar.js');
         require('./rent/planning/planning.js');
     }
 });
-
 // Rent week planning
 $(document).ready(function () {
     if ($('body').hasClass('mybooking-rent-product-planning-week')) {
+        require('./rent/planning/productPlanningWeekActionBar.js');           
         require('./rent/planning/productPlanningWeek.js');
     }
 });
