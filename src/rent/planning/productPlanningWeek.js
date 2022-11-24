@@ -125,6 +125,132 @@
 				});
 			});
 		},
+
+    /**
+     * Calculate price (build the shopping cart and choose the product)
+     */
+    doReservation: function() {
+
+      var dataRequest = this.buildDataRequest();
+      var dataRequestJSON =  encodeURIComponent(JSON.stringify(dataRequest));
+      // Build the URL
+      var url = commonServices.URL_PREFIX + '/api/booking/frontend/shopping-cart';
+      if (this.shoppingCartId == null) {
+        this.shoppingCartId = this.getShoppingCartFreeAccessId();
+      }
+      if (this.shoppingCartId) {
+        url+= '/'+this.shoppingCartId;
+      }
+      var urlParams = [];
+      if (this.requestLanguage != null) {
+        urlParams.push('lang='+this.requestLanguage);
+      }
+      if (commonServices.apiKey && commonServices.apiKey != '') {
+        urlParams.push('api_key='+commonServices.apiKey);
+      } 
+      // Build URL
+      if (urlParams.length > 0) {
+        url += '?';
+        url += urlParams.join('&');
+      }
+
+
+      // Request  
+      var self = this;
+      commonLoader.show();
+      $.ajax({
+        type: 'POST',
+        url: url,
+        data: dataRequestJSON,
+        dataType : 'json',
+        contentType : 'application/json; charset=utf-8',
+        crossDomain: true,
+        success: function(data, textStatus, jqXHR) {
+          if (self.shoppingCartId == null || self.shoppingCartId != data.shopping_cart.free_access_id) {
+            self.shoppingCartId = data.shopping_cart.free_access_id;
+            self.putShoppingCartFreeAccessId(self.shoppingCartId);
+          }
+          self.shopping_cart = data.shopping_cart;
+          self.product_available = data.product_available;
+          if (data.products && Array.isArray(data.products) && data.products.length > 0) {
+            self.product = data.products[0];
+          }
+          else {
+            self.product = null;
+          }
+          productView.update('shopping_cart');
+        },
+        error: function(data, textStatus, jqXHR) {
+          alert(i18next.t('selector.error_loading_data'));
+        },
+        beforeSend: function(jqXHR) {
+          commonLoader.show();
+        },        
+        complete: function(jqXHR, textStatus) {
+          commonLoader.hide();
+        }
+      });
+
+    },
+
+    /**
+     * Build data request
+     * (TODO Custom pickup/return place)
+     */
+    buildDataRequest: function() {
+
+      var data = {date_from: moment(this.selectedDateFrom).format('DD/MM/YYYY'),
+                  date_to: moment(this.selectedDateTo).format('DD/MM/YYYY'),
+                  category_code: this.code,
+                  engine_fixed_product: true
+                  };
+
+      if (this.salesChannelCode != null) {
+        data.sales_channel_code = this.salesChannelCode;
+      }
+
+      if (this.rentalLocationCode != null) {
+        data.rental_location_code = this.rentalLocationCode;
+        data.engine_fixed_rental_location = ($(this.form_selector).find('input[type=hidden][name=rental_location_code]').length == 0);
+      }
+
+      // Agent (from cookies)
+      var agentId = customCookie.get('__mb_agent_id'); 
+      if (agentId != null) {
+        data.agent_id = agentId; 
+      }
+
+      if (this.configuration.rentTimesSelector === 'hours') { 
+        // Hours
+        data.time_from = $(this.time_from_selector).val();
+        data.time_to = $(this.time_to_selector).val();
+      }
+      else if (this.configuration.rentTimesSelector === 'time_range') {
+        var timeRange = null;
+        if ($(this.turn_selector_hidden).length) {
+          // Hidden with one value
+          var timeRange = $(this.turn_selector_hidden).val();
+        }
+        else {
+          // Radio with multiple values
+          var timeRange = $(this.turn_selector_val).val();
+        }
+        if (timeRange != null && timeRange != '') {
+          var times = timeRange.split('-');
+          if (times.length == 2) {
+            data.time_from = times[0];
+            data.time_to = times[1]; 
+          }
+        }
+      }
+  
+      return data;
+
+    }  
+
+
+
+
 	};
 
 	const controller = {
@@ -517,6 +643,9 @@
 			this.model.planningHTML.find('.mybooking-send-btn').on('click', (event) => {
 				this.sendSelectedRanges();
 			});
+
+			// TODO submit form[name=mybooking_product_week_planning_reservation] => view.gotoNextStep
+
 		},
 
 		/**
@@ -550,7 +679,23 @@
 
 				this.setEvents({ parent: this, target: this.model.planningHTML.find('.mybooking-product-planning-week-head') });
 			});
-		}
+		},
+
+    /**
+     * Go to the next step when the user clicks on Book Now!
+     */
+    gotoNextStep: function() {
+
+      if (commonServices.extrasStep) {
+        window.location.href= commonServices.chooseExtrasUrl;
+      }
+      else {
+        window.location.href= commonServices.completeUrl;
+      }
+
+    },    
+
+
 	};
 
 	const planningDiary = {
