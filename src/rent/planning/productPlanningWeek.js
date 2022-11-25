@@ -30,6 +30,7 @@
 			},
 			selectedRange: [],
 			isDragActive: false,
+			isTimeRangeSended: false,
 		};
 	}
 
@@ -87,7 +88,7 @@
 						const formatData = [];
 
 						data.forEach((item) => {
-							formatData.push(...this.getTimeRanges({ from: item.time_from, to: item.time_to, interval: 30 }));
+							formatData.push(`${item.time_from} - ${item.time_to}`);
 						});
 
 						resolve(formatData);
@@ -130,8 +131,9 @@
      * Calculate price (build the shopping cart and choose the product)
      */
     doReservation: function() {
-
       var dataRequest = this.buildDataRequest();
+			console.log(dataRequest);
+			return;
       var dataRequestJSON =  encodeURIComponent(JSON.stringify(dataRequest));
       // Build the URL
       var url = commonServices.URL_PREFIX + '/api/booking/frontend/shopping-cart';
@@ -166,6 +168,7 @@
         contentType : 'application/json; charset=utf-8',
         crossDomain: true,
         success: function(data, textStatus, jqXHR) {
+					debugger;
           if (self.shoppingCartId == null || self.shoppingCartId != data.shopping_cart.free_access_id) {
             self.shoppingCartId = data.shopping_cart.free_access_id;
             self.putShoppingCartFreeAccessId(self.shoppingCartId);
@@ -198,66 +201,51 @@
      * (TODO Custom pickup/return place)
      */
     buildDataRequest: function() {
+			const selectedRanges = this.getSelectedRanges();
+			const days = Object.keys(selectedRanges)[0];
+			const daySelectedRanges = Object.values(selectedRanges)[0];
 
-      var data = {date_from: moment(this.selectedDateFrom).format('DD/MM/YYYY'),
-                  date_to: moment(this.selectedDateTo).format('DD/MM/YYYY'),
-                  category_code: this.code,
-                  engine_fixed_product: true
-                  };
+      const data = {
+				date_from: days,
+				date_to: days,
+				category_code: this.model.category,
+				engine_fixed_product: true
+			};
 
-      if (this.salesChannelCode != null) {
-        data.sales_channel_code = this.salesChannelCode;
+      if (this.model.salesChannelCode != null) { // TODO
+        data.sales_channel_code = this.model.salesChannelCode;
       }
 
-      if (this.rentalLocationCode != null) {
-        data.rental_location_code = this.rentalLocationCode;
-        data.engine_fixed_rental_location = ($(this.form_selector).find('input[type=hidden][name=rental_location_code]').length == 0);
+      if (this.model.rentalLocationCode != null) { // TODO
+        data.rental_location_code = this.model.rentalLocationCode;
+        data.engine_fixed_rental_location = ($(this.model.planningHTML).find('input[type=hidden][name=rental_location_code]').length == 0);
       }
 
-      // Agent (from cookies)
-      var agentId = customCookie.get('__mb_agent_id'); 
-      if (agentId != null) {
-        data.agent_id = agentId; 
-      }
+      // Agent (from cookies) // TODO
+      // var agentId = customCookie.get('__mb_agent_id'); 
+      // if (agentId != null) {
+      //   data.agent_id = agentId; 
+      // }
 
-      if (this.configuration.rentTimesSelector === 'hours') { 
+      if (this.model.configuration.rentTimesSelector === 'hours') { 
         // Hours
-        data.time_from = $(this.time_from_selector).val();
-        data.time_to = $(this.time_to_selector).val();
-      }
-      else if (this.configuration.rentTimesSelector === 'time_range') {
-        var timeRange = null;
-        if ($(this.turn_selector_hidden).length) {
-          // Hidden with one value
-          var timeRange = $(this.turn_selector_hidden).val();
-        }
-        else {
-          // Radio with multiple values
-          var timeRange = $(this.turn_selector_val).val();
-        }
-        if (timeRange != null && timeRange != '') {
-          var times = timeRange.split('-');
-          if (times.length == 2) {
-            data.time_from = times[0];
-            data.time_to = times[1]; 
-          }
-        }
+        data.time_from = daySelectedRanges[0].time_from;
+        data.time_to = daySelectedRanges[0].time_to;
+      } else if (this.model.configuration.rentTimesSelector === 'time_range') {
+				const turn = daySelectedRanges[0].time_from.split(' - ');
+				data.time_from = turn[0];
+				data.time_to = turn[1];
       }
   
       return data;
-
-    }  
-
-
-
-
+    }
 	};
 
 	const controller = {
 		/**
 		 * Send selected ranges
 		*/
-		sendSelectedRanges: function(){
+		getSelectedRanges: function(){
 			/**
 			 * Format
 			 */
@@ -305,7 +293,10 @@
 					}
 				});
 			}
-			console.log(formatedData);
+
+			// console.log(formatedData);
+			
+			return formatedData;
 		},
 
 		/**
@@ -321,13 +312,50 @@
 		/**
 		 * Select hours
 		*/
+		selectMobileHours: function(event, status) {
+			const saveBtn = $(this.model.planningHTML).find('.mybooking-product-planning-week-save-btn');
+			saveBtn.removeAttr('disabled');
+			if (status === 'end'){
+				this.selectHours(event);
+				const values = [
+					this.model.selectedRange[0].time,
+					this.model.selectedRange[1].time
+				];
+				values.sort();
+				const ranges = this.getTimeRanges({ from: values[0], to: values[1]  });
+				
+				if (ranges.length > 2) {
+					ranges.forEach((range, index) => {
+						if (index > 0 && index < ranges.length - 1) {
+							const data = {
+								date: this.model.selectedRange[0].date,
+								time: range
+							};
+							this.model.target.find('div.mybooking-product-planning-week-td-content[data-date="' + data.date + '"][data-time="' + data.time + '"]').addClass('selected');
+							this.model.selectedRange.push(data);
+						}
+					});
+				}
+				return;
+			} else if (status === 'start') {
+				this.selectHours(event);
+			}
+		},
+
+		/**
+		 * Select hours
+		*/
 		selectHours: function(event) {
 			const target = $(event.currentTarget);
-			
+
 			const data = {
 				date: target.attr('data-date'),
 				time: target.attr('data-time'),
 			};
+
+			if (this.model.selectedRange.length > 0 && data.date !== this.model.selectedRange[0].date) {
+				return; // This is because only one day and one range can be selected
+			}
 
 			if (target.hasClass('selected')) {
 				this.model.selectedRange = this.model.selectedRange.filter((item) => item.date !== data.date || item.time !== data.time );
@@ -336,6 +364,7 @@
 				this.model.selectedRange.push(data);
 				target.addClass('selected');
 			}
+			this.model.isTimeRangeSended = false;
 		},
 
 		/**
@@ -400,21 +429,21 @@
 								...newElement,
 								from: {
 									...newElement.from,
-									range: this.getTimeRanges({ from: item.time_from, to: this.model.schedule.slice(-1).pop(), interval: 30 })
+									range: this.getTimeRanges({ from: item.time_from, to: this.model.schedule.slice(-1).pop() })
 								},
 								between: {
 									dateRange: this.getDatesBetweenTwoDates({ from, to }),
-									range: from.isBefore(to) && from.add(1, 'd').isBefore(to) ? this.getTimeRanges({ from: this.model.schedule[0], to: this.model.schedule.slice(-1).pop(), interval: 30 }) : []
+									range: from.isBefore(to) && from.add(1, 'd').isBefore(to) ? this.getTimeRanges({ from: this.model.schedule[0], to: this.model.schedule.slice(-1).pop() }) : []
 								},
 								to: {
 									...newElement.to,
-									range: this.getTimeRanges({ from: this.model.schedule[0], to: item.time_to, interval: 30 })
+									range: this.getTimeRanges({ from: this.model.schedule[0], to: item.time_to })
 								}
 							};
 						} else {
 							newElement = {
 								...newElement,
-								range: this.getTimeRanges({ from: item.time_from, to: item.time_to, interval: 30 })
+								range: this.getTimeRanges({ from: item.time_from, to: item.time_to })
 							};
 						}
 
@@ -604,16 +633,43 @@
 
 			const selectorTarget = '.mybooking-product-planning-week-td-content:not(.full):not(.closed)';
 
-			if (this.isMobile()) {
-				this.model.target.off('touchmove');
-				this.model.target.on('touchmove', 'tbody', (event) => {
-					// console.log('touchmove', event);
-					// TODO
+			if (this.isMobile())  {
+				const saveBtn = $(this.model.planningHTML).find('.mybooking-product-planning-week-save-btn');
+				saveBtn.css('display', 'block');
+				saveBtn.on('click', () => {
+					this.doReservation();
 				});
-			} else {
+			}
+
+			if (this.model.configuration.rentTimesSelector === 'time_range' || this.isMobile()) {
+				this.model.target.off('click');
+				this.model.target.on('click', selectorTarget, (event) => {
+					// console.log('click', event);
+					if (this.model.configuration.rentTimesSelector === 'time_range') {// This is because only one time range can be selected
+						this.model.selectedRange = [];
+						$(selectorTarget).removeClass('selected');
+						this.selectHours(event);
+						this.doReservation(); 
+					} else if (this.isMobile()) {
+						if (this.model.selectedRange.length > 1) {
+							this.model.selectedRange = [];
+							$(selectorTarget).removeClass('selected');
+							this.selectMobileHours(event, 'start');
+						} else if (this.model.selectedRange.length > 0) {
+							this.selectMobileHours(event, 'end');			
+						} else {
+							this.selectMobileHours(event, 'start');
+						}
+					}
+				});
+			}
+
+			if (!this.isMobile())  {
 				this.model.target.off('mousedown');
 				this.model.target.on('mousedown', selectorTarget, (event) => {
 					// console.log('mousedown', event);
+					this.model.selectedRange = []; // This is because only one day and one range can be selected
+					$(selectorTarget).removeClass('selected'); // This is because only one day and one range can be selected
 					this.selectHours(event);
 					this.model.isDragActive = true;
 				});
@@ -630,19 +686,22 @@
 				this.model.target.on('mouseup', selectorTarget, (event) => {
 					// console.log('mouseup', event);
 					this.model.isDragActive = false;
+					if (this.model.selectedRange.length > 0 && !this.model.isTimeRangeSended) {
+						this.doReservation(); // This is because only one day and one range can be selected
+						this.model.isTimeRangeSended = true;
+					}
 				});
 
 				this.model.target.off('mouseleave');
 				this.model.target.on('mouseleave', 'tbody, .mybooking-product-planning-week-td-content.full, .mybooking-product-planning-week-td-content.closed', (event) => {
 					// console.log('mouseleave', event);
 					this.model.isDragActive = false;
+					if (this.model.selectedRange.length > 0 && !this.model.isTimeRangeSended) {
+						this.doReservation(); // This is because only one day and one range can be selected
+						this.model.isTimeRangeSended = true;
+					}
 				});
 			}
-
-			this.model.planningHTML.find('.mybooking-send-btn').off('click');
-			this.model.planningHTML.find('.mybooking-send-btn').on('click', (event) => {
-				this.sendSelectedRanges();
-			});
 
 			// TODO submit form[name=mybooking_product_week_planning_reservation] => view.gotoNextStep
 

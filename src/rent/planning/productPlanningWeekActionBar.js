@@ -47,8 +47,8 @@ define('productPlanningWeekActionBar', ['jquery', 'YSDEventTarget', 'commonSetti
 			inputDate.datepicker('setDate', date);
 
 			this.model.target.find('input[name=date]').off('change');
-			this.model.target.find('input[name=date]').on('change', () => {
-				const value = $(this).datepicker('getDate');
+			this.model.target.find('input[name=date]').on('change', (event, datepicker) => {
+				const value = $(event.currentTarget).datepicker('getDate');
 
 				this.setDate(value);
 			});

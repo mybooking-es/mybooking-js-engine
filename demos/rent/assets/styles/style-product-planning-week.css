@@ -6,7 +6,6 @@
 .mybooking-product-planning-week-content .text-center {
 	text-align: center;
 	display: block;
-	padding: 1em;
 }
 
 .mybooking-product-planning-week-content .mybooking-product-planning-week-head {
@@ -17,7 +16,7 @@
 	border-bottom: 1px solid lightgray;
 }
 
-.mybooking-product-planning-week-content .mybooking-product-planning-week-head .h1 {
+.mybooking-product-planning-week-content .mybooking-product-planning-week-head .mybooking-title {
 	font-size: 1.3em;
 	font-weight: bold;
 }
@@ -37,13 +36,13 @@
 	color: gray;
 }
 
-.mybooking-product-planning-week-content .mybooking-product-planning-week-table {
+.mybooking-product-planning-week-table {
 	margin: 0;
 	display: block;
 	position: relative;
 }
 
-.mybooking-product-planning-week-content .mybooking-product-planning-week-table table {
+.mybooking-product-planning-week-table table {
 	border-collapse: separate;
 	border-spacing: 0;
 	table-layout: fixed;
@@ -51,15 +50,16 @@
 	margin-left: 0;
 }
 
-.mybooking-product-planning-week-content .mybooking-product-planning-week-table table thead th {
+.mybooking-product-planning-week-table table thead th {
 	padding: 1em;
 	word-break: break-word;
 	vertical-align: middle;
 	text-align: center;
+	background: none;
 }
 
-.mybooking-product-planning-week-content .mybooking-product-planning-week-table table tbody th, 
-.mybooking-product-planning-week-content .mybooking-product-planning-week-table table tbody td {
+.mybooking-product-planning-week-table table tbody th, 
+.mybooking-product-planning-week-table table tbody td {
 	height: 40px;
 	padding: 0 1em;
 	text-align: center;
@@ -67,17 +67,17 @@
 	z-index: 0;
 }
 
-.mybooking-product-planning-week-content .mybooking-product-planning-week-table table  th, 
-.mybooking-product-planning-week-content .mybooking-product-planning-week-table table  td {
+.mybooking-product-planning-week-table table  th, 
+.mybooking-product-planning-week-table table  td {
 	font-size: 0.8em;
 	font-weight: 200;
 }
 
-.mybooking-product-planning-week-content .mybooking-product-planning-week-table table td {
+.mybooking-product-planning-week-table table td {
 	position: relative;
 }
 
-.mybooking-product-planning-week-content .mybooking-product-planning-week-table table td .mybooking-product-planning-week-td-content {
+.mybooking-product-planning-week-table table td .mybooking-product-planning-week-td-content {
 	position: absolute;
 	top: 0;
 	left: 0;
@@ -92,7 +92,7 @@
 	justify-content: center;
 }
 
-.mybooking-product-planning-week-content .mybooking-product-planning-week-table table td .mybooking-product-planning-week-range-text {
+.mybooking-product-planning-week-table table td .mybooking-product-planning-week-range-text {
 	position: absolute;
 	top: 0;
 	left: 0;
@@ -106,25 +106,26 @@
   font-weight: bold;
 }
 
-.mybooking-product-planning-week-content .mybooking-product-planning-week-table table td .mybooking-product-planning-week-td-content.full {
+.mybooking-product-planning-week-table table td .mybooking-product-planning-week-td-content.full {
 	background-color: red;
 	margin: 2px;
 	cursor: default;
 	color: white;
 }
 
-.mybooking-product-planning-week-content .mybooking-product-planning-week-table table td .mybooking-product-planning-week-td-content.closed {
+.mybooking-product-planning-week-table table td .mybooking-product-planning-week-td-content.closed {
 	opacity: 0.4;
 	background-color: lightgray;
+	color: initial;
 	cursor: default;
 }
 
-.mybooking-product-planning-week-content .mybooking-product-planning-week-table table td .mybooking-product-planning-week-td-content.selected {
+.mybooking-product-planning-week-table table td .mybooking-product-planning-week-td-content.selected {
 	background-color: green;
 	color: white;
 }
 
-.mybooking-product-planning-week-content .mybooking-product-planning-week-table .noselect {
+.mybooking-product-planning-week-table .noselect {
   -webkit-touch-callout: none; /* iOS Safari */
   -webkit-user-select: none; /* Safari */
   -khtml-user-select: none; /* Konqueror HTML */

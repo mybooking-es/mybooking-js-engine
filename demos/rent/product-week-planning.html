@@ -20,27 +20,29 @@
 		<!-- Planning init -->
 		<div class="mybooking-product-planning-week-content" data-category-code="B" id="planning-1">
 			<form class="mybooking-product-planning-week-head">
-        <h1 class="h1 mybooking-product-planning-week-title"></h1>
-        <div class="field">
-          <div class="control">
-            <div class="button-box">
-              <button data-action="date" data-direction="back" class="button"><i class="fa fa-arrow-left"></i></button>
-              <input type="text" name="date"  />
-              <button data-action="date" data-direction="next" class="button"><i class="fa fa-arrow-right"></i></button>
-            </div>
-          </div>
+        <h1 class="mybooking-title mybooking-product-planning-week-title"></h1>
+        <div class="button-box">
+          <button data-action="date" data-direction="back" class="button"><i class="fa fa-arrow-left"></i></button>
+          <input type="text" name="date"  />
+          <button data-action="date" data-direction="next" class="button"><i class="fa fa-arrow-right"></i></button>
         </div>
 			</form>
 			<div class="mybooking-product-planning-week-table"></div>
       <div class="mybooking-product-planning-week-btns">
+        <button style="display: none;" disabled class="mybooking-product-planning-week-save-btn button">Save</button>
         <form
           name="mybooking_product_week_planning_reservation"
           method="get"
           enctype="application/x-www-form-urlencoded"
-          class="mybooking-form">                           
+          class="mybooking-form">
+            <input type="hidden" name="date_from">
+            <input type="hidden" name="date_to">
+            <input type="hidden" name="time_from">
+            <input type="hidden" name="time_to">
+            <div class="mb-form-group" style="display: none;">
+              <input id="add_to_shopping_cart_btn" class="mb-button block btn-choose-product" type="submit" value="Book Now!"/>
+           </div>
         </form>
-
-        <button class="button mybooking-send-btn">Enviar</button>
       </div>
 		</div>
     <!-- Planning end -->
@@ -60,7 +62,6 @@
     <script id="engine" async data-src="../js/mybooking-js-engine.js"></script>
     <!-- Micro templates -->
     <script type="text/tmpl" id="script_mybooking_product_week_planning_reservation_summary">
-
         <!-- // Exceeds max duration -->
         <% if (product && product.exceeds_max) { %>
            <div class="mb-alert danger">
