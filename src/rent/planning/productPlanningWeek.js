@@ -164,7 +164,7 @@
 				shopping_cart: this.model.shopping_cart,
 				configuration: this.model.configuration,
 				product_available: this.model.product_available,
-				product_type: '', //TODO
+				product_type: this.model.configuration.productType,
 				product: this.model.product,
 				i18next: i18next
 			};
@@ -172,7 +172,7 @@
 			debugger;
 
       const html = tmpl('script_mybooking_product_week_planning_reservation_summary')(data);
-			var target = this.model.planningHTML.find('#reservation_summary');
+			var target = this.model.planningHTML.find('#mybooking_product_week_planning_reservation_summary');
 			target.html(html);
 			
 			const submitBtn = this.model.planningHTML.find('.add_to_shopping_cart_btn');
@@ -182,9 +182,11 @@
 			}
 
 			// Scroll the time ranges container
-			$('html, body').animate({
-				scrollTop: target.offset().top
-			}, 2000); 
+			if (target && typeof target.offset !== 'undefined' && typeof target.offset() !== 'undefined') {
+				$('html, body').animate({
+					scrollTop: target.offset().top
+				}, 2000); 
+			}
     },
 
     /**
