@@ -3,8 +3,8 @@
  * Renting Module ProductPlannigWeek
  *
  */
- require(['jquery', 'i18next', 'commonServices', 'commonSettings', 'commonLoader', 'YSDFormatter', 'commonTranslations', 'moment', './productPlanningWeekActionBar', 'jquery.i18next'],
- function($, i18next, commonServices, commonSettings, commonLoader, YSDFormatter, commonTranslations, moment, productPlanningWeekActionBar) {
+ require(['jquery', 'i18next', 'commonServices', 'commonSettings', 'commonLoader', 'YSDFormatter', 'commonTranslations', 'moment', './productPlanningWeekActionBar', 'ysdtemplate', 'jquery.i18next'],
+ function($, i18next, commonServices, commonSettings, commonLoader, YSDFormatter, commonTranslations, moment, productPlanningWeekActionBar, tmpl) {
 
 	/**
 	 * Contructor
@@ -19,6 +19,7 @@
 			targetId,
 			category,
 			schedule: [],
+			statusSchedule: [],
 			planning: [],
 			ocupation: [],
 			realCalendar: [],
@@ -31,6 +32,9 @@
 			selectedRange: [],
 			isDragActive: false,
 			isTimeRangeSended: false,
+			shoppingCartId: null,
+			shopping_cart: null,
+			product_available: null,
 		};
 	}
 
@@ -53,23 +57,27 @@
 		/**
 		 * Get  schedule
 		*/
-		getProductSchedule: function({ date }){
+		getProductSchedule: function({ from, to }){
 			let url = commonServices.URL_PREFIX;
 			const urlParams = [];
 
+			if (this.model.configuration.requestLanguage != null) {
+        urlParams.push('lang='+this.model.configuration.requestLanguage);
+      }
       if (commonServices.apiKey && commonServices.apiKey != '') {
         urlParams.push('api_key=' + commonServices.apiKey);
       }  
-      urlParams.push('date=' + date);
+      urlParams.push('from=' + from);
+			urlParams.push('to=' + to);
 			urlParams.push('product=' + this.model.category);
 
 			switch (this.model.configuration.rentTimesSelector) {
 				case 'hours':
-					url += '/api/booking/frontend/times';
+					url += '/api/booking/frontend/planning-timetable';
 				break;
 				
 				case 'time_range':
-					url += '/api/booking/frontend/turns';
+					url += '/api/booking/frontend/turns'; // TODO standar schedule
 				break;
 				default:
 					break;
@@ -84,16 +92,20 @@
 				$.ajax({
 					url: url
 				}).done((data) => {
-					if (data.length>0 && typeof data[0] === 'object') {
+					const global = data.global;
+					const status = data.detailed;
+					this.model.statusSchedule = status;
+
+					if (global.length>0 && typeof global[0] === 'object') {
 						const formatData = [];
 
-						data.forEach((item) => {
+						global.forEach((item) => {
 							formatData.push(`${item.time_from} - ${item.time_to}`);
 						});
 
 						resolve(formatData);
 					} else {
-						resolve(data);
+						resolve(global);
 					}
 				});
 			});
@@ -106,6 +118,9 @@
 			let url = commonServices.URL_PREFIX + '/api/booking/frontend/planning';
 			const urlParams = [];
 
+			if (this.model.configuration.requestLanguage != null) {
+        urlParams.push('lang='+this.model.configuration.requestLanguage);
+      }
       if (commonServices.apiKey && commonServices.apiKey != '') {
         urlParams.push('api_key=' + commonServices.apiKey);
       }  
@@ -127,25 +142,74 @@
 			});
 		},
 
+		/**
+     * Store shopping cart free access ID in season
+     */
+		putShoppingCartFreeAccessId: function(value) {
+			sessionStorage.setItem('shopping_cart_free_access_id', value);
+		},
+
+		/**
+     * Get access id shopping
+     */
+		getShoppingCartFreeAccessId: function() {
+			return sessionStorage.getItem('activities_shopping_cart_free_access_id');
+		},
+
+		/**
+     * Update shopping card block
+     */
+		update: function(action) {
+			const data = {
+				shopping_cart: this.model.shopping_cart,
+				configuration: this.model.configuration,
+				product_available: this.model.product_available,
+				product_type: '', //TODO
+				product: this.model.product,
+				i18next: i18next
+			};
+
+			debugger;
+
+      const html = tmpl('script_mybooking_product_week_planning_reservation_summary')(data);
+			var target = this.model.planningHTML.find('#reservation_summary');
+			target.html(html);
+			
+			const submitBtn = this.model.planningHTML.find('.add_to_shopping_cart_btn');
+			// Add to shopping cart button
+			if (submitBtn.attr('disabled')) {
+				submitBtn.attr('disabled', false);
+			}
+
+			// Scroll the time ranges container
+			$('html, body').animate({
+				scrollTop: target.offset().top
+			}, 2000); 
+    },
+
     /**
      * Calculate price (build the shopping cart and choose the product)
      */
     doReservation: function() {
+			this.model.isTimeRangeSended = false;
+
       var dataRequest = this.buildDataRequest();
 			console.log(dataRequest);
-			return;
+
       var dataRequestJSON =  encodeURIComponent(JSON.stringify(dataRequest));
+
       // Build the URL
       var url = commonServices.URL_PREFIX + '/api/booking/frontend/shopping-cart';
-      if (this.shoppingCartId == null) {
-        this.shoppingCartId = this.getShoppingCartFreeAccessId();
+      if (this.model.shoppingCartId == null) {
+        this.model.shoppingCartId = this.getShoppingCartFreeAccessId();
       }
-      if (this.shoppingCartId) {
-        url+= '/'+this.shoppingCartId;
+      if ( this.model.shoppingCartId) {
+        url+= '/'+ this.model.shoppingCartId;
       }
+
       var urlParams = [];
-      if (this.requestLanguage != null) {
-        urlParams.push('lang='+this.requestLanguage);
+      if (this.model.configuration.requestLanguage != null) {
+        urlParams.push('lang='+this.model.configuration.requestLanguage);
       }
       if (commonServices.apiKey && commonServices.apiKey != '') {
         urlParams.push('api_key='+commonServices.apiKey);
@@ -155,7 +219,6 @@
         url += '?';
         url += urlParams.join('&');
       }
-
 
       // Request  
       var self = this;
@@ -167,21 +230,20 @@
         dataType : 'json',
         contentType : 'application/json; charset=utf-8',
         crossDomain: true,
-        success: function(data, textStatus, jqXHR) {
-					debugger;
-          if (self.shoppingCartId == null || self.shoppingCartId != data.shopping_cart.free_access_id) {
-            self.shoppingCartId = data.shopping_cart.free_access_id;
-            self.putShoppingCartFreeAccessId(self.shoppingCartId);
+        success: (data, textStatus, jqXHR) => {
+          if (this.model.shoppingCartId == null || this.model.shoppingCartId != data.shopping_cart.free_access_id) {
+            this.model.shoppingCartId = data.shopping_cart.free_access_id;
+            this.putShoppingCartFreeAccessId(this.model.shoppingCartId);
           }
-          self.shopping_cart = data.shopping_cart;
-          self.product_available = data.product_available;
+          this.model.shopping_cart = data.shopping_cart;
+          this.model.product_available = data.product_available;
           if (data.products && Array.isArray(data.products) && data.products.length > 0) {
-            self.product = data.products[0];
+            this.model.product = data.products[0];
           }
           else {
-            self.product = null;
+            this.model.product = null;
           }
-          productView.update('shopping_cart');
+          this.update();
         },
         error: function(data, textStatus, jqXHR) {
           alert(i18next.t('selector.error_loading_data'));
@@ -202,12 +264,12 @@
      */
     buildDataRequest: function() {
 			const selectedRanges = this.getSelectedRanges();
-			const days = Object.keys(selectedRanges)[0];
+			const day = Object.keys(selectedRanges)[0];
 			const daySelectedRanges = Object.values(selectedRanges)[0];
 
       const data = {
-				date_from: days,
-				date_to: days,
+				date_from: YSDFormatter.formatDate(day, 'DD/MM/YYYY'),
+				date_to:  YSDFormatter.formatDate(day, 'DD/MM/YYYY'),
 				category_code: this.model.category,
 				engine_fixed_product: true
 			};
@@ -364,7 +426,6 @@
 				this.model.selectedRange.push(data);
 				target.addClass('selected');
 			}
-			this.model.isTimeRangeSended = false;
 		},
 
 		/**
@@ -490,7 +551,8 @@
 					rows.forEach((item) => {
 						html += '<tr>';
 						columns.forEach((element) => {
-							const isClosed = !this.model.calendar.includes(element);
+							const isInDaySchedule = this.model.statusSchedule[element].filter((hour) => hour === item).length > 0;
+							const isClosed = !this.model.calendar.includes(element) || !isInDaySchedule;
 							const closedClass = isClosed ? ' closed' : '';
 		
 							html += '<td>';
@@ -575,13 +637,13 @@
 
 			if (commonServices.URL_PREFIX && commonServices.URL_PREFIX !== '' && commonServices.apiKey && commonServices.apiKey !== '') {
 				const startDate = this.model.date.actual;
-				const calendarEndDate = YSDFormatter.formatDate(moment(new Date(startDate)).add(14, 'd'), this.model.api_date_format);
-				const endDate = YSDFormatter.formatDate(moment(new Date(startDate)).add(7, 'd'), this.model.api_date_format);
+				const calendarEndDate = YSDFormatter.formatDate(moment(startDate).add(14, 'd'), this.model.api_date_format);
+				const endDate = YSDFormatter.formatDate(moment(startDate).add(7, 'd'), this.model.api_date_format);
 
 				this.model.calendar = await this.getCalendar({ from: startDate, to: calendarEndDate });
 				this.model.realCalendar = this.getDatesBetweenTwoDates({ from:  startDate, to: endDate });
 
-				this.model.schedule = await this.getProductSchedule({ date:  YSDFormatter.formatDate(moment(new Date(startDate)).add(1, 'd'), this.model.api_date_format) }); // TODO (horario estandarizado)
+				this.model.schedule = await this.getProductSchedule({ from: startDate, to: YSDFormatter.formatDate(moment(startDate).add(7, 'd'), this.model.api_date_format) });
 				this.model.planning = await this.getProductPlanning({ from: startDate, to: endDate });
 
 				if (this.model.realCalendar.length > 0 && this.model.schedule.length > 0) {
@@ -610,7 +672,7 @@
 				this.model.target.html(`<div class="text-center">${html}</div>`);
 			}	
 
-			console.log('Model: ', this.model);
+			// console.log('Model: ', this.model);
 			
 			commonLoader.hide();
 		},
@@ -636,6 +698,7 @@
 			if (this.isMobile())  {
 				const saveBtn = $(this.model.planningHTML).find('.mybooking-product-planning-week-save-btn');
 				saveBtn.css('display', 'block');
+				saveBtn.off('click');
 				saveBtn.on('click', () => {
 					this.doReservation();
 				});
@@ -664,7 +727,7 @@
 				});
 			}
 
-			if (!this.isMobile())  {
+			if (this.model.configuration.rentTimesSelector !== 'time_range' && !this.isMobile())  {
 				this.model.target.off('mousedown');
 				this.model.target.on('mousedown', selectorTarget, (event) => {
 					// console.log('mousedown', event);
@@ -684,7 +747,7 @@
 
 				this.model.target.off('mouseup');
 				this.model.target.on('mouseup', selectorTarget, (event) => {
-					// console.log('mouseup', event);
+					// console.log('mouseup', event, this.model.isTimeRangeSended);
 					this.model.isDragActive = false;
 					if (this.model.selectedRange.length > 0 && !this.model.isTimeRangeSended) {
 						this.doReservation(); // This is because only one day and one range can be selected
@@ -694,7 +757,7 @@
 
 				this.model.target.off('mouseleave');
 				this.model.target.on('mouseleave', 'tbody, .mybooking-product-planning-week-td-content.full, .mybooking-product-planning-week-td-content.closed', (event) => {
-					// console.log('mouseleave', event);
+					// console.log('mouseleave', event, this.model.isTimeRangeSended);
 					this.model.isDragActive = false;
 					if (this.model.selectedRange.length > 0 && !this.model.isTimeRangeSended) {
 						this.doReservation(); // This is because only one day and one range can be selected
