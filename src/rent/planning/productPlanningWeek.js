@@ -159,7 +159,7 @@
 		/**
      * Update shopping card block
      */
-		update: function(action) {
+		update: function() {
 			const data = {
 				shopping_cart: this.model.shopping_cart,
 				configuration: this.model.configuration,
@@ -168,8 +168,6 @@
 				product: this.model.product,
 				i18next: i18next
 			};
-
-			debugger;
 
       const html = tmpl('script_mybooking_product_week_planning_reservation_summary')(data);
 			var target = this.model.planningHTML.find('#mybooking_product_week_planning_reservation_summary');
@@ -196,6 +194,15 @@
 			this.model.isTimeRangeSended = false;
 
       var dataRequest = this.buildDataRequest();
+			if (dataRequest.time_from === dataRequest.time_to) {
+				const [fromHour, fromMin] = dataRequest.time_from.split(':');
+				const [toHour, toMin] = dataRequest.time_to.split(':');
+				if (fromMin === '00') {
+					dataRequest.time_to = `${toHour}:29`;
+				} else {
+					dataRequest.time_to = `${toHour}:59`;
+				}
+			}
 			console.log(dataRequest);
 
       var dataRequestJSON =  encodeURIComponent(JSON.stringify(dataRequest));
@@ -257,7 +264,6 @@
           commonLoader.hide();
         }
       });
-
     },
 
     /**
@@ -686,6 +692,17 @@
 		},
 
 		/**
+     * Go to the next step when the user clicks on Book Now!
+     */
+		 gotoNextStep: function() {
+      if (commonServices.extrasStep) {
+        window.location.href= commonServices.chooseExtrasUrl;
+      } else {
+        window.location.href= commonServices.completeUrl;
+      }
+    },
+
+		/**
 		 * Set Events
 		*/
 		setEvents: function(settings) {
@@ -732,9 +749,9 @@
 			if (this.model.configuration.rentTimesSelector !== 'time_range' && !this.isMobile())  {
 				this.model.target.off('mousedown');
 				this.model.target.on('mousedown', selectorTarget, (event) => {
-					// console.log('mousedown', event);
 					this.model.selectedRange = []; // This is because only one day and one range can be selected
 					$(selectorTarget).removeClass('selected'); // This is because only one day and one range can be selected
+					this.model.isTimeRangeSended = false;
 					this.selectHours(event);
 					this.model.isDragActive = true;
 				});
@@ -749,9 +766,10 @@
 
 				this.model.target.off('mouseup');
 				this.model.target.on('mouseup', selectorTarget, (event) => {
-					// console.log('mouseup', event, this.model.isTimeRangeSended);
 					this.model.isDragActive = false;
+
 					if (this.model.selectedRange.length > 0 && !this.model.isTimeRangeSended) {
+						// console.log('mouseup', event);
 						this.doReservation(); // This is because only one day and one range can be selected
 						this.model.isTimeRangeSended = true;
 					}
@@ -759,17 +777,18 @@
 
 				this.model.target.off('mouseleave');
 				this.model.target.on('mouseleave', 'tbody, .mybooking-product-planning-week-td-content.full, .mybooking-product-planning-week-td-content.closed', (event) => {
-					// console.log('mouseleave', event, this.model.isTimeRangeSended);
 					this.model.isDragActive = false;
 					if (this.model.selectedRange.length > 0 && !this.model.isTimeRangeSended) {
+						// console.log('mouseup', event);
 						this.doReservation(); // This is because only one day and one range can be selected
 						this.model.isTimeRangeSended = true;
 					}
 				});
 			}
 
-			// TODO submit form[name=mybooking_product_week_planning_reservation] => view.gotoNextStep
-
+			this.model.planningHTML.find('form[name=mybooking_product_week_planning_reservation]').on('submit', () => {
+				this.gotoNextStep();
+			});
 		},
 
 		/**
@@ -804,22 +823,6 @@
 				this.setEvents({ parent: this, target: this.model.planningHTML.find('.mybooking-product-planning-week-head') });
 			});
 		},
-
-    /**
-     * Go to the next step when the user clicks on Book Now!
-     */
-    gotoNextStep: function() {
-
-      if (commonServices.extrasStep) {
-        window.location.href= commonServices.chooseExtrasUrl;
-      }
-      else {
-        window.location.href= commonServices.completeUrl;
-      }
-
-    },    
-
-
 	};
 
 	const planningDiary = {
