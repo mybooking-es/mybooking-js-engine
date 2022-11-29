@@ -4,12 +4,12 @@
  *
  */
  require(['jquery', 'i18next', 'commonServices', 'commonSettings', 'commonLoader', 'YSDFormatter', 'commonTranslations', 'moment', './planningActionBar', 'jquery.i18next'],
- function($, i18next, commonServices, commonSettings, commonLoader, YSDFormatter, commonTranslations, moment,planningActionBar) {
+ function($, i18next, commonServices, commonSettings, commonLoader, YSDFormatter, commonTranslations, moment, planningActionBar) {
 
 	/**
 	 * Contructor
 	*/
-	function Planning ({ planningHTML, target, targetId, type, category, items, direction, rentalLocationCode, cells }) {
+	function Planning ({ planningHTML, target, targetId, type, family, category, items, direction, rentalLocationCode, cells }) {
 		/**
 		 * Planning data model
 		*/
@@ -18,7 +18,12 @@
 			target,
 			targetId,
 			type: type || 'diary',
+			isFamilySelectorAvailable: false,
+			family,
+			families: [],
+			isCategorySelectorAvailable: false,
 			category,
+			categories: [],
 			items: items || 15,
 			direction: direction || 'columns',
 			schedule: [],
@@ -26,7 +31,6 @@
 			ocupation: [],
 			realCalendar: [],
 			calendar: [],
-			categories: [],
 			rentalLocationCode,
 			api_date_format: 'YYYY-MM-DD',
 			date: {
@@ -41,6 +45,21 @@
 	}
 
 	var model = {
+		/**
+		 * Get families
+		 */
+		 getFamilies: function() {
+			var url = commonServices.URL_PREFIX + '/api/booking/frontend/families?api_key=' + commonServices.apiKey;
+
+			return new Promise(resolve => {
+				$.ajax({
+					url: url
+				}).done(function(response) {
+					resolve(response.data);
+				});
+			});
+		},
+
 		/**
 		 * Get categories
 		 */
@@ -83,6 +102,11 @@
         urlParams.push('api_key='+commonServices.apiKey);
       }  
       urlParams.push('date='+date);
+
+			if (typeof this.model.family !== 'undefined' && this.model.family !== 'all') {
+				urlParams.push('family='+this.model.family);
+			}
+
 			if (typeof this.model.category !== 'undefined' && this.model.category !== 'all') {
 				urlParams.push('product='+this.model.category);
 			}
@@ -136,6 +160,10 @@
       urlParams.push('from='+from);
 			urlParams.push('to='+to);
 			urlParams.push('rental_location_code='+ this.model.rentalLocationCode);
+
+			if (typeof this.model.family !== 'undefined' && this.model.family !== 'all') {
+				urlParams.push('family='+this.model.family);
+			}
 
 			if (typeof this.model.category !== 'undefined' && this.model.category !== 'all') {
 				urlParams.push('category='+this.model.category);
@@ -263,7 +291,7 @@
 						classes += ' to';
 					}
 				} else {
-					if (index === 0 && moment(item.date_from).isSame(moment(range))) {
+					if (index === 0 && (moment(item.date_from).isSame(moment(range)) || item.date_from === undefined && item.time_from === range )) {
 						classes += 'from';
 					} 
 	
@@ -273,11 +301,18 @@
 				}
 
 				var label = item.label !== undefined ? item.label : '';
+				var date_from = item.date_from !== undefined ? YSDFormatter.formatDate(item.date_from) : '';
+				var date_to = item.date_from !== item.date_to && item.date_to !== undefined ? YSDFormatter.formatDate(item.date_to) : '';
 				var time_from = item.time_from !== undefined ? item.time_from : '';
-				var time_to = item.time_to !== undefined ? item.time_to : '';
-				var time = time_from !== '' && time_to !== '' ? time_from + ' - ' + time_to : '';
-				label += label !== '' && time !== '' ? ' - ': '';
-				label += time;
+				var time_to = item.time_from !==  item.time_to && item.time_to !== undefined ? item.time_to : '';
+				label += label !== '' && date_from !== '' ? ' - ': '';
+				label += date_from;
+				label += label !== '' && date_from !== '' && date_to !== '' ? ' - ': '';
+				label += date_to;
+				label += label !== '' && date_to !== '' && time_from !== '' ? ' - ': '';
+				label += time_from;
+				label += label !== '' && time_from !== '' && time_to !== '' ? ' - ': '';
+				label += time_to;
 
 				var activeCells = that.model.target.find('div.mybooking-planning-td-content[data-id="' + item.id + '"][data-time="' + range + '"]');
 				activeCells.addClass('full').addClass(classes);
@@ -345,12 +380,19 @@
 							};
 
 							if (that.model.type === 'diary') {
+								var time_to = item.time_to;
+								if (that.model.configuration.rentTimesSelector === 'hours') { // TODO See this
+									var [hours, minutes] = time_to.split(':');
+									var formatHours = minutes === '00' ? window.parseInt(hours) - 1 : hours; 
+									var formatMinutes = minutes === '00' ? '59' : '29';
+									time_to = `${formatHours}:${formatMinutes}`;
+								}
 								newElement = {
 									...newElement,
 									actualDay,
 									time_from: item.time_from, 
 									time_to: item.time_to,
-									range: that.getOcupationDiaryRange({ from: item.time_from, to: item.time_to, interval: 30, actualDay })
+									range: that.getOcupationDiaryRange({ from: item.time_from, to: time_to, interval: 30, actualDay })
 								};
 							} else {
 								newElement = {
@@ -483,8 +525,15 @@
 				}
 
 				this.model.resources = await this.getPlanning({ from: date, to: date});
-				this.model.categories = await this.getCategories();
 
+				if (this.model.isFamilySelectorAvailable) {
+					this.model.families = await this.getFamilies();
+				}
+				
+				if (this.model.isCategorySelectorAvailable) {
+					this.model.categories = await this.getCategories();
+				}
+				
 				if (this.model.resources.length > 0 && this.model.schedule.length > 0) {
 					var settings;
 					switch (this.model.direction) {
@@ -515,7 +564,10 @@
 				if (event && event.detail && event.detail.callback) {
 					var total = this.model.direction === 'columns' ? this.model.resources.length : this.model.schedule.length;
 
-					event.detail.callback({ settings: event.detail.settings, total: total, category: this.model.category });
+					const family = this.model.isFamilySelectorAvailable ? this.model.family || 'all' : undefined;
+					const category = this.model.isCategorySelectorAvailable ? this.model.category || 'all' : undefined;
+
+					event.detail.callback({ settings: event.detail.settings, total: total, family, category });
 				}
 
 			} else {
@@ -524,7 +576,7 @@
 				this.model.target.html(html);
 			}	
 
-			// console.log('Model: ', this.model);
+			console.log('Model: ', this.model);
 			
 			commonLoader.hide();
 		},
@@ -564,6 +616,8 @@
 			commonSettings.loadSettings(function(data){
 				that.model = {
 					...that.model,
+					isFamilySelectorAvailable: !that.model.family && data.selectFamily,
+					isCategorySelectorAvailable: !that.model.category && data.productType === 'category_of_resources',
 					configuration: data,
 					requestLanguage,
 					date: {
@@ -621,6 +675,7 @@
 					planningHTML,
 					target: planningHTML.find('.mybooking-planning-table'),
 					targetId:  id + '-table',
+					family: planningHTML.attr('data-family-code'),
 					category: planningHTML.attr('data-category-code'),
 					items: planningHTML.attr('data-items'),
 					rentalLocationCode: planningHTML.attr('data-rental-location-code'),

@@ -28,6 +28,40 @@ define('planningActionBar', ['jquery', 'YSDEventTarget', 'commonSettings',
 
 	var controller = {
 		/**
+		 * Set family
+		*/
+		setFamily: function(event){
+			var value = $(event.currentTarget).val();
+
+			this.model.parent.model.family = value;
+
+			var target = document.getElementById(this.model.parent.model.targetId);
+			target.dispatchEvent(new CustomEvent('refresh', { detail: { callback: this.refresh.bind(this) }} ));
+		},
+
+		/**
+		 * Initialize family
+		*/
+		initializeFamily: function(){
+			var familySelector = this.model.target.find('select[name=family]');
+			familySelector.closest('.field').css('display', 'block');
+
+			if (this.model.parent.model.families && this.model.parent.model.families.length > 0) {
+				this.model.parent.model.families.forEach(function(item) {
+					familySelector.append('<option value="' + item.id + '">' + item.name + '</option>')
+				});
+
+					/*
+				* Set events
+				*/
+				familySelector.off('change');
+				familySelector.on('change', this.setCategory.bind(this));
+			} else {
+				familySelector.attr('disabled', 'disabled');
+			}
+		},
+
+		/**
 		 * Set category
 		*/
 		setCategory: function(event){
@@ -44,15 +78,18 @@ define('planningActionBar', ['jquery', 'YSDEventTarget', 'commonSettings',
 		*/
 		initializeCategory: function(){
 			var categorySelector = this.model.target.find('select[name=category]');
+			categorySelector.closest('.field').css('display', 'block');
 
-			if (typeof this.model.parent.model.category !== 'undefined'){
-				categorySelector.closest('.field').css('display', 'block');
-			}
-
-			if (typeof this.model.parent.model.category !== 'undefined' && this.model.parent.model.categories.length > 0) {
+			if (this.model.parent.model.categories.length && this.model.parent.model.categories.length > 0) {
 				this.model.parent.model.categories.forEach(function(item) {
 					categorySelector.append('<option value="' + item.code + '">' + item.name + '</option>')
 				});
+
+				/*
+				* Set events
+				*/
+				categorySelector.off('change');
+				categorySelector.on('change', this.setCategory.bind(this));
 			} else {
 				categorySelector.attr('disabled', 'disabled');
 			}
@@ -76,9 +113,9 @@ define('planningActionBar', ['jquery', 'YSDEventTarget', 'commonSettings',
 			
 			var inputDate = this.model.target.find('input[name=date]');
 			var date = new Date (this.model.parent.model.date.actual);
-			
+
 			inputDate.datepicker({
-				minDate: date,
+				minDate: new Date (this.model.parent.model.configuration.serverDate),
 			});
 
 			inputDate.datepicker('setDate', date);
@@ -92,7 +129,7 @@ define('planningActionBar', ['jquery', 'YSDEventTarget', 'commonSettings',
 			});
 		},
 
-		refresh: function({ total, category }) {
+		refresh: function({ total, family, category }) {
 			if (total > 0) {
 				this.setColumns(total);
 			}
@@ -103,7 +140,12 @@ define('planningActionBar', ['jquery', 'YSDEventTarget', 'commonSettings',
 
 			this.setScrollButtonsState();
 
-			this.model.target.find('select[name=category]').val(category);
+			if (family) {
+				this.model.target.find('select[name=family]').val(family);
+			}
+			if (category) {
+				this.model.target.find('select[name=category]').val(category);
+			}
 		},
 	};
 
@@ -140,7 +182,7 @@ define('planningActionBar', ['jquery', 'YSDEventTarget', 'commonSettings',
 		*/
 		setScrollCalendarButtonsState: function(){
 			var dateButtons = this.model.target.find('button[data-action=date]');
-			var firstDate = moment(new Date(this.model.parent.model.configuration.serverDate));
+			var firstDate = moment(this.model.parent.model.configuration.serverDate);
 
 			if(moment(this.model.parent.model.date.actual).isSame(firstDate) || moment(this.model.parent.model.date.actual).isBefore(firstDate)) {
 				$(dateButtons[0]).attr('disabled', 'disabled');
@@ -162,6 +204,7 @@ define('planningActionBar', ['jquery', 'YSDEventTarget', 'commonSettings',
 
 				var inputDate = this.model.target.find('input[name=date]');
 				inputDate.datepicker('setDate', newInstanceDate);
+
 				this.setDate(newInstanceDate);
 			}
 		},
@@ -224,13 +267,6 @@ define('planningActionBar', ['jquery', 'YSDEventTarget', 'commonSettings',
 			scrollButtons.on('click', this.scroll.bind(this));
 
 			/*
-			* Category selector
-			*/
-			var categorySelector = this.model.target.find('select[name=category]');
-			categorySelector.off('change');
-			categorySelector.on('change', this.setCategory.bind(this));
-
-			/*
 			* Calendar scroll
 			*/
 			var dateButtons = this.model.target.find('button[data-action=date]');
@@ -262,10 +298,15 @@ define('planningActionBar', ['jquery', 'YSDEventTarget', 'commonSettings',
 		/**
 		 * Initizialize
 		*/
-		init:  function ({ total, category }) {
-			this.refresh({ total, category });
+		init:  function ({ total, family, category }) {
+			this.refresh({ total, family, category });
 			this.initializeDate();
-			this.initializeCategory();
+			if (family) {
+				this.initializeFamily();
+			}
+			if (category) {
+				this.initializeCategory();
+			}
 			this.setEvents();
 			this.setValidations();
 		}
@@ -288,14 +329,9 @@ define('planningActionBar', ['jquery', 'YSDEventTarget', 'commonSettings',
 		/**
 		 * Initizialize
 		*/
-		init: function({ parent, settings , total, category}) {
-			var initSettings = {
-				parent,
-				...settings,
-			};
-
-			var  actionBar = this.factory(initSettings);
-			actionBar.init({ total, category });
+		init: function({ settings, total, family, category}) {
+			var  actionBar = this.factory(settings);
+			actionBar.init({ total, family, category });
 		},
 	};
 

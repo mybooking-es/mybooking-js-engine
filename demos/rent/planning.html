@@ -18,10 +18,10 @@
 	<body class="mybooking-rent-planning">
 
     <!-- Planning init -->
-		<div class="mybooking-planning-content" data-category-code="all" data-rental-location-code="A" data-direction="columns" data-type="diary" id="planning-1">
+		<div class="mybooking-planning-content" data-family-code="FabLab" data-rental-location-code="CENTRE-BIT" data-direction="columns" data-type="diary" id="planning-1">
 			<form class="mybooking-planning-head">
         <div class="field">
-          <label for="date" class="label">Fecha</label>
+          <label class="label">Fecha</label>
           <div class="control">
             <input type="text" name="date"  />
             <div class="button-box">
@@ -31,7 +31,7 @@
           </div>
         </div>
         <div class="field" style="display: none;">
-          <label for="date" class="label">Categoría</label>
+          <label class="label">Categoría</label>
           <div class="control">
             <div class="select">
               <select name="category" style="min-width: 300px;">
@@ -43,7 +43,7 @@
           </div>
         </div>
         <div class="field">
-          <label for="date" class="label"></label>
+          <label class="label"></label>
           <div class="control" style="top: 6px;">
             <div class="button-box">
               <button data-action="scroll" data-direction="back" class="button"><i class="fa fa-arrow-left"></i></button>
@@ -56,10 +56,10 @@
 		</div>
     <!-- Planning end -->
     <!-- Planning init -->
-		<div class="mybooking-planning-content" data-category-code="all" data-rental-location-code="A" data-direction="rows" data-type="calendar" data-items="7" id="planning-2">
+		<div class="mybooking-planning-content" data-rental-location-code="CENTRE-BIT" data-direction="rows" data-type="calendar" data-items="7" id="planning-2">
 			<form class="mybooking-planning-head">
         <div class="field">
-          <label for="date" class="label">Fecha</label>
+          <label class="label">Fecha</label>
           <div class="control">
             <input type="text" name="date"  />
             <div class="button-box">
@@ -69,7 +69,19 @@
           </div>
         </div>
         <div class="field" style="display: none;">
-          <label for="date" class="label">Categoría</label>
+          <label class="label">Familia</label>
+          <div class="control">
+            <div class="select">
+              <select name="family" style="min-width: 300px;">
+                <option value="all">
+                  Todas
+                </option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="field" style="display: none;">
+          <label class="label">Categoría</label>
           <div class="control">
             <div class="select">
               <select name="category" style="min-width: 300px;">
@@ -81,7 +93,7 @@
           </div>
         </div>
         <div class="field">
-          <label for="date" class="label"></label>
+          <label class="label"></label>
           <div class="control" style="top: 6px;">
             <div class="button-box">
               <button data-action="scroll" data-direction="back" class="button"><i class="fa fa-arrow-left"></i></button>

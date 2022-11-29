@@ -32,6 +32,7 @@
 			selectedRange: [],
 			isDragActive: false,
 			isTimeRangeSended: false,
+			isReservationSended: false,
 			shoppingCartId: null,
 			shopping_cart: null,
 			product_available: null,
@@ -58,7 +59,7 @@
 		 * Get  schedule
 		*/
 		getProductSchedule: function({ from, to }){
-			let url = commonServices.URL_PREFIX;
+			let url = commonServices.URL_PREFIX + '/api/booking/frontend/planning-timetable';
 			const urlParams = [];
 
 			if (this.model.configuration.requestLanguage != null) {
@@ -70,18 +71,6 @@
       urlParams.push('from=' + from);
 			urlParams.push('to=' + to);
 			urlParams.push('product=' + this.model.category);
-
-			switch (this.model.configuration.rentTimesSelector) {
-				case 'hours':
-					url += '/api/booking/frontend/planning-timetable';
-				break;
-				
-				case 'time_range':
-					url += '/api/booking/frontend/turns'; // TODO standar schedule
-				break;
-				default:
-					break;
-			}
 
       if (urlParams.length > 0) {
         url += '?';
@@ -383,16 +372,14 @@
 		 * Select hours
 		*/
 		selectMobileHours: function(event, status) {
-			const saveBtn = $(this.model.planningHTML).find('.mybooking-product-planning-week-save-btn');
-			saveBtn.removeAttr('disabled');
 			if (status === 'end'){
-				this.selectHours(event);
+				this.selectHours(event, true);
 				const values = [
 					this.model.selectedRange[0].time,
 					this.model.selectedRange[1].time
 				];
 				values.sort();
-				const ranges = this.getTimeRanges({ from: values[0], to: values[1]  });
+				const ranges = this.getTimeRanges({ from: values[0], to: values[1]  }, true);
 				
 				if (ranges.length > 2) {
 					ranges.forEach((range, index) => {
@@ -408,14 +395,14 @@
 				}
 				return;
 			} else if (status === 'start') {
-				this.selectHours(event);
+				this.selectHours(event, true);
 			}
 		},
 
 		/**
 		 * Select hours
 		*/
-		selectHours: function(event) {
+		selectHours: function(event, isDouble) {
 			const target = $(event.currentTarget);
 
 			const data = {
@@ -427,12 +414,17 @@
 				return; // This is because only one day and one range can be selected
 			}
 
-			if (target.hasClass('selected')) {
-				this.model.selectedRange = this.model.selectedRange.filter((item) => item.date !== data.date || item.time !== data.time );
-				target.removeClass('selected');
-			} else {
+			if (isDouble) {
 				this.model.selectedRange.push(data);
 				target.addClass('selected');
+			} else {
+				if (target.hasClass('selected')) {
+					this.model.selectedRange = this.model.selectedRange.filter((item) => item.date !== data.date || item.time !== data.time );
+					target.removeClass('selected');
+				} else {
+					this.model.selectedRange.push(data);
+					target.addClass('selected');
+				}
 			}
 		},
 
@@ -441,27 +433,42 @@
 		*/
 		paintRanges: function(item) {
 			if (item.range) {
-				item.range.forEach((range) => {
-					const activeCells = this.model.target.find('div.mybooking-product-planning-week-td-content[data-date="' + item.from.date_from + '"][data-time="' + range + '"]');
-					activeCells.addClass('full');
-				});
-			} else {
-				item.from.range.forEach((range) => {
-					const activeCells = this.model.target.find('div.mybooking-product-planning-week-td-content[data-date="' + item.from.date_from + '"][data-time="' + range + '"]');
-					activeCells.addClass('full');
-				});
-				if (item.between.dateRange.length > 0) {
-					item.between.dateRange.forEach((date) => {
-						item.between.range.forEach((range) => {
-							const activeCells = this.model.target.find('div.mybooking-product-planning-week-td-content[data-date="' + date + '"][data-time="' + range + '"]');
+				switch (this.model.configuration.rentTimesSelector) {
+					case 'time_range':
+						const activeCells = this.model.target.find('div.mybooking-product-planning-week-td-content[data-date="' + item.from.date_from + '"][data-time="' + item.from.time_from + ' - ' + item.to.time_to + '"]');
+							activeCells.addClass('full');
+						break;
+				
+					default:
+						item.range.forEach((range) => {
+							const activeCells = this.model.target.find('div.mybooking-product-planning-week-td-content[data-date="' + item.from.date_from + '"][data-time="' + range + '"]');
 							activeCells.addClass('full');
 						});
-					});
+						break;
 				}
-				item.to.range.forEach((range) => {
-					const activeCells = this.model.target.find('div.mybooking-product-planning-week-td-content[data-date="' + item.to.date_to + '"][data-time="' + range + '"]');
-					activeCells.addClass('full');
-				});
+			} else {
+				switch (this.model.configuration.rentTimesSelector) {
+					case 'time_range':
+						// TODO not necesary now
+						break;
+					default:
+						item.from.range.forEach((range) => {
+							const activeCells = this.model.target.find('div.mybooking-product-planning-week-td-content[data-date="' + item.from.date_from + '"][data-time="' + range + '"]');
+							activeCells.addClass('full');
+						});
+						if (item.between.dateRange.length > 0) {
+							item.between.dateRange.forEach((date) => {
+								item.between.range.forEach((range) => {
+									const activeCells = this.model.target.find('div.mybooking-product-planning-week-td-content[data-date="' + date + '"][data-time="' + range + '"]');
+									activeCells.addClass('full');
+								});
+							});
+						}
+						item.to.range.forEach((range) => {
+							const activeCells = this.model.target.find('div.mybooking-product-planning-week-td-content[data-date="' + item.to.date_to + '"][data-time="' + range + '"]');
+							activeCells.addClass('full');
+						});
+					}
 			}			
 		},
 
@@ -493,6 +500,7 @@
 
 						const from = moment(item.date_from);
 						const to = moment(item.date_to);
+
 						if (!from.isSame(to)) {
 							newElement = {
 								...newElement,
@@ -559,7 +567,15 @@
 					rows.forEach((item) => {
 						html += '<tr>';
 						columns.forEach((element) => {
-							const isInDaySchedule = this.model.statusSchedule[element].filter((hour) => hour === item).length > 0;
+							const isInDaySchedule = this.model.statusSchedule[element].filter((time) => {
+								if (typeof time === 'object') {
+									const formatData = `${time.time_from} - ${time.time_to}`;
+									return formatData === item;
+								} else {
+									return time === item;
+								}
+							}).length > 0;
+							
 							const isClosed = !this.model.calendar.includes(element) || !isInDaySchedule;
 							const closedClass = isClosed ? ' closed' : '';
 		
@@ -578,7 +594,7 @@
 		/**
 		 * Get ranges between from and to time
 		*/
-		getTimeRanges: function({ from, to, interval }) {
+		getTimeRanges: function({ from, to, interval }, isReal) {
 			if (!from || !to){
 				return [];
 			} 
@@ -637,6 +653,7 @@
 			this.model = {
 				...this.model,
 				schedule: [],
+				statusSchedule: [],
 				planning: [],
 				ocupation: [],
 				realCalendar: [],
@@ -663,7 +680,7 @@
 					const html = this.drawPlanning(settings);
 					this.model.target.html(html);
 
-					this.getOcupation(startDate);
+					this.getOcupation();
 					this.paintHours();
 				} else {
 					const html = i18next.t('planning.no_data_found');
@@ -680,7 +697,7 @@
 				this.model.target.html(`<div class="text-center">${html}</div>`);
 			}	
 
-			// console.log('Model: ', this.model);
+			console.log('Model: ', this.model);
 			
 			commonLoader.hide();
 		},
@@ -714,15 +731,6 @@
 
 			const selectorTarget = '.mybooking-product-planning-week-td-content:not(.full):not(.closed)';
 
-			if (this.isMobile())  {
-				const saveBtn = $(this.model.planningHTML).find('.mybooking-product-planning-week-save-btn');
-				saveBtn.css('display', 'block');
-				saveBtn.off('click');
-				saveBtn.on('click', () => {
-					this.doReservation();
-				});
-			}
-
 			if (this.model.configuration.rentTimesSelector === 'time_range' || this.isMobile()) {
 				this.model.target.off('click');
 				this.model.target.on('click', selectorTarget, (event) => {
@@ -733,14 +741,31 @@
 						this.selectHours(event);
 						this.doReservation(); 
 					} else if (this.isMobile()) {
-						if (this.model.selectedRange.length > 1) {
+						const target = $(event.currentTarget);
+						if (this.model.isReservationSended) {
 							this.model.selectedRange = [];
 							$(selectorTarget).removeClass('selected');
-							this.selectMobileHours(event, 'start');
-						} else if (this.model.selectedRange.length > 0) {
+							this.model.isReservationSended = false;
+						}
+						const exists = this.model.selectedRange.filter((item) => {
+							return item.date === target.attr('data-date') && item.time === target.attr('data-time').length > 0;
+						});
+						if (exists){
 							this.selectMobileHours(event, 'end');			
+							this.doReservation();
+							this.model.isReservationSended = true;
 						} else {
-							this.selectMobileHours(event, 'start');
+							if (this.model.selectedRange.length > 1) {
+								this.model.selectedRange = [];
+								$(selectorTarget).removeClass('selected');
+								this.selectMobileHours(event, 'start');
+							} else if (this.model.selectedRange.length > 0) {
+								this.selectMobileHours(event, 'end');			
+								this.doReservation();
+								this.model.isReservationSended = true;
+							} else {
+								this.selectMobileHours(event, 'start');
+							}
 						}
 					}
 				});
