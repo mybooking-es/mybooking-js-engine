@@ -184,17 +184,7 @@
 			this.model.isTimeRangeSended = false;
 
       var dataRequest = this.buildDataRequest();
-			if (dataRequest.time_from === dataRequest.time_to) {
-				const [fromHour, fromMin] = dataRequest.time_from.split(':');
-				const [toHour, toMin] = dataRequest.time_to.split(':');
-				const hour = window.parseInt(toHour) + 1;
-				if (fromMin === '00') {
-					dataRequest.time_to = `${toHour}:30`;
-				} else {
-					dataRequest.time_to = `${hour}:00`;
-				}
-			}
-			console.log(dataRequest);
+			// console.log(dataRequest);
 
       var dataRequestJSON =  encodeURIComponent(JSON.stringify(dataRequest));
 
@@ -221,7 +211,6 @@
       }
 
       // Request  
-      var self = this;
       commonLoader.show();
       $.ajax({
         type: 'POST',
@@ -290,8 +279,25 @@
 
       if (this.model.configuration.rentTimesSelector === 'hours') { 
         // Hours
-        data.time_from = daySelectedRanges[0].time_from;
-        data.time_to = daySelectedRanges[0].time_to;
+				data.time_from = daySelectedRanges[0].time_from;
+				const [fromHour, fromMin] = data.time_from.split(':');
+				const [toHour, toMin] = daySelectedRanges[0].time_to.split(':');
+
+				if (data.time_from === data.time_to) {
+					const hour = window.parseInt(toHour) + 1;
+					if (fromMin === '00') {
+						data.time_to = `${toHour}:30`;
+					} else {
+						data.time_to = `${hour}:00`;
+					}
+				} else {
+					const hour = window.parseInt(toHour) + 1;
+					if (toMin === '00') {
+						data.time_to = `${toHour}:30`;
+					} else {
+						data.time_to = `${hour}:00`;
+					}
+				}
       } else if (this.model.configuration.rentTimesSelector === 'time_range') {
 				const turn = daySelectedRanges[0].time_from.split(' - ');
 				data.time_from = turn[0];
