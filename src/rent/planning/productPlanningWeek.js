@@ -9,7 +9,7 @@
 	/**
 	 * Contructor
 	*/
-	function ProductPlannigWeek ({ planningHTML, target, targetId, category }) {
+	function ProductPlannigWeek ({ planningHTML, target, targetId, category, interval }) {
 		/**
 		 * ProductPlannigWeek data model
 		*/
@@ -28,6 +28,7 @@
 			date: {
 				actual: undefined,
 				server: undefined,
+				interval: interval !== null ? window.parseInt(interval) : 30,
 			},
 			selectedRange: [],
 			isDragActive: false,
@@ -186,10 +187,11 @@
 			if (dataRequest.time_from === dataRequest.time_to) {
 				const [fromHour, fromMin] = dataRequest.time_from.split(':');
 				const [toHour, toMin] = dataRequest.time_to.split(':');
+				const hour = window.parseInt(toHour) + 1;
 				if (fromMin === '00') {
-					dataRequest.time_to = `${toHour}:29`;
+					dataRequest.time_to = `${toHour}:30`;
 				} else {
-					dataRequest.time_to = `${toHour}:59`;
+					dataRequest.time_to = `${hour}:00`;
 				}
 			}
 			console.log(dataRequest);
@@ -379,7 +381,7 @@
 					this.model.selectedRange[1].time
 				];
 				values.sort();
-				const ranges = this.getTimeRanges({ from: values[0], to: values[1]  }, true);
+				const ranges = this.getTimeRanges({ from: values[0], to: values[1] });
 				
 				if (ranges.length > 2) {
 					ranges.forEach((range, index) => {
@@ -435,40 +437,45 @@
 			if (item.range) {
 				switch (this.model.configuration.rentTimesSelector) {
 					case 'time_range':
+						const objName = this.model.statusSchedule[item.from.date_from].filter((element) => {
+							return element.time_from == item.from.time_from && element.time_to == item.to.time_to;
+						})[0];
+						const name = objName ? objName.name : '';
+						const label = `${YSDFormatter.formatDate(item.from.date_from)} - ${item.from.time_from} / ${item.to.time_to} - ${name}`;
 						const activeCells = this.model.target.find('div.mybooking-product-planning-week-td-content[data-date="' + item.from.date_from + '"][data-time="' + item.from.time_from + ' - ' + item.to.time_to + '"]');
 							activeCells.addClass('full');
+							activeCells.attr('title', label);
 						break;
-				
 					default:
+						const label2 = `${YSDFormatter.formatDate(item.from.date_from)} - ${item.from.time_from} / ${item.to.time_to}`;
 						item.range.forEach((range) => {
 							const activeCells = this.model.target.find('div.mybooking-product-planning-week-td-content[data-date="' + item.from.date_from + '"][data-time="' + range + '"]');
 							activeCells.addClass('full');
+							activeCells.attr('title', label2);
 						});
 						break;
 				}
 			} else {
-				switch (this.model.configuration.rentTimesSelector) {
-					case 'time_range':
-						// TODO not necesary now
-						break;
-					default:
-						item.from.range.forEach((range) => {
-							const activeCells = this.model.target.find('div.mybooking-product-planning-week-td-content[data-date="' + item.from.date_from + '"][data-time="' + range + '"]');
+				const label3 = `${YSDFormatter.formatDate(item.from.date_from)} ${item.from.time_from} - ${YSDFormatter.formatDate(item.to.date_to)} ${item.to.time_to}`;
+				item.from.range.forEach((range) => {
+					const activeCells = this.model.target.find('div.mybooking-product-planning-week-td-content[data-date="' + item.from.date_from + '"][data-time="' + range + '"]');
+					activeCells.addClass('full');
+					activeCells.attr('title', label3);
+				});
+				if (item.between.dateRange.length > 0) {
+					item.between.dateRange.forEach((date) => {
+						item.between.range.forEach((range) => {
+							const activeCells = this.model.target.find('div.mybooking-product-planning-week-td-content[data-date="' + date + '"][data-time="' + range + '"]');
 							activeCells.addClass('full');
+							activeCells.attr('title', label3);
 						});
-						if (item.between.dateRange.length > 0) {
-							item.between.dateRange.forEach((date) => {
-								item.between.range.forEach((range) => {
-									const activeCells = this.model.target.find('div.mybooking-product-planning-week-td-content[data-date="' + date + '"][data-time="' + range + '"]');
-									activeCells.addClass('full');
-								});
-							});
-						}
-						item.to.range.forEach((range) => {
-							const activeCells = this.model.target.find('div.mybooking-product-planning-week-td-content[data-date="' + item.to.date_to + '"][data-time="' + range + '"]');
-							activeCells.addClass('full');
-						});
-					}
+					});
+				}
+				item.to.range.forEach((range) => {
+					const activeCells = this.model.target.find('div.mybooking-product-planning-week-td-content[data-date="' + item.to.date_to + '"][data-time="' + range + '"]');
+					activeCells.addClass('full');
+					activeCells.attr('title', label3);
+				});
 			}			
 		},
 
@@ -501,6 +508,14 @@
 						const from = moment(item.date_from);
 						const to = moment(item.date_to);
 
+						var time_to = item.time_to;
+						if (this.model.configuration.rentTimesSelector === 'hours') { // TODO See this
+							var [hours, minutes] = time_to.split(':');
+							var formatHours = minutes === '00' ? window.parseInt(hours) - 1 : hours; 
+							var formatMinutes = minutes === '00' ? '59' : '29';
+							time_to = `${formatHours}:${formatMinutes}`;
+						}
+
 						if (!from.isSame(to)) {
 							newElement = {
 								...newElement,
@@ -514,13 +529,13 @@
 								},
 								to: {
 									...newElement.to,
-									range: this.getTimeRanges({ from: this.model.schedule[0], to: item.time_to })
+									range: this.getTimeRanges({ from: this.model.schedule[0], to: time_to })
 								}
 							};
 						} else {
 							newElement = {
 								...newElement,
-								range: this.getTimeRanges({ from: item.time_from, to: item.time_to })
+								range: this.getTimeRanges({ from: item.time_from, to: time_to })
 							};
 						}
 
@@ -594,14 +609,12 @@
 		/**
 		 * Get ranges between from and to time
 		*/
-		getTimeRanges: function({ from, to, interval }, isReal) {
+		getTimeRanges: function({ from, to }) {
 			if (!from || !to){
 				return [];
 			} 
 
-			if (!interval){
-				interval = 30;
-			}
+			const interval = this.model.date.interval;
 
 			function getMinutes(time) {
 				const arrayTime = time.split(':').map(Number);
@@ -880,6 +893,7 @@
 					target: planningHTML.find('.mybooking-product-planning-week-table'),
 					targetId:  `${id}-table`,
 					category: planningHTML.attr('data-category-code'),
+					interval: planningHTML.attr('data-interval') || null,
 				};
 				settings.target.attr('id', settings.targetId);
 

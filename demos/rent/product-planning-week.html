@@ -18,7 +18,7 @@
 	<body class="mybooking-rent-product-planning-week">
 
 		<!-- Planning init -->
-		<div class="mybooking-product-planning-week-content" data-category-code="A" id="planning-1">
+		<div class="mybooking-product-planning-week-content" data-category-code="1" id="planning-1">
 			<form class="mybooking-product-planning-week-head">
         <h1 class="mybooking-title mybooking-product-planning-week-title"></h1>
         <div class="button-box">
@@ -74,8 +74,19 @@
           Reservation summary
         </h2>
 
-        <div class="mybooking-summary_detail">
+        <hr>
+        <div>
+          <b>
+            <% if (shopping_cart.items) { %>
+              <%=shopping_cart.items[0]['item_description_customer_translation']%>
+              <br>
+            <% } %>
+            <%=shopping_cart.date_from_default_format%> - <%=shopping_cart.time_from%> - 
+          <%=shopping_cart.time_to%>
+          </b>
+        </div>
 
+        <div class="mybooking-summary_detail">
           <!-- // Duration -->
           <% if (shopping_cart.days > 0) { %>
             <div class="mybooking-summary_extras">
