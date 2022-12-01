@@ -855,7 +855,7 @@
 		 * Initizialize
 		*/
 		init: function() {
-			const requestLanguage = commonSettings.language(document.documentElement.lang);
+			const requestLanguage = commonSettings.language(document.documentElement.lang || 'es');
 			
 			// Initialize i18next for translations
 			i18next.init({  

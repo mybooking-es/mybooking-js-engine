@@ -422,6 +422,7 @@
 		 * Draw planning
 		*/
 		drawPlanning ({ rows, columns }) {
+			var that = this;
 			var  html = '<div class="mybooking-planning-scrollable"><table >';
 				/**
 				 * Head
@@ -435,9 +436,9 @@
 					if (!item.id && !description.includes(':')) {
 						var mydate = new Date(description);
 						var year = mydate.getFullYear();
-						var month = mydate.toLocaleString(commonSettings.language(document.documentElement.lang) || 'es', { month: 'short' }).toUpperCase();
+						var month = mydate.toLocaleString(that.model.requestLanguage, { month: 'short' }).toUpperCase();
 						var day = mydate.getDate();
-						var weekday = mydate.toLocaleString(commonSettings.language(document.documentElement.lang) || 'es', { weekday: 'short' }).toUpperCase();
+						var weekday = mydate.toLocaleString(that.model.requestLanguage, { weekday: 'short' }).toUpperCase();
 
 						description = month + ' ' + year + '<br>' + '<b style="font-size: 20px;">' + day + '</b><br>' + weekday;
 					}
@@ -459,7 +460,7 @@
 						if (!item.id && !fixHead.includes(':')) {
 							var mydate = new Date(fixHead);
 							var day = mydate.getDate();
-							var weekday = mydate.toLocaleString(commonSettings.language(document.documentElement.lang) || 'es', { weekday: 'short' }).toUpperCase();
+							var weekday = mydate.toLocaleString(that.model.requestLanguage, { weekday: 'short' }).toUpperCase();
 
 							fixHead = '<b style="font-size: 20px;">' + day + '</b>&nbsp;&nbsp;&nbsp;' + weekday;
 						}
@@ -604,7 +605,7 @@
 		init: function() {
 			var that = this;
 
-			var requestLanguage = commonSettings.language(document.documentElement.lang);
+			var requestLanguage = commonSettings.language(document.documentElement.lang || 'es');
 			// Initialize i18next for translations
 			i18next.init({  
 				lng: requestLanguage,
