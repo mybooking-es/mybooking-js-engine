@@ -45,7 +45,23 @@
 		 * Get calendar
 		*/
 		getCalendar: function({ from, to }) {
-			const url = commonServices.URL_PREFIX + '/api/booking/frontend/dates?api_key=' + commonServices.apiKey + '&from=' + from + '&to=' + to;
+			let url = commonServices.URL_PREFIX + '/api/booking/frontend/dates';
+
+			const urlParams = [];
+			if (this.model.requestLanguage != null) {
+        urlParams.push('lang='+this.model.requestLanguage);
+      }
+      if (commonServices.apiKey && commonServices.apiKey != '') {
+        urlParams.push('api_key='+commonServices.apiKey);
+      } 
+
+			urlParams.push('from='+from);
+			urlParams.push('to='+to);
+
+			if (urlParams.length > 0) {
+        url += '?';
+        url += urlParams.join('&');
+      }
 
 			return new Promise(resolve => {
 				$.ajax({
@@ -63,8 +79,8 @@
 			let url = commonServices.URL_PREFIX + '/api/booking/frontend/planning-timetable';
 			const urlParams = [];
 
-			if (this.model.configuration.requestLanguage != null) {
-        urlParams.push('lang='+this.model.configuration.requestLanguage);
+			if (this.model.requestLanguage != null) {
+        urlParams.push('lang='+this.model.requestLanguage);
       }
       if (commonServices.apiKey && commonServices.apiKey != '') {
         urlParams.push('api_key=' + commonServices.apiKey);
@@ -108,8 +124,8 @@
 			let url = commonServices.URL_PREFIX + '/api/booking/frontend/planning';
 			const urlParams = [];
 
-			if (this.model.configuration.requestLanguage != null) {
-        urlParams.push('lang='+this.model.configuration.requestLanguage);
+			if (this.model.requestLanguage != null) {
+        urlParams.push('lang='+this.model.requestLanguage);
       }
       if (commonServices.apiKey && commonServices.apiKey != '') {
         urlParams.push('api_key=' + commonServices.apiKey);
@@ -198,8 +214,8 @@
       }
 
       var urlParams = [];
-      if (this.model.configuration.requestLanguage != null) {
-        urlParams.push('lang='+this.model.configuration.requestLanguage);
+      if (this.model.requestLanguage != null) {
+        urlParams.push('lang='+this.model.requestLanguage);
       }
       if (commonServices.apiKey && commonServices.apiKey != '') {
         urlParams.push('api_key='+commonServices.apiKey);
@@ -256,20 +272,20 @@
 			const daySelectedRanges = Object.values(selectedRanges)[0];
 
       const data = {
-				date_from: YSDFormatter.formatDate(day, 'DD/MM/YYYY'),
-				date_to:  YSDFormatter.formatDate(day, 'DD/MM/YYYY'),
+				date_from: YSDFormatter.formatDate(day, this.model.configuration.dateFormat),
+				date_to:  YSDFormatter.formatDate(day, this.model.configuration.dateFormat),
 				category_code: this.model.category,
 				engine_fixed_product: true
 			};
 
-      if (this.model.salesChannelCode != null) { // TODO
-        data.sales_channel_code = this.model.salesChannelCode;
-      }
+      // if (this.model.salesChannelCode != null) { // TODO
+      //   data.sales_channel_code = this.model.salesChannelCode;
+      // }
 
-      if (this.model.rentalLocationCode != null) { // TODO
-        data.rental_location_code = this.model.rentalLocationCode;
-        data.engine_fixed_rental_location = ($(this.model.planningHTML).find('input[type=hidden][name=rental_location_code]').length == 0);
-      }
+      // if (this.model.rentalLocationCode != null) { // TODO
+      //   data.rental_location_code = this.model.rentalLocationCode;
+      //   data.engine_fixed_rental_location = ($(this.model.planningHTML).find('input[type=hidden][name=rental_location_code]').length == 0);
+      // }
 
       // Agent (from cookies) // TODO
       // var agentId = customCookie.get('__mb_agent_id'); 
@@ -447,13 +463,13 @@
 							return element.time_from == item.from.time_from && element.time_to == item.to.time_to;
 						})[0];
 						const name = objName ? objName.name : '';
-						const label = `${YSDFormatter.formatDate(item.from.date_from)} - ${item.from.time_from} / ${item.to.time_to} - ${name}`;
+						const label = `${YSDFormatter.formatDate(item.from.date_from, this.model.configuration.dateFormat)} - ${item.from.time_from} / ${item.to.time_to} - ${name}`;
 						const activeCells = this.model.target.find('div.mybooking-product-planning-week-td-content[data-date="' + item.from.date_from + '"][data-time="' + item.from.time_from + ' - ' + item.to.time_to + '"]');
 							activeCells.addClass('full');
 							activeCells.attr('title', label);
 						break;
 					default:
-						const label2 = `${YSDFormatter.formatDate(item.from.date_from)} - ${item.from.time_from} / ${item.to.time_to}`;
+						const label2 = `${YSDFormatter.formatDate(item.from.date_from, this.model.configuration.dateFormat)} - ${item.from.time_from} / ${item.to.time_to}`;
 						item.range.forEach((range) => {
 							const activeCells = this.model.target.find('div.mybooking-product-planning-week-td-content[data-date="' + item.from.date_from + '"][data-time="' + range + '"]');
 							activeCells.addClass('full');
@@ -462,7 +478,7 @@
 						break;
 				}
 			} else {
-				const label3 = `${YSDFormatter.formatDate(item.from.date_from)} ${item.from.time_from} - ${YSDFormatter.formatDate(item.to.date_to)} ${item.to.time_to}`;
+				const label3 = `${YSDFormatter.formatDate(item.from.date_from, this.model.configuration.dateFormat)} ${item.from.time_from} - ${YSDFormatter.formatDate(item.to.date_to, this.model.configuration.dateFormat)} ${item.to.time_to}`;
 				item.from.range.forEach((range) => {
 					const activeCells = this.model.target.find('div.mybooking-product-planning-week-td-content[data-date="' + item.from.date_from + '"][data-time="' + range + '"]');
 					activeCells.addClass('full');
@@ -559,7 +575,7 @@
 		drawPlanning ({ rows, columns }) {
 			const mydate = new Date(columns[0]);
 			const year = mydate.getFullYear();
-			const month = mydate.toLocaleString(commonSettings.language(document.documentElement.lang) || 'es', { month: 'long' }).toUpperCase();
+			const month = mydate.toLocaleString(this.model.requestLanguage, { month: 'long' }).toUpperCase();
 			this.model.planningHTML.find('.mybooking-product-planning-week-title').html(`${month},  ${year}`);
 
 			let  html = '<div class="mybooking-product-planning-week-container"><table>';
@@ -568,10 +584,10 @@
 				 */
 				html += '<thead><tr>';
 		
-				columns.forEach(function(item) {
+				columns.forEach((item) => {
 					const mydate = new Date(item);
 					const day = mydate.getDate();
-					const weekday = mydate.toLocaleString(commonSettings.language(document.documentElement.lang) || 'es', { weekday: 'short' }).toUpperCase();
+					const weekday = mydate.toLocaleString(this.model.requestLanguage, { weekday: 'short' }).toUpperCase();
 
 					description = '<b style="font-size: 20px;">' + day + '</b><br>' + weekday;
 		
@@ -601,7 +617,7 @@
 							const closedClass = isClosed ? ' closed' : '';
 		
 							html += '<td>';
-								html += '<div data-time="' + item + '" data-date="' + element  + '" class="mybooking-product-planning-week-td-content noselect' + closedClass + '">' + item +  '</div>';
+								html += '<div data-time="' + item + '" data-date="' + element  + '" class="mybooking-product-planning-week-td-content noselect' + closedClass + '" title="' + YSDFormatter.formatDate(element, this.model.configuration.dateFormat) + ' - ' + item + '">' + item +  '</div>';
 							html += '</td>';
 						});
 						html += '</tr>';
@@ -840,6 +856,7 @@
 		*/
 		init: function() {
 			const requestLanguage = commonSettings.language(document.documentElement.lang);
+			
 			// Initialize i18next for translations
 			i18next.init({  
 				lng: requestLanguage,
@@ -853,6 +870,7 @@
 			});
 
 			commonSettings.loadSettings((data) => {
+				
 				this.model = {
 					...this.model,
 					configuration: data,

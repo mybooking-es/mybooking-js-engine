@@ -35,7 +35,7 @@ define('productPlanningWeekActionBar', ['jquery', 'YSDEventTarget', 'commonSetti
 		 * Initialize and refresh planning
 		*/
 		initializeDate: function() {
-			$.datepicker.setDefaults( $.datepicker.regional[commonSettings.language(document.documentElement.lang) || 'es'] );
+			$.datepicker.setDefaults( $.datepicker.regional[this.model.parent.model.requestLanguage] );
 			
 			const inputDate = this.model.target.find('input[name=date]');
 			const date = new Date (this.model.parent.model.date.actual);
@@ -85,7 +85,7 @@ define('productPlanningWeekActionBar', ['jquery', 'YSDEventTarget', 'commonSetti
 			if (this.model.parent.model.realCalendar.length > 0){
 				const date = new Date (this.model.parent.model.date.actual);
 
-				const newDate = direction === 'next' ? moment(date).add(1, 'd') : moment(date).subtract(1, 'd');
+				const newDate = direction === 'next' ? moment(date).add(7, 'd') : moment(date).subtract(7, 'd');
 				const formateDate = YSDFormatter.formatDate(newDate, this.model.parent.model.api_date_format);
 				const newInstanceDate = new Date(formateDate);
 
