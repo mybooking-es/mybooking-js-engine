@@ -9,7 +9,7 @@ define('selector_wizard_select_date', ['jquery', 'YSDMemoryDataSource', 'YSDRemo
                   commonTranslations, YSDEventTarget, tmpl, i18next, moment) {
 
 
-  selectorWizardSelectDate = {
+  var selectorWizardSelectDate = {
 
     model: {
       events: new YSDEventTarget(),

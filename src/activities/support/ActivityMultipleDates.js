@@ -3,7 +3,7 @@ define('ActivityMultipleDates',['jquery','ysdtemplate', 'YSDRemoteDataSource','Y
                                 'jquery.ui', 'jquery.validate', 'jquery.i18next'],
     function($,  tmpl, RemoteDataSource, SelectSelector, commonServices, commonSettings, commonTranslations, i18next) {
 
-        activityMultipleDatesModel = { // THE activityMultipleDatesModel
+        var activityMultipleDatesModel = { // THE activityMultipleDatesModel
 
             requestLanguage: null,
             configuration: null,
@@ -156,7 +156,7 @@ define('ActivityMultipleDates',['jquery','ysdtemplate', 'YSDRemoteDataSource','Y
             }
         };
 
-        activityMultipleDatesController = { // THE activityMultipleDatesController
+        var activityMultipleDatesController = { // THE activityMultipleDatesController
 
             onMultipleDatesDateSelected: function() { /* Multiple dates select date */
               activityMultipleDatesModel.multipleDatesActivityDateId = $('#activity_date_id').val();
@@ -201,7 +201,7 @@ define('ActivityMultipleDates',['jquery','ysdtemplate', 'YSDRemoteDataSource','Y
         };
 
 
-        activityMultipleDatesView = { // THE activityMultipleDatesView
+        var activityMultipleDatesView = { // THE activityMultipleDatesView
 
             init: function() {
 

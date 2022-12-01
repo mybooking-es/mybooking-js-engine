@@ -47,7 +47,7 @@ define('productPlanningWeekActionBar', ['jquery', 'YSDEventTarget', 'commonSetti
 			inputDate.datepicker('setDate', date);
 
 			this.model.target.find('input[name=date]').off('change');
-			this.model.target.find('input[name=date]').on('change', (event, datepicker) => {
+			this.model.target.find('input[name=date]').on('change', (event) => {
 				const value = $(event.currentTarget).datepicker('getDate');
 
 				this.setDate(value);
@@ -72,7 +72,7 @@ define('productPlanningWeekActionBar', ['jquery', 'YSDEventTarget', 'commonSetti
 			const dateButtons = this.model.target.find('button[data-action=date]');
 			const firstDate = moment(new Date(this.model.parent.model.configuration.serverDate));
 
-			if(moment(this.model.parent.model.date.actual).isSame(firstDate) || moment(this.model.parent.model.date.actual).isBefore(firstDate)) {
+			if(moment(this.model.parent.model.date.actual).isSame(firstDate) ||moment(this.model.parent.model.date.actual).isBefore(firstDate)) {
 				$(dateButtons[0]).attr('disabled', 'disabled');
 			} else {
 				$(dateButtons[0]).removeAttr('disabled');
@@ -128,7 +128,7 @@ define('productPlanningWeekActionBar', ['jquery', 'YSDEventTarget', 'commonSetti
 					error.insertAfter(element.parent());
 				},
 				errorClass : 'form-reservation-error'
-		 });
+		});
 		},
 
 		/**

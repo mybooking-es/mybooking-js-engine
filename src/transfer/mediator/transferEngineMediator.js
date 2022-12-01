@@ -4,7 +4,7 @@ define('transferEngineMediator', ['jquery', 'YSDEventTarget'],
   /**
    * Rent Engine Mediator
    */
-  transferEngineMediator = {
+  var transferEngineMediator = {
 
     events: new YSDEventTarget(),
 

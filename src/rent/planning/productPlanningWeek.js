@@ -589,7 +589,7 @@
 					const day = mydate.getDate();
 					const weekday = mydate.toLocaleString(this.model.requestLanguage, { weekday: 'short' }).toUpperCase();
 
-					description = '<b style="font-size: 20px;">' + day + '</b><br>' + weekday;
+					const description = '<b style="font-size: 20px;">' + day + '</b><br>' + weekday;
 		
 					html += '<th>';
 						html += description;
@@ -632,7 +632,7 @@
 		 * Get ranges between from and to time
 		*/
 		getTimeRanges: function({ from, to }) {
-			if (!from || !to){
+			if (!from || !to){
 				return [];
 			} 
 
@@ -746,7 +746,7 @@
 		/**
      * Go to the next step when the user clicks on Book Now!
      */
-		 gotoNextStep: function() {
+		gotoNextStep: function() {
       if (commonServices.extrasStep) {
         window.location.href= commonServices.chooseExtrasUrl;
       } else {
@@ -825,7 +825,7 @@
 				});
 
 				this.model.target.off('mouseup');
-				this.model.target.on('mouseup', selectorTarget, (event) => {
+				this.model.target.on('mouseup', selectorTarget, () => {
 					this.model.isDragActive = false;
 
 					if (this.model.selectedRange.length > 0 && !this.model.isTimeRangeSended) {
@@ -836,7 +836,7 @@
 				});
 
 				this.model.target.off('mouseleave');
-				this.model.target.on('mouseleave', 'tbody, .mybooking-product-planning-week-td-content.full, .mybooking-product-planning-week-td-content.closed', (event) => {
+				this.model.target.on('mouseleave', 'tbody, .mybooking-product-planning-week-td-content.full, .mybooking-product-planning-week-td-content.closed', () => {
 					this.model.isDragActive = false;
 					if (this.model.selectedRange.length > 0 && !this.model.isTimeRangeSended) {
 						// console.log('mouseup', event);

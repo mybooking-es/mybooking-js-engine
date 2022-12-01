@@ -1,6 +1,6 @@
 define(['YSDEventTarget','YSDDataAdapter'], function(YSDEventTarget, DataAdapter) {
   
- YSDAbstractDataSource = function() {
+ var YSDAbstractDataSource = function() {
   
    this.events = new YSDEventTarget();  
     

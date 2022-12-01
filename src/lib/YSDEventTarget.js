@@ -3,7 +3,7 @@ define(function() {
   //  
   // Inspired by Nicholas C. Zakas (http://www.nczonline.net/blog/2010/03/09/custom-events-in-javascript/)
   //
-  YSDEventTarget = function() {
+  var YSDEventTarget = function() {
 
     this.listeners = {}; // A hash when we hold all events by type (each event type has a list of listeners)  
 

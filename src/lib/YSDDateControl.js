@@ -10,7 +10,7 @@ define(['jquery','moment'], function($, moment){
    * @param locale The locale
    * @param dateFormat the Date Format
    */
-  YSDDateControl = function(comboDay, comboMonth, comboYear, hiddenDate, locale, dateFormat) {
+  var YSDDateControl = function(comboDay, comboMonth, comboYear, hiddenDate, locale, dateFormat) {
   	
     // Creates the model
     var theModel = new YSDDateControlModel(locale, dateFormat);
@@ -39,7 +39,7 @@ define(['jquery','moment'], function($, moment){
   // ------- Support classes for implement the DateControl using MVC ------------------------
   // ----------------------------------------------------------------------------------------
 	
-  YSDDateControlModelData = { /* Common data for all instances of YsdDateControl */
+  var YSDDateControlModelData = { /* Common data for all instances of YsdDateControl */
 	
 	years : 90,  // Number of years
 	     
@@ -86,7 +86,7 @@ define(['jquery','moment'], function($, moment){
 
   /* ------------- The Model -------------------- */
 
-  YSDDateControlModel = function (locale, dateFormat) {
+  var YSDDateControlModel = function (locale, dateFormat) {
 	 
     this.locale = locale || 'es'; // Spanish is the default language		
     this.dateFormat = dateFormat || 'YYYY-MM-DD';
@@ -158,7 +158,7 @@ define(['jquery','moment'], function($, moment){
 
   /* ------------ The controller ---------------- */
 
-  YSDDateControlController = function(model) {
+  var YSDDateControlController = function(model) {
 	
 	this.model = model;
 	
@@ -188,7 +188,7 @@ define(['jquery','moment'], function($, moment){
 
   /* ------------------ The view --------------------- */
   
-  YSDDateControlView = function(controller, model, comboDay, comboMonth, comboYear, hiddenDate)
+  var YSDDateControlView = function(controller, model, comboDay, comboMonth, comboYear, hiddenDate)
   {
     this.controller = controller;
     this.model = model;

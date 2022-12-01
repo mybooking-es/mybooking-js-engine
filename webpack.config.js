@@ -25,14 +25,14 @@ module.exports = [
       },
       resolve: {
         modules: ["node_modules", "src/lib", "src/common"]
-      }
-      ,
+      },
       optimization: {
         // We no not want to minimize our code.
         minimize: false
       },
       devtool: 'inline-source-map',
    },
+
    // WordPress Plugin
    {
       name: "mybooking-js-engine-bundle",
@@ -40,7 +40,10 @@ module.exports = [
       output: {
         path: path.resolve(__dirname, "dist/js"),
         filename: "mybooking-js-engine-bundle.js",
-        library: "mybookingJsEngine" // export library as mybookingJSEngine
+        library: "mybookingJsEngine", // export library as mybookingJSEngine
+        environment: {
+          arrowFunction: false,
+        }
       },
       resolve: {
         modules: ["node_modules", "src/lib", "src/common"]
@@ -57,7 +60,7 @@ module.exports = [
                  amd: 'lodash',
                  root: '_',
           }
-      },      
+      },
       plugins: [
         // Use jquery without loading it
         new webpack.ProvidePlugin({
@@ -65,13 +68,26 @@ module.exports = [
               "jQuery":"jquery",
               "window.jQuery":"jquery"
             })
-      ]/*,
+      ],
+      module: {
+        rules: [
+          {
+            test: /\.js$/,
+            exclude: [
+              path.resolve(__dirname, 'node_modules'),
+              path.resolve(__dirname, 'src/lib'),
+              path.resolve(__dirname, 'src/common'),
+            ],
+            use: {
+              loader: 'babel-loader',
+            },
+          },
+        ],
+      },/*,
       optimization: {
           // We no not want to minimize our code.
           minimize: false
       }
       */
-      
-
    }
 ];

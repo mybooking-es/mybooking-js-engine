@@ -6,7 +6,7 @@ define('ActivityCyclic', ['jquery','ysdtemplate', 'YSDRemoteDataSource','YSDSele
     function($,  tmpl, RemoteDataSource, SelectSelector, commonServices, commonSettings, 
              commonTranslations, moment, i18next) {
 
-        activityCyclicModel = { // THE activityCyclicModel
+        var activityCyclicModel = { // THE activityCyclicModel
 
             requestLanguage: null,
             configuration: null,
@@ -201,7 +201,7 @@ define('ActivityCyclic', ['jquery','ysdtemplate', 'YSDRemoteDataSource','YSDSele
             
         };
 
-        activityCyclicController = { // THE activityCyclicController
+        var activityCyclicController = { // THE activityCyclicController
 
             onCyclicDateChanged: function() { /* Cyclic activity date changed */
               activityCyclicModel.cyclicDate = $('#datepicker').val(); // String representation of the date (format dd/MM/yyyy)
@@ -251,7 +251,7 @@ define('ActivityCyclic', ['jquery','ysdtemplate', 'YSDRemoteDataSource','YSDSele
         };
 
 
-        activityCyclicView = { // THE activityCyclicView
+        var activityCyclicView = { // THE activityCyclicView
 
             init: function() {
 

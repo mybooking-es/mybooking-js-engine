@@ -10,7 +10,7 @@ define('selector_wizard_select_place', ['jquery', 'YSDMemoryDataSource', 'YSDRem
                   commonTranslations, YSDEventTarget, i18next, moment, tmpl) {
 
 
-  selectorWizardSelectTime = {
+  var selectorWizardSelectTime = {
 
     model: {
 

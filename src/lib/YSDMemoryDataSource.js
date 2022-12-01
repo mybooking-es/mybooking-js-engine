@@ -6,7 +6,7 @@ define(['YSDAbstractDataSource'], function(YSDAbstractDataSource) {
      A datasource which holds the data in the memory
   */
   
-  YSDMemoryDataSource = function(_data, matchingProperties, adapters) {
+  var YSDMemoryDataSource = function(_data, matchingProperties, adapters) {
 	
     YSDAbstractDataSource.apply(this, arguments);
    

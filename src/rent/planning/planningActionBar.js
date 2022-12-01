@@ -7,7 +7,7 @@ define('planningActionBar', ['jquery', 'YSDEventTarget', 'commonSettings',
 	/**
 	 * Contructor
 	*/
-	function ActionBar({ target, parent, columnsWidth, total  }) {
+	function ActionBar({ target, parent, columnsWidth  }) {
 		/**
 		 * PlanningActionBar data model
 		*/
@@ -109,7 +109,7 @@ define('planningActionBar', ['jquery', 'YSDEventTarget', 'commonSettings',
 		 * Initialize and refresh planning
 		*/
 		initializeDate: function() {
-			$.datepicker.setDefaults( $.datepicker.regional[commonSettings.language(document.documentElement.lang) || 'es'] );
+			$.datepicker.setDefaults( $.datepicker.regional[commonSettings.language(document.documentElement.lang) || 'es'] );
 			
 			var inputDate = this.model.target.find('input[name=date]');
 			var date = new Date (this.model.parent.model.date.actual);
@@ -184,7 +184,7 @@ define('planningActionBar', ['jquery', 'YSDEventTarget', 'commonSettings',
 			var dateButtons = this.model.target.find('button[data-action=date]');
 			var firstDate = moment(this.model.parent.model.configuration.serverDate);
 
-			if(moment(this.model.parent.model.date.actual).isSame(firstDate) || moment(this.model.parent.model.date.actual).isBefore(firstDate)) {
+			if(moment(this.model.parent.model.date.actual).isSame(firstDate) ||moment(this.model.parent.model.date.actual).isBefore(firstDate)) {
 				$(dateButtons[0]).attr('disabled', 'disabled');
 			} else {
 				$(dateButtons[0]).removeAttr('disabled');
@@ -292,7 +292,7 @@ define('planningActionBar', ['jquery', 'YSDEventTarget', 'commonSettings',
 					error.insertAfter(element.parent());
 				},
 				errorClass : 'form-reservation-error'
-		 });
+			});
 		},
 
 		/**

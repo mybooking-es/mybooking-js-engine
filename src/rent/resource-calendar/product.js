@@ -193,7 +193,7 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
                    var productCode = $('#product_selector').attr('data-code');
                    // If shopping cart items contains the current product => Hold it to 
                    // automatically make the selection
-                   product = data.shopping_cart.items.find(item => item.item_id === productCode);
+                   var product = data.shopping_cart.items.find(item => item.item_id === productCode);
                    if (product) {
                      productModel.preselectedData = true;
                      productModel.preselectedPickupPlace = data.shopping_cart.pickup_place;

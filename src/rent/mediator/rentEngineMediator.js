@@ -4,7 +4,7 @@ define('rentEngineMediator', ['jquery', 'YSDEventTarget'],
   /**
    * Rent Engine Mediator
    */
-  rentEngineMediator = {
+  var rentEngineMediator = {
 
     events: new YSDEventTarget(),
 
@@ -423,5 +423,4 @@ define('rentEngineMediator', ['jquery', 'YSDEventTarget'],
   };
 
   return rentEngineMediator;
-
 });

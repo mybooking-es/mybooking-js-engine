@@ -3,7 +3,7 @@ define(['YSDAbstractDataSource','jquery'], function(YSDAbstractDataSource, $) {
   /* --------------------------------
      RemoteDataSource
      -------------------------------- */
-  YSDRemoteDataSource = function(url, matchingProperties, adapters) {
+  var YSDRemoteDataSource = function(url, matchingProperties, adapters) {
 
     YSDAbstractDataSource.apply(this, arguments);
 

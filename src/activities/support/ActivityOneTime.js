@@ -3,7 +3,7 @@ define('ActivityOneTime', ['jquery','ysdtemplate',
                            'moment', 'i18next', 'jquery.ui', 'jquery.validate', 'jquery.i18next'],
     function($,  tmpl, commonServices, commonSettings, commonTranslations, moment, i18next) {
 
-        activityOneTimeModel = { // THE activityOneTimeModel
+        var activityOneTimeModel = { // THE activityOneTimeModel
 
             requestLanguage: null,
             configuration: null,
@@ -167,7 +167,7 @@ define('ActivityOneTime', ['jquery','ysdtemplate',
 
         };
 
-        activityOneTimeController = { // THE activityOneTimeController
+       var  activityOneTimeController = { // THE activityOneTimeController
 
             onBtnReservationClick: function() { /* Button reservation click */
 
@@ -207,7 +207,7 @@ define('ActivityOneTime', ['jquery','ysdtemplate',
         };
 
 
-        activityOneTimeView = { // THE activityOneTimeView
+        var activityOneTimeView = { // THE activityOneTimeView
 
             init: function() {
 
@@ -260,7 +260,7 @@ define('ActivityOneTime', ['jquery','ysdtemplate',
 
         };
 
-        ActivityOneTime = function(activity, configuration) {
+        var ActivityOneTime = function(activity, configuration) {
 
           this.model = activityOneTimeModel;
           this.controller = activityOneTimeController;

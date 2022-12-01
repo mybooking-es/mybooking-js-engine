@@ -12,7 +12,7 @@ define('selector_wizard', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource
                   selectorWizardSelectPlace, selectorWizardSelectDate, selectorWizardSelectTime,
                   tmpl, customCookie) {
 
-  selectorWizardModel = {
+  var selectorWizardModel = {
 
     // RequestLanguage
     requestLanguage: null,
@@ -49,7 +49,7 @@ define('selector_wizard', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource
 
   }
 
-  selectorWizardController = {
+  var selectorWizardController = {
 
   	placeHolderClick: function() {
 
@@ -148,7 +148,7 @@ define('selector_wizard', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource
 
   }
 
-  selectorWizardView = {
+  var selectorWizardView = {
 
   	init: function() {
 

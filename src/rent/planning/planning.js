@@ -17,15 +17,15 @@
 			planningHTML,
 			target,
 			targetId,
-			type: type || 'diary',
+			type: type || 'diary',
 			isFamilySelectorAvailable: false,
 			family,
 			families: [],
 			isCategorySelectorAvailable: false,
 			category,
 			categories: [],
-			items: items || 15,
-			direction: direction || 'columns',
+			items: items || 15,
+			direction: direction || 'columns',
 			schedule: [],
 			originalSchedule: [],
 			resources: [],
@@ -50,7 +50,7 @@
 		/**
 		 * Get families
 		 */
-		 getFamilies: function() {
+		getFamilies: function() {
 			var url = commonServices.URL_PREFIX + '/api/booking/frontend/families?api_key=' + commonServices.apiKey;
 
 			return new Promise(resolve => {
@@ -65,7 +65,7 @@
 		/**
 		 * Get categories
 		 */
-		 getCategories: function() {
+		getCategories: function() {
 			var url = commonServices.URL_PREFIX + '/api/booking/frontend/products?api_key=' + commonServices.apiKey;
 
 			return new Promise(resolve => {
@@ -210,7 +210,7 @@
 			var init = false;
 			var finish = false;
 			this.model.calendar.forEach(function(item) {
-				if (moment(from).isBefore(serverDate) || moment(from).isSame(serverDate) || item === from) {
+				if (moment(from).isBefore(serverDate) || moment(from).isSame(serverDate) || item === from) {
 					init = true;
 				}
 
@@ -328,7 +328,7 @@
 		/**
 		 * Draw ocupation status 
 		*/
-		showOcupation: function(paramDate) {
+		showOcupation: function() {
 			var that = this;
 
 			this.model.ocupation.forEach(function(item) {
@@ -364,7 +364,7 @@
 						var dateToString = that.model.configuration.formatDate(item.date_to);
 						var label = '';
 
-						if (formatDate.isSame(from) ||  formatDate.isSame(to) || (formatDate.isAfter(from) && formatDate.isBefore(to))) {
+						if (formatDate.isSame(from) ||  formatDate.isSame(to) ||(formatDate.isAfter(from) && formatDate.isBefore(to))) {
 							if (!from.isSame(to)) {
 								var actualDay;
 								if (formatDate.isSame(from)){
@@ -379,8 +379,8 @@
 							}
 
 							var newElement = {
-								 id: element.id, 
-								 label
+								id: element.id, 
+								label
 							};
 
 							if (that.model.type === 'diary') {
@@ -430,7 +430,7 @@
 				html += '<thead><tr>';
 				html += '<th class="mybooking-planning-td-fix"></th>';
 
-				columns.forEach(function(item, index) {
+				columns.forEach(function(item) {
 					var description = item.id ? item.description : item;
 
 					if (!item.id && !description.includes(':')) {
