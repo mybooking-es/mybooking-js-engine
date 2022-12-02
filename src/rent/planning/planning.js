@@ -39,7 +39,7 @@
 				server: undefined,
 				interval: interval !== null ? window.parseInt(interval) : 30,
 			},
-			cells: cells || {
+			cells: cells || {
 				width: 150,
 				height: 40,
 			},
@@ -269,12 +269,12 @@
 			}
 
 			if (actualDay) {
-				if (actualDay == 'from' || actualDay == 'both') {
-					var to = this.model.schedule.slice(-1).pop();
+				if (actualDay == 'from' || actualDay == 'both') {
+					to = this.model.schedule.slice(-1).pop();
 				}
 	
 				if (actualDay != 'from' || moment(from, 'hh:mm').isBefore(moment(this.model.schedule[0], 'hh:mm'))) {
-					var from = this.model.schedule[0];
+					from = this.model.schedule[0];
 				}
 			}
 
@@ -286,10 +286,10 @@
 
 			switch (this.model.configuration.rentTimesSelector) {
 				case 'time_range':
-					const objName = that.model.originalSchedule.filter((element) => {
+					var objName = that.model.originalSchedule.filter((element) => {
 						return element.time_from == item.time_from && element.time_to == item.time_to;
 					})[0];
-					const name = objName ? objName.name : '';
+					var name = objName ? objName.name : '';
 					var activeCells = that.model.target.find('div.mybooking-planning-td-content[data-id="' + item.id + '"][data-time="' + item.range[0] + ' - ' + item.range.slice(-1).pop() + '"]');
 					activeCells.addClass('full').addClass('from to');
 					activeCells.attr('title', item.label + ' - ' + name);
@@ -452,8 +452,6 @@
 				/**
 				 * Body
 				 */
-				var that = this;
-
 				html += '<tbody>';
 					rows.forEach(function(item) {
 						var fixHead = item.description ? item.description : item;
@@ -538,7 +536,7 @@
 				if (this.model.isCategorySelectorAvailable) {
 					this.model.categories = await this.getCategories();
 				}
-				
+				var html;
 				if (this.model.resources.length > 0 && this.model.schedule.length > 0) {
 					var settings;
 					switch (this.model.direction) {
@@ -557,11 +555,11 @@
 							break;
 					}
 
-					var html = this.drawPlanning(settings);
+					html = this.drawPlanning(settings);
 					this.model.target.html(html);
 					this.getOcupation(date);
 				} else {
-					var html = i18next.t('planning.no_data_found');
+					html = i18next.t('planning.no_data_found');
 
 					this.model.target.html(html);
 				}	
@@ -576,7 +574,7 @@
 				}
 
 			} else {
-				var html = i18next.t('planning.api_conexion_error');
+				html = i18next.t('planning.api_conexion_error');
 
 				this.model.target.html(html);
 			}	
@@ -605,13 +603,13 @@
 		init: function() {
 			var that = this;
 
-			var requestLanguage = commonSettings.language(document.documentElement.lang || 'es');
+			var requestLanguage = commonSettings.language(document.documentElement.lang || 'es');
 			// Initialize i18next for translations
 			i18next.init({  
 				lng: requestLanguage,
 				resources: commonTranslations
 			}, 
-			function (error, t) {
+			function () {
 					// https://github.com/i18next/jquery-i18next#initialize-the-plugin
 					//jqueryI18next.init(i18next, $);
 					// Localize UI

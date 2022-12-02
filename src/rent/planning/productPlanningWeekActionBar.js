@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-undef
 define('productPlanningWeekActionBar', ['jquery', 'YSDEventTarget', 'commonSettings',
        'moment', 'YSDFormatter', 'jquery.validate', 'jquery.ui', 'jquery.ui.datepicker-es',
        'jquery.ui.datepicker-en', 'jquery.ui.datepicker-ca', 'jquery.ui.datepicker-it',

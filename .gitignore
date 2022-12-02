@@ -95,7 +95,3 @@ config
 Thumbs.db
 
 /config/*
-
-# Eslint files
-.eslintrc.js
-.eslintignore

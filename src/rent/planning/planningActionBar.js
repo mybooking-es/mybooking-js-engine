@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-undef
 define('planningActionBar', ['jquery', 'YSDEventTarget', 'commonSettings',
        'moment', 'YSDFormatter', 'jquery.validate', 'jquery.ui', 'jquery.ui.datepicker-es',
        'jquery.ui.datepicker-en', 'jquery.ui.datepicker-ca', 'jquery.ui.datepicker-it',
@@ -15,7 +16,7 @@ define('planningActionBar', ['jquery', 'YSDEventTarget', 'commonSettings',
 			parent,
 			target,
 			columns: {
-				width: columnsWidth || 150,
+				width: columnsWidth || 150,
 				visibles: 0,
 				actualMargin: 0,
 				total: 0,

@@ -235,7 +235,7 @@
         dataType : 'json',
         contentType : 'application/json; charset=utf-8',
         crossDomain: true,
-        success: (data, textStatus, jqXHR) => {
+        success: (data) => {
           if (this.model.shoppingCartId == null || this.model.shoppingCartId != data.shopping_cart.free_access_id) {
             this.model.shoppingCartId = data.shopping_cart.free_access_id;
             this.putShoppingCartFreeAccessId(this.model.shoppingCartId);
@@ -250,13 +250,13 @@
           }
           this.update();
         },
-        error: function(data, textStatus, jqXHR) {
+        error: function() {
           alert(i18next.t('selector.error_loading_data'));
         },
-        beforeSend: function(jqXHR) {
+        beforeSend: function() {
           commonLoader.show();
         },        
-        complete: function(jqXHR, textStatus) {
+        complete: function() {
           commonLoader.hide();
         }
       });
@@ -296,6 +296,7 @@
       if (this.model.configuration.rentTimesSelector === 'hours') { 
         // Hours
 				data.time_from = daySelectedRanges[0].time_from;
+				// eslint-disable-next-line no-unused-vars
 				const [fromHour, fromMin] = data.time_from.split(':');
 				const [toHour, toMin] = daySelectedRanges[0].time_to.split(':');
 
@@ -459,17 +460,17 @@
 			if (item.range) {
 				switch (this.model.configuration.rentTimesSelector) {
 					case 'time_range':
-						const objName = this.model.statusSchedule[item.from.date_from].filter((element) => {
+						var objName = this.model.statusSchedule[item.from.date_from].filter((element) => {
 							return element.time_from == item.from.time_from && element.time_to == item.to.time_to;
 						})[0];
-						const name = objName ? objName.name : '';
-						const label = `${YSDFormatter.formatDate(item.from.date_from, this.model.configuration.dateFormat)} - ${item.from.time_from} / ${item.to.time_to} - ${name}`;
-						const activeCells = this.model.target.find('div.mybooking-product-planning-week-td-content[data-date="' + item.from.date_from + '"][data-time="' + item.from.time_from + ' - ' + item.to.time_to + '"]');
+						var name = objName ? objName.name : '';
+						var label = `${YSDFormatter.formatDate(item.from.date_from, this.model.configuration.dateFormat)} - ${item.from.time_from} / ${item.to.time_to} - ${name}`;
+						var activeCells = this.model.target.find('div.mybooking-product-planning-week-td-content[data-date="' + item.from.date_from + '"][data-time="' + item.from.time_from + ' - ' + item.to.time_to + '"]');
 							activeCells.addClass('full');
 							activeCells.attr('title', label);
 						break;
 					default:
-						const label2 = `${YSDFormatter.formatDate(item.from.date_from, this.model.configuration.dateFormat)} - ${item.from.time_from} / ${item.to.time_to}`;
+						var label2 = `${YSDFormatter.formatDate(item.from.date_from, this.model.configuration.dateFormat)} - ${item.from.time_from} / ${item.to.time_to}`;
 						item.range.forEach((range) => {
 							const activeCells = this.model.target.find('div.mybooking-product-planning-week-td-content[data-date="' + item.from.date_from + '"][data-time="' + range + '"]');
 							activeCells.addClass('full');
@@ -855,14 +856,14 @@
 		 * Initizialize
 		*/
 		init: function() {
-			const requestLanguage = commonSettings.language(document.documentElement.lang || 'es');
+			const requestLanguage = commonSettings.language(document.documentElement.lang || 'es');
 			
 			// Initialize i18next for translations
 			i18next.init({  
 				lng: requestLanguage,
 				resources: commonTranslations
 			}, 
-			function (error, t) {
+			function () {
 					// https://github.com/i18next/jquery-i18next#initialize-the-plugin
 					//jqueryI18next.init(i18next, $);
 					// Localize UI

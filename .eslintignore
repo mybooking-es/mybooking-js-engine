@@ -1,0 +1,6 @@
+config
+demos
+dist
+node_modules
+src/lib
+src/common
