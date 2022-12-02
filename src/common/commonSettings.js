@@ -30,6 +30,7 @@ define('commonSettings', ['jquery','commonServices','commonLoader','commonTransl
       promotionCode: true,      
       engineCustomerAccess: false,
       // Renting MODULE
+      useRentingFamilies: false,
       selectFamily: false,
       multipleDestinations: false,
       selectDestination: false, 
@@ -198,6 +199,7 @@ define('commonSettings', ['jquery','commonServices','commonLoader','commonTransl
              mybookingSettings.data.dateShortFormat = data.frontend_short_date_format;
              mybookingSettings.data.promotionCode = data.promotion_code || false;
              // Renting
+             mybookingSettings.data.useRentingFamilies = data.use_renting_families;
              mybookingSettings.data.selectFamily = data.select_family;
              mybookingSettings.data.selectDestination = data.select_destination;
              mybookingSettings.data.selectRentalLocation = data.select_rental_location;

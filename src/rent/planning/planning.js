@@ -8,31 +8,38 @@
 
 	/**
 	 * Contructor
-	*/
-	function Planning ({ planningHTML, target, targetId, type, family, category, items, direction, rentalLocationCode, cells, interval }) {
+	 */
+	function Planning ({ planningHTML, target, targetId, type, family, category, 
+											 items, direction, rentalLocationCode, cells, interval }) {
 		/**
 		 * Planning data model
 		*/
 		this.model = {
-			planningHTML,
-			target,
+			planningHTML, // Planning HTML
+			target, 
 			targetId,
-			type: type || 'diary',
-			isFamilySelectorAvailable: false,
-			family,
-			families: [],
-			isCategorySelectorAvailable: false,
+			type: type || 'diary', // Type
+			// Families
+			isFamilySelectorAvailable: false, // Shows family selector
+			family, // Selected family
+			families: [], // All families
+			// Categories
+			isCategorySelectorAvailable: false, // Shows category selector
 			category,
 			categories: [],
-			items: items || 15,
+			// Items
+			items: items || 15, // Number of items
 			direction: direction || 'columns',
+			// 
 			schedule: [],
 			originalSchedule: [],
 			resources: [],
 			ocupation: [],
 			realCalendar: [],
 			calendar: [],
+			// Rental location code (multiple rental locations)
 			rentalLocationCode,
+			// Api Format
 			api_date_format: 'YYYY-MM-DD',
 			date: {
 				actual: undefined,
@@ -46,43 +53,18 @@
 		};
 	}
 
+	/**
+	 * ========== The model (extended with API methods)
+	 */ 
 	var model = {
+		
 		/**
 		 * Get families
 		 */
 		getFamilies: function() {
 			var url = commonServices.URL_PREFIX + '/api/booking/frontend/families?api_key=' + commonServices.apiKey;
 
-			return new Promise(resolve => {
-				$.ajax({
-					url: url
-				}).done(function(response) {
-					resolve(response.data);
-				});
-			});
-		},
-
-		/**
-		 * Get categories
-		 */
-		getCategories: function() {
-			var url = commonServices.URL_PREFIX + '/api/booking/frontend/products?api_key=' + commonServices.apiKey;
-
-			return new Promise(resolve => {
-				$.ajax({
-					url: url
-				}).done(function(response) {
-					resolve(response.data);
-				});
-			});
-		},
-
-		/**
-		 * Get calendar
-		*/
-		getCalendar: function({from, to}) {
-			var url = commonServices.URL_PREFIX + '/api/booking/frontend/dates?api_key=' + commonServices.apiKey + '&from=' + from + '&to=' + to;
-
+			// Returns a Promise with the response
 			return new Promise(resolve => {
 				$.ajax({
 					url: url
@@ -93,26 +75,68 @@
 		},
 
 		/**
-		 * Get day schedule
+		 * Get categories
+		 */
+		getCategories: function() {
+			
+			var url = commonServices.URL_PREFIX + '/api/booking/frontend/products?api_key=' + 
+								commonServices.apiKey;
+
+			// Returns a Promise with the response
+			return new Promise(resolve => {
+				$.ajax({
+					url: url
+				}).done(function(data) {
+					resolve(data);
+				});
+			});
+		},
+
+		/**
+		 * Get calendar of dates
+		*/
+		getCalendar: function({from, to}) {
+			
+			var url = commonServices.URL_PREFIX + '/api/booking/frontend/dates?api_key=' + 
+								commonServices.apiKey + '&from=' + from + '&to=' + to;
+
+			// Returns a Promise with the response
+			return new Promise(resolve => {
+				$.ajax({
+					url: url
+				}).done(function(data) {
+					resolve(data);
+				});
+			});
+		},
+
+		/**
+		 * Get day schedule => Hours to show
 		*/
 		getSchedule: function({ date }){
-			var that = this;
+			var self = this;
 			var url = commonServices.URL_PREFIX;
 			var urlParams = [];
 
+			// APi Key
       if (commonServices.apiKey && commonServices.apiKey != '') {
         urlParams.push('api_key='+commonServices.apiKey);
       }  
+      
+      // Date
       urlParams.push('date='+date);
 
+      // Family
 			if (this.model.family !== null && this.model.family !== 'all') {
 				urlParams.push('family='+this.model.family);
 			}
 
+			// Category
 			if (this.model.category !== null && this.model.category !== 'all') {
 				urlParams.push('product='+this.model.category);
 			}
 
+			// End-pint
 			switch (this.model.configuration.rentTimesSelector) {
 				case 'hours':
 					url += '/api/booking/frontend/times';
@@ -130,6 +154,7 @@
         url += urlParams.join('&');
       }
 
+      // Returns a Promise with the response
 			return new Promise(resolve => {
 				$.ajax({
 					url: url
@@ -141,7 +166,7 @@
 							formatData.push(`${item.time_from} - ${item.time_to}`);
 						});
 
-						that.model.originalSchedule = data;
+						self.model.originalSchedule = data;
 						resolve(formatData);
 					} else {
 						resolve(data);
@@ -151,23 +176,34 @@
 		},
 
 		/**
-		 * Get day planning
+		 * Get day planning => Resource urges
 		*/
 		getPlanning: function({ from, to }){
 			var url = commonServices.URL_PREFIX + '/api/booking/frontend/planning';
 			var urlParams = [];
 
+			// Api Key
       if (commonServices.apiKey && commonServices.apiKey != '') {
         urlParams.push('api_key='+commonServices.apiKey);
       }  
-      urlParams.push('from='+from);
-			urlParams.push('to='+to);
-			urlParams.push('rental_location_code='+ this.model.rentalLocationCode);
 
-			if (this.model.family !== null && this.model.family !== 'all') {
-				urlParams.push('family='+this.model.family);
+      // Starting date
+      urlParams.push('from='+from);
+			
+      // Ending date
+			urlParams.push('to='+to);
+			
+			// Rental location code
+			if (this.model.rentalLocationCode) {
+				urlParams.push('rental_location_code='+ this.model.rentalLocationCode);
 			}
 
+			// Family
+			if (this.model.family !== null && this.model.family !== 'all') {
+				urlParams.push('family_id='+this.model.family);
+			}
+
+			// Category
 			if (this.model.category !== null && this.model.category !== 'all') {
 				urlParams.push('category='+this.model.category);
 			}
@@ -177,6 +213,7 @@
         url += urlParams.join('&');
       }
 
+      // Returns a Promise with the response
 			return new Promise(resolve => {
 				$.ajax({
 					url: url
@@ -187,10 +224,14 @@
 		},
 	};
 
+	/***
+	 * =============== The controller
+	 */ 
 	var controller = {
+		
 		/**
 		 * Get ocupation range and put in list data 
-		*/
+		 */
 		getOcupation15Range: function({from, to}) {
 			if(!from || !to) {
 				return [];
@@ -281,20 +322,25 @@
 			return this.getTimeRanges({ from, to });
 		},
 
+		/**
+		 * Paint the ranges
+		 */ 
 		paintRanges: function(item) {
-			var that = this;
+			var self = this;
 
 			switch (this.model.configuration.rentTimesSelector) {
 				case 'time_range':
-					var objName = that.model.originalSchedule.filter((element) => {
+					// Time range
+					var objName = self.model.originalSchedule.filter((element) => {
 						return element.time_from == item.time_from && element.time_to == item.time_to;
 					})[0];
 					var name = objName ? objName.name : '';
-					var activeCells = that.model.target.find('div.mybooking-planning-td-content[data-id="' + item.id + '"][data-time="' + item.range[0] + ' - ' + item.range.slice(-1).pop() + '"]');
+					var activeCells = self.model.target.find('div.mybooking-planning-td-content[data-id="' + item.id + '"][data-time="' + item.range[0] + ' - ' + item.range.slice(-1).pop() + '"]');
 					activeCells.addClass('full').addClass('from to');
 					activeCells.attr('title', item.label + ' - ' + name);
 					break;
-				default:
+				case 'hours':
+					// Hours
 					item.range.forEach(function(range, index) {
 						var classes = '';
 		
@@ -316,7 +362,7 @@
 							}
 						}
 		
-						var activeCells = that.model.target.find('div.mybooking-planning-td-content[data-id="' + item.id + '"][data-time="' + range + '"]');
+						var activeCells = self.model.target.find('div.mybooking-planning-td-content[data-id="' + item.id + '"][data-time="' + range + '"]');
 						activeCells.addClass('full').addClass(classes);
 						activeCells.attr('title', item.label);
 					});
@@ -329,10 +375,10 @@
 		 * Draw ocupation status 
 		*/
 		showOcupation: function() {
-			var that = this;
+			var self = this;
 
 			this.model.ocupation.forEach(function(item) {
-				that.paintRanges(item);
+				self.paintRanges(item);
 			});
 
 			/*
@@ -352,7 +398,7 @@
 		 * Get ocupation data
 		*/
 		getOcupation: function(paramDate) {
-			var that = this;
+			var self = this;
 
 			this.model.resources.forEach(function(element) {
 				if (element.urges.length > 0) {
@@ -360,8 +406,8 @@
 						var formatDate = moment(paramDate);
 						var from = moment(item.date_from);
 						var to = moment(item.date_to);
-						var dateFromString = that.model.configuration.formatDate(item.date_from);
-						var dateToString = that.model.configuration.formatDate(item.date_to);
+						var dateFromString = self.model.configuration.formatDate(item.date_from);
+						var dateToString = self.model.configuration.formatDate(item.date_to);
 						var label = '';
 
 						if (formatDate.isSame(from) ||  formatDate.isSame(to) ||(formatDate.isAfter(from) && formatDate.isBefore(to))) {
@@ -383,9 +429,9 @@
 								label
 							};
 
-							if (that.model.type === 'diary') {
+							if (self.model.type === 'diary') {
 								var time_to = item.time_to;
-								if (that.model.configuration.rentTimesSelector === 'hours') { // TODO See this
+								if (self.model.configuration.rentTimesSelector === 'hours') { // TODO See this
 									var [hours, minutes] = time_to.split(':');
 									var formatHours = minutes === '00' ? window.parseInt(hours) - 1 : hours; 
 									var formatMinutes = minutes === '00' ? '59' : '29';
@@ -396,20 +442,20 @@
 									actualDay,
 									time_from: item.time_from, 
 									time_to: item.time_to,
-									range: that.getOcupationDiaryRange({ from: item.time_from, to: time_to, actualDay }),
+									range: self.getOcupationDiaryRange({ from: item.time_from, to: time_to, actualDay }),
 									label: label !== '' ? dateFromString + ' / ' + item.time_from + ' - ' + dateToString + ' / ' + item.time_to :  dateFromString + ' - ' + item.time_from + ' / ' + item.time_to,
 								};
-							} else {
+							} else if (self.model.type === 'calendar') {
 								newElement = {
 									...newElement,
 									date_from: item.date_from,
 									date_to: item.date_to,
-									range: that.getOcupation15Range({ from: item.date_from, to: item.date_to }),
+									range: self.getOcupation15Range({ from: item.date_from, to: item.date_to }),
 									label: dateFromString + ' - ' + dateToString,
 								};
 							}
 
-							that.model.ocupation.push(newElement);
+							self.model.ocupation.push(newElement);
 						}
 					});
 				}
@@ -422,7 +468,7 @@
 		 * Draw planning
 		*/
 		drawPlanning ({ rows, columns }) {
-			var that = this;
+			var self = this;
 			var  html = '<div class="mybooking-planning-scrollable"><table >';
 				/**
 				 * Head
@@ -436,9 +482,9 @@
 					if (!item.id && !description.includes(':')) {
 						var mydate = new Date(description);
 						var year = mydate.getFullYear();
-						var month = mydate.toLocaleString(that.model.requestLanguage, { month: 'short' }).toUpperCase();
+						var month = mydate.toLocaleString(self.model.requestLanguage, { month: 'short' }).toUpperCase();
 						var day = mydate.getDate();
-						var weekday = mydate.toLocaleString(that.model.requestLanguage, { weekday: 'short' }).toUpperCase();
+						var weekday = mydate.toLocaleString(self.model.requestLanguage, { weekday: 'short' }).toUpperCase();
 
 						description = month + ' ' + year + '<br>' + '<b style="font-size: 20px;">' + day + '</b><br>' + weekday;
 					}
@@ -458,7 +504,7 @@
 						if (!item.id && !fixHead.includes(':')) {
 							var mydate = new Date(fixHead);
 							var day = mydate.getDate();
-							var weekday = mydate.toLocaleString(that.model.requestLanguage, { weekday: 'short' }).toUpperCase();
+							var weekday = mydate.toLocaleString(self.model.requestLanguage, { weekday: 'short' }).toUpperCase();
 
 							fixHead = '<b style="font-size: 20px;">' + day + '</b>&nbsp;&nbsp;&nbsp;' + weekday;
 						}
@@ -468,7 +514,7 @@
 						columns.forEach(function(element) {
 							var time = element.id ? item : element;
 							var id = element.id ? element.id : item.id;
-							var isClosed = !time.includes(':') && !that.model.calendar.includes(time);
+							var isClosed = !time.includes(':') && !self.model.calendar.includes(time);
 							var closedClass = isClosed ? ' closed' : '';
 
 							html += '<td>';
@@ -508,7 +554,8 @@
 				calendar: [],
 			};
 
-			if (commonServices.URL_PREFIX && commonServices.URL_PREFIX !== '' && commonServices.apiKey && commonServices.apiKey !== '') {
+			if (commonServices.URL_PREFIX && commonServices.URL_PREFIX !== '' && 
+					commonServices.apiKey && commonServices.apiKey !== '') {
 				if (!this.model.date.actual) {
 					this.model.calendar = await this.getCalendar({ from: this.model.date.server, to: YSDFormatter.formatDate(moment(this.model.date.server).add(this.model.items * 2, 'd'), this.model.api_date_format)});
 					this.model.date.server = this.model.calendar[0];
@@ -523,19 +570,24 @@
 				var date = this.model.date.actual;
 				if (this.model.type === 'diary') {
 					this.model.schedule = await this.getSchedule({ date });
-				} else {
+				} else if (this.model.type === 'calendar') {
 					this.model.schedule = this.model.realCalendar;
 				}
 
-				this.model.resources = await this.getPlanning({ from: date, to: date});
-
 				if (this.model.isFamilySelectorAvailable) {
 					this.model.families = await this.getFamilies();
+					// Pre-select the first family
+					if (this.model.families.length > 0) {
+						this.model.family = this.model.families[0].id;
+					}
 				}
 				
 				if (this.model.isCategorySelectorAvailable) {
 					this.model.categories = await this.getCategories();
 				}
+
+				this.model.resources = await this.getPlanning({ from: date, to: date});
+
 				var html;
 				if (this.model.resources.length > 0 && this.model.schedule.length > 0) {
 					var settings;
@@ -585,25 +637,20 @@
 		},
 	};
 
+	/***
+	 * ========= The view
+	 */ 
 	var view = {
-		/**
-		 * Set Events
-		*/
-		setEvents: function(settings) {
-			var target = document.getElementById(settings.parent.model.targetId);
-
-			target.addEventListener('refresh', settings.parent.refresh.bind(settings.parent));
-
-			target.dispatchEvent(new CustomEvent('refresh', { detail: { settings, callback: planningActionBar.init.bind(planningActionBar) }}));
-		},
 
 		/**
 		 * Initizialize
-		*/
+ 		 */
 		init: function() {
-			var that = this;
+			var self = this;
 
+			// Get request language
 			var requestLanguage = commonSettings.language(document.documentElement.lang || 'es');
+			
 			// Initialize i18next for translations
 			i18next.init({  
 				lng: requestLanguage,
@@ -616,64 +663,78 @@
 					//$('.nav').localize();
 			});
 
+			// Load settings
 			commonSettings.loadSettings(function(data){
-				that.model = {
-					...that.model,
-					isFamilySelectorAvailable: !that.model.family && data.selectFamily,
-					isCategorySelectorAvailable: !that.model.category && data.productType === 'category_of_resources',
+				// Extend the model
+				self.model = {
+					...self.model,
+					isFamilySelectorAvailable: !self.model.family && data.useRentingFamilies,
+					isCategorySelectorAvailable: !self.model.category && data.productType === 'category_of_resources',
 					configuration: data,
 					requestLanguage,
 					date: {
-						...that.model.date,
+						...self.model.date,
 						server: data.serverDate,
 					}
 				};
-
-				that.setEvents({ parent: that, target: that.model.planningHTML.find('.mybooking-planning-head'), columnsWidth: that.model.cells.width });
+				// Configure events
+				self.setEvents({ parent: self, 
+												 target: self.model.planningHTML.find('.mybooking-planning-head'), 
+												 columnsWidth: self.model.cells.width });
 			});
-		}
-	};
-
-	var planningDiary = {
-		/**
-		 * Factory
-		*/
-		factory: function(obj) {
-			Planning.prototype = {
-				...model,
-				...controller,
-				...view,
-			};
-
-			return new Planning(obj); 
 		},
 
 		/**
-		 * Initizialize
+		 * Set Events
 		*/
+		setEvents: function(settings) {
+			var target = document.getElementById(settings.parent.model.targetId);
+			target.addEventListener('refresh', settings.parent.refresh.bind(settings.parent));
+			target.dispatchEvent(new CustomEvent('refresh', { detail: { settings, 
+																																	callback: planningActionBar.init.bind(planningActionBar) }}));
+		}
+
+
+	};
+
+	// -----------------------------------------
+
+	/**
+	 * Planning diary
+	 */ 
+	var planningDiary = {
+
+		/**
+		 * Initizialize
+ 		 */
 		init: function() {
 			commonLoader.show();
 			
-			var that = this;
+			var self = this;
 
 			$('.mybooking-rent-planning .mybooking-planning-content').each(function(index, item) {
-				var id = $(item).attr('id'); /** Unique id for instance */
-
+				
+				// Unique id for instance
+				var id = $(item).attr('id');
 				var planningHTML = $('#' + id);
 
+				// Information about cells
 				var cells;
 				if (planningHTML.attr('data-direction') === 'columns') {
+					// Columns direction
 					cells = {
 						width: 150,
 						height: 40,
 					};
 				} else {
+					// Rows direction
 					cells = {
-						width: 100,
+						width: 80,
 						height: 60,
 					};
 				}
 
+				// Settings
 				var settings = {
 					planningHTML,
 					target: planningHTML.find('.mybooking-planning-table'),
@@ -689,9 +750,25 @@
 				};
 				settings.target.attr('id', settings.targetId);
 
-				that.factory(settings).init();
+				// Create a Planning instance
+				self.factory(settings).init();
 			});
 		},
+
+		/**
+		 * Factory to create Planning instances
+		*/
+		factory: function(obj) {
+			// The proptotype => Clones the model, controller and view
+			Planning.prototype = {
+				...model, // Appends the model (cloning)
+				...controller, // Appends the controller (cloning)
+				...view, // Appends the view (cloning)
+			};
+			// Creates a new instance of the planning
+			return new Planning(obj); 
+		},
+
 	};
 
 	planningDiary.init();

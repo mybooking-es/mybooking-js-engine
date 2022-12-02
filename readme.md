@@ -14,6 +14,10 @@ Funcionalidades:
 - Creación de una web de reservas.
 - Creación de un calendario de disponibilidad para integrarlo en una página existente.
 
+## Version de Node
+
+Probar con la versión a partir de 15.10.1
+
 ## Instalar
 
 `$ npm install`

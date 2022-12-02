@@ -52,11 +52,11 @@ define('planningActionBar', ['jquery', 'YSDEventTarget', 'commonSettings',
 					familySelector.append('<option value="' + item.id + '">' + item.name + '</option>')
 				});
 
-					/*
+				/*
 				* Set events
 				*/
 				familySelector.off('change');
-				familySelector.on('change', this.setCategory.bind(this));
+				familySelector.on('change', this.setFamily.bind(this));
 			} else {
 				familySelector.attr('disabled', 'disabled');
 			}
@@ -130,6 +130,9 @@ define('planningActionBar', ['jquery', 'YSDEventTarget', 'commonSettings',
 			});
 		},
 
+		/**
+		 * Refresh the planning action bar
+		 */ 
 		refresh: function({ total, family, category }) {
 			if (total > 0) {
 				this.setColumns(total);
