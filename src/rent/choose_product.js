@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
          'commonServices', 'commonSettings', 'commonTranslations', 'commonLoader', 'commonUI',
          'i18next', 'ysdtemplate', 
@@ -49,7 +50,6 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
     number_of_children: null,
     number_of_products: null,
     agent_id: null,
-    category_code: null,
 
     // -------------- Load settings ----------------------------
 
@@ -463,6 +463,91 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
 
     },
 
+    /**
+     * Build select product variant data
+     *
+     * @productCode:: The product code
+     * @quantity:: The quantity
+     * @coverageCode:: The coverageCode (if it uses coverage)
+     */
+    buildSelectProductVariantDataParams: function(productCode, params) {
+      var data = {
+        product: productCode,
+        variants: params,
+      };
+
+      var jsonData = encodeURIComponent(JSON.stringify(data));
+
+      return jsonData;
+    },
+
+    /**
+     * Set the product variant
+     */
+    selectProductVariants: function(productCode, params) {
+      // Build the URL
+      var url = commonServices.URL_PREFIX + '/api/booking/frontend/shopping-cart';
+      var freeAccessId = this.getShoppingCartFreeAccessId();
+      if (freeAccessId) {
+        url += '/' + freeAccessId;
+      }
+      url += '/set-product';
+      var urlParams = [];
+      if (this.requestLanguage != null) {
+        urlParams.push('lang=' + this.requestLanguage);
+      }
+      if (commonServices.apiKey && commonServices.apiKey != '') {
+        urlParams.push('api_key='+commonServices.apiKey);
+      }           
+      if (urlParams.length > 0) {
+        url += '?';
+        url += urlParams.join('&');
+      }
+      // Request
+      commonLoader.show();
+
+      $.ajax({
+              type: 'POST',
+              url : url,
+              data:  this.buildSelectProductVariantDataParams(productCode, params),
+              dataType : 'json',
+              contentType : 'application/json; charset=utf-8',
+              crossDomain: true,
+              success: function(data, textStatus, jqXHR) {
+                commonLoader.hide();
+
+                var resumeBox = $('#product-variant-resume');
+                resumeBox.html('');
+
+                var item = data.shopping_cart.items.find((item) => productCode === item.item_id);
+                var variants = item.variants || {'B-1': 1}; // TODO
+
+                for (const variant in variants) {
+                  if (Object.hasOwnProperty.call(variants, variant)) {
+                    const element = variants[variant];
+                    
+                    resumeBox.append(
+                      `<div style="display: inline-block; margin-right: 0.5rem; border-radius: 2px; border: 1px solid lightgray; font-size: 12px;"><span style="display: inline-block;  padding: 5px;">${element}</span> <span style="display: inline-block;  padding: 5px; background-color: lightgray;">${variant}</span></div>`
+                    );
+                  }
+                }
+
+                if (item) { // TODO
+                  var total = item.item_unit_cost * item.quantity;
+                  resumeBox.append(`<h4 class="pull-right">${total} €</h4>`);
+                }
+
+                commonUI.hideModal('#modalVariantSelector');
+                $('#modalVariantSelector').hide();
+              },
+              error: function(data, textStatus, jqXHR) {
+                commonLoader.hide();
+                alert(i18next.t('chooseProduct.selectProduct.error'));
+              }
+         });
+
+   },
+
     /** 
      * Load product (product detail Page)
      */
@@ -564,6 +649,46 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
     },
 
     /**
+     * Select variant button click
+     */
+    selectVariantBtnClick: function(productCode) {
+      var myProduct = model.products.find(product =>  productCode === product.code);
+
+      if (myProduct.is_variant) {
+        var variants = myProduct.variants;
+        var variantHtml = tmpl('script_variant_product')({ variants, productCode });
+
+        $('#variant-product-title').html(myProduct.name);
+        $('#variant-product-content').html(variantHtml);
+        commonUI.showModal('#modalVariantSelector');
+        $('#modalVariantSelector').show();
+
+        $('.variant_product_selector').unbind('change');
+        $('.variant_product_selector').bind('change', function() {
+          var block = $('#variant_product_selectors');
+          var selectors = block.find('.variant_product_selector');
+          var price = $(this).closest('select').attr('data-variant-unit-price');
+          var sum = 0;
+
+          selectors.each(
+            function(index, selector) {
+              sum += window.parseInt($(selector).val()) * window.parseInt(price);
+            }
+          );
+
+          $('#variant_product_total_quantity').html(sum);
+        });
+
+        $('form[name=variant_product_form]').unbind('submit');
+        $('form[name=variant_product_form]').bind('submit', function (event) {
+          event.preventDefault();
+
+          model.selectProductVariants($(this).attr('data-product-code'), $(this).formParams());
+        });
+      }
+    },
+
+    /**
      * Product quantity changed
      */
     productQuantityChanged: function(productCode, newQuantity) {
@@ -587,8 +712,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
     },
 
     coverageSelectorClick: function(selector) {
-
-      thisRadio = $(selector);
+      var thisRadio = $(selector);
       // remove the class imChecked from other radios
       $('input[type=radio][name=coverage]').not(thisRadio).removeClass("imChecked");
       // Check the class imChecked
@@ -598,8 +722,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
       } else { 
           thisRadio.prop('checked', true);
           thisRadio.addClass("imChecked");
-      };
-
+      }
     }
 
   };
@@ -731,15 +854,19 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
           // Bind the event to change to list
 
           // Bind the event to choose the product
-          $('.btn-choose-product').bind('click', function() {
+          $('.btn-choose-product').bind('click', function() {
             controller.selectProductBtnClick($(this).attr('data-product'));
           });
           // Bind the events to manage multiple products
-          $('.select-choose-product').bind('change', function() {
+          $('.select-choose-product').bind('change', function() {
               var productCode = $(this).attr('data-value');
               var productQuantity = $(this).val();
               controller.productQuantityChanged(productCode, productQuantity);
-          });        
+          }); 
+          // Bind the event to choose variant
+          $('.btn-choose-variant').bind('click', function() {
+            controller.selectVariantBtnClick($(this).attr('data-product'));
+          });       
           $('#go_to_complete').bind('click', function() {
             controller.multipleProductsNextButtonClick();
           });

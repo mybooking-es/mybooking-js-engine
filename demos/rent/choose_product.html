@@ -169,10 +169,19 @@
             <div class="hero-foot">
             <% if (product.availability) { %>
               <% if (product.few_available_units) { %>
-              <p class="has-text-danger has-text-centered">¡Quedan pocas unidades!</p>  
-              <br>
+                <p class="has-text-danger has-text-centered">¡Quedan pocas unidades!</p>
+                <br>
               <% } %>              
-              <a class="button is-primary btn-choose-product is-fullwidth" role="button" data-product="<%=product.code%>">Reservar</a>
+              <% if (product.is_variant) { %>
+                <div id="product-variant-resume"></div>
+                <br>
+                <!-- // Button -->
+                <div class="card-static_btn">
+                  <a class="button btn btn-choose-variant" data-toggle="modal" data-target="#infoModal" data-product="<%=product.code%>">Seleccionar unidades</a>
+                </div>
+              <% } else { %>
+                <a class="button is-primary btn-choose-product is-fullwidth" role="button" data-product="<%=product.code%>">Reservar</a>
+              <% } %>
             <% } else { %>
             <p class="has-text-centered">Modelo no disponible en la oficina y fechas seleccionadas</p>
             <% } %>
@@ -182,6 +191,54 @@
         <hr>
       <% } %>
     </script>
+
+    <!-- Script detailed choose_variant -->   
+    <script type="text/tpml" id="script_variant_product">
+      <form name="variant_product_form" data-product-code="<%= productCode %>">
+        <div id="variant_product_selectors" class="row">
+          <% for (var idxV=0;idxV<variants.length;idxV++) { %>
+            <% var variant = variants[idxV]; %>
+            <div class="col-xs-12 col-sm-4">
+              <div class="form-group">
+                <label for="<%= variant.code %>">
+                  <%= variant.variant_name %>
+                </label>
+                <select name="<%= variant.code %>" id="<%= variant.code %>" <% if  (variant.available < 1) { %>disabled<% } %> class="form-control variant_product_selector" data-variant-unit-price="<%= variant.unit_price %>">
+                  <option value="0">Seleccionar unidades</option>
+                  <% for (var idxVO=1;idxVO<=variant.available;idxVO++) { %>
+                    <option value="<%= idxVO %>"><%= idxVO %> <% if  (idxVO > 1) { %>unidades<% } else { %>unidad<% } %> - <%= variant.unit_price * idxVO %> €</option>
+                  <% } %>
+                  </select>
+              </div>
+            </div>
+          <% } %>
+        </div>
+        <hr>
+        <div class="row">
+          <h4 class="col-xs-12 col-sm-6">Total</h4>
+          <h4 id="variant_product_total" class="col-xs-12 col-sm-6 text-right">
+            <span id="variant_product_total_quantity">0</span>
+            &nbsp;
+            €
+          </h4>
+        </div>
+        <hr>
+        <button type="submit" class="close" data-dismiss="modal" class="button is-primary pull-right">Actualizar</button>
+      </form>
+    </script>
+    <div class="modal mybooking-modal" tabindex="-1" role="dialog" id="modalVariantSelector" style="background-color: white;">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 id="variant-product-title" class="modal-title"></h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="<?php echo esc_attr_x( 'Close', 'renting_choose_product', 'mybooking' ); ?>">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div id="variant-product-content" class="modal-body"></div>
+        </div>
+      </div>
+    </div>
     
     <!-- Script detailed for reservation summary -->
     <script type="text/tmpl" id="script_reservation_summary">
@@ -225,6 +282,5 @@
         });
     </script>
     <script id="engine" async data-src="../js/mybooking-js-engine.js"></script>
-    <script src="/reload/reload.js"></script>
   </body>
 </html>

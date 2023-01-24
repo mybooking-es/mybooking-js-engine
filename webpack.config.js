@@ -19,6 +19,7 @@ module.exports = [
    {
       name: "mybooking-js-engine",
       entry: "./src/app.js",
+      mode: "development",
       output: {
         path: path.resolve(__dirname, "dist/js"),
         filename: "mybooking-js-engine.js"
@@ -37,6 +38,7 @@ module.exports = [
    {
       name: "mybooking-js-engine-bundle",
       entry: "./src/app-bundle.js",
+      mode: "production",
       output: {
         path: path.resolve(__dirname, "dist/js"),
         filename: "mybooking-js-engine-bundle.js",
