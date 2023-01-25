@@ -533,8 +533,8 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
                 }
 
                 if (item) { // TODO
-                  var total = item.item_unit_cost * item.quantity;
-                  resumeBox.append(`<h4 class="pull-right">${total} €</h4>`);
+                  var total = window.parseFloat(item.item_unit_cost) *  window.parseFloat(item.quantity);
+                  resumeBox.append(`<span class="float-right"><h4>${total} €</h4></span>`);
                 }
 
                 commonUI.hideModal('#modalVariantSelector');
@@ -672,18 +672,18 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
 
           selectors.each(
             function(index, selector) {
-              sum += window.parseInt($(selector).val()) * window.parseInt(price);
+              sum += window.parseFloat($(selector).val()) * window.parseFloat(price);
             }
           );
 
           $('#variant_product_total_quantity').html(sum);
         });
 
-        $('form[name=variant_product_form]').unbind('submit');
-        $('form[name=variant_product_form]').bind('submit', function (event) {
+        $('#variant_product_form_button').one('click', function (event) {
           event.preventDefault();
 
-          model.selectProductVariants($(this).attr('data-product-code'), $(this).formParams());
+          var form = $(this).closest('form');
+          model.selectProductVariants(form.attr('data-product-code'), form.formParams());
         });
       }
     },
