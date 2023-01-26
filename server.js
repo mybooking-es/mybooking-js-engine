@@ -20,6 +20,7 @@ server.listen(process.env.port, function () {
   console.log(`listening ${process.env.baseURL} on port: ${process.env.port}`);
 });
 
+// <script src="/reload/reload.js"></script> on page
 // reload(app).then(function () {
 //   server.listen(process.env.port, function () {
 //     console.log(`listening ${process.env.baseURL} on port: ${process.env.port}`);

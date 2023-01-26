@@ -88,6 +88,45 @@
                       </div>
                     </div>
 
+                    <div id="airport-form-section" class="row customer_component" data-airport-required="true">
+                      <h4 class="brand-primary my-3">Datos del vuelo</h4>
+                      <div class="form-row">
+                        <div class="form-group col-md-4">
+                          <label for="flight_company">Compañia *</label>
+                          <input class="form-control" id="flight_company" name="flight_company" type="text" placeholder="Compañia" maxlength="80" required>
+                        </div>
+                        <div class="form-group col-md-4">
+                          <label for="flight_number">Número de vuelo *</label>
+                          <input class="form-control" id="flight_number" name="flight_number" type="text" placeholder="Número de vuelo"  maxlength="10" required>
+                        </div>
+                        <div class="form-group col-md-4">
+                          <label for="flight_time">Hora de llegada</label>
+                          <input class="form-control" id="flight_time" name="flight_time" type="text" placeholder="Hora de llegada" maxlength="5" required>
+                        </div>
+                      </div>
+                    </div>
+                
+                    <div id="hotel-form-section" class="row customer_component" style="background-color:#3DD992;margin: 2rem 0;padding:2rem;" data-hotel-required="true">
+                      <div class="col-md-12 col-sm-12">
+                        <h3 class="customer_component">Hotel</h3>
+                        <p class="lead">
+                          Si ha escogido Hotel como lugar de entrega o devolución, es imprescindible que indique los datos de localización del establecimiento.
+                        </p>
+                      </div>
+                      <div class="col-md-12 col-sm-12">
+                        <div class="form-group">
+                          <div class="contact-us-label">
+                            Nombre y dirección del hotel
+                          </div>
+                          <p>
+                            <span class="wpcf7-form-control-wrap name">
+                              <input type="text" id="destination_accommodation" name="destination_accommodation" value="" size="50" class="wpcf7-form-control wpcf7-text" aria-invalid="false" placeholder="Nombre y dirección del hotel">
+                            </span>
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
                 <!-- Reservation : payment -->
                 <div id="payment_detail">
                 </div>
@@ -364,6 +403,5 @@
     </script>
     <script src="../../assets/js/intlTelInput-utils.js"></script>
     <script id="engine" async data-src="../js/mybooking-js-engine.js"></script>
-    <script src="/reload/reload.js"></script>
   </body>
 </html>

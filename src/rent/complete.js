@@ -26,6 +26,8 @@ require(['jquery',
     sales_process: null,  // Sales process
     // Extra detail
     extraDetail: null,
+    isAirportDataRequired: false,
+    isHotelDataRequired: false,
 
     // -------------- Load settings ----------------------------
 
@@ -186,6 +188,20 @@ require(['jquery',
                  model.extras = data.extras;
                  model.coverages = data.coverages;
                  model.sales_process = data.sales_process;
+
+                 var airportSection = $('#airport-form-section');
+                 if (airportSection.length > 0 )  {
+                  if (data.shopping_cart.pickup_place_type === 'airport' && airportSection.attr('data-airport-required') === 'true') {
+                    model.isAirportDataRequired = true;
+                  }
+                 }
+                 var hotelSection = $('#hotel-form-section');
+                 if (hotelSection.length > 0 )  {
+                  if (hotelSection.attr('data-hotel-required') === 'true') {
+                    model.isHotelDataRequired = true;
+                  }
+                }
+                 
                  view.updateShoppingCart();
                  // Hide the loader
                  commonLoader.hide();
@@ -1084,6 +1100,18 @@ require(['jquery',
                     },
                     'with_optional_external_driver': {
                         required: '#with_optional_external_driver:visible'
+                    },
+                    'flight_company': {
+                      required: model.isAirportDataRequired
+                    },
+                    'flight_number': {
+                      required: model.isAirportDataRequired
+                    },
+                    'flight_time': {
+                      required: model.isAirportDataRequired
+                    },
+                    'destination_accommodation': {
+                      required: model.isHotelDataRequired
                     }
                 },
 
@@ -1161,8 +1189,19 @@ require(['jquery',
                     },
                     'with_optional_external_driver': {
                         required: i18next.t('complete.reservationForm.validations.fieldRequired')
-                    }                     
-
+                    },             
+                    'flight_company': {
+                      required: i18next.t('complete.reservationForm.validations.fieldRequired')
+                    },
+                    'flight_number': {
+                      required: i18next.t('complete.reservationForm.validations.fieldRequired')
+                    },
+                    'flight_time': {
+                      required: i18next.t('complete.reservationForm.validations.fieldRequired')
+                    },
+                    'destination_accommodation': {
+                      required: i18next.t('complete.reservationForm.validations.fieldRequired')
+                    }
                 },
 
                 errorPlacement: function (error, element) {
