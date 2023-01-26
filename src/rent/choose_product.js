@@ -484,7 +484,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
     /**
      * Set the product variant
      */
-    selectProductVariants: function(productCode, params) {
+    selectProductVariants: function(productCode, variantCode, params) {
       // Build the URL
       var url = commonServices.URL_PREFIX + '/api/booking/frontend/shopping-cart';
       var freeAccessId = this.getShoppingCartFreeAccessId();
@@ -509,13 +509,37 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
       $.ajax({
               type: 'POST',
               url : url,
-              data:  this.buildSelectProductVariantDataParams(productCode, params),
+              data:  this.buildSelectProductVariantDataParams(variantCode, params),
               dataType : 'json',
               contentType : 'application/json; charset=utf-8',
               crossDomain: true,
               success: function(data, textStatus, jqXHR) {
+              
                 commonLoader.hide();
 
+                var items = data.shopping_cart.items.find((item) => productCode === item.parent_variant_item_id);
+                var variants = {};
+                for (var idx=0; idx<items.length; idx) {
+                  variants[items[idx].item_id] = items[idx].quantity;
+                }
+                //var variants = item.variants || {'B-1': 1}; // TODO
+
+                /*
+                  var block = $('#variant_product_selectors');
+                  var selectors = block.find('.variant_product_selector');
+                  var price = $(this).closest('select').attr('data-variant-unit-price');
+                  var sum = 0;
+
+                  selectors.each(
+                    function(index, selector) {
+                      sum += window.parseFloat($(selector).val()) * window.parseFloat(price);
+                    }
+                  );
+
+                  $('#variant_product_total_quantity').html(sum);
+                */
+
+/*
                 var resumeBox = $('#product-variant-resume');
                 resumeBox.html('');
 
@@ -539,6 +563,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
 
                 commonUI.hideModal('#modalVariantSelector');
                 $('#modalVariantSelector').hide();
+*/                
               },
               error: function(data, textStatus, jqXHR) {
                 commonLoader.hide();
@@ -654,7 +679,8 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
     selectVariantBtnClick: function(productCode) {
       var myProduct = model.products.find(product =>  productCode === product.code);
 
-      if (myProduct.is_variant) {
+      if (myProduct.variants_enabled) {
+        // Open Modal
         var variants = myProduct.variants;
         var variantHtml = tmpl('script_variant_product')({ variants, productCode });
 
@@ -665,6 +691,14 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
 
         $('.variant_product_selector').unbind('change');
         $('.variant_product_selector').bind('change', function() {
+
+          var form = $(this).closest('form');
+          var variantProductCode = $(this).attr('name');
+          // form.attr('data-product-code')
+          // Add the variant
+          model.selectProductVariants(productCode, variantProductCode, form.formParams());
+
+/*
           var block = $('#variant_product_selectors');
           var selectors = block.find('.variant_product_selector');
           var price = $(this).closest('select').attr('data-variant-unit-price');
@@ -677,14 +711,17 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
           );
 
           $('#variant_product_total_quantity').html(sum);
+*/
         });
 
+/**
         $('#variant_product_form_button').one('click', function (event) {
           event.preventDefault();
 
           var form = $(this).closest('form');
           model.selectProductVariants(form.attr('data-product-code'), form.formParams());
         });
+**/
       }
     },
 
