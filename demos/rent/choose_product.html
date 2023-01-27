@@ -172,9 +172,8 @@
                 <p class="has-text-danger has-text-centered">¡Quedan pocas unidades!</p>
                 <br>
               <% } %>              
-              <% if (product.is_variant) { %>
-                <div id="product-variant-resume"></div>
-                <br>
+              <% if (product.variants_enabled) { %>
+                <div class="product-variant-resume" data-product-code="<%=product.code%>" style="margin: 0.5rem; 0"></div>
                 <!-- // Button -->
                 <div class="card-static_btn">
                   <a class="button btn btn-choose-variant" data-toggle="modal" data-target="#infoModal" data-product="<%=product.code%>">Seleccionar unidades</a>
@@ -193,8 +192,18 @@
     </script>
 
     <!-- Script detailed choose_variant -->   
+    <script type="text/tpml" id="script_variant_product_resume">
+      <div style="display: flex; align-items: center; justify-content: space-between; margin: 0 -0.5rem;">
+        <div style="margin-top: -5px;">
+          <% for (var idxV=0;idxV<variantsSelected.length;idxV++) { %>
+            <div style="display: inline-block; margin-right: 0.2rem; border-radius: 2px; border: 1px solid lightgray; font-size: 12px;"><span style="display: inline-block;  padding: 2px;"><%= variantsSelected[idxV]['quantity'] %></span> <span style="display: inline-block;  padding: 2px; background-color: lightgray;"><%= variantsSelected[idxV]['name'] %></span></div>
+          <% } %>
+        </div>
+        <strong><span class="float-right"><%=configuration.formatCurrency(total)%></span></strong>
+      </div>
+    </script>
     <script type="text/tpml" id="script_variant_product">
-      <form name="variant_product_form" data-product-code="<%= productCode %>">
+      <form name="variant_product_form">
         <div id="variant_product_selectors" class="row">
           <% for (var idxV=0;idxV<variants.length;idxV++) { %>
             <% var variant = variants[idxV]; %>
@@ -203,10 +212,10 @@
                 <label for="<%= variant.code %>">
                   <%= variant.variant_name %>
                 </label>
-                <select name="<%= variant.code %>" id="<%= variant.code %>" <% if  (variant.available < 1) { %>disabled<% } %> class="form-control variant_product_selector" data-variant-unit-price="<%= variant.unit_price %>">
+                <select name="<%= variant.code %>" id="<%= variant.code %>" <% if  (variant.available < 1) { %>disabled<% } %> class="form-control variant_product_selector">
                   <option value="0">Seleccionar unidades</option>
                   <% for (var idxVO=1;idxVO<=variant.available;idxVO++) { %>
-                    <option value="<%= idxVO %>"><%= idxVO %> <% if  (idxVO > 1) { %>unidades<% } else { %>unidad<% } %> - <%= variant.unit_price * idxVO %> €</option>
+                    <option value="<%= idxVO %>"  <% if  (variantsSelected[variant.code] && variantsSelected[variant.code] === idxVO) { %>selected<% } %>><%= idxVO %> <% if  (idxVO > 1) { %>unidades<% } else { %>unidad<% } %> - <%=configuration.formatCurrency(variant.unit_price * idxVO)%></option>
                   <% } %>
                   </select>
               </div>
@@ -217,13 +226,9 @@
         <div class="row">
           <h4 class="col-xs-12 col-sm-6">Total</h4>
           <h4 id="variant_product_total" class="col-xs-12 col-sm-6 text-right">
-            <span id="variant_product_total_quantity">0</span>
-            &nbsp;
-            €
+            <span id="variant_product_total_quantity"> <%=configuration.formatCurrency(total)%></span>
           </h4>
         </div>
-        <hr>
-        <button id="variant_product_form_button" class="button is-primary pull-right">Actualizar</button>
       </form>
     </script>
     <div class="modal mybooking-modal" tabindex="-1" role="dialog" id="modalVariantSelector" style="background-color: white;">
