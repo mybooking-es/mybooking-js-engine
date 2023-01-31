@@ -176,3 +176,29 @@ input[type="text"], input[type="password"], .ui-autocomplete-input, textarea, .u
     transform: translateX(-31px);
   }
 }
+
+/* Card static Variant styles */
+.card-static_variant_resume__container {
+  display: flex; 
+  align-items: center; 
+  justify-content: space-between; 
+  margin: 0 -0.5rem;
+}
+.card-static_variant_resume__container_inside {
+  margin-top: -3px;
+}
+.card-static_variant_resume__box {
+  display: inline-block; 
+  margin-right: 0.2rem; 
+  border-radius: 2px; 
+  border: 1px solid lightgray; 
+  font-size: 12px;
+}
+.card-static_variant_resume__box_inside {
+  display: inline-block;  
+  padding: 2px;
+}
+.card-static_variant_resume__box_inside:last-child {
+  background-color: lightgray;
+}
+

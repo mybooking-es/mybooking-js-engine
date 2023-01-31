@@ -472,10 +472,10 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
      */
     buildSelectProductVariantDataParams: function(productCode, params) {
       var data = {
-        product: productCode,
-        quantity: params[productCode],
+        product: model.configuration.multipleProductsSelection ? productCode : Object.keys(params)[0],
+        quantity: model.configuration.multipleProductsSelection ? params[productCode] : 1,
       };
-
+      
       var jsonData = encodeURIComponent(JSON.stringify(data));
 
       return jsonData;
@@ -484,7 +484,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
     /**
      * Set the product variant
      */
-    selectProductVariants: function(productCode, variantCode, params) {
+    selectProductVariants: function(variantCode, params) {
       // Build the URL
       var url = commonServices.URL_PREFIX + '/api/booking/frontend/shopping-cart';
       var freeAccessId = this.getShoppingCartFreeAccessId();
@@ -635,16 +635,20 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
       var myProduct = model.products.find(product =>  productCode === product.code);
 
       if (myProduct.variants_enabled) {
-        // Open Modal
         var variants = myProduct.variants;
 
         var variantsSelected = {};
-        var items = model.shopping_cart.items.filter((item) => productCode === item.parent_variant_item_id);
-        for (var idxV=0; idxV<items.length; idxV++) {
-          variantsSelected[items[idxV].item_id] = items[idxV].quantity;
+        var items = model.shopping_cart.items.filter((item) => {
+          return productCode === item.parent_variant_item_id;
+        });
+        if (items && items.length > 0) {
+          for (var idxV=0; idxV<items.length; idxV++) {
+            variantsSelected[items[idxV].item_id] = items[idxV].quantity;
+          }
         }
 
         var variantHtml = tmpl('script_variant_product')({ 
+          product: myProduct,
           variants, 
           variantsSelected, 
           total: model.shopping_cart.item_cost, 
@@ -661,9 +665,16 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
         $('.variant_product_selector').bind('change', function() {
           var form = $(this).closest('form');
           var variantProductCode = $(this).attr('name');
+          var params = form.formParams();
 
           // Add the variant
-          model.selectProductVariants(productCode, variantProductCode, form.formParams());
+          if (model.configuration.multipleProductsSelection) {
+            model.selectProductVariants(variantProductCode, params);
+          } else {
+            var myObj = {};
+            myObj[params[variantProductCode]] = 1;
+            model.selectProductVariants(variantProductCode, myObj);
+          }
         });
 
         $('#modalVariantSelector').on('hidden.bs.modal', () => {
@@ -757,14 +768,16 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
       if (myProduct.variants_enabled) {
         var variantsSelected = [];
         var items = model.shopping_cart.items.filter((item) => productCode === item.parent_variant_item_id);
-        for (var idxV=0; idxV<items.length; idxV++) {
-          variantsSelected.push(
-            {
-              id: items[idxV].item_id,
-              quantity: items[idxV].quantity,
-              name: myProduct.variants.find((variant) => variant.code === items[idxV].item_id).variant_name,
-            }
-          );
+        if (items && items.length > 0) {
+          for (var idxV=0; idxV<items.length; idxV++) {
+            variantsSelected.push(
+              {
+                id: items[idxV].item_id,
+                quantity: items[idxV].quantity,
+                name: myProduct.variants.find((variant) => variant.code === items[idxV].item_id).variant_name,
+              }
+            );
+          }
         }
 
         var resumeHtml = tmpl('script_variant_product_resume')({
@@ -857,7 +870,9 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
 
           // Add variants resume
           model.shopping_cart.items.forEach((item) => {
-            this.refreshVariantsResume(item.parent_variant_item_id);
+            if (item.parent_variant_item_id) {
+              this.refreshVariantsResume(item.parent_variant_item_id);
+            }
           });
 
           // Bind the event to change to grid

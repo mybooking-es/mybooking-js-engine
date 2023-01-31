@@ -176,7 +176,7 @@
                 <div class="product-variant-resume" data-product-code="<%=product.code%>" style="margin: 0.5rem; 0"></div>
                 <!-- // Button -->
                 <div class="card-static_btn">
-                  <a class="button btn btn-choose-variant" data-toggle="modal" data-target="#infoModal" data-product="<%=product.code%>">Seleccionar unidades</a>
+                  <a class="button btn btn-choose-variant" data-toggle="modal" data-target="#infoModal" data-product="<%=product.code%>"><% if (configuration.multipleProductsSelection) { %>Seleccionar unidades<% } else { %>Seleccionar variantes<% } %></a>
                 </div>
               <% } else { %>
                 <a class="button is-primary btn-choose-product is-fullwidth" role="button" data-product="<%=product.code%>">Reservar</a>
@@ -193,10 +193,10 @@
 
     <!-- Script detailed choose_variant -->   
     <script type="text/tpml" id="script_variant_product_resume">
-      <div style="display: flex; align-items: center; justify-content: space-between; margin: 0 -0.5rem;">
-        <div style="margin-top: -5px;">
+      <div class="card-static_variant_resume__container">
+        <div class="card-static_variant_resume__container_inside">
           <% for (var idxV=0;idxV<variantsSelected.length;idxV++) { %>
-            <div style="display: inline-block; margin-right: 0.2rem; border-radius: 2px; border: 1px solid lightgray; font-size: 12px;"><span style="display: inline-block;  padding: 2px;"><%= variantsSelected[idxV]['quantity'] %></span> <span style="display: inline-block;  padding: 2px; background-color: lightgray;"><%= variantsSelected[idxV]['name'] %></span></div>
+            <div class="card-static_variant_resume__box"><span class="card-static_variant_resume__box_inside"><%= variantsSelected[idxV]['quantity'] %></span> <span class="card-static_variant_resume__box_inside"><%= variantsSelected[idxV]['name'] %></span></div>
           <% } %>
         </div>
         <strong><span class="float-right"><%=configuration.formatCurrency(total)%></span></strong>
@@ -205,21 +205,38 @@
     <script type="text/tpml" id="script_variant_product">
       <form name="variant_product_form">
         <div id="variant_product_selectors" class="row">
-          <% for (var idxV=0;idxV<variants.length;idxV++) { %>
-            <% var variant = variants[idxV]; %>
+          <% if (!configuration.multipleProductsSelection) { %>
             <div class="col-xs-12 col-sm-4">
               <div class="form-group">
-                <label for="<%= variant.code %>">
-                  <%= variant.variant_name %>
+                <label for="<%= product.code %>">
+                  <%= product.name %>
                 </label>
-                <select name="<%= variant.code %>" id="<%= variant.code %>" <% if  (variant.available < 1) { %>disabled<% } %> class="form-control variant_product_selector">
-                  <option value="0">Seleccionar unidades</option>
-                  <% for (var idxVO=1;idxVO<=variant.available;idxVO++) { %>
-                    <option value="<%= idxVO %>"  <% if  (variantsSelected[variant.code] && variantsSelected[variant.code] === idxVO) { %>selected<% } %>><%= idxVO %> <% if  (idxVO > 1) { %>unidades<% } else { %>unidad<% } %> - <%=configuration.formatCurrency(variant.unit_price * idxVO)%></option>
+                <select name="<%= product.code %>" id="<%= product.code %>" class="form-control variant_product_selector">
+                  <option value="0">Seleccionar variante</option>
+                  <% for (var idxV=0;idxV<variants.length;idxV++) { %>
+                    <% var variant = variants[idxV]; %>
+                    <option value="<%= variant.code %>" <% if  (variantsSelected[variant.code]) { %>selected<% } %>><%= variant.variant_name %> - <%=configuration.formatCurrency(variant.unit_price)%></option>
                   <% } %>
-                  </select>
+                </select>
               </div>
             </div>
+          <% } else { %>
+            <% for (var idxV=0;idxV<variants.length;idxV++) { %>
+              <% var variant = variants[idxV]; %>
+              <div class="col-xs-12 col-sm-4">
+                <div class="form-group">
+                  <label for="<%= variant.code %>">
+                    <%= variant.variant_name %>
+                  </label>
+                  <select name="<%= variant.code %>" id="<%= variant.code %>" <% if  (variant.available < 1) { %>disabled<% } %> class="form-control variant_product_selector">
+                    <option value="0">Seleccionar unidades</option>
+                    <% for (var idxVO=1;idxVO<=variant.available;idxVO++) { %>
+                      <option value="<%= idxVO %>"  <% if  (variantsSelected[variant.code] && variantsSelected[variant.code] === idxVO) { %>selected<% } %>><%= idxVO %> <% if  (idxVO > 1) { %>unidades<% } else { %>unidad<% } %> - <%=configuration.formatCurrency(variant.unit_price * idxVO)%></option>
+                    <% } %>
+                    </select>
+                </div>
+              </div>
+            <% } %>
           <% } %>
         </div>
         <hr>
