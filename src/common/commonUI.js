@@ -74,6 +74,7 @@ define('commonUI',['jquery', 'commonServices', 'jquery.modal'],function($, commo
         if (callbackOnShow !== undefined && typeof callbackOnShow === 'function') {
           $(selectorMBM).on($.mbModal.OPEN, callbackOnShow);
         }
+        // Setup the callback o hide
         if (callbackOnHide !== undefined && typeof callbackOnHide === 'function') {
           $(selectorMBM).on($.mbModal.AFTER_CLOSE, callbackOnHide);
         }
@@ -83,6 +84,15 @@ define('commonUI',['jquery', 'commonServices', 'jquery.modal'],function($, commo
       }
       else {
         if ($.fn.modal) {
+          // Setup the callback on Show
+          if (callbackOnShow !== undefined && typeof callbackOnShow === 'function') {
+            $(selector).on('shown.bs.modal', callbackOnShow);
+          }
+          // Setup the callback on hide
+          if (callbackOnHide !== undefined && typeof callbackOnHide === 'function') {
+            $(selector).on('hidden.bs.modal', callbackOnHide);
+          }
+          // Show the modal
           $(selector).modal({show: true, backdrop: true});
         }
       }

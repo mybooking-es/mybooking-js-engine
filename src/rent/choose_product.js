@@ -676,7 +676,12 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
 
         $('#variant-product-title').html(myProduct.name);
         $('#variant-product-content').html(variantHtml);
-        commonUI.showModal('#modalVariantSelector');
+        commonUI.showModal('#modalVariantSelector', 
+                            null, // On show modal 
+                            function(){
+                              // On Hide modal => Refresh variants summary
+                              view.refreshVariantsResume(productCode);
+                            });
 
         $('.variant_product_selector').unbind('change');
         $('.variant_product_selector').bind('change', function() {
@@ -693,15 +698,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
             model.selectProductVariants(productCode, variantProductCode, myObj);
           }
         });
-
-        $('#modalVariantSelector').on('hidden.bs.modal', () => {
-          view.refreshVariantsResume(productCode);
-
-          commonUI.hideModal('#modalVariantSelector', function() {
-            $('#variant-product-title').html('');
-            $('#variant-product-content').html('');
-          });
-        })
+      
       }
     },
 
