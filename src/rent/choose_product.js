@@ -481,10 +481,27 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
       return jsonData;
     },
 
+    getTotal: function (productCode) {
+      var items = model.shopping_cart.items.filter((item) => {
+        return productCode === item.parent_variant_item_id;
+      });
+
+      var total = 0;
+
+      if (items && items.length > 0) {
+        for (var idxV=0; idxV<items.length; idxV++) {
+          var element = items[idxV];
+          total += window.parseFloat(element.item_unit_cost) * element.quantity;
+        }
+      }
+
+      return total;
+    },
+
     /**
      * Set the product variant
      */
-    selectProductVariants: function(variantCode, params) {
+    selectProductVariants: function(productCode, variantCode, params) {
       // Build the URL
       var url = commonServices.URL_PREFIX + '/api/booking/frontend/shopping-cart';
       var freeAccessId = this.getShoppingCartFreeAccessId();
@@ -518,7 +535,8 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
 
                 commonLoader.hide();
 
-                $('#variant_product_total_quantity').html(model.configuration.formatCurrency(data.shopping_cart.item_cost));
+                var total = model.getTotal(productCode);
+                $('#variant_product_total_quantity').html(model.configuration.formatCurrency(total));
               },
               error: function(data, textStatus, jqXHR) {
                 commonLoader.hide();
@@ -651,7 +669,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
           product: myProduct,
           variants, 
           variantsSelected, 
-          total: model.shopping_cart.item_cost, 
+          total: model.getTotal(productCode), 
           productCode,
           configuration: model.configuration,
         });
@@ -659,7 +677,6 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
         $('#variant-product-title').html(myProduct.name);
         $('#variant-product-content').html(variantHtml);
         commonUI.showModal('#modalVariantSelector');
-        $('#modalVariantSelector').show();
 
         $('.variant_product_selector').unbind('change');
         $('.variant_product_selector').bind('change', function() {
@@ -669,19 +686,21 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
 
           // Add the variant
           if (model.configuration.multipleProductsSelection) {
-            model.selectProductVariants(variantProductCode, params);
+            model.selectProductVariants(productCode, variantProductCode, params);
           } else {
             var myObj = {};
             myObj[params[variantProductCode]] = 1;
-            model.selectProductVariants(variantProductCode, myObj);
+            model.selectProductVariants(productCode, variantProductCode, myObj);
           }
         });
 
         $('#modalVariantSelector').on('hidden.bs.modal', () => {
           view.refreshVariantsResume(productCode);
 
-          commonUI.hideModal('#modalVariantSelector');
-          $('#modalVariantSelector').hide();
+          commonUI.hideModal('#modalVariantSelector', function() {
+            $('#variant-product-title').html('');
+            $('#variant-product-content').html('');
+          });
         })
       }
     },
@@ -783,7 +802,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
         var resumeHtml = tmpl('script_variant_product_resume')({
           variantsSelected,
           configuration: model.configuration,
-          total: model.shopping_cart.item_cost 
+          total: model.getTotal(productCode),
         });
         $(`.product-variant-resume[data-product-code=${ productCode }]`).html(resumeHtml);
       }
