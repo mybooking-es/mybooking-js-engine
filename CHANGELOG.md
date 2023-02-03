@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.12] 2023-02-03
+
+### Added
+- Renting - Product variants
+- Planning
+- Weekly planning
+- Babel integration
+
 ## [1.0.11] 2022-10-26
 
 ### Added
