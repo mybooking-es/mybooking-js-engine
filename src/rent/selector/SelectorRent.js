@@ -613,9 +613,6 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
           // Load Pickup Hours
           this.selectorView.loadPickupHours();
         }
-        else if (this.selectorModel.configuration.rentDateSelector === 'date_from_duration') {
-          this.selectorView.loadDurations();
-        }
 
     }
 
@@ -788,11 +785,14 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
         $(this.selectorModel.date_from_selector).datepicker("setDate", date_from); // It causes change month => load the calendar days
         $(this.selectorModel.date_to_selector).datepicker("setDate", date_to); // It causes the month to change => load the calendar days
 
+        // Load pickup hours
         if (this.selectorModel.configuration.timeToFrom) {
           this.loadPickupHours();
           this.loadReturnHours();
         }
-        else if (this.selectorModel.configuration.rentDateSelector === 'date_from_duration') {
+        
+        // Load durations
+        if (this.selectorModel.configuration.rentDateSelector === 'date_from_duration') {
           this.loadDurations();
         }
       }  
@@ -1487,9 +1487,6 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
                       $(self.selectorModel.date_from_selector).datepicker("setDate", date_from); // It causes change month => load the calendar days
                       if (self.selectorModel.configuration.timeToFrom) {
                         self.loadPickupHours();
-                      }
-                      else if (this.selectorModel.configuration.rentDateSelector === 'date_from_duration') {
-                        self.loadDurations();
                       }
                     }
                     self.loadReturnPlaces(false); // date_to is assigned after return_place assignation
