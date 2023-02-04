@@ -902,18 +902,20 @@ require(['jquery',
                          'select[name=additional_driver_1_driving_license_country]',
                          'select[name=additional_driver_2_driving_license_country]'];
         console.log(selectors);
-        for (var idx=0; idx<selectors.length; idx++) { 
-          $countrySelector = $(selectors[idx]);    
-          if ($countrySelector.length > 0 && $countrySelector.prop('tagName') === 'SELECT' && typeof values[idx] !== 'undefined') {
-            $countrySelector.select2({
-              width: '100%',
-              theme: 'bootstrap4',                  
-              data: countriesArray
-            });
-            // Assign value
-            var value = (values[idx] !== null && values[idx] !== '' ? values[idx] : '');
-            $countrySelector.val(values[idx]);
-            $countrySelector.trigger('change');
+        for (var idx=0; idx<selectors.length; idx++) {
+          if ($(selectors[idx]).length > 0) { 
+            var $countrySelector = $(selectors[idx]);    
+            if ($countrySelector.length > 0 && $countrySelector.prop('tagName') === 'SELECT' && typeof values[idx] !== 'undefined') {
+              $countrySelector.select2({
+                width: '100%',
+                theme: 'bootstrap4',                  
+                data: countriesArray
+              });
+              // Assign value
+              var value = (values[idx] !== null && values[idx] !== '' ? values[idx] : '');
+              $countrySelector.val(values[idx]);
+              $countrySelector.trigger('change');
+            }
           }
         }
       }
