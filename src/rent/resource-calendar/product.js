@@ -1401,7 +1401,8 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
        }
 
        // Load availability
-       var dateFrom = dateTo = null;
+       var dateFrom = null;
+       var dateTo = null;
 
        if (productModel.preselectedData) { 
          // Preselected data from shopping cart

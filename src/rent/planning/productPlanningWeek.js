@@ -870,8 +870,9 @@
 					//$('.nav').localize();
 			});
 
+			commonLoader.show();
 			commonSettings.loadSettings((data) => {
-				
+				commonLoader.hide();
 				this.model = {
 					...this.model,
 					configuration: data,
@@ -906,7 +907,6 @@
 		 * Initizialize
 		*/
 		init: function() {
-			commonLoader.show();
 
 			$('.mybooking-rent-product-planning-week .mybooking-product-planning-week-content').each((index, item) => {
 				const id = $(item).attr('id'); /** Unique id for instance */

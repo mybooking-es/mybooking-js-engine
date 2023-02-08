@@ -664,7 +664,9 @@
 			});
 
 			// Load settings
+			commonLoader.show();
 			commonSettings.loadSettings(function(data){
+				commonLoader.hide();
 				// Extend the model
 				self.model = {
 					...self.model,
@@ -708,7 +710,10 @@
 		 * Initizialize
  		 */
 		init: function() {
-			commonLoader.show();
+
+			//console.log('show');
+
+			//commonLoader.show();
 			
 			var self = this;
 

@@ -311,7 +311,7 @@ define('ProductCalendar', ['jquery', 'YSDEventTarget',
             if (self.productCalendarModel.availabilityData && typeof self.productCalendarModel.availabilityData.min_days !== 'undefined') {
               var minDays = self.productCalendarModel.availabilityData.min_days;
               if (minDays[dateStr] && minDays[dateStr] > 1 && self.productCalendarModel.availabilityData.occupation[dateStr].selectable_day) {
-                minDaysLiteral = self.productCalendarModel.i18next.t('calendar_selector.min_duration', {days: minDays[dateStr]});
+                var minDaysLiteral = self.productCalendarModel.i18next.t('calendar_selector.min_duration', {days: minDays[dateStr]});
                 renderMinDays = "<div class=\"mybooking-product_calendar-mindays mybooking-product_calendar-mindays-data\">"+minDaysLiteral+"</div>";
               }
             }

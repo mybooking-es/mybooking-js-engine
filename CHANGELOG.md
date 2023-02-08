@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.0.13] 2023-02-08
+
+### Fixed
+
+- Planning and weekly planning - fixed for Elementor preview
+
 ## [1.0.12] 2023-02-03
 
 ### Added
