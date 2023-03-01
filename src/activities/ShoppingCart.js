@@ -5,7 +5,7 @@ require(['jquery','i18next', 'ysdtemplate',
     function($, i18next, tmpl,
              commonServices, commonSettings, commonTranslations, commonLoader, commonUI) {
 
-      model = { // THE MODEL
+      var model = { // THE MODEL
           reservationFormSubmitted: false,
           requestLanguage: null,
           configuration: null,
@@ -210,7 +210,7 @@ require(['jquery','i18next', 'ysdtemplate',
 
       };
 
-      controller = { // THE CONTROLLER
+      var controller = { // THE CONTROLLER
 
           /**
            *  Remove shopping cart item button click
@@ -265,7 +265,7 @@ require(['jquery','i18next', 'ysdtemplate',
 
       };
 
-      view = { // THE VIEW
+      var view = { // THE VIEW
 
           init: function() {
 

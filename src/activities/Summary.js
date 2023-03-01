@@ -5,7 +5,7 @@ require(['jquery', 'i18next', 'ysdtemplate',
     function($, i18next, tmpl,
              commonServices, commonSettings, commonTranslations, commonLoader) {
 
-        model = { // THE MODEL
+        var model = { // THE MODEL
             requestLanguage: null,
             configuration: null,
             orderFreeAccessId: null,
@@ -112,11 +112,11 @@ require(['jquery', 'i18next', 'ysdtemplate',
 
         };
 
-        controller = { // THE CONTROLLER
+        var controller = { // THE CONTROLLER
 
         };
 
-        view = { // THE VIEW
+        var view = { // THE VIEW
 
             init: function() {
                 model.requestLanguage = commonSettings.language(document.documentElement.lang);                

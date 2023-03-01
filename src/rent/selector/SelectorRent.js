@@ -613,6 +613,9 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
           // Load Pickup Hours
           this.selectorView.loadPickupHours();
         }
+        else if (this.selectorModel.configuration.rentDateSelector === 'date_from_duration') {
+          this.selectorView.loadDurations();      
+        }
 
     }
 
@@ -1158,7 +1161,10 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
 
       // Configure event change Date From
       $(this.selectorModel.date_from_selector).on('change', function() {
+        // When it has a value
+        if ( $(this.selectorModel.date_from_selector).datepicker('getDate') !== null ) {
            self.selectorController.dateFromChanged();
+        }
       });
 
     }

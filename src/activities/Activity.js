@@ -6,7 +6,7 @@ require(['jquery','i18next',
 	      				 ActivityOneTime, ActivityMultipleDates, ActivityCyclic,
 	      				 moment) {
 
-  activityModel = {
+  var activityModel = {
 
     requestLanguage: null,
     id: null,
@@ -60,11 +60,11 @@ require(['jquery','i18next',
 
   };
 
-  activityController = {
+  var activityController = {
 
   };
 
-  activityView = {
+  var activityView = {
 
   	init: function() {
 

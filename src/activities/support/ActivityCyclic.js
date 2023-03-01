@@ -228,7 +228,7 @@ define('ActivityCyclic', ['jquery','ysdtemplate', 'YSDRemoteDataSource','YSDSele
               }
               else {
                 var quantityRate = $('select.quantity_rate, input[type=hidden].quantity_rate');
-                for (idx=0; idx<quantityRate.length; idx++) {
+                for (var idx=0; idx<quantityRate.length; idx++) {
                    var rate = parseInt($(quantityRate[idx]).attr('name').replace('quantity_rate_',''));
                    var value = parseInt($(quantityRate[idx]).val());
                    if (value > 0) {

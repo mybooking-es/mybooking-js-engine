@@ -5,7 +5,7 @@ require(['jquery', 'i18next', 'ysdtemplate', 'YSDMemoryDataSource','YSDSelectSel
     function($, i18next, tmpl, MemoryDataSource, SelectSelector, select2,
              commonServices, commonSettings, commonTranslations, commonLoader) {
 
-        model = { // THE MODEL
+        var model = { // THE MODEL
 
             requestLanguage: null,
             configuration: null,
@@ -260,7 +260,7 @@ require(['jquery', 'i18next', 'ysdtemplate', 'YSDMemoryDataSource','YSDSelectSel
 
         };
 
-        controller = { // THE CONTROLLER
+        var controller = { // THE CONTROLLER
 
             /**
              * Update order button click
@@ -280,7 +280,7 @@ require(['jquery', 'i18next', 'ysdtemplate', 'YSDMemoryDataSource','YSDSelectSel
 
         };
 
-        view = { // THE VIEW
+        var view = { // THE VIEW
 
             init: function() {
                 model.requestLanguage = commonSettings.language(document.documentElement.lang);                

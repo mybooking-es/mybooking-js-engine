@@ -3,7 +3,7 @@ require(['jquery',
          'jquery.validate', 'jquery.formparams'],
        function($, commonServices, commonTranslations, i18next) {
 
-  contactModel = {
+  var contactModel = {
 
     requestLanguage: null,
 
@@ -41,7 +41,7 @@ require(['jquery',
 
   };
 
-  contactView = {
+  var contactView = {
 
   	init: function() {
 

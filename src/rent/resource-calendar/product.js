@@ -416,8 +416,8 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
       var self=this;
       var url = commonServices.URL_PREFIX + '/api/booking/frontend/products/'+this.code+'/turns?date='+date;  
       url += '&lang='+this.requestLanguage;
-      if (this.configuration.pickupReturnPlace && $(this.return_place_selector).val() != '') {
-        url += '&place='+$(this.return_place_selector).val();
+      if (this.configuration.pickupReturnPlace && $(this.pickup_place_selector).val() != '') {
+        url += '&pickup_place='+$(this.pickup_place_selector).val();
       }        
       if (this.rentalLocationCode) {
         url += '&rental_location_code='+encodeURIComponent(this.rentalLocationCode);

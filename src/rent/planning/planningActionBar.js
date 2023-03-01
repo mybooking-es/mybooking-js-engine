@@ -33,7 +33,6 @@ define('planningActionBar', ['jquery', 'YSDEventTarget', 'commonSettings',
 		*/
 		setFamily: function(event){
 			var value = $(event.currentTarget).val();
-
 			this.model.parent.model.family = value;
 
 			var target = document.getElementById(this.model.parent.model.targetId);
@@ -51,7 +50,6 @@ define('planningActionBar', ['jquery', 'YSDEventTarget', 'commonSettings',
 				this.model.parent.model.families.forEach(function(item) {
 					familySelector.append('<option value="' + item.id + '">' + item.name + '</option>')
 				});
-
 				/*
 				* Set events
 				*/

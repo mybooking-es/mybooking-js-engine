@@ -5,7 +5,7 @@ require(['jquery', 'i18next', 'ysdtemplate',
     function($, i18next, tmpl,
              commonServices, commonSettings, commonTranslations, commonLoader, select2) {
 
-  activitySelectorModel = {
+  var activitySelectorModel = {
 
     requestLanguage: null,
     configuration: null,
@@ -22,11 +22,11 @@ require(['jquery', 'i18next', 'ysdtemplate',
 
   }
 
-  activitySelectorController = {
+  var activitySelectorController = {
 
   }
 
-  activitySelectorView = {
+  var activitySelectorView = {
 
   	init: function() {
 				activitySelectorModel.requestLanguage = commonSettings.language(document.documentElement.lang);

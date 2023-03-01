@@ -328,6 +328,45 @@
 		paintRanges: function(item) {
 			var self = this;
 
+			if (this.model.items == 1 && this.model.configuration.rentTimesSelector == 'time_range') {
+					// Time range only 1 day
+					var objName = self.model.originalSchedule.filter((element) => {
+						return element.time_from == item.time_from && element.time_to == item.time_to;
+					})[0];
+					var name = objName ? objName.name : '';
+					var activeCells = self.model.target.find('div.mybooking-planning-td-content[data-id="' + item.id + '"][data-time="' + item.range[0] + ' - ' + item.range.slice(-1).pop() + '"]');
+					activeCells.addClass('full').addClass('from to');
+					activeCells.attr('title', item.label + ' - ' + name);
+			}
+			else {
+					// Hours or diary
+					item.range.forEach(function(range, index) {
+						var classes = '';
+		
+						if (item.actualDay) {
+							if (index === 0 && item.actualDay === 'from') {
+								classes += 'from';
+							} 
+			
+							if (index === item.range.length - 1 && item.actualDay === 'to') {
+								classes += ' to';
+							}
+						} else {
+							if (index === 0 && (moment(item.date_from).isSame(moment(range)) || item.date_from === undefined && item.time_from === range )) {
+								classes += 'from';
+							} 
+			
+							if (index === item.range.length - 1) {
+								classes += ' to';
+							}
+						}
+		
+						var activeCells = self.model.target.find('div.mybooking-planning-td-content[data-id="' + item.id + '"][data-time="' + range + '"]');
+						activeCells.addClass('full').addClass(classes);
+						activeCells.attr('title', item.label);
+					});
+			}
+/*
 			switch (this.model.configuration.rentTimesSelector) {
 				case 'time_range':
 					// Time range
@@ -369,6 +408,7 @@
 
 					break;
 			}
+*/			
 		},
 
 		/**
@@ -377,9 +417,12 @@
 		showOcupation: function() {
 			var self = this;
 
-			this.model.ocupation.forEach(function(item) {
-				self.paintRanges(item);
-			});
+			for (var idx=0;idx<this.model.ocupation.length; idx++) {
+				self.paintRanges(this.model.ocupation[idx]);
+			}
+			//this.model.ocupation.forEach(function(item) {
+			//	self.paintRanges(item);
+			//});
 
 			/*
 			* Format 
@@ -409,8 +452,9 @@
 						var dateFromString = self.model.configuration.formatDate(item.date_from);
 						var dateToString = self.model.configuration.formatDate(item.date_to);
 						var label = '';
+						//if (formatDate.isSame(from) ||  formatDate.isSame(to) ||
+						//	  (formatDate.isAfter(from) && formatDate.isBefore(to)) ) {
 
-						if (formatDate.isSame(from) ||  formatDate.isSame(to) ||(formatDate.isAfter(from) && formatDate.isBefore(to))) {
 							if (!from.isSame(to)) {
 								var actualDay;
 								if (formatDate.isSame(from)){
@@ -454,14 +498,13 @@
 									label: dateFromString + ' - ' + dateToString,
 								};
 							}
-
 							self.model.ocupation.push(newElement);
-						}
+						//}
 					});
 				}
 			});
 
-			this.showOcupation(paramDate);
+			this.showOcupation();
 		},
 
 		/**
@@ -568,6 +611,9 @@
 				}
 
 				var date = this.model.date.actual;
+				// Append the number of days
+				var dateTo = moment(date).add( this.model.items, 'days').format('YYYY-MM-DD');
+
 				if (this.model.type === 'diary') {
 					this.model.schedule = await this.getSchedule({ date });
 				} else if (this.model.type === 'calendar') {
@@ -576,8 +622,8 @@
 
 				if (this.model.isFamilySelectorAvailable) {
 					this.model.families = await this.getFamilies();
-					// Pre-select the first family
-					if (this.model.families.length > 0) {
+					// Pre-select the first family if it is not selected
+					if (this.model.families.length > 0 && this.model.family == null) {
 						this.model.family = this.model.families[0].id;
 					}
 				}
@@ -586,7 +632,7 @@
 					this.model.categories = await this.getCategories();
 				}
 
-				this.model.resources = await this.getPlanning({ from: date, to: date});
+				this.model.resources = await this.getPlanning({ from: date, to: dateTo});
 
 				var html;
 				if (this.model.resources.length > 0 && this.model.schedule.length > 0) {
