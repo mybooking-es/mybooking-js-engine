@@ -3,8 +3,8 @@
  * Renting Module Planning
  *
  */
- require(['jquery', 'i18next', 'commonServices', 'commonSettings', 'commonLoader', 'YSDFormatter', 'commonTranslations', 'moment', './planningActionBar', 'jquery.i18next'],
- function($, i18next, commonServices, commonSettings, commonLoader, YSDFormatter, commonTranslations, moment, planningActionBar) {
+ require(['jquery', 'i18next', 'commonServices', 'commonSettings', 'commonLoader', 'YSDFormatter', 'commonTranslations', 'moment', './planningActionBar', 'ysdtemplate', 'commonUI', 'jquery.i18next'],
+ function($, i18next, commonServices, commonSettings, commonLoader, YSDFormatter, commonTranslations, moment, planningActionBar, tmpl, commonUI) {
 
 	/**
 	 * Contructor
@@ -50,6 +50,7 @@
 				width: 150,
 				height: 40,
 			},
+			productDetail: {}
 		};
 	}
 
@@ -222,13 +223,49 @@
 				});
 			});
 		},
+
+		/** 
+     * Load product (product detail Page)
+     */
+    loadProduct: function (productCode) {
+			// Build the URL
+			var url = commonServices.URL_PREFIX + '/api/booking/frontend/products/'+productCode;
+			var urlParams = [];
+			if (this.model.requestLanguage != null) {
+				urlParams.push('lang=' + this.model.requestLanguage);
+			}
+			if (commonServices.apiKey && commonServices.apiKey != '') {
+				urlParams.push('api_key='+commonServices.apiKey);
+			}           
+			if (urlParams.length > 0) {
+				url += '?';
+				url += urlParams.join('&');
+			}
+
+			// Request
+			commonLoader.show();
+			$.ajax({
+				type: 'GET',
+				url : url,
+				contentType : 'application/json; charset=utf-8',
+				crossDomain: true,
+				success: (data, textStatus, jqXHR) => {
+					this.model.productDetail = data;
+					this.showProductDetail();
+					commonLoader.hide();
+				},
+				error: (data, textStatus, jqXHR) => {
+					commonLoader.hide();
+					alert(i18next.t('chooseProduct.loadProduct.error'));
+				}
+			});
+		},
 	};
 
 	/***
 	 * =============== The controller
 	 */ 
 	var controller = {
-		
 		/**
 		 * Get ocupation range and put in list data 
 		 */
@@ -530,6 +567,8 @@
 						var weekday = mydate.toLocaleString(self.model.requestLanguage, { weekday: 'short' }).toUpperCase();
 
 						description = month + ' ' + year + '<br>' + '<b style="font-size: 20px;">' + day + '</b><br>' + weekday;
+					} else if (item.id) {
+						description = '<span class="mybooking-planning-td-product js-product-info-btn" data-product="' + item.id + '" title="+ info">' + description + ' <span class="dashicons dashicons-plus-alt"></span></span>';
 					}
 
 					html += '<th>';
@@ -550,6 +589,8 @@
 							var weekday = mydate.toLocaleString(self.model.requestLanguage, { weekday: 'short' }).toUpperCase();
 
 							fixHead = '<b style="font-size: 20px;">' + day + '</b>&nbsp;&nbsp;&nbsp;' + weekday;
+						} else if (item.id) {
+							fixHead = '<span class="mybooking-planning-td-product js-product-info-btn" data-product="' + item.id + '" title="+ info">' + item.description + ' <span class="dashicons dashicons-plus-alt"></span></span>';
 						}
 
 						html += '<tr>';
@@ -681,6 +722,13 @@
 			
 			commonLoader.hide();
 		},
+
+		/**
+	  * Load product detail
+	  */
+		productDetailIconClick: function (productCode)  {
+			this.loadProduct(productCode);
+		},
 	};
 
 	/***
@@ -740,8 +788,54 @@
 			target.addEventListener('refresh', settings.parent.refresh.bind(settings.parent));
 			target.dispatchEvent(new CustomEvent('refresh', { detail: { settings, 
 																																	callback: planningActionBar.init.bind(planningActionBar) }}));
-		}
+			
+			// Bind the event to show detailed product
+			$('.mybooking-planning-table').on('click', '.js-product-info-btn', (event) => {
+				const target = event.target;
 
+				this.productDetailIconClick($(target).attr('data-product'));
+			});  
+		},
+
+		/**
+		* Show product detail
+ 		*/
+		showProductDetail: function() {
+      if (document.getElementById('script_product_modal')) {
+        var result = tmpl('script_product_modal')({
+                        product: this.model.productDetail
+                      });
+
+        // Compatibility with bootstrap modal replacement (from 1.0.0)
+				$('#modalProductDetail .modal-product-detail-title').html(this.model.productDetail.name);
+				$('#modalProductDetail .modal-product-detail-content').html(result);   
+
+        // Show the product in a modal
+        commonUI.showModal('#modalProductDetail', function(event, modal){ // on Show
+                                                    setTimeout(function(){  
+                                                      if ( $('.mybooking-carousel-inner').length ) {  
+                                                        commonUI.showSlider('.mybooking-carousel-inner');
+                                                      }
+                                                      $('#modal_product_photos').on('click', function(){
+                                                        $('.mybooking-modal_product-description').hide();
+                                                        $('.mybooking-modal_product-container').show();
+                                                        commonUI.playSlider('.mybooking-carousel-inner');
+                                                      });
+                                                      $('#modal_product_info').on('click', function(){
+                                                        $('.mybooking-modal_product-container').hide();
+                                                        $('.mybooking-modal_product-description').show();
+                                                        commonUI.pauseSlider('.mybooking-carousel-inner');
+                                                      });
+                                                    },50);
+                                                  },
+                                                  function(event, modal) { // on Hide
+                                                    commonUI.pauseSlider('.mybooking-carousel-inner');
+                                                    commonUI.destroySlider('.mybooking-carousel-inner');
+                                                  } 
+                                                );
+      }
+
+    },
 
 	};
 
@@ -780,7 +874,7 @@
 				} else {
 					// Rows direction
 					cells = {
-						width: 80,
+						width: 60,
 						height: 60,
 					};
 				}

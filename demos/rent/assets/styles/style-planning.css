@@ -35,7 +35,7 @@
 .mybooking-planning-table .mybooking-planning-scrollable {
 	overflow-y: visible;
 	overflow-x: auto;
-	margin-left: 100px;
+	margin-left: 150px;
 	transition: width 0.5s;
 }
 
@@ -86,14 +86,24 @@
 
 .mybooking-planning-table table th.mybooking-planning-td-fix {
 	position: absolute;
-	width: 100px;
+	width: 150px;
 	left: 0;
 	top: auto;
 	display: flex;
 	align-items: center;
-	justify-content: flex-end;
+	justify-content: center;
 	z-index: 1;
 	background: none;
+}
+
+.mybooking-planning-table table .mybooking-planning-td-product {
+	cursor: pointer;
+	display: inline-block;
+	line-height: 1.2;
+}
+
+.mybooking-planning-table table .mybooking-planning-td-product > span {
+	font-size: 14px;
 }
 
 .mybooking-planning-table table td .mybooking-planning-td-content {
