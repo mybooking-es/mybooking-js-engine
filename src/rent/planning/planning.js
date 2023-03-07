@@ -568,7 +568,7 @@
 
 						description = month + ' ' + year + '<br>' + '<b style="font-size: 20px;">' + day + '</b><br>' + weekday;
 					} else if (item.id) {
-						description = '<span class="mybooking-planning-td-product js-product-info-btn" data-product="' + item.id + '" title="+ info">' + description + ' <span class="dashicons dashicons-plus-alt"></span></span>';
+						description = '<span class="mybooking-planning-td-product js-product-info-btn" data-product="' + item.id + '" title="+ info">' + description + ' <span class="dashicons dashicons-info"></span></span>';
 					}
 
 					html += '<th>';
@@ -590,7 +590,7 @@
 
 							fixHead = '<b style="font-size: 20px;">' + day + '</b>&nbsp;&nbsp;&nbsp;' + weekday;
 						} else if (item.id) {
-							fixHead = '<span class="mybooking-planning-td-product js-product-info-btn" data-product="' + item.id + '" title="+ info">' + item.description + ' <span class="dashicons dashicons-plus-alt"></span></span>';
+							fixHead = '<span class="mybooking-planning-td-product js-product-info-btn" data-product="' + item.id + '" title="+ info">' + item.description + ' <span class="dashicons dashicons-info"></span></span>';
 						}
 
 						html += '<tr>';
@@ -807,8 +807,13 @@
                       });
 
         // Compatibility with bootstrap modal replacement (from 1.0.0)
-				$('#modalProductDetail .modal-product-detail-title').html(this.model.productDetail.name);
-				$('#modalProductDetail .modal-product-detail-content').html(result);   
+        if ($('#modalProductDetail_MBM').length) {
+					$('#modalProductDetail_MBM .modal-product-detail-title').html(this.model.productDetail.name);
+					$('#modalProductDetail_MBM .modal-product-detail-content').html(result);
+				} else {
+					$('#modalProductDetail .modal-product-detail-title').html(this.model.productDetail.name);
+					$('#modalProductDetail .modal-product-detail-content').html(result);
+				}   
 
         // Show the product in a modal
         commonUI.showModal('#modalProductDetail', function(event, modal){ // on Show
@@ -826,7 +831,7 @@
                                                         $('.mybooking-modal_product-description').show();
                                                         commonUI.pauseSlider('.mybooking-carousel-inner');
                                                       });
-                                                    },50);
+                                                    }, 150);
                                                   },
                                                   function(event, modal) { // on Hide
                                                     commonUI.pauseSlider('.mybooking-carousel-inner');
