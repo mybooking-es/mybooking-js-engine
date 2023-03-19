@@ -50,6 +50,21 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
     number_of_children: null,
     number_of_products: null,
     agent_id: null,
+    optional_external_driver: null, 
+    driving_license_type_id: null,
+    simple_location_id: null, 
+    characteristic_length: null,
+    characteristic_width: null,
+    characteristic_height: null,
+    characteristic_weight: null,
+    characteristic_total_surface: null,
+    characteristic_living_space: null,
+    key_characteristic_1: null,
+    key_characteristic_2: null,
+    key_characteristic_3: null,
+    key_characteristic_4: null,
+    key_characteristic_5: null,
+    key_characteristic_6: null,
 
     // -------------- Load settings ----------------------------
 
@@ -135,7 +150,21 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
      * - number_of_adults
      * - number_of_children
      * - number_of_products
-     * 
+     * - optional_external_driver, 
+     * - driving_license_type_id,
+     * - simple_location_id, 
+     * - characteristic_length,
+     * - characteristic_width,
+     * - characteristic_height,
+     * - characteristic_weight,
+     * - characteristic_total_surface,
+     * - characteristic_living_space,
+     * - key_characteristic_1,
+     * - key_characteristic_2,
+     * - key_characteristic_3,
+     * - key_characteristic_4,
+     * - key_characteristic_5,
+     * - key_characteristic_6
      */
     extractVariables: function() { // Load variables from the request
 
@@ -177,6 +206,22 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
       this.number_of_products = decodeURIComponent(url_vars['number_of_products']);
       this.agent_id = decodeURIComponent(url_vars['agent_id']);
       this.category_code = decodeURIComponent(url_vars['category_code']);
+
+      this.optional_external_driver = decodeURIComponent(url_vars['optional_external_driver']);
+      this.driving_license_type_id = decodeURIComponent(url_vars['driving_license_type_id']);
+      this.simple_location_id = decodeURIComponent(url_vars['simple_location_id']); 
+      this.characteristic_length = decodeURIComponent(url_vars['characteristic_length']);
+      this.characteristic_width = decodeURIComponent(url_vars['characteristic_width']);
+      this.characteristic_height = decodeURIComponent(url_vars['characteristic_height']);
+      this.characteristic_weight = decodeURIComponent(url_vars['characteristic_weight']);
+      this.characteristic_total_surface = decodeURIComponent(url_vars['characteristic_total_surface']);
+      this.characteristic_living_space = decodeURIComponent(url_vars['characteristic_living_space']);
+      this.key_characteristic_1 = decodeURIComponent(url_vars['key_characteristic_1']);
+      this.key_characteristic_2 = decodeURIComponent(url_vars['key_characteristic_2']);
+      this.key_characteristic_3 = decodeURIComponent(url_vars['key_characteristic_3']);
+      this.key_characteristic_4 = decodeURIComponent(url_vars['key_characteristic_4']);
+      this.key_characteristic_5 = decodeURIComponent(url_vars['key_characteristic_5']);
+      this.key_characteristic_6 = decodeURIComponent(url_vars['key_characteristic_6']);
 
     },
 
@@ -294,6 +339,52 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
         data.category_code = this.category_code;
       }
 
+      if (this.optional_external_driver != 'undefined' && this.optional_external_driver != '') {
+        data.optional_external_driver = this.optional_external_driver;
+      }
+      if (this.driving_license_type_id != 'undefined' && this.driving_license_type_id != '') {
+        data.driving_license_type_id = this.driving_license_type_id;
+      }
+      if (this.simple_location_id != 'undefined' && this.simple_location_id != '') {
+        data.simple_location_id = this.simple_location_id;
+      }
+      if (this.characteristic_length != 'undefined' && this.characteristic_length != '') {
+        data.characteristic_length = this.characteristic_length;
+      }
+      if (this.characteristic_width != 'undefined' && this.characteristic_width != '') {
+        data.characteristic_width = this.characteristic_width;
+      }
+      if (this.characteristic_height != 'undefined' && this.characteristic_height != '') {
+        data.characteristic_height = this.characteristic_height;
+      }
+      if (this.characteristic_weight != 'undefined' && this.characteristic_weight != '') {
+        data.characteristic_weight = this.characteristic_weight;
+      }
+      if (this.characteristic_total_surface != 'undefined' && this.characteristic_total_surface != '') {
+        data.characteristic_total_surface = this.characteristic_total_surface;
+      }
+      if (this.characteristic_living_space != 'undefined' && this.characteristic_living_space != '') {
+        data.characteristic_living_space = this.characteristic_living_space;
+      }
+      if (this.key_characteristic_1 != 'undefined' && this.key_characteristic_1 != '') {
+        data.key_characteristic_1 = this.key_characteristic_1;
+      }
+      if (this.key_characteristic_2 != 'undefined' && this.key_characteristic_2 != '') {
+        data.key_characteristic_2 = this.key_characteristic_2;
+      }
+      if (this.key_characteristic_3 != 'undefined' && this.key_characteristic_3 != '') {
+        data.key_characteristic_3 = this.key_characteristic_3;
+      }
+      if (this.key_characteristic_4 != 'undefined' && this.key_characteristic_4 != '') {
+        data.key_characteristic_4 = this.key_characteristic_4;
+      }
+      if (this.key_characteristic_5 != 'undefined' && this.key_characteristic_5 != '') {
+        data.key_characteristic_5 = this.key_characteristic_5;
+      }                                    
+      if (this.key_characteristic_6 != 'undefined' && this.key_characteristic_6 != '') {
+        data.key_characteristic_6 = this.key_characteristic_6;
+      }  
+      
       var jsonData = encodeURIComponent(JSON.stringify(data));
 
       return jsonData;
