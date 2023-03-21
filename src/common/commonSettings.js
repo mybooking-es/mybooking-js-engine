@@ -36,6 +36,7 @@ define('commonSettings', ['jquery','commonServices','commonLoader','commonTransl
       selectDestination: false, 
       selectRentalLocation: false,  
       productType: null,   
+      assignationTimeReturnPickup: null, 
       // - Renting dates
       minDays   : 1,
       timeToFrom: true,
@@ -204,6 +205,7 @@ define('commonSettings', ['jquery','commonServices','commonLoader','commonTransl
              mybookingSettings.data.selectDestination = data.select_destination;
              mybookingSettings.data.selectRentalLocation = data.select_rental_location;
              mybookingSettings.data.productType = data.product_type;
+             mybookingSettings.data.assignationTimeReturnPickup = data.assignation_time_return_pickup;
              // - Renting dates
              mybookingSettings.data.minDays = data.min_days;
              mybookingSettings.data.timeToFrom = data.time_to_from;

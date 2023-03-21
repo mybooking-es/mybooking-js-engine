@@ -39,8 +39,11 @@ if ($.fn.validate) {
 			this._selectDate2(id, dateStr);
 			var input = $(id);
 			var inst = this._getInst(input[0]);
-			if (!inst.inline && $.fn.validate)
-				input.parents('form').validate().element(input);
+			if (!inst.inline && $.fn.validate) {
+				if (input && input.parents('form') && input.parents('form').validate()) {
+					input.parents('form').validate().element(input);
+				}
+			}
 		},
 
 		/* Correct error placement for validation errors - after (before if R-T-L) any trigger.

@@ -729,8 +729,8 @@ require(['jquery',
             
             // Compatibility with bootstrap modal replacement (from 1.0.0)
             if ($('#modalExtraDetail_MBM').length) {
-              $('#modalExtraDetail_MBM .mb-modal_title').html('');
-              $('#modalExtraDetail_MBM .mb-modal_body').html(htmlPasswordForgotten);     
+              $('#modalExtraDetail_MBM .mybooking-modal_title').html('');
+              $('#modalExtraDetail_MBM .mybooking-modal_body').html(htmlPasswordForgotten);     
             }
             else {
               $('#modalExtraDetail .modal-title').html('');
@@ -902,9 +902,10 @@ require(['jquery',
                          'select[name=additional_driver_1_driving_license_country]',
                          'select[name=additional_driver_2_driving_license_country]'];
         console.log(selectors);
+        var $countrySelector = null;
         for (var idx=0; idx<selectors.length; idx++) {
           if ($(selectors[idx]).length > 0) { 
-            var $countrySelector = $(selectors[idx]);    
+            $countrySelector = $(selectors[idx]);    
             if ($countrySelector.length > 0 && $countrySelector.prop('tagName') === 'SELECT' && typeof values[idx] !== 'undefined') {
               $countrySelector.select2({
                 width: '100%',
@@ -1343,7 +1344,7 @@ require(['jquery',
      * Update customer classifier
      */ 
     updateCustomerClassifiers: function() {
-
+      var $customerClassifierSelector = null;
       if (commonServices.jsUseSelect2) {
         $customerClassifierSelector = $('#customer_classifier_id');
         if ($customerClassifierSelector.length > 0) {

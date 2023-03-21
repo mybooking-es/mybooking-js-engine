@@ -52,8 +52,8 @@ define('Login',['jquery',
       var self = this;
       var url = commonServices.URL_PREFIX + '/api/v1/login';
       var urlParams = [];
-      urlParams.push('username='+username);
-      urlParams.push('password='+password);
+      urlParams.push('username='+encodeURIComponent(username));
+      urlParams.push('password='+encodeURIComponent(password));
       if (urlParams.length > 0) {
         url += '?';
         url += urlParams.join('&');

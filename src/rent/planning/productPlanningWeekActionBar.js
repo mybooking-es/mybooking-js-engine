@@ -27,7 +27,6 @@ define('productPlanningWeekActionBar', ['jquery', 'YSDEventTarget', 'commonSetti
 		*/
 		setDate:  function(paramDate) {
 			this.model.parent.model.date.actual = YSDFormatter.formatDate(paramDate, this.model.parent.model.api_date_format);
-
 			const target = document.getElementById(this.model.parent.model.targetId);
 			target.dispatchEvent(new CustomEvent('refresh', { detail: { callback: this.refresh.bind(this) }} ));
 		},
@@ -36,9 +35,10 @@ define('productPlanningWeekActionBar', ['jquery', 'YSDEventTarget', 'commonSetti
 		 * Initialize and refresh planning
 		*/
 		initializeDate: function() {
+			debugger;
 			$.datepicker.setDefaults( $.datepicker.regional[this.model.parent.model.requestLanguage] );
 			
-			const inputDate = this.model.target.find('input[name=date]');
+			const inputDate = this.model.parent.model.planningHTML.find('input[name=date]');
 			const date = new Date (this.model.parent.model.date.actual);
 			
 			inputDate.datepicker({
@@ -47,10 +47,10 @@ define('productPlanningWeekActionBar', ['jquery', 'YSDEventTarget', 'commonSetti
 
 			inputDate.datepicker('setDate', date);
 
-			this.model.target.find('input[name=date]').off('change');
-			this.model.target.find('input[name=date]').on('change', (event) => {
-				const value = $(event.currentTarget).datepicker('getDate');
-
+			inputDate.off('change');
+			inputDate.on('change', (event) => {
+				event.preventDefault();
+				const value = inputDate.datepicker('getDate');
 				this.setDate(value);
 			});
 		},

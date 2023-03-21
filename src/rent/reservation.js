@@ -317,6 +317,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
                          'select[name=driver_driving_license_country]',
                          'select[name=additional_driver_1_driving_license_country]',
                          'select[name=additional_driver_2_driving_license_country]'];
+        var $countrySelector = null;
         for (var idx=0; idx<selectors.length; idx++) { 
           $countrySelector = $(selectors[idx]);    
           if ($countrySelector.length > 0 && typeof values[idx] !== 'undefined') {

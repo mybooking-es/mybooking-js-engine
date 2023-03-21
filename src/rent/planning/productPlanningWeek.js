@@ -62,11 +62,13 @@
         url += '?';
         url += urlParams.join('&');
       }
-
+			console.log('sendRequest:'+url);
 			return new Promise(resolve => {
+				console.log('ajax');
 				$.ajax({
 					url: url
 				}).done(function(data) {
+					console.log('return getCalendar');
 					resolve(data);
 				});
 			});
@@ -179,11 +181,19 @@
 			var target = this.model.planningHTML.find('#mybooking_product_week_planning_reservation_summary');
 			target.html(html);
 			
-			const submitBtn = this.model.planningHTML.find('.add_to_shopping_cart_btn');
+			const submitBtn = this.model.planningHTML.find('#add_to_shopping_cart_btn');
 			// Add to shopping cart button
 			if (submitBtn.attr('disabled')) {
 				submitBtn.attr('disabled', false);
 			}
+
+			// Setup the submit button
+			debugger;
+			this.model.planningHTML.find('form[name=mybooking_product_week_planning_reservation]').on('submit', (event) => {
+				debugger;
+				event.preventDefault();
+				this.gotoNextStep();
+			});
 
 			// Scroll the time ranges container
 			if (target && typeof target.offset !== 'undefined' && typeof target.offset() !== 'undefined') {
@@ -684,6 +694,7 @@
 		 * Refresh table
 		*/
 		refresh: async function(event) {
+			console.log('refresh');
 			commonLoader.show();
 
 			this.model = {
@@ -696,16 +707,24 @@
 				calendar: [],
 			};
 
-			if (commonServices.URL_PREFIX && commonServices.URL_PREFIX !== '' && commonServices.apiKey && commonServices.apiKey !== '') {
+			if (commonServices.URL_PREFIX && commonServices.URL_PREFIX !== '' && 
+					commonServices.apiKey && commonServices.apiKey !== '') {
 				const startDate = this.model.date.actual;
+				console.log('startDate');
+				console.log(startDate);
 				const calendarEndDate = YSDFormatter.formatDate(moment(startDate).add(14, 'd'), this.model.api_date_format);
+				console.log('calendarEndDate');
 				const endDate = YSDFormatter.formatDate(moment(startDate).add(7, 'd'), this.model.api_date_format);
+				console.log('endDate');
 
 				this.model.calendar = await this.getCalendar({ from: startDate, to: calendarEndDate });
+				console.log('calendar');
 				this.model.realCalendar = this.getDatesBetweenTwoDates({ from:  startDate, to: endDate });
-
+				console.log('realCalendar');
 				this.model.schedule = await this.getProductSchedule({ from: startDate, to: YSDFormatter.formatDate(moment(startDate).add(7, 'd'), this.model.api_date_format) });
+				console.log('schedule');
 				this.model.planning = await this.getProductPlanning({ from: startDate, to: endDate });
+				console.log('planning');
 
 				if (this.model.realCalendar.length > 0 && this.model.schedule.length > 0) {
 					const settings = {
@@ -847,9 +866,6 @@
 				});
 			}
 
-			this.model.planningHTML.find('form[name=mybooking_product_week_planning_reservation]').on('submit', () => {
-				this.gotoNextStep();
-			});
 		},
 
 		/**
