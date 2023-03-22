@@ -1162,7 +1162,7 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
       // Configure event change Date From
       $(this.selectorModel.date_from_selector).on('change', function() {
         // When it has a value
-        if ( $(this.selectorModel.date_from_selector).datepicker('getDate') !== null ) {
+        if ( $(self.selectorModel.date_from_selector).datepicker('getDate') !== null ) {
            self.selectorController.dateFromChanged();
         }
       });

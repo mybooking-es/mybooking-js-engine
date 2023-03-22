@@ -692,9 +692,10 @@
 
 		/**
 		 * Refresh table
+		 * 
+		 * Rebuild the planning and load the urges
 		*/
 		refresh: async function(event) {
-			console.log('refresh');
 			commonLoader.show();
 
 			this.model = {
@@ -710,21 +711,13 @@
 			if (commonServices.URL_PREFIX && commonServices.URL_PREFIX !== '' && 
 					commonServices.apiKey && commonServices.apiKey !== '') {
 				const startDate = this.model.date.actual;
-				console.log('startDate');
-				console.log(startDate);
 				const calendarEndDate = YSDFormatter.formatDate(moment(startDate).add(14, 'd'), this.model.api_date_format);
-				console.log('calendarEndDate');
 				const endDate = YSDFormatter.formatDate(moment(startDate).add(7, 'd'), this.model.api_date_format);
-				console.log('endDate');
 
 				this.model.calendar = await this.getCalendar({ from: startDate, to: calendarEndDate });
-				console.log('calendar');
 				this.model.realCalendar = this.getDatesBetweenTwoDates({ from:  startDate, to: endDate });
-				console.log('realCalendar');
 				this.model.schedule = await this.getProductSchedule({ from: startDate, to: YSDFormatter.formatDate(moment(startDate).add(7, 'd'), this.model.api_date_format) });
-				console.log('schedule');
 				this.model.planning = await this.getProductPlanning({ from: startDate, to: endDate });
-				console.log('planning');
 
 				if (this.model.realCalendar.length > 0 && this.model.schedule.length > 0) {
 					const settings = {
@@ -746,13 +739,12 @@
 				if (event && event.detail && event.detail.callback) {
 					event.detail.callback({ settings: event.detail.settings });
 				}
+				
 			} else {
 				const html = i18next.t('planning.api_conexion_error');
 
 				this.model.target.html(`<div class="text-center">${html}</div>`);
 			}	
-
-			console.log('Model: ', this.model);
 			
 			commonLoader.hide();
 		},
@@ -775,15 +767,24 @@
     },
 
 		/**
-		 * Set Events
+		 * Setup the events
+		 * 
+		 * settings has two attributes:
+		 * 
+		 * - parent : An instance of ProductPlannigWeek
 		*/
-		setEvents: function(settings) {
+		setupEvents: function(settings) {
+
 			const target = document.getElementById(settings.parent.model.targetId);
 
+			// Custom refresh event => calls refresh controller method
 			target.addEventListener('refresh', settings.parent.refresh.bind(settings.parent));
 
-			target.dispatchEvent(new CustomEvent('refresh', { detail: { settings, callback: productPlanningWeekActionBar.init.bind(productPlanningWeekActionBar) }}));
+			// Fire event
+			target.dispatchEvent(new CustomEvent('refresh', { detail: { settings, 
+								callback: productPlanningWeekActionBar.init.bind(productPlanningWeekActionBar) }}));
 
+			// The timetable that are not closed (calendar) and not full (has reservation)
 			const selectorTarget = '.mybooking-product-planning-week-td-content:not(.full):not(.closed)';
 
 			if (this.model.configuration.rentTimesSelector === 'time_range' || this.isMobile()) {
@@ -900,7 +901,7 @@
 					}
 				};
 
-				this.setEvents({ parent: this, target: this.model.planningHTML.find('.mybooking-product-planning-week-head') });
+				this.setupEvents({ parent: this });
 			});
 		},
 	};

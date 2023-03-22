@@ -13,8 +13,8 @@ define('productPlanningWeekActionBar', ['jquery', 'YSDEventTarget', 'commonSetti
 		 * ProductPlanningWeekActionBar data model
 		*/
 		this.model = {
-			parent,
-			target
+			parent, // It is an instance of ProductPlannigWeek
+			target  // Element that contains the table with timetables (.mybooking-product-planning-week-table)
 		};
 	}
 
@@ -25,7 +25,7 @@ define('productPlanningWeekActionBar', ['jquery', 'YSDEventTarget', 'commonSetti
 		/**
 		 * Set new date and refresh planning
 		*/
-		setDate:  function(paramDate) {
+		onDateChanged:  function(paramDate) {
 			this.model.parent.model.date.actual = YSDFormatter.formatDate(paramDate, this.model.parent.model.api_date_format);
 			const target = document.getElementById(this.model.parent.model.targetId);
 			target.dispatchEvent(new CustomEvent('refresh', { detail: { callback: this.refresh.bind(this) }} ));
@@ -51,7 +51,7 @@ define('productPlanningWeekActionBar', ['jquery', 'YSDEventTarget', 'commonSetti
 			inputDate.on('change', (event) => {
 				event.preventDefault();
 				const value = inputDate.datepicker('getDate');
-				this.setDate(value);
+				this.onDateChanged(value);
 			});
 		},
 
@@ -70,7 +70,7 @@ define('productPlanningWeekActionBar', ['jquery', 'YSDEventTarget', 'commonSetti
 		 * Scroll calendar
 		*/
 		setScrollCalendarButtonsState: function(){
-			const dateButtons = this.model.target.find('button[data-action=date]');
+			const dateButtons = this.model.parent.model.planningHTML.find('button[data-action=date]');
 			const firstDate = moment(new Date(this.model.parent.model.configuration.serverDate));
 
 			if(moment(this.model.parent.model.date.actual).isSame(firstDate) ||moment(this.model.parent.model.date.actual).isBefore(firstDate)) {
@@ -90,9 +90,10 @@ define('productPlanningWeekActionBar', ['jquery', 'YSDEventTarget', 'commonSetti
 				const formateDate = YSDFormatter.formatDate(newDate, this.model.parent.model.api_date_format);
 				const newInstanceDate = new Date(formateDate);
 
-				const inputDate = this.model.target.find('input[name=date]');
+				const inputDate = this.model.parent.model.planningHTML.find('input[name=date]');
 				inputDate.datepicker('setDate', newInstanceDate);
-				this.setDate(newInstanceDate);
+				// Notify that the date has changed in order to be processed by the event
+				inputDate.trigger('change');
 			}
 		},
 		
@@ -103,7 +104,7 @@ define('productPlanningWeekActionBar', ['jquery', 'YSDEventTarget', 'commonSetti
 			/*
 			* Calendar scroll
 			*/
-			const dateButtons = this.model.target.find('button[data-action=date]');
+			const dateButtons = this.model.parent.model.planningHTML.find('button[data-action=date]');
 
 			if (this.model.parent.model.realCalendar.length > 0) {
 				dateButtons.off('click');
@@ -114,32 +115,12 @@ define('productPlanningWeekActionBar', ['jquery', 'YSDEventTarget', 'commonSetti
 		},
 
 		/**
-		 * Validations
-		*/
-		setValidations: function() {
-			this.model.target.validate({
-				submitHandler: function(form, event) {
-					event.preventDefault();
-				},
-				rules: {         
-				},
-				messages: {
-				},
-				errorPlacement: function (error, element) {
-					error.insertAfter(element.parent());
-				},
-				errorClass : 'form-reservation-error'
-		});
-		},
-
-		/**
 		 * Initizialize
 		*/
 		init:  function () {
 			this.refresh();
 			this.initializeDate();
 			this.setEvents();
-			this.setValidations();
 		}
 	};
 
