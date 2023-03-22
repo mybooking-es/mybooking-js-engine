@@ -568,7 +568,10 @@
 
 						description = month + ' ' + year + '<br>' + '<b style="font-size: 20px;">' + day + '</b><br>' + weekday;
 					} else if (item.id) {
-						description = '<span class="mybooking-planning-td-product js-product-info-btn" data-product="' + item.id + '" title="+ info">' + description + ' <span class="dashicons dashicons-info"></span></span>';
+						description = '<span class="mybooking-planning-td-product js-product-info-btn" data-product="' + 
+													item.category_code + '" title="+ info">' + description + 
+													' <span class="dashicons dashicons-info" data-product="' + 
+													item.category_code + '"></span></span>';
 					}
 
 					html += '<th>';
@@ -590,7 +593,10 @@
 
 							fixHead = '<b style="font-size: 20px;">' + day + '</b>&nbsp;&nbsp;&nbsp;' + weekday;
 						} else if (item.id) {
-							fixHead = '<span class="mybooking-planning-td-product js-product-info-btn" data-product="' + item.id + '" title="+ info">' + item.description + ' <span class="dashicons dashicons-info"></span></span>';
+							fixHead = '<span class="mybooking-planning-td-product js-product-info-btn" data-product="' + 
+												item.category_code + '" title="+ info">' + item.description + 
+												' <span class="dashicons dashicons-info" data-product="' + 
+													item.category_code + '"></span></span>';
 						}
 
 						html += '<tr>';
@@ -792,7 +798,10 @@
 			// Bind the event to show detailed product
 			$('.mybooking-planning-table').on('click', '.js-product-info-btn', (event) => {
 				const target = event.target;
-
+				console.log('click');
+				console.log(target);
+				console.log($(this));
+				console.log($(this).attr('data-product'));
 				this.productDetailIconClick($(target).attr('data-product'));
 			});  
 		},
