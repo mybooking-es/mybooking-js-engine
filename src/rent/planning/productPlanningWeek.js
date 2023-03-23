@@ -600,7 +600,7 @@
 					const day = mydate.getDate();
 					const weekday = mydate.toLocaleString(this.model.requestLanguage, { weekday: 'short' }).toUpperCase();
 
-					const description = '<b style="font-size: 20px;">' + day + '</b><br>' + weekday;
+					const description = '<b class="mybooking-planning-td-product__day">' + day + '</b><br><span class="mybooking-planning-td-product__weekday">' + weekday + '</span>';
 		
 					html += '<th>';
 						html += description;

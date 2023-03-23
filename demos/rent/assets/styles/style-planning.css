@@ -102,6 +102,22 @@
 	line-height: 1.2;
 }
 
+.mybooking-planning-table table .mybooking-planning-td-product__day {
+	font-size: 20px;
+}
+
+@media (max-width: 768px) {
+	.mybooking-planning-table table .mybooking-planning-td-product__month,
+	.mybooking-planning-table table .mybooking-planning-td-product__year,
+	.mybooking-planning-table table .mybooking-planning-td-product__weekday {
+		display: none;
+	}
+
+	.mybooking-planning-table table .mybooking-planning-td-product__day {
+		font-size: 16px;
+	}
+}
+
 .mybooking-planning-table table .mybooking-planning-td-product > span {
 	font-size: 14px;
 }
