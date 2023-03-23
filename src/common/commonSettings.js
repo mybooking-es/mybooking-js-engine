@@ -341,6 +341,7 @@ define('commonSettings', ['jquery','commonServices','commonLoader','commonTransl
      */ 
     appendValidators: function() {
 
+        // Password check
         $.validator.addMethod("pwcheck", function(value, element) {
            if ( $(element).length > 0 && $(element).is(':visible') ) {
              return  /^[A-Za-z0-9\d=!\-@._*&]*$/.test(value) // consists of only these
@@ -351,7 +352,22 @@ define('commonSettings', ['jquery','commonServices','commonLoader','commonTransl
            }
            return true;
         });
-      
+
+        // Regular expression
+        $.validator.addMethod(
+        "regexp",
+        function(value, element, regexp) {
+           var re = new RegExp(regexp);
+           return this.optional(element) || re.test(value);  
+        });
+
+        // Not empty
+        $.validator.addMethod(
+        "notempty",
+        function(value, element, regexp) {
+           return value !== undefined && value !== null && value.trim().length > 0;  
+        });
+
     }
   };
 

@@ -1051,16 +1051,20 @@ require(['jquery',
                       required: '#customer_type:visible'
                     },
                     'customer_company_name': {
-                      required: '#customer_company_name:visible'
+                      required: '#customer_company_name:visible',
+                      notempty: '#customer_company_name:visible'
                     },
                     'customer_company_contact_name': {
-                      required: '#customer_company_contact_name:visible'
+                      required: '#customer_company_contact_name:visible',
+                      notempty: '#customer_company_contact_name:visible'
                     },
                     'customer_name': {
-                      required: '#customer_name:visible'
+                      required: '#customer_name:visible',
+                      notempty: '#customer_name:visible'
                     },
                     'customer_surname' : {
-                      required: '#customer_surname:visible'
+                      required: '#customer_surname:visible',
+                      notempty: '#customer_surname:visible'
                     },
                     'customer_email' : {
                         required: '#customer_email:visible',
@@ -1073,6 +1077,7 @@ require(['jquery',
                     },
                     'customer_phone': {
                         required: '#customer_phone:visible',
+                        notempty: '#customer_phone:visible',
                         minlength: 9
                     },
                     'driver_date_of_birth': {
@@ -1120,19 +1125,27 @@ require(['jquery',
 
                 messages : {
                     'customer_classifier_id': {
-                        'required': i18next.t('complete.reservationForm.validations.fieldRequired')
+                      required: i18next.t('complete.reservationForm.validations.fieldRequired')
                     },
                     'customer_type': {
                       required: i18next.t('complete.reservationForm.validations.fieldRequired')
                     },
                     'customer_company_name': {
-                      required: i18next.t('complete.reservationForm.validations.fieldRequired')
+                      required: i18next.t('complete.reservationForm.validations.fieldRequired'),
+                      notempty: i18next.t('complete.reservationForm.validations.fieldRequired')
                     },
                     'customer_company_contact_name': {
-                      required: i18next.t('complete.reservationForm.validations.fieldRequired')
+                      required: i18next.t('complete.reservationForm.validations.fieldRequired'),
+                      notempty: i18next.t('complete.reservationForm.validations.fieldRequired')
                     },
-                    'customer_name': i18next.t('complete.reservationForm.validations.customerNameRequired'),
-                    'customer_surname' : i18next.t('complete.reservationForm.validations.customerSurnameRequired'),
+                    'customer_name': {
+                      required: i18next.t('complete.reservationForm.validations.customerNameRequired'),
+                      notempty: i18next.t('complete.reservationForm.validations.customerNameRequired')
+                    },
+                    'customer_surname' : {
+                      required: i18next.t('complete.reservationForm.validations.customerSurnameRequired'),
+                      notempty: i18next.t('complete.reservationForm.validations.customerSurnameRequired')
+                    },
                     'customer_email' : {
                         required: i18next.t('complete.reservationForm.validations.customerEmailRequired'),
                         email: i18next.t('complete.reservationForm.validations.customerEmailInvalidFormat'),
@@ -1144,7 +1157,8 @@ require(['jquery',
                     },
                     'customer_phone': {
                         'required': i18next.t('complete.reservationForm.validations.customerPhoneNumberRequired'),
-                        'minlength': i18next.t('complete.reservationForm.validations.customerPhoneNumberMinLength')
+                        'minlength': i18next.t('complete.reservationForm.validations.customerPhoneNumberMinLength'),
+                        'notempty': i18next.t('complete.reservationForm.validations.fieldRequired')
                     },
                     'customer_document_id': {
                         'required': i18next.t('complete.reservationForm.validations.fieldRequired')
