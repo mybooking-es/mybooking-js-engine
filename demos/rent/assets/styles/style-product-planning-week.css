@@ -139,3 +139,19 @@
 	text-align: right;
 	padding: 1em 0;
 }
+
+.mybooking-product-planning-week-table .mybooking-planning-td-product__day {
+	font-size: 20px;
+}
+
+@media (max-width: 768px) {
+	.mybooking-product-planning-week-table .mybooking-planning-td-product__month,
+	.mybooking-product-planning-week-table .mybooking-planning-td-product__year,
+	.mybooking-product-planning-week-table .mybooking-planning-td-product__weekday {
+		display: none;
+	}
+
+	.mybooking-product-planning-week-table .mybooking-planning-td-product__day {
+		font-size: 16px;
+	}
+}

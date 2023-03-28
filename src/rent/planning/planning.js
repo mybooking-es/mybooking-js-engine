@@ -566,7 +566,7 @@
 						var day = mydate.getDate();
 						var weekday = mydate.toLocaleString(self.model.requestLanguage, { weekday: 'short' }).toUpperCase();
 
-						description = month + ' ' + year + '<br>' + '<b style="font-size: 20px;">' + day + '</b><br>' + weekday;
+						description = '<span class="mybooking-planning-td-product__month">' + month + '</span> <span class="mybooking-planning-td-product__year">' + year + '</span><br>' + '<b class="mybooking-planning-td-product__day">' + day + '</b><br><span class="mybooking-planning-td-product__weekday">' + weekday + '</span>';
 					} else if (item.id) {
 						description = '<span class="mybooking-planning-td-product js-product-info-btn" data-product="' + 
 													item.category_code + '" title="+ info">' + description + 
@@ -591,7 +591,7 @@
 							var day = mydate.getDate();
 							var weekday = mydate.toLocaleString(self.model.requestLanguage, { weekday: 'short' }).toUpperCase();
 
-							fixHead = '<b style="font-size: 20px;">' + day + '</b>&nbsp;&nbsp;&nbsp;' + weekday;
+							fixHead = '<b class="mybooking-planning-td-product__day">' + day + '</b>&nbsp;&nbsp;&nbsp;<span class="mybooking-planning-td-product__weekday">' + weekday + '</span>';
 						} else if (item.id) {
 							fixHead = '<span class="mybooking-planning-td-product js-product-info-btn" data-product="' + 
 												item.category_code + '" title="+ info">' + item.description + 
