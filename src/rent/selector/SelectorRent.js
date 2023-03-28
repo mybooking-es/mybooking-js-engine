@@ -129,8 +129,14 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
         dataType: 'json',
         success: function(data, textStatus, jqXHR) {
           self.families = data;
+          var description = null;
           for (var idx=0;idx<self.families.length;idx++){
-            self.families[idx]['description'] =  self.families[idx]['name'];
+            description = '';
+            if (self.families[idx]['parent_id'] && self.families[idx]['parent_id'] !== '') {
+              description += ' - ';
+            }
+            description += self.families[idx]['name']
+            self.families[idx]['description'] = description;
           }          
           self.selectorView.update('families', null);
         },
@@ -1643,13 +1649,11 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
           if ($(this.selectorModel.family_id_selector).length > 0 && this.selectorModel.families.length > 0) {
             var dataSource = new MemoryDataSource(this.selectorModel.families);
             var family_id = this.selectorModel.shopping_cart ? this.selectorModel.shopping_cart.family_id : null;
-            console.log('family_id');
-            console.log(this.selectorModel.shopping_cart);
-            console.log(family_id);
             var familyId = new SelectSelector(this.selectorModel.family_id,
                                               dataSource, 
                                               family_id, 
-                                              false);
+                                              true,
+                                              i18next.t('selector.select'));
             $(this.selectorModel.family_selector).show();
           }
           break;

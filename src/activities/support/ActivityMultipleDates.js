@@ -242,11 +242,12 @@ define('ActivityMultipleDates',['jquery','ysdtemplate', 'YSDRemoteDataSource','Y
                 }));
 
                 if (activityMultipleDatesModel.activity_dates != null) {
-                  for (date in activityMultipleDatesModel.activity_dates) {  
-                    var classOption = 'form-control';
-                    var text = activityMultipleDatesModel.activity_dates[date].description
-                    var optionData = { value: activityMultipleDatesModel.activity_dates[date].id
-                                     };
+                  var classOption = null, text = null, optionData = null;
+                  for (var date in activityMultipleDatesModel.activity_dates) {  
+                    classOption = 'form-control';
+                    text = activityMultipleDatesModel.activity_dates[date].description
+                    optionData = { value: activityMultipleDatesModel.activity_dates[date].id
+                                 };
                     if (activityMultipleDatesModel.activity_dates[date].available == 0) {
                         classOption += ' bg-danger';
                         optionData.disabled = 'disabled';

@@ -365,7 +365,10 @@ define('commonSettings', ['jquery','commonServices','commonLoader','commonTransl
         $.validator.addMethod(
         "notempty",
         function(value, element, regexp) {
-           return value !== undefined && value !== null && value.trim().length > 0;  
+           // Only apply on visible elementos
+           if ($(element).length && $(element).is(':visible')) {
+             return value !== undefined && value !== null && value.trim().length > 0;  
+           }
         });
 
     }
