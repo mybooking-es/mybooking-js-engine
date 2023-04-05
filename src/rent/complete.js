@@ -3,7 +3,7 @@ require(['jquery',
          'i18next','ysdtemplate','YSDDateControl', 
          './selector/modify_reservation_selector', './selector-wizard/selector_wizard', 'select2', 
          'YSDMemoryDataSource','YSDSelectSelector', './mediator/rentEngineMediator', '../profile/Login',
-         '../profile/PasswordForgottenComponent',
+         '../profile/PasswordForgottenComponent', 'moment',
          'jquery.i18next', 'jquery.formparams', 'jquery.form',
 	       'jquery.validate', 'jquery.ui', 'jquery.ui.datepicker-es',
          'jquery.ui.datepicker-en', 'jquery.ui.datepicker-ca', 'jquery.ui.datepicker-it',
@@ -11,7 +11,7 @@ require(['jquery',
 	     function($, 
                 commonServices, commonSettings, commonTranslations, commonLoader, commonUI,
                 i18next, tmpl, DateControl, selector, selectorWizard, select2,
-                MemoryDataSource, SelectSelector, rentEngineMediator, Login, PasswordForgottenComponent) {
+                MemoryDataSource, SelectSelector, rentEngineMediator, Login, PasswordForgottenComponent, moment) {
 
   var model = { // THE MODEL
     reservationFormSubmitted: false,
