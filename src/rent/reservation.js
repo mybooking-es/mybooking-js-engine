@@ -421,6 +421,8 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
           }
       );
 
+      rentEngineMediator.onMyReservationSetupReservationForm();
+
 
     },
 

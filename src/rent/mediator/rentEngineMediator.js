@@ -14,8 +14,11 @@ define('rentEngineMediator', ['jquery', 'YSDEventTarget'],
     chooseMultipleProductsDelegate: null,
     chooseExtrasDelegate: null,
     checkoutDelegate: null,
+    checkoutSetupReservationFormDelegate: null,
     newReservationPaymentDelegate: null,
     existingReservationPaymentDelegate: null,
+    summaryUpdateBookingDelegate: null,
+    myReservationSetupReservationFormDelegate: null,
 
     // -- Rent engine components
 
@@ -76,6 +79,9 @@ define('rentEngineMediator', ['jquery', 'YSDEventTarget'],
        this.myReservation = myReservation;
     },
 
+    /**
+     * Set product Calendar
+     */ 
     setProductCalendar( productCalendar ) {
        this.productCalendar = productCalendar;
     },       
@@ -87,28 +93,48 @@ define('rentEngineMediator', ['jquery', 'YSDEventTarget'],
      */
     setupDelegate: function( delegate ) {
 
+      // Choose single product
       if (typeof delegate.chooseSingleProduct === 'function') {
         this.chooseSingleProductDelegate = delegate.chooseSingleProduct;
       }
 
+      // Choose multiple products
       if (typeof delegate.chooseMultipleProducts === 'function') {
         this.chooseMultipleProductsDelegate = delegate.chooseMultipleProducts;
       }
 
+      // Choose extras
       if (typeof delegate.chooseExtras === 'function') {
         this.chooseExtrasDelegate = delegate.chooseExtras;
       }
 
+      // Checkout -> SetupReservationForm
+      if (typeof delegate.checkoutSetupReservationForm === 'function') {
+        this.checkoutSetupReservationFormDelegate = delegate.checkoutSetupReservationForm;
+      }   
+
+      // Checkout -> Checkout
       if (typeof delegate.checkout === 'function') {
         this.checkoutDelegate = delegate.checkout;
       }            
 
+      // 
       if (typeof delegate.newReservationPayment === 'function') {
         this.newReservationPaymentDelegate = delegate.newReservationPayment;
       }
 
       if (typeof delegate.existingReservationPayment === 'function') {
         this.existingReservationPaymentDelegate = delegate.existingReservationPayment;
+      }
+
+      // Summary => SetupReservationForm
+      if (typeof delegate.summaryUpdateBooking === 'function') {
+        this.summaryUpdateBookingDelegate = delegate.summaryUpdateBooking;
+      }
+
+      // My reservation => SetupReservationForm
+      if (typeof delegate.myReservationSetupReservationForm === 'function') {
+        this.myReservationSetupReservationFormDelegate = delegate.myReservationSetupReservationForm;
       }
 
     },
@@ -254,6 +280,19 @@ define('rentEngineMediator', ['jquery', 'YSDEventTarget'],
     // --------- Complete
 
     /**
+     * When the reservation form is ready
+     * 
+     */ 
+    onCompleteSetupReservationForm: function() {
+
+      console.log('rentEngineMediator_completeSetupReservationForm');
+      if (typeof this.checkoutSetupReservationFormDelegate === 'function') {
+        this.checkoutSetupReservationFormDelegate();
+      }
+
+    },
+
+    /**
      * Before checkout => Act to avoid checkout
      *
      * == Parameters::
@@ -371,6 +410,37 @@ define('rentEngineMediator', ['jquery', 'YSDEventTarget'],
       }
 
     },
+
+    // ----------- Summary
+
+    /**
+     * When the reservation form is ready
+     * 
+     */ 
+    onSummaryUpdateBooking: function() {
+
+      console.log('rentEngineMediator_summarySetupReservationForm');
+      if (typeof this.summaryUpdateBookingDelegate === 'function') {
+        this.summaryUpdateBookingDelegate();
+      }
+
+    },
+
+    // ----------- My reservation
+
+    /**
+     * When the reservation form is ready
+     * 
+     */ 
+    onMyReservationSetupReservationForm: function() {
+
+      console.log('rentEngineMediator_myReservationSetupReservationForm');
+      if (typeof this.myReservationSetupReservationFormDelegate === 'function') {
+        this.myReservationSetupReservationFormDelegate();
+      }
+
+    },
+
 
     // ----------- Utilities
 

@@ -148,6 +148,9 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
       this.updateBookingSummary();
       commonLoader.hide();
 
+      // Mediator update booking
+      rentEngineMediator.onSummaryUpdateBooking();
+
     },
 
     updateTitle: function() {
