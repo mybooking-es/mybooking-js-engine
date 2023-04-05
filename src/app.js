@@ -148,8 +148,8 @@ $(document).ready(function () {
 $(document).ready(function () {
     if ($('body').hasClass('reservation')) {
         require('./rent/mediator/rentEngineMediator.js');          
-        require('./rent/reservation.js');
         require('./rent/passengers/passengersComponent.js');
+        require('./rent/reservation.js');
     }
 });
 
