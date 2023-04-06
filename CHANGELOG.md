@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.1.0] 2023-04-06
+
+### Added
+
+- Passengers management
+
 ## [1.0.13] 2023-02-08
 
 ### Fixed

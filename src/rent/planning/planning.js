@@ -659,7 +659,7 @@
 
 				var date = this.model.date.actual;
 				// Append the number of days
-				var dateTo = moment(date).add( this.model.items, 'days').format('YYYY-MM-DD');
+				var dateTo = moment(date).add( this.model.items, 'days').format(this.model.api_date_format);
 
 				if (this.model.type === 'diary') {
 					this.model.schedule = await this.getSchedule({ date });

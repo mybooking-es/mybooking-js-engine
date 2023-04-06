@@ -1,12 +1,15 @@
 require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelector', 'select2',
          'commonServices', 'commonSettings', 'commonTranslations', 'commonLoader', 'commonUI',  
          './mediator/rentEngineMediator',
-         'i18next','ysdtemplate', 'YSDDateControl', 'moment',
+         'i18next','ysdtemplate', 'YSDDateControl',
+         './passengers/passengersComponent',
          'jquery.i18next',   
          'jquery.validate', 'jquery.ui', 'jquery.form'],
     function($, RemoteDataSource, MemoryDataSource, SelectSelector, select2,
              commonServices, commonSettings, commonTranslations, commonLoader, commonUI,
-             rentEngineMediator, i18next, tmpl, DateControl, moment) {
+             rentEngineMediator, i18next, tmpl, DateControl, 
+             passengersComponent
+          ) {
 
   var model = { // THE MODEL
     requestLanguage: null,
@@ -232,6 +235,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
       this.updateTitle();
       this.updateBookingSummary();
       this.setupReservationForm();
+      this.setupPassengersForm();
       this.setupEvents();
       commonLoader.hide();
 
@@ -423,7 +427,17 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
 
       rentEngineMediator.onMyReservationSetupReservationForm();
 
+    },
 
+    /**
+     * Setup passengers form component
+     */ 
+    setupPassengersForm: function() {
+      if (model.configuration.guests) {
+        // Micro-template passengers is inside component
+        // Initialize component passengers
+        passengersComponent.view.init({ booking: model.booking, configuration: model.configuration });
+      }
     },
 
     setupEvents: function() {

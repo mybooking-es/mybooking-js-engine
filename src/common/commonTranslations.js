@@ -435,6 +435,19 @@ define("commonTranslations", [], function () {
             success: "Reservation updated successfully",
             error: "We are sorry. There was an error updating the reservation",
           },
+          passenger: {
+            listed: {
+              error: "Error retrieving passengers"
+            },
+            added: {
+              success: "Passenger added successfully",
+              error: "Error adding passenger"
+            },
+            remove: {
+              success: "Passenger removed successfully",
+              error: "Error removing passenger"
+            }            
+          }
         },
         selectorWizard: {
           pickupPlace: "Collection Point",
@@ -961,6 +974,19 @@ define("commonTranslations", [], function () {
             error:
               "Lo sentimos, se ha producido un error actualizando la reserva",
           },
+          passenger: {
+            listed: {
+              error: "Error al recuperar pasajeros"
+            },
+            added: {
+              success: "Pasajero añadido con éxito",
+              error: "Error al añadir pasajero"
+            },
+            remove: {
+              success: "Pasajero eliminado con éxito",
+              error: "Error al eliminar pasajero"
+            }            
+          }          
         },
         selectorWizard: {
           pickupPlace: "Lugar de entrega",
@@ -1485,6 +1511,19 @@ define("commonTranslations", [], function () {
             success: "Reserva actualitzada",
             error: "Ho sentim. S'ha produït un error actualitzant la reserva",
           },
+          passenger: {
+            listed: {
+              error: "S'ha produït un error en recuperar els passatgers"
+            },
+            added: {
+              success: "El passatger s'ha afegit correctament",
+              error: "S'ha produït un error en afegir un passatger"
+            },
+            remove: {
+              success: "El passatger s'ha eliminat correctament",
+              error: "S'ha produït un error en treure el passatger"
+            }            
+          }          
         },
         selectorWizard: {
           pickupPlace: "Punt de lliurament",
@@ -2014,6 +2053,19 @@ define("commonTranslations", [], function () {
             error:
               "Wir entschuldigen uns. Beim Aktualisieren der Reservierung ist ein Fehler aufgetreten",
           },
+          passenger: {
+            listed: {
+              error: "Fehler beim Abrufen der Passagiere"
+            },
+            added: {
+              success: "Passagier erfolgreich hinzugefügt",
+              error: "Fehler beim Hinzufügen des Passagiers"
+            },
+            remove: {
+              success: "Passagier erfolgreich entfernt",
+              error: "Fehler beim Entfernen des Passagiers"
+            }            
+          }          
         },
         selectorWizard: {
           pickupPlace: "Sammelpunkt",
@@ -2543,6 +2595,19 @@ define("commonTranslations", [], function () {
             error:
               "Nous sommes désolés. Une erreur s'est produite lors de la mise à jour de la réservation",
           },
+          passenger: {
+            listed: {
+              error: "Erreur lors de la récupération des passagers"
+            },
+            added: {
+              success: "Passager ajouté avec succès",
+              error: "Erreur lors de l'ajout du passager"
+            },
+            remove: {
+              success: "Passager supprimé avec succès",
+              error: "Erreur lors de la suppression du passager"
+            }            
+          }          
         },
         selectorWizard: {
           pickupPlace: "Point de collecte",
@@ -3083,6 +3148,19 @@ define("commonTranslations", [], function () {
             error:
               "Siamo spiacenti. Si è verificato un errore durante l'aggiornamento della prenotazione",
           },
+          passenger: {
+            listed: {
+              error: "Errore durante il recupero dei passeggeri"
+            },
+            added: {
+              success: "Passeggero aggiunto correttamente",
+              error: "Errore durante l'aggiunta del passeggero"
+            },
+            remove: {
+              success: "Passeggero rimosso con successo",
+              error: "Errore durante la rimozione del passeggero"
+            }            
+          }          
         },
         selectorWizard: {
           pickupPlace: "Punto di raccolta",
@@ -3344,6 +3422,19 @@ define("commonTranslations", [], function () {
             success: "Бронирование успешно обновлено",
             error: "Мы сожалеем. При обновлении бронирования произошла ошибка",
           },
+          passenger: {
+            listed: {
+              error: "Ошибка при получении пассажиров"
+            },
+            added: {
+              success: "Пассажир успешно добавлен",
+              error: "Ошибка добавления пассажира"
+            },
+            remove: {
+              success: "Пассажир успешно удален",
+              error: "Ошибка удаления пассажира"
+            }            
+          }          
         },
         selectorWizard: {
           pickupPlace: "Пункт сбора",

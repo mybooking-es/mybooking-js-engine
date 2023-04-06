@@ -74,6 +74,7 @@ define('commonSettings', ['jquery','commonServices','commonLoader','commonTransl
       hidePriceIfZero: false,
       hidePriceIfNotAvailable: true,
       useCustomerClassifier: false,
+      guests: false,
       // - Product Calendar
       calendarShowDailyPrices: false,
       samePickupReturnTime: false,
@@ -263,6 +264,8 @@ define('commonSettings', ['jquery','commonServices','commonLoader','commonTransl
              }
              // - Use customer classifier
              mybookingSettings.data.useCustomerClassifier = data.use_customer_classifier || false;
+             // - Guests
+             mybookingSettings.data.guests = data.guests || false;
              // - Renting calendar
              mybookingSettings.data.calendarShowDailyPrices = data.calendar_show_daily_prices;
              mybookingSettings.data.samePickupReturnTime = data.same_pickup_return_time;
