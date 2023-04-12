@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>Mybooking planning diary</title>
+    <title>Mybooking planning diary rental location</title>
     <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-ui-bootstrap/0.5pre/css/custom-theme/jquery-ui-1.10.0.custom.css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.5/css/bulma.min.css">
@@ -19,7 +19,7 @@
 	<body class="mybooking-rent-planning">
 
     <h2>Centre bit</h2>
-    <!-- <div class="mybooking-planning-content"
+    <div class="mybooking-planning-content"
 			data-direction="columns"
 			data-type="diary"
 			id="planning-1"
@@ -36,6 +36,15 @@
             </div>
           </div>
         </div>
+        <div class="field" style="display: none;">
+          <label class="label">Sucursal</label>
+          <div class="control">
+            <div class="select" data-default="Todas">
+              <select name="rentalLocation" style="min-width: 300px;">
+              </select>
+            </div>
+          </div>
+        </div>
 				<div class="field" style="display: none;">
           <label class="label">Familia</label>
           <div class="control">
@@ -65,10 +74,10 @@
         </div>
 			</form>
 			<div class="mybooking-planning-table"></div>
-		</div> -->
+		</div>
 
     <h2>Parc bit</h2>
-    <!-- <div class="mybooking-planning-content"
+    <div class="mybooking-planning-content"
 			data-direction="columns"
 			data-type="diary"
 			id="planning-2"
@@ -85,6 +94,15 @@
             </div>
           </div>
         </div>
+        <div class="field" style="display: none;">
+          <label class="label">Sucursal</label>
+          <div class="control">
+            <div class="select" data-default="Todas">
+              <select name="rentalLocation" style="min-width: 300px;">
+              </select>
+            </div>
+          </div>
+        </div>
 				<div class="field" style="display: none;">
           <label class="label">Familia</label>
           <div class="control">
@@ -114,7 +132,7 @@
         </div>
 			</form>
 			<div class="mybooking-planning-table"></div>
-		</div> -->
+		</div>
 
     <h2>Todas</h2>
 		<div class="mybooking-planning-content"
@@ -134,7 +152,7 @@
           </div>
         </div>
 				<div class="field" style="display: none;">
-          <label class="label">Sucursal</label><!-- TODO -->
+          <label class="label">Sucursal</label>
           <div class="control">
             <div class="select" data-default="Todas">
               <select name="rentalLocation" style="min-width: 300px;">

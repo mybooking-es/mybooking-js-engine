@@ -6,7 +6,7 @@
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
-	margin-bottom: 1em;
+	margin-bottom: 1rem;
 }
 
 .mybooking-planning-content .mybooking-planning-head .button-box {
@@ -58,7 +58,7 @@
 }
 
 .mybooking-planning-table table thead th {
-	padding: 1em;
+	padding: 1rem 0.5rem;
 	word-break: break-word;
 	vertical-align: middle;
 	text-align: center;
@@ -68,7 +68,7 @@
 .mybooking-planning-table table tbody th, 
 .mybooking-planning-table table tbody td {
 	height: 40px;
-	padding: 0 1em;
+	padding: 0 1rem;
 	text-align: center;
 	word-break: break-word;
 	z-index: 0;
@@ -76,7 +76,7 @@
 
 .mybooking-planning-table table  th, 
 .mybooking-planning-table table  td {
-	font-size: 0.8em;
+	font-size: 0.8rem;
 	font-weight: 200;
 }
 
