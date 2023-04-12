@@ -10,7 +10,7 @@
 	 * Contructor
 	 */
 	function Planning ({ planningHTML, target, targetId, type, family, category, 
-											 items, direction, rentalLocationCode, cells, interval }) {
+											 items, direction, rentalLocation, cells, interval }) {
 		/**
 		 * Planning data model
 		*/
@@ -19,6 +19,11 @@
 			target, 
 			targetId,
 			type: type || 'diary', // Type
+			// Rental locations
+			isRentalLocationSelectorAvailable: false,
+			rentalLocations: [],
+			// Rental location code (multiple rental locations)
+			rentalLocation,
 			// Families
 			isFamilySelectorAvailable: false, // Shows family selector
 			family, // Selected family
@@ -37,8 +42,6 @@
 			ocupation: [],
 			realCalendar: [],
 			calendar: [],
-			// Rental location code (multiple rental locations)
-			rentalLocationCode,
 			// Api Format
 			api_date_format: 'YYYY-MM-DD',
 			date: {
@@ -58,7 +61,28 @@
 	 * ========== The model (extended with API methods)
 	 */ 
 	var model = {
-		
+
+		/**
+		 * Get rental locations
+		 */
+		getRentalLocations: function() {
+			var url = commonServices.URL_PREFIX + '/api/booking/frontend/rental-locations?api_key=' + commonServices.apiKey;
+
+			// Returns a Promise with the response
+			return new Promise(resolve => {
+				$.ajax({
+					url: url
+				}).done(function(data) {
+					resolve(data);
+				}).fail(function(error) {
+					console.log('Error', error);
+					alert(i18next.t('planning.generic_error'));
+
+					resolve([]);
+				});
+			});
+		},
+
 		/**
 		 * Get families
 		 */
@@ -71,6 +95,11 @@
 					url: url
 				}).done(function(data) {
 					resolve(data);
+				}).fail(function(error) {
+					console.log('Error', error);
+					alert(i18next.t('planning.generic_error'));
+
+					resolve([]);
 				});
 			});
 		},
@@ -78,17 +107,36 @@
 		/**
 		 * Get categories
 		 */
-		getCategories: function() {
-			
-			var url = commonServices.URL_PREFIX + '/api/booking/frontend/products?api_key=' + 
-								commonServices.apiKey;
+		getCategories: function(family_id) {
+			var url = commonServices.URL_PREFIX + '/api/booking/frontend/products';
+			var urlParams = [];
+
+			// APi Key
+      if (commonServices.apiKey && commonServices.apiKey != '') {
+        urlParams.push('api_key='+commonServices.apiKey);
+      }  
+
+			// Family ID
+			if (family_id) {
+				urlParams.push('family_id='+family_id);
+			}
+
+			if (urlParams.length > 0) {
+        url += '?';
+        url += urlParams.join('&');
+      }
 
 			// Returns a Promise with the response
 			return new Promise(resolve => {
 				$.ajax({
 					url: url
-				}).done(function(data) {
-					resolve(data);
+				}).done(function(result) {
+					resolve(result.data);
+				}).fail(function(error) {
+					console.log('Error', error);
+					alert(i18next.t('planning.generic_error'));
+
+					resolve([]);
 				});
 			});
 		},
@@ -107,6 +155,11 @@
 					url: url
 				}).done(function(data) {
 					resolve(data);
+				}).fail(function(error) {
+					console.log('Error', error);
+					alert(i18next.t('planning.generic_error'));
+
+					resolve([]);
 				});
 			});
 		},
@@ -172,6 +225,11 @@
 					} else {
 						resolve(data);
 					}
+				}).fail(function(error) {
+					console.log('Error', error);
+					alert(i18next.t('planning.generic_error'));
+
+					resolve([]);
 				});
 			});
 		},
@@ -195,8 +253,8 @@
 			urlParams.push('to='+to);
 			
 			// Rental location code
-			if (this.model.rentalLocationCode) {
-				urlParams.push('rental_location_code='+ this.model.rentalLocationCode);
+			if (this.model.rentalLocation) {
+				urlParams.push('rental_location_code='+ this.model.rentalLocation);
 			}
 
 			// Family
@@ -220,6 +278,11 @@
 					url: url
 				}).done(function(data) {
 					resolve(data);
+				}).fail(function(error) {
+					console.log('Error', error);
+					alert(i18next.t('planning.generic_error'));
+
+					resolve([]);
 				});
 			});
 		},
@@ -667,19 +730,30 @@
 					this.model.schedule = this.model.realCalendar;
 				}
 
+				if (this.model.isRentalLocationSelectorAvailable) {
+					this.model.rentalLocations = await this.getRentalLocations();
+				}
+
 				if (this.model.isFamilySelectorAvailable) {
 					this.model.families = await this.getFamilies();
-					// Pre-select the first family if it is not selected
-					if (this.model.families.length > 0 && this.model.family == null) {
-						this.model.family = this.model.families[0].id;
-					}
 				}
 				
 				if (this.model.isCategorySelectorAvailable) {
-					this.model.categories = await this.getCategories();
+					if (this.model.family !== null) {
+						if (this.model.family === 'all') {
+							// Get all categories
+							this.model.categories = await this.getCategories();
+						} else {
+							// Get family categories
+							this.model.categories = await this.getCategories(this.model.family);
+						} 
+					} else {
+						// Get all categories
+						this.model.categories = await this.getCategories();
+					}
 				}
 
-				this.model.resources = await this.getPlanning({ from: date, to: dateTo});
+				this.model.resources = await this.getPlanning({ from: date, to: dateTo });
 
 				var html;
 				if (this.model.resources.length > 0 && this.model.schedule.length > 0) {
@@ -712,10 +786,11 @@
 				if (event && event.detail && event.detail.callback) {
 					var total = this.model.direction === 'columns' ? this.model.resources.length : this.model.schedule.length;
 
+					const rentalLocation = this.model.isRentalLocationSelectorAvailable ? this.model.rentalLocation || 'all' : undefined;
 					const family = this.model.isFamilySelectorAvailable ? this.model.family || 'all' : undefined;
 					const category = this.model.isCategorySelectorAvailable ? this.model.category || 'all' : undefined;
 
-					event.detail.callback({ settings: event.detail.settings, total: total, family, category });
+					event.detail.callback({ settings: event.detail.settings, total: total, rentalLocation, family, category });
 				}
 
 			} else {
@@ -767,10 +842,16 @@
 			commonLoader.show();
 			commonSettings.loadSettings(function(data){
 				commonLoader.hide();
+
+				debugger;
 				// Extend the model
 				self.model = {
 					...self.model,
-					isFamilySelectorAvailable: !self.model.family && data.useRentingFamilies,
+					// Rental location availabily control
+					isRentalLocationSelectorAvailable: !self.model.rentalLocation && data.selectRentalLocation, // selectRentalLocation?
+					// Family availabily control
+					isFamilySelectorAvailable: !self.model.category && !self.model.family && data.useRentingFamilies, // selectFamily?
+					// Category availabily control
 					isCategorySelectorAvailable: !self.model.category && data.productType === 'category_of_resources',
 					configuration: data,
 					requestLanguage,
@@ -779,6 +860,7 @@
 						server: data.serverDate,
 					}
 				};
+
 				// Configure events
 				self.setEvents({ parent: self, 
 												 target: self.model.planningHTML.find('.mybooking-planning-head'), 
@@ -901,7 +983,7 @@
 					family: planningHTML.attr('data-family-code') || null,
 					category: planningHTML.attr('data-category-code') || null,
 					items: planningHTML.attr('data-items'),
-					rentalLocationCode: planningHTML.attr('data-rental-location-code'),
+					rentalLocation: planningHTML.attr('data-rental-location-code') || null,
 					direction: planningHTML.attr('data-direction'),
 					type: planningHTML.attr('data-type'),
 					cells,

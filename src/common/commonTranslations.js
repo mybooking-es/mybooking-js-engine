@@ -523,6 +523,7 @@ define("commonTranslations", [], function () {
           no_schedules_found: "No schedules found",
           no_resources_found: "No resources found",
           no_data_found: "No data found",
+          generic_error: "Sorry, an error has occurred."
         },
       },
     },
@@ -1068,6 +1069,7 @@ define("commonTranslations", [], function () {
           no_schedules_found: "No se han encontrado horarios",
           no_resources_found: "No se han encontrado recursos",
           no_data_found: "No se han encontrado datos",
+          generic_error: "Lo lamentamos, se ha producido un error."
         },
       },
     },
@@ -1602,6 +1604,7 @@ define("commonTranslations", [], function () {
           no_schedules_found: "No s'han trobat horaris",
           no_resources_found: "No s'han trobat recursos",
           no_data_found: "No s'han trobat dades",
+          generic_error: "Ho lamentem, s'ha produït un error."
         },
       },
     },
@@ -2144,6 +2147,7 @@ define("commonTranslations", [], function () {
           no_schedules_found: "Keine Zeitpläne gefunden",
           no_resources_found: "Keine Ressourcen gefunden",
           no_data_found: "Keine Daten gefunden",
+          generic_error: "Leider ist ein Fehler aufgetreten."
         },
       },
     },
@@ -3240,6 +3244,7 @@ define("commonTranslations", [], function () {
           no_schedules_found: "Nessun programma trovato",
           no_resources_found: "Nessuna risorsa trovata",
           no_data_found: "Nessun dato trovato",
+          generic_error: "Spiacenti, si è verificato un errore."
         },
       },
     },
@@ -3512,6 +3517,7 @@ define("commonTranslations", [], function () {
           no_schedules_found: "Расписания не найдены",
           no_resources_found: "Ресурсы не найдены",
           no_data_found: "Данные не найдены",
+          generic_error: "Извините, произошла ошибка."
         },
       },
     },

@@ -34,6 +34,7 @@ define('planningActionBar', ['jquery', 'YSDEventTarget', 'commonSettings',
 		setFamily: function(event){
 			var value = $(event.currentTarget).val();
 			this.model.parent.model.family = value;
+			this.model.parent.model.category = 'all';
 
 			var target = document.getElementById(this.model.parent.model.targetId);
 			target.dispatchEvent(new CustomEvent('refresh', { detail: { callback: this.refresh.bind(this) }} ));
@@ -44,7 +45,10 @@ define('planningActionBar', ['jquery', 'YSDEventTarget', 'commonSettings',
 		*/
 		initializeFamily: function(){
 			var familySelector = this.model.target.find('select[name=family]');
+			familySelector.html('');
 			familySelector.closest('.field').css('display', 'block');
+
+			familySelector.append('<option value="all">'+ familySelector.closest('.select').attr('data-default')  +'</option>');
 
 			if (this.model.parent.model.families && this.model.parent.model.families.length > 0) {
 				this.model.parent.model.families.forEach(function(item) {
@@ -55,6 +59,7 @@ define('planningActionBar', ['jquery', 'YSDEventTarget', 'commonSettings',
 				*/
 				familySelector.off('change');
 				familySelector.on('change', this.setFamily.bind(this));
+				familySelector.removeAttr('disabled');
 			} else {
 				familySelector.attr('disabled', 'disabled');
 			}
@@ -77,7 +82,10 @@ define('planningActionBar', ['jquery', 'YSDEventTarget', 'commonSettings',
 		*/
 		initializeCategory: function(){
 			var categorySelector = this.model.target.find('select[name=category]');
+			categorySelector.html('');
 			categorySelector.closest('.field').css('display', 'block');
+
+			categorySelector.append('<option value="all">'+ categorySelector.closest('.select').attr('data-default')  +'</option>');
 
 			if (this.model.parent.model.categories.length && this.model.parent.model.categories.length > 0) {
 				this.model.parent.model.categories.forEach(function(item) {
@@ -89,6 +97,7 @@ define('planningActionBar', ['jquery', 'YSDEventTarget', 'commonSettings',
 				*/
 				categorySelector.off('change');
 				categorySelector.on('change', this.setCategory.bind(this));
+				categorySelector.removeAttr('disabled');
 			} else {
 				categorySelector.attr('disabled', 'disabled');
 			}
@@ -146,6 +155,7 @@ define('planningActionBar', ['jquery', 'YSDEventTarget', 'commonSettings',
 				this.model.target.find('select[name=family]').val(family);
 			}
 			if (category) {
+				this.initializeCategory();
 				this.model.target.find('select[name=category]').val(category);
 			}
 		},
