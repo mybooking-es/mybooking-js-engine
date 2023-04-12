@@ -33,6 +33,7 @@ define('commonSettings', ['jquery','commonServices','commonLoader','commonTransl
       useRentingFamilies: false,
       selectFamily: false,
       multipleDestinations: false,
+      multipleRentalLocations: false,
       selectDestination: false, 
       selectRentalLocation: false,  
       productType: null,   
@@ -238,6 +239,7 @@ define('commonSettings', ['jquery','commonServices','commonLoader','commonTransl
              mybookingSettings.data.deliverySlots = data.delivery_slots;
              // - Renting places
              mybookingSettings.data.multipleDestinations = data.multiple_destinations;
+             mybookingSettings.data.multipleRentalLocations = data.multiple_rental_locations || false;
              mybookingSettings.data.pickupReturnPlace = data.pickup_return_place;
              mybookingSettings.data.pickupReturnPlacesSameRentalLocation = data.pickup_return_places_same_rental_location;
              mybookingSettings.data.customPickupReturnPlaces = data.custom_pickup_return_places;
