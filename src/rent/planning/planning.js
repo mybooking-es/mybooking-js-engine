@@ -62,18 +62,18 @@ require([
       },
       originalSchedule: [], // Initial schedule  (no formated)
       schedule: [], // Schedule painted (formated)
-      resources: [], // List of products painted
+      resources: [], // Resource urges painted
       productDetail: {}, // Product detail
       ocupation: [], // Planning ocupation data (status: available, ocupied, free... )
       // Calendars
       realCalendar: [], // All dates from actual date (or first available date) to numbers of items days (ejem 15 items -> 15 days)
-      calendar: [], // Available dates from actual date (or first available date) to numbers of items * 2  days (ejem: 15 items -> 30 days)
+      calendar: [], // Available dates from actual date (or first available date) to numbers of items * 2  days (ejem: 15 items -> 30 days) this because can be less than total days
       // Dates
       api_date_format: 'YYYY-MM-DD', // Api format for ajax calls
       date: {
         actual: undefined, // Selected date
         server: undefined, // Server date (initial date when actual is undefined)
-        interval: interval !== null ? window.parseInt(interval) : 30, // Hours interval (default -> 30min) but schedule data must be in the same interval, idem ocupation data
+        interval: interval !== null ? window.parseInt(interval) : 30, // Hours interval (default -> 30min) but schedule data must be in the same interval (use to paint full hours in red)
       },
       // Rental locations (with multiple rental locations ->  multipleRentalLocations boolean value)
       isRentalLocationSelectorAvailable: false, // Shows rental location selector
@@ -154,7 +154,7 @@ require([
       const urlParams = [];
 
       // APi Key
-      if (commonServices.apiKey && commonServices.apiKey != '') {
+      if (commonServices.apiKey && commonServices.apiKey !== '') {
         urlParams.push('api_key=' + commonServices.apiKey);
       }
 
@@ -223,7 +223,7 @@ require([
 			const urlParams = [];
 		
 			// APi Key
-			if (commonServices.apiKey && commonServices.apiKey != '') {
+			if (commonServices.apiKey && commonServices.apiKey !== '') {
 				urlParams.push('api_key=' + commonServices.apiKey);
 			}
 		
@@ -294,7 +294,7 @@ require([
       const urlParams = [];
 
       // Api Key
-      if (commonServices.apiKey && commonServices.apiKey != '') {
+      if (commonServices.apiKey && commonServices.apiKey !== '') {
         urlParams.push('api_key=' + commonServices.apiKey);
       }
 
@@ -351,10 +351,10 @@ require([
         '/api/booking/frontend/products/' +
         productCode;
       const urlParams = [];
-      if (this.model.requestLanguage != null) {
+      if (this.model.requestLanguage !== null) {
         urlParams.push('lang=' + this.model.requestLanguage);
       }
-      if (commonServices.apiKey && commonServices.apiKey != '') {
+      if (commonServices.apiKey && commonServices.apiKey !== '') {
         urlParams.push('api_key=' + commonServices.apiKey);
       }
       if (urlParams.length > 0) {
@@ -389,9 +389,9 @@ require([
    */
   const controller = {
     /**
-     * Get ocupation range and put in list data
+     * Get ocupation range in calendar type and put in list data
      */
-    getOcupation15Range: function ({ from, to }) {
+    getOcupationCalendarRange: function ({ from, to }) {
       if (!from || !to) {
         return [];
       }
@@ -430,7 +430,7 @@ require([
       return range;
     },
 
-    /**
+    /** 
      * Get ranges between from and to time
      */
     getTimeRanges: function ({ from, to }) {
@@ -465,7 +465,7 @@ require([
     },
 
     /**
-     * Get ocupation range and put in list data
+     * Get ocupation range in diary type and put in list data
      */
     getOcupationDiaryRange: function ({ from, to, actualDay }) {
       if (!from || !to) {
@@ -473,12 +473,12 @@ require([
       }
 
       if (actualDay) {
-        if (actualDay == 'from' || actualDay == 'both') {
+        if (actualDay === 'from' || actualDay === 'both') {
           to = this.model.schedule.slice(-1).pop();
         }
 
         if (
-          actualDay != 'from' ||
+          actualDay !== 'from' ||
           moment(from, 'hh:mm').isBefore(
             moment(this.model.schedule[0], 'hh:mm')
           )
@@ -494,15 +494,16 @@ require([
      * Paint the ranges
      */
     paintRanges: function (item) {
+      // TODO see this
 			if (
-				this.model.items == 1 &&
-				this.model.configuration.rentTimesSelector == 'time_range'
+				this.model.items === 1 &&
+				this.model.configuration.rentTimesSelector === 'time_range'
 			) {
 				// Time range only 1 day
 				const objName = this.model.originalSchedule.filter((element) => {
 					return (
-						element.time_from == item.time_from &&
-						element.time_to == item.time_to
+						element.time_from === item.time_from &&
+						element.time_to === item.time_to
 					);
 				})[0];
 				const name = objName ? objName.name : '';
@@ -560,7 +561,7 @@ require([
 				case 'time_range':
 					// Time range
 					const objName = this.model.originalSchedule.filter((element) => {
-						return element.time_from == item.time_from && element.time_to == item.time_to;
+						return element.time_from === item.time_from && element.time_to === item.time_to;
 					})[0];
 					const name = objName ? objName.name : '';
 					const activeCells = this.model.target.find('div.mybooking-planning-td-content[data-id='' + item.id + ''][data-time='' + item.range[0] + ' - ' + item.range.slice(-1).pop() + '']');
@@ -604,24 +605,20 @@ require([
      * Draw ocupation status
      */
     showOcupation: function () {
-			for (let idx = 0; idx < this.model.ocupation.length; idx++) {
-				this.paintRanges(this.model.ocupation[idx]);
-			}
-			//this.model.ocupation.forEach((item) => {
-			//	this.paintRanges(item);
-			//});
-		
+			this.model.ocupation.forEach((item) => {
+				this.paintRanges(item);
+			});
+
 			/*
 			 * Format
 			 */
-			const target = this.model.target;
+			const { target  } = this.model;
 			target
 				.find('table tbody th')
 				.css('height', this.model.cells.height + 'px');
 			target
 				.find('table tbody td')
 				.css('height', this.model.cells.height + 'px');
-		
 			target
 				.find('table')
 				.addClass('mybooking-planning-table-direction-' + this.model.direction);
@@ -630,7 +627,6 @@ require([
 					'table.mybooking-planning-table-direction-columns tbody td .mybooking-planning-range-text.even'
 				)
 				.css('margin-top', this.model.cells.height * -1 + 'px');
-		
 			target
 				.find(
 					'table.mybooking-planning-table-direction-rows tbody td .mybooking-planning-range-text.even'
@@ -660,76 +656,79 @@ require([
 							item.date_to
 						);
 						let label = '';
-						//if (formatDate.isSame(from) ||  formatDate.isSame(to) ||
-						//	  (formatDate.isAfter(from) && formatDate.isBefore(to)) ) {
-		
-						let actualDay;
-						if (!from.isSame(to)) {
-							if (formatDate.isSame(from)) {
-								actualDay = 'from';
-							} else if (formatDate.isSame(to)) {
-								actualDay = 'to';
-							} else {
-								actualDay = 'both';
-							}
-		
-							label = dateFromString + ' - ' + dateToString;
-						}
-		
-						let newElement = {
-							id: element.id,
-							label,
-						};
-		
-						if (this.model.type === 'diary') {
-							let time_to = item.time_to;
-							if (this.model.configuration.rentTimesSelector === 'hours') {
-								// TODO See this
-								const [hours, minutes] = time_to.split(':');
-								const formatHours =
-									minutes === '00' ? window.parseInt(hours) - 1 : hours;
-								const formatMinutes = minutes === '00' ? '59' : '29';
-								time_to = `${formatHours}:${formatMinutes}`;
-							}
-							newElement = {
-								...newElement,
-								actualDay,
-								time_from: item.time_from,
-								time_to: item.time_to,
-								range: this.getOcupationDiaryRange({
-									from: item.time_from,
-									to: time_to,
-									actualDay,
-								}),
-								label:
-									label !== ''
-										? dateFromString +
-											' / ' +
-											item.time_from +
-											' - ' +
-											dateToString +
-											' / ' +
-											item.time_to
-										: dateFromString +
-											' - ' +
-											item.time_from +
-											' / ' +
-											item.time_to,
-							};
-						} else if (this.model.type === 'calendar') {
-							newElement = {
-								...newElement,
-								date_from: item.date_from,
-								date_to: item.date_to,
-								range: this.getOcupation15Range({
-									from: item.date_from,
-									to: item.date_to,
-								}),
-								label: dateFromString + ' - ' + dateToString,
-							};
-						}
-						this.model.ocupation.push(newElement);
-						//}
+            let actualDay;
+            if (!from.isSame(to)) {
+              if (formatDate.isSame(from)) {
+                actualDay = 'from';
+              } else if (formatDate.isSame(to)) {
+                actualDay = 'to';
+              } else {
+                actualDay = 'both';
+              }
+    
+              label = dateFromString + ' - ' + dateToString;
+            }
+    
+            let newElement = {
+              id: element.id,
+              label,
+            };
+
+            const getTimeTo = () => {
+              // TODO See this
+              const [hours, minutes] = item.time_to.split(':');
+              const formatHours =
+                minutes === '00' ? window.parseInt(hours) - 1 : hours;
+              const formatMinutes = minutes === '00' ? '59' : '29';
+              return `${formatHours}:${formatMinutes}`;
+            };
+
+            switch (this.model.type) {
+              case 'diary':
+                newElement = {
+                  ...newElement,
+                  actualDay,
+                  time_from: item.time_from,
+                  time_to: item.time_to,
+                  range: this.getOcupationDiaryRange({
+                    from: item.time_from,
+                    to: this.model.configuration.rentTimesSelector === 'hours' ? getTimeTo() : item.time_to,
+                    actualDay,
+                  }),
+                  label:
+                    label !== ''
+                      ? dateFromString +
+                        ' / ' +
+                        item.time_from +
+                        ' - ' +
+                        dateToString +
+                        ' / ' +
+                        item.time_to
+                      : dateFromString +
+                        ' - ' +
+                        item.time_from +
+                        ' / ' +
+                        item.time_to,
+                };
+                break;
+            
+              case 'calendar':
+                newElement = {
+                  ...newElement,
+                  date_from: item.date_from,
+                  date_to: item.date_to,
+                  range: this.getOcupationCalendarRange({
+                    from: item.date_from,
+                    to: item.date_to,
+                  }),
+                  label: dateFromString + ' - ' + dateToString,
+                };
+                break;
+              default:
+                newElement = {};
+                break;
+            }
+            this.model.ocupation.push(newElement);  
 					});
 				}
 			});
