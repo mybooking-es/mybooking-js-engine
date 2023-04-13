@@ -35,7 +35,6 @@ define('productPlanningWeekActionBar', ['jquery', 'YSDEventTarget', 'commonSetti
 		 * Initialize and refresh planning
 		*/
 		initializeDate: function() {
-			debugger;
 			$.datepicker.setDefaults( $.datepicker.regional[this.model.parent.model.requestLanguage] );
 			
 			const inputDate = this.model.parent.model.planningHTML.find('input[name=date]');

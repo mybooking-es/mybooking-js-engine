@@ -64,12 +64,17 @@
       }
 			console.log('sendRequest:'+url);
 			return new Promise(resolve => {
-				console.log('ajax');
 				$.ajax({
 					url: url
 				}).done(function(data) {
 					console.log('return getCalendar');
 					resolve(data);
+				})
+				.fail(function (error) {
+					console.log('Error', error);
+					alert(i18next.t('planning.generic_error'));
+	
+					resolve([]);
 				});
 			});
 		},
@@ -115,6 +120,12 @@
 					} else {
 						resolve(global);
 					}
+				})
+				.fail(function (error) {
+					console.log('Error', error);
+					alert(i18next.t('planning.generic_error'));
+	
+					resolve([]);
 				});
 			});
 		},
@@ -146,6 +157,12 @@
 					url: url
 				}).done(function(data) {
 					resolve(data);
+				})
+				.fail(function (error) {
+					console.log('Error', error);
+					alert(i18next.t('planning.generic_error'));
+	
+					resolve([]);
 				});
 			});
 		},
@@ -178,7 +195,7 @@
 			};
 
       const html = tmpl('script_mybooking_product_week_planning_reservation_summary')(data);
-			var target = this.model.planningHTML.find('#mybooking_product_week_planning_reservation_summary');
+			const target = this.model.planningHTML.find('#mybooking_product_week_planning_reservation_summary');
 			target.html(html);
 			
 			const submitBtn = this.model.planningHTML.find('#add_to_shopping_cart_btn');
@@ -188,9 +205,7 @@
 			}
 
 			// Setup the submit button
-			debugger;
 			this.model.planningHTML.find('form[name=mybooking_product_week_planning_reservation]').on('submit', (event) => {
-				debugger;
 				event.preventDefault();
 				this.gotoNextStep();
 			});
@@ -209,13 +224,13 @@
     doReservation: function() {
 			this.model.isTimeRangeSended = false;
 
-      var dataRequest = this.buildDataRequest();
+      const dataRequest = this.buildDataRequest();
 			// console.log(dataRequest);
 
-      var dataRequestJSON =  encodeURIComponent(JSON.stringify(dataRequest));
+      const dataRequestJSON =  encodeURIComponent(JSON.stringify(dataRequest));
 
       // Build the URL
-      var url = commonServices.URL_PREFIX + '/api/booking/frontend/shopping-cart';
+      let url = commonServices.URL_PREFIX + '/api/booking/frontend/shopping-cart';
       if (this.model.shoppingCartId == null) {
         this.model.shoppingCartId = this.getShoppingCartFreeAccessId();
       }
@@ -223,7 +238,7 @@
         url+= '/'+ this.model.shoppingCartId;
       }
 
-      var urlParams = [];
+      const urlParams = [];
       if (this.model.requestLanguage != null) {
         urlParams.push('lang='+this.model.requestLanguage);
       }
@@ -258,6 +273,7 @@
           else {
             this.model.product = null;
           }
+
           this.update();
         },
         error: function() {
@@ -298,7 +314,7 @@
       // }
 
       // Agent (from cookies) // TODO
-      // var agentId = customCookie.get('__mb_agent_id'); 
+      // const agentId = customCookie.get('__mb_agent_id'); 
       // if (agentId != null) {
       //   data.agent_id = agentId; 
       // }
@@ -309,18 +325,27 @@
 				// eslint-disable-next-line no-unused-vars
 				const [fromHour, fromMin] = data.time_from.split(':');
 				const [toHour, toMin] = daySelectedRanges[0].time_to.split(':');
+				const { interval } = this.model.date;
 
 				if (data.time_from === data.time_to) {
 					const hour = window.parseInt(toHour) + 1;
 					if (fromMin === '00') {
-						data.time_to = `${toHour}:30`;
+						if (interval < 60) {
+							data.time_to = `${toHour}:${interval}`;
+						} else {
+							data.time_to = `${hour}:00`;
+						}
 					} else {
 						data.time_to = `${hour}:00`;
 					}
 				} else {
 					const hour = window.parseInt(toHour) + 1;
 					if (toMin === '00') {
-						data.time_to = `${toHour}:30`;
+						if (interval < 60) {
+							data.time_to = `${toHour}:${interval}`;
+						} else {
+							data.time_to = `${hour}:00`;
+						}
 					} else {
 						data.time_to = `${hour}:00`;
 					}
@@ -341,54 +366,82 @@
 		*/
 		getSelectedRanges: function(){
 			/**
-			 * Format
+			 * Generate an object 
+			 * key -> date
+			 * value -> times in this date
 			 */
 			const data = {};
 			this.model.selectedRange.forEach(({date, time})=> {
+				// Add array if not exists
 				if (!data[date]){
 					data[date] = [];
 				}
 
+				// Add time
 				data[date].push(time);
 			});
 
+			/*
+			* Formated data to send
+			*/
 			const formatedData = {}
 			for (const key in data) {
+				// Sort times
 				data[key] = data[key].sort();
+				// Add array
 				formatedData[key] = [];
 
 				let nextArray = {};
 				let timesArray = {};
+				// Each time
 				data[key].forEach((time, index) => {
+					// Prev index
 					const prev = index === 0 ? 0 : index - 1;
-	
+
+					// If the first element set time from in actual value, otherwise if no is the first and exist a value time from in next array set time from from next array value time from
 					if (index === 0) {
-						timesArray.time_from = data[key][index];
-					} else if (nextArray.time_from){
+						timesArray.time_from = time;
+					} else if (nextArray.time_from) {
 						timesArray.time_from = nextArray.time_from;
+
+						// Clear times array
 						nextArray = {};
 					} 
 
-					if (this.getTimeRanges({from: data[key][prev], to:  data[key][index]}).length > 2) {
+					// If total time ranges between prev and actual value are more than two
+					if (this.getTimeRanges({from: data[key][prev], to:  time}).length > 2) {
+						// Set actual time array  time to in prev value
 						timesArray.time_to = data[key][prev];
+
+						// Push times array
 						formatedData[key].push(timesArray);
+						// Clear times array
 						timesArray = {};
-						nextArray.time_from = data[key][index];
+
+						// Set next time array time from in actual value
+						nextArray.time_from = time;
 					}
 
+					// If is the last element
 					if ( index === data[key].length - 1) {
+						// If exist a next time array time from set actual time array time from in actual value
 						if (nextArray.time_from) {
-							timesArray.time_from = data[key][index];
+							timesArray.time_from = time;
 						} 
 
-						timesArray.time_to = data[key][index];
+						// Set time to in actual value
+						timesArray.time_to = time;
+
+						// Push times array
 						formatedData[key].push(timesArray);
+
+						// Clear times array
 						timesArray = {};
 					}
 				});
 			}
 
-			// console.log(formatedData);
+			console.log(formatedData);
 			
 			return formatedData;
 		},
@@ -468,23 +521,24 @@
 		*/
 		paintRanges: function(item) {
 			if (item.range) {
+				let objName, name, label, activeCells;
 				switch (this.model.configuration.rentTimesSelector) {
 					case 'time_range':
-						var objName = this.model.statusSchedule[item.from.date_from].filter((element) => {
+						objName = this.model.statusSchedule[item.from.date_from].filter((element) => {
 							return element.time_from == item.from.time_from && element.time_to == item.to.time_to;
 						})[0];
-						var name = objName ? objName.name : '';
-						var label = `${YSDFormatter.formatDate(item.from.date_from, this.model.configuration.dateFormat)} - ${item.from.time_from} / ${item.to.time_to} - ${name}`;
-						var activeCells = this.model.target.find('div.mybooking-product-planning-week-td-content[data-date="' + item.from.date_from + '"][data-time="' + item.from.time_from + ' - ' + item.to.time_to + '"]');
+						name = objName ? objName.name : '';
+						label = `${YSDFormatter.formatDate(item.from.date_from, this.model.configuration.dateFormat)} - ${item.from.time_from} / ${item.to.time_to} - ${name}`;
+						activeCells = this.model.target.find('div.mybooking-product-planning-week-td-content[data-date="' + item.from.date_from + '"][data-time="' + item.from.time_from + ' - ' + item.to.time_to + '"]');
 							activeCells.addClass('full');
 							activeCells.attr('title', label);
 						break;
 					default:
-						var label2 = `${YSDFormatter.formatDate(item.from.date_from, this.model.configuration.dateFormat)} - ${item.from.time_from} / ${item.to.time_to}`;
+						label = `${YSDFormatter.formatDate(item.from.date_from, this.model.configuration.dateFormat)} - ${item.from.time_from} / ${item.to.time_to}`;
 						item.range.forEach((range) => {
 							const activeCells = this.model.target.find('div.mybooking-product-planning-week-td-content[data-date="' + item.from.date_from + '"][data-time="' + range + '"]');
 							activeCells.addClass('full');
-							activeCells.attr('title', label2);
+							activeCells.attr('title', label);
 						});
 						break;
 				}
@@ -541,11 +595,11 @@
 						const from = moment(item.date_from);
 						const to = moment(item.date_to);
 
-						var time_to = item.time_to;
+						let time_to = item.time_to;
 						if (this.model.configuration.rentTimesSelector === 'hours') { // TODO See this
-							var [hours, minutes] = time_to.split(':');
-							var formatHours = minutes === '00' ? window.parseInt(hours) - 1 : hours; 
-							var formatMinutes = minutes === '00' ? '59' : '29';
+							const [hours, minutes] = time_to.split(':');
+							const formatHours = minutes === '00' ? window.parseInt(hours) - 1 : hours; 
+							const formatMinutes = minutes === '00' ? '59' : '29';
 							time_to = `${formatHours}:${formatMinutes}`;
 						}
 
@@ -774,7 +828,6 @@
 		 * - parent : An instance of ProductPlannigWeek
 		*/
 		setupEvents: function(settings) {
-
 			const target = document.getElementById(settings.parent.model.targetId);
 
 			// Custom refresh event => calls refresh controller method
@@ -806,7 +859,8 @@
 						const exists = this.model.selectedRange.filter((item) => {
 							return item.date === target.attr('data-date') && item.time === target.attr('data-time').length > 0;
 						});
-						if (exists){
+
+						if (exists.length > 0){
 							this.selectMobileHours(event, 'end');			
 							this.doReservation();
 							this.model.isReservationSended = true;
@@ -924,7 +978,6 @@
 		 * Initizialize
 		*/
 		init: function() {
-
 			$('.mybooking-rent-product-planning-week .mybooking-product-planning-week-content').each((index, item) => {
 				const id = $(item).attr('id'); /** Unique id for instance */
 

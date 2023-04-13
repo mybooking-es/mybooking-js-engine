@@ -219,6 +219,11 @@ require([
      * Get day schedule => Hours to show
      */
     getSchedule: function ({ date }) {
+      if (!date) {
+        alert(i18next.t('planning.generic_error'));
+        return [];
+      }
+      
 			let url = commonServices.URL_PREFIX;
 			const urlParams = [];
 		
