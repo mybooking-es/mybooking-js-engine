@@ -124,10 +124,29 @@ require([
      * Get families
      */
     getFamilies: function () {
-      const url =
+      const {
+        rentalLocation,
+      } = this.model;
+
+      let url =
         commonServices.URL_PREFIX +
-        '/api/booking/frontend/families?api_key=' +
-        commonServices.apiKey;
+        '/api/booking/frontend/families';
+      const urlParams = [];
+
+      // APi Key
+      if (commonServices.apiKey && commonServices.apiKey !== '') {
+        urlParams.push('api_key=' + commonServices.apiKey);
+      }
+
+      // Rental location ID
+      if (rentalLocation && rentalLocation !== 'all') {
+        urlParams.push('rental_location=' + rentalLocation);
+      }
+
+      if (urlParams.length > 0) {
+        url += '?';
+        url += urlParams.join('&');
+      }
 
       // Returns a Promise with the response
       return new Promise((resolve) => {
@@ -149,7 +168,11 @@ require([
     /**
      * Get categories
      */
-    getCategories: function (family_id) {
+    getCategories: function () {
+      const {
+        family,
+      } = this.model;
+
       let url = commonServices.URL_PREFIX + '/api/booking/frontend/products';
       const urlParams = [];
 
@@ -159,8 +182,8 @@ require([
       }
 
       // Family ID
-      if (family_id) {
-        urlParams.push('family_id=' + family_id);
+      if (family && family !== 'all') {
+        urlParams.push('family_id=' + family);
       }
 
       if (urlParams.length > 0) {
@@ -954,20 +977,7 @@ require([
           this.model.families = await this.getFamilies();
         }
         if (this.model.isCategorySelectorAvailable) {
-          if (this.model.family !== null) {
-            if (this.model.family === 'all') {
-              // Get all categories
-              this.model.categories = await this.getCategories();
-            } else {
-              // Get family categories
-              this.model.categories = await this.getCategories(
-                this.model.family
-              );
-            }
-          } else {
-            // Get all categories
-            this.model.categories = await this.getCategories();
-          }
+          this.model.categories = await this.getCategories();
         }
 
 				/*
@@ -1116,7 +1126,7 @@ require([
 				};
 		
 				// Configure events
-				this.setEvents({
+				this.setupEvents({
 					parent: this,
 					target: this.model.planningHTML.find('.mybooking-planning-head'),
 					columnsWidth: this.model.cells.width,
@@ -1127,12 +1137,13 @@ require([
     /**
      * Set Events
      */
-    setEvents: function (settings) {
+    setupEvents: function (settings) {
       const target = document.getElementById(settings.parent.model.targetId);
       target.addEventListener(
         'refresh',
         settings.parent.refresh.bind(settings.parent)
       );
+      
       target.dispatchEvent(
         new CustomEvent('refresh', {
           detail: {

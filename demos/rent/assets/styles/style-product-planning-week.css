@@ -11,9 +11,13 @@
 .mybooking-product-planning-week-content .mybooking-product-planning-week-head {
 	display: flex;
 	justify-content: space-between;
-	align-items: center;
+	align-items: flex-end;
 	padding-bottom: 1em;
 	border-bottom: 1px solid lightgray;
+}
+
+.mybooking-product-planning-week-content .mybooking-product-planning-week-head > .field {
+	margin-bottom: 0;
 }
 
 .mybooking-product-planning-week-content .mybooking-product-planning-week-head .mybooking-title {

@@ -8,13 +8,13 @@ define('productPlanningWeekActionBar', ['jquery', 'YSDEventTarget', 'commonSetti
 	/**
 	 * Contructor
 	*/
-	function WeekActionBar({ parent, target }) {
+	function WeekActionBar({ target, parent }) {
 		/**
 		 * ProductPlanningWeekActionBar data model
 		*/
 		this.model = {
 			parent, // It is an instance of ProductPlannigWeek
-			target  // Element that contains the table with timetables (.mybooking-product-planning-week-table)
+			target, // Element that contains the table head (.mybooking-product-planning-week-head)
 		};
 	}
 
@@ -23,11 +23,61 @@ define('productPlanningWeekActionBar', ['jquery', 'YSDEventTarget', 'commonSetti
 
 	const controller = {
 		/**
+     * Set category
+     */
+    setCategory: function (event, newValue) {
+      const value = $(event.currentTarget).val() || newValue;
+
+      this.model.parent.model.category = value;
+
+      const target = document.getElementById(this.model.parent.model.targetId);
+      target.dispatchEvent(
+        new CustomEvent('refresh', {
+          detail: { callback: this.refresh.bind(this) },
+        })
+      );
+    },
+
+    /**
+     * Initialize category
+     */
+    initializeCategory: function () {
+      const categorySelector = this.model.target.find('select[name=category]');
+      categorySelector.html('');
+      categorySelector.closest('.field').css('display', 'block');
+
+			const {
+				categories,
+			} = this.model.parent.model;
+
+      if (
+        categories.length &&
+        categories.length > 0
+      ) {
+        categories.forEach((item) => {
+					const option = '<option value="' + item.code + '">' + item.name + '</option>';
+
+					categorySelector.append(option);
+        });
+
+        /*
+         * Set events
+         */
+        categorySelector.off('change');
+        categorySelector.on('change', this.setCategory.bind(this));
+        categorySelector.removeAttr('disabled');
+      } else {
+        categorySelector.attr('disabled', 'disabled');
+      }
+    },
+
+		/**
 		 * Set new date and refresh planning
 		*/
 		onDateChanged:  function(paramDate) {
 			this.model.parent.model.date.actual = YSDFormatter.formatDate(paramDate, this.model.parent.model.api_date_format);
 			const target = document.getElementById(this.model.parent.model.targetId);
+
 			target.dispatchEvent(new CustomEvent('refresh', { detail: { callback: this.refresh.bind(this) }} ));
 		},
 
@@ -49,7 +99,9 @@ define('productPlanningWeekActionBar', ['jquery', 'YSDEventTarget', 'commonSetti
 			inputDate.off('change');
 			inputDate.on('change', (event) => {
 				event.preventDefault();
+
 				const value = inputDate.datepicker('getDate');
+
 				this.onDateChanged(value);
 			});
 		},
@@ -57,10 +109,15 @@ define('productPlanningWeekActionBar', ['jquery', 'YSDEventTarget', 'commonSetti
 		/**
 		 *Refresh
 		 */
-		refresh: function() {
+		refresh: function({ originalCategory, category }) {
 			if (this.model.parent.model.realCalendar.length > 0) {
 				this.setScrollCalendarButtonsState();
 			}
+
+			if (!originalCategory && category) {
+        this.initializeCategory();
+        this.model.target.find('select[name=category]').val(category);
+      }
 		},
 	};
 
@@ -99,7 +156,7 @@ define('productPlanningWeekActionBar', ['jquery', 'YSDEventTarget', 'commonSetti
 		/**
 		 * Events
 		*/
-		setEvents: function() {
+		setupEvents: function() {
 			/*
 			* Calendar scroll
 			*/
@@ -114,12 +171,32 @@ define('productPlanningWeekActionBar', ['jquery', 'YSDEventTarget', 'commonSetti
 		},
 
 		/**
+     * Set validations
+     */
+    setupValidations: function () {
+      this.model.target.validate({
+        submitHandler: function (form, event) {
+          event.preventDefault();
+        },
+        rules: {},
+        messages: {},
+        errorPlacement: function (error, element) {
+          error.insertAfter(element.parent());
+        },
+        errorClass: 'form-reservation-error',
+      });
+    },
+
+		/**
 		 * Initizialize
 		*/
-		init:  function () {
-			this.refresh();
+		init:  function ({  originalCategory, category }) {
+			this.refresh({ originalCategory, category });
+
 			this.initializeDate();
-			this.setEvents();
+
+			this.setupEvents();
+			this.setupValidations();
 		}
 	};
 
@@ -140,14 +217,9 @@ define('productPlanningWeekActionBar', ['jquery', 'YSDEventTarget', 'commonSetti
 		/**
 		 * Initizialize
 		*/
-		init: function({ parent, settings }) {
-			const initSettings = {
-				parent,
-				...settings,
-			};
-
-			const  WeekActionBar = this.factory(initSettings);
-			WeekActionBar.init();
+		init: function({ settings, originalCategory, category }) {
+			const  weekActionBar = this.factory(settings);
+			weekActionBar.init({ originalCategory, category });
 		},
 	};
 

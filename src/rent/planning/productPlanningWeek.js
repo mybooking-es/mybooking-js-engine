@@ -17,7 +17,6 @@
 			planningHTML,
 			target,
 			targetId,
-			category,
 			schedule: [],
 			statusSchedule: [],
 			planning: [],
@@ -30,6 +29,10 @@
 				server: undefined,
 				interval: interval !== null ? window.parseInt(interval) : 30,
 			},
+			// Categories (with categories -> productType === 'category_of_resources')
+      isCategorySelectorAvailable: false, // Shows category selector
+      category, // Selected category
+      categories: [], // All categories
 			selectedRange: [],
 			isDragActive: false,
 			isTimeRangeSended: false,
@@ -41,6 +44,40 @@
 	}
 
 	const model = {
+		/**
+     * Get categories
+     */
+    getCategories: function () {
+      let url = commonServices.URL_PREFIX + '/api/booking/frontend/products';
+      const urlParams = [];
+
+      // APi Key
+      if (commonServices.apiKey && commonServices.apiKey !== '') {
+        urlParams.push('api_key=' + commonServices.apiKey);
+      }
+
+      if (urlParams.length > 0) {
+        url += '?';
+        url += urlParams.join('&');
+      }
+
+      // Returns a Promise with the response
+      return new Promise((resolve) => {
+        $.ajax({
+          url: url,
+        })
+          .done(function (result) {
+            resolve(result.data);
+          })
+          .fail(function (error) {
+            console.log('Error', error);
+            alert(i18next.t('planning.generic_error'));
+
+            resolve([]);
+          });
+      });
+    },
+		
 		/**
 		 * Get calendar
 		*/
@@ -762,8 +799,25 @@
 				calendar: [],
 			};
 
-			if (commonServices.URL_PREFIX && commonServices.URL_PREFIX !== '' && 
-					commonServices.apiKey && commonServices.apiKey !== '') {
+			if (
+				commonServices.URL_PREFIX && 
+				commonServices.URL_PREFIX !== '' && 
+					commonServices.apiKey && 
+					commonServices.apiKey !== ''
+				) {
+				/*
+				*  Get selects lists
+				*/
+        if (this.model.isCategorySelectorAvailable) {
+					const categories = await this.getCategories();
+
+					this.model = {
+						...this.model,
+						categories,
+						category:  this.model.category || categories[0].code
+					}
+        }
+
 				const startDate = this.model.date.actual;
 				const calendarEndDate = YSDFormatter.formatDate(moment(startDate).add(14, 'd'), this.model.api_date_format);
 				const endDate = YSDFormatter.formatDate(moment(startDate).add(7, 'd'), this.model.api_date_format);
@@ -791,7 +845,19 @@
 				}
 
 				if (event && event.detail && event.detail.callback) {
-					event.detail.callback({ settings: event.detail.settings });
+					let initialSettings = {
+						settings: event.detail.settings,
+					};
+
+					if (this.model.isCategorySelectorAvailable) {
+						initialSettings = {
+							...initialSettings,
+							originalCategory: this.model.originalCategory,
+							category: this.model.category
+						}
+					}
+					
+					event.detail.callback(initialSettings);
 				}
 				
 			} else {
@@ -946,6 +1012,10 @@
 				commonLoader.hide();
 				this.model = {
 					...this.model,
+					// Category availabily control
+					isCategorySelectorAvailable:
+						!this.model.category &&
+						data.productType === 'category_of_resources',
 					configuration: data,
 					requestLanguage,
 					date: {
@@ -955,7 +1025,10 @@
 					}
 				};
 
-				this.setupEvents({ parent: this });
+				this.setupEvents({
+					parent: this, 
+					target:  this.model.planningHTML.find('.mybooking-product-planning-week-head'),
+				});
 			});
 		},
 	};
@@ -987,9 +1060,11 @@
 					planningHTML,
 					target: planningHTML.find('.mybooking-product-planning-week-table'),
 					targetId:  `${id}-table`,
-					category: planningHTML.attr('data-category-code'),
+					category: planningHTML.attr('data-category-code') || null,
+					originalCategory: planningHTML.attr('data-category-code') || null,
 					interval: planningHTML.attr('data-interval') || null,
 				};
+
 				settings.target.attr('id', settings.targetId);
 
 				this.factory(settings).init();

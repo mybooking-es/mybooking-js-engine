@@ -432,7 +432,10 @@ define('planningActionBar', [
       }
     },
 
-    setValidations: function () {
+    /**
+     * Set validations
+     */
+    setupValidations: function () {
       this.model.target.validate({
         submitHandler: function (form, event) {
           event.preventDefault();
@@ -466,7 +469,7 @@ define('planningActionBar', [
       }
 
       this.setEvents();
-      this.setValidations();
+      this.setupValidations();
     },
   };
 
