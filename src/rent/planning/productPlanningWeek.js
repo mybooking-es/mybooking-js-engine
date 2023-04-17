@@ -131,6 +131,7 @@
       }  
       urlParams.push('from=' + from);
 			urlParams.push('to=' + to);
+
 			urlParams.push('product=' + this.model.category);
 
       if (urlParams.length > 0) {
@@ -182,6 +183,7 @@
       }  
       urlParams.push('from=' + from);
 			urlParams.push('to=' + to);
+
 			urlParams.push('category=' + this.model.category);
 
 			if (urlParams.length > 0) {
@@ -289,7 +291,6 @@
       }
 
       // Request  
-      commonLoader.show();
       $.ajax({
         type: 'POST',
         url: url,
@@ -816,7 +817,11 @@
 						categories,
 						category:  this.model.category || categories[0].code
 					}
-        }
+        } else if (!this.model.category) {
+					alert(i18next.t('planning.generic_error')); // TODO
+					commonLoader.hide();
+					return;
+				}
 
 				const startDate = this.model.date.actual;
 				const calendarEndDate = YSDFormatter.formatDate(moment(startDate).add(14, 'd'), this.model.api_date_format);
@@ -827,7 +832,7 @@
 				this.model.schedule = await this.getProductSchedule({ from: startDate, to: YSDFormatter.formatDate(moment(startDate).add(7, 'd'), this.model.api_date_format) });
 				this.model.planning = await this.getProductPlanning({ from: startDate, to: endDate });
 
-				if (this.model.realCalendar.length > 0 && this.model.schedule.length > 0) {
+				if (this.model.realCalendar && this.model.realCalendar.length > 0 && this.model.schedule && this.model.schedule.length > 0) {
 					const settings = {
 						columns: this.model.realCalendar,
 						rows: this.model.schedule,

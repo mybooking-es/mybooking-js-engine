@@ -29,6 +29,14 @@
 	.mybooking-product-planning-week-content .mybooking-product-planning-week-head {
 		flex-direction: column;
 		justify-content: center;
+		align-items: center;
+	}
+	.mybooking-product-planning-week-content .mybooking-product-planning-week-head > div {
+		margin-bottom: 0.5rem !important;
+	}
+
+	.mybooking-product-planning-week-head .label {
+		display: none !important;
 	}
 }
 

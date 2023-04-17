@@ -165,7 +165,9 @@ define('commonUI',['jquery', 'commonServices', 'jquery.modal'],function($, commo
      */ 
     destroySlider: function(selector) {
 
-      $(selector).slick('unslick');
+      if ($.fn.slick) {
+        $(selector).slick('unslick');
+      }
 
     },
 
