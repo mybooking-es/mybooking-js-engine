@@ -193,6 +193,10 @@ define('selector_wizard', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource
         agentId = decodeURIComponent(urlVars['agentId']);
         customCookie.set('__mb_agent_id', agentId, {expires: 14});      
       }
+      if (typeof urlVars['agentID'] !== 'undefined') {
+        agentId = decodeURIComponent(urlVars['agentID']);
+        customCookie.set('__mb_agent_id', agentId, {expires: 14});      
+      }      
       else {
         agentId = customCookie.get('__mb_agent_id');  
       }

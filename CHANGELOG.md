@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1] 2023-04-XX
+
+### Fixed
+
+- Activities: My reservation - Update data was not worked since Babel
+
+
 ## [1.1.0] 2023-04-06
 
 ### Added

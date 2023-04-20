@@ -8,5 +8,9 @@ require(['jquery', 'commonSettings', 'customCookie'],
     agentId = decodeURIComponent(urlVars['agentId']);
     customCookie.set('__mb_agent_id', agentId, {expires: 14});      
   }
+  else if (typeof urlVars['agentID'] != 'undefined') {
+    agentId = decodeURIComponent(urlVars['agentID']);
+    customCookie.set('__mb_agent_id', agentId, {expires: 14}); 
+  }
 
 });

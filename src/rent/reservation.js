@@ -129,7 +129,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
         var booking_line_resources = reservation['booking_line_resources']
         delete reservation['booking_line_resources'];
         reservation['booking_line_resources'] = [];
-        for (item in booking_line_resources) {
+        for (var item in booking_line_resources) {
             reservation['booking_line_resources'].push(booking_line_resources[item]);
         }
         var reservationJSON = encodeURIComponent(JSON.stringify(reservation));

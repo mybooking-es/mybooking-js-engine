@@ -751,6 +751,12 @@ define('SelectorTransfer', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSourc
           cookie.set('__mb_agent_id', agentId, {expires: 14});
         }
       }
+      else if (typeof urlVars['agentID'] != 'undefined') {
+        agentId = decodeURIComponent(urlVars['agentID']);
+        if (cookie.set) {
+          cookie.set('__mb_agent_id', agentId, {expires: 14});
+        }
+      }      
       else {
         if (cookie.get) {
           agentId = cookie.get('__mb_agent_id');

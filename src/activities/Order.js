@@ -139,7 +139,7 @@ require(['jquery', 'i18next', 'ysdtemplate', 'YSDMemoryDataSource','YSDSelectSel
                 var order_item_customers = order['order_item_customers'];
                 delete order['order_item_customers'];
                 order['order_item_customers'] = [];
-                for (item in order_item_customers) {
+                for (var item in order_item_customers) {
                     if (typeof order_item_customers[item].customer_allergies != 'undefined') {
                       if (order_item_customers[item].customer_allergies == 'on') {
                         order_item_customers[item].customer_allergies = true;
