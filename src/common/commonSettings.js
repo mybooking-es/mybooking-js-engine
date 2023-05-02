@@ -48,6 +48,8 @@ define('commonSettings', ['jquery','commonServices','commonLoader','commonTransl
       defaultTimeEnd: null,
       rentDateSelector: 'date_from_date_to',
       rentTimesSelector: 'hours',
+      // - Renting simple location
+      simpleLocation: false,
       // - Renting pickup/return place
       pickupReturnPlace: true,
       pickupReturnPlacesSameRentalLocation: false,
@@ -240,6 +242,7 @@ define('commonSettings', ['jquery','commonServices','commonLoader','commonTransl
              // - Renting places
              mybookingSettings.data.multipleDestinations = data.multiple_destinations;
              mybookingSettings.data.multipleRentalLocations = data.multiple_rental_locations || false;
+             mybookingSettings.data.simpleLocation = data.simple_location || false;
              mybookingSettings.data.pickupReturnPlace = data.pickup_return_place;
              mybookingSettings.data.pickupReturnPlacesSameRentalLocation = data.pickup_return_places_same_rental_location;
              mybookingSettings.data.customPickupReturnPlaces = data.custom_pickup_return_places;

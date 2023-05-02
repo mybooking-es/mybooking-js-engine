@@ -59,6 +59,10 @@ require(['jquery', 'commonSettings', 'commonLoader', './SelectorRent'],
         // Search form template
         this.selector.model.form_selector_tmpl = 'widget_form_selector_tmpl';
         
+        // Simple location
+        this.selector.model.simple_location_id = 'widget_simple_location_id';
+        this.selector.model.simple_location_selector = '#widget_simple_location_id';
+
         // Pickup place
         this.selector.model.pickup_place_id = 'widget_pickup_place';
         this.selector.model.pickup_place_selector = '#widget_pickup_place';
