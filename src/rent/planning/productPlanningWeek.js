@@ -3,36 +3,65 @@
  * Renting Module ProductPlannigWeek
  *
  */
- require(['jquery', 'i18next', 'commonServices', 'commonSettings', 'commonLoader', 'YSDFormatter', 'commonTranslations', 'moment', './productPlanningWeekActionBar', 'ysdtemplate', 'jquery.i18next'],
- function($, i18next, commonServices, commonSettings, commonLoader, YSDFormatter, commonTranslations, moment, productPlanningWeekActionBar, tmpl) {
+ require([
+	'jquery',
+	'i18next', 
+	'commonServices',
+	'commonSettings', 
+	'commonLoader', 
+	'YSDFormatter', 
+	'commonTranslations', 
+	'moment', 
+	'./productPlanningWeekActionBar', 
+	'ysdtemplate', 
+	'jquery.i18next'
+], function(
+	$, 
+	i18next, 
+	commonServices, 
+	commonSettings, 
+	commonLoader, 
+	YSDFormatter, 
+	commonTranslations, 
+	moment, 
+	productPlanningWeekActionBar, 
+	tmpl
+) {
 
 	/**
 	 * Contructor
 	*/
-	function ProductPlannigWeek ({ planningHTML, target, targetId, category, interval }) {
+	function ProductPlannigWeek ({ 
+		planningHTML, 
+		target, 
+		targetId, 
+		category, 
+		interval 
+	}) {
 		/**
 		 * ProductPlannigWeek data model
 		*/
 		this.model = {
-			planningHTML,
-			target,
-			targetId,
+			planningHTML, // All planning (contain head and table)
+			target, // Empty div where table is painted
+			targetId, // Table id
 			schedule: [],
 			statusSchedule: [],
-			planning: [],
-			ocupation: [],
-			realCalendar: [],
-			calendar: [],
-			api_date_format: 'YYYY-MM-DD',
+			planning: [], // Resource urges painted
+			ocupation: [], // Planning ocupation data (status: available, ocupied, free... )
+			realCalendar: [], // All dates from actual date (or first available date) to seven week days
+			calendar: [],// Available dates from actual date (or first available date) to numbers of items * 2  days
+			api_date_format: 'YYYY-MM-DD', // Api format for ajax calls
 			date: {
-				actual: undefined,
-				server: undefined,
-				interval: interval !== null ? window.parseInt(interval) : 30,
+				actual: undefined, // Selected date
+				server: undefined, // Server date (initial date when actual is undefined)
+				interval: interval !== null ? window.parseInt(interval) : 30, // Hours interval (default -> 30min) but schedule data must be in the same interval (use to paint full hours in red)
 			},
 			// Categories (with categories -> productType === 'category_of_resources')
       isCategorySelectorAvailable: false, // Shows category selector
       category, // Selected category
       categories: [], // All categories
+			// Select events 
 			selectedRange: [],
 			isDragActive: false,
 			isTimeRangeSended: false,
@@ -70,7 +99,7 @@
             resolve(result.data);
           })
           .fail(function (error) {
-            console.log('Error', error);
+            console.error('Categories error: ', error);
             alert(i18next.t('planning.generic_error'));
 
             resolve([]);
@@ -108,7 +137,7 @@
 					resolve(data);
 				})
 				.fail(function (error) {
-					console.log('Error', error);
+					console.error('Calendar: ', error);
 					alert(i18next.t('planning.generic_error'));
 	
 					resolve([]);
@@ -160,7 +189,7 @@
 					}
 				})
 				.fail(function (error) {
-					console.log('Error', error);
+					console.error('Schedule error: ', error);
 					alert(i18next.t('planning.generic_error'));
 	
 					resolve([]);
@@ -198,7 +227,7 @@
 					resolve(data);
 				})
 				.fail(function (error) {
-					console.log('Error', error);
+					console.error('Planning error: ', error);
 					alert(i18next.t('planning.generic_error'));
 	
 					resolve([]);
@@ -790,6 +819,9 @@
 		refresh: async function(event) {
 			commonLoader.show();
 
+			/*
+			* Reset model data
+			*/
 			this.model = {
 				...this.model,
 				schedule: [],
@@ -800,6 +832,9 @@
 				calendar: [],
 			};
 
+			/*
+			* If apikey exist get data
+			*/
 			if (
 				commonServices.URL_PREFIX && 
 				commonServices.URL_PREFIX !== '' && 
@@ -818,11 +853,16 @@
 						category:  this.model.category || categories[0].code
 					}
         } else if (!this.model.category) {
-					alert(i18next.t('planning.generic_error')); // TODO
+					console.error('Category dont exist');
+					alert(i18next.t('planning.generic_error'));
+
 					commonLoader.hide();
 					return;
 				}
 
+				/*
+				*  Get calendar, schedule and planning
+				*/
 				const startDate = this.model.date.actual;
 				const calendarEndDate = YSDFormatter.formatDate(moment(startDate).add(14, 'd'), this.model.api_date_format);
 				const endDate = YSDFormatter.formatDate(moment(startDate).add(7, 'd'), this.model.api_date_format);
@@ -838,9 +878,15 @@
 						rows: this.model.schedule,
 					};
 
+					/* 
+					* Draw planning and append
+					*/
 					const html = this.drawPlanning(settings);
 					this.model.target.html(html);
 
+					/* 
+					* Get occupation and paint selected hours
+					*/
 					this.getOcupation();
 					this.paintHours();
 				} else {
@@ -849,6 +895,9 @@
 					this.model.target.html(`<div class="text-center">${html}</div>`);
 				}
 
+				/* 
+				* If event exist execute callback function
+				*/
 				if (event && event.detail && event.detail.callback) {
 					let initialSettings = {
 						settings: event.detail.settings,
@@ -876,6 +925,9 @@
 	};
 
 	const view = {
+		/**
+     * Boolean is mobile for events
+     */
 		isMobile: function(){
 			return window.matchMedia('only screen and (hover: none) and (pointer: coarse)').matches;
 		},

@@ -1014,8 +1014,15 @@ require([
               break;
           }
 
+        /*
+				*  Draw planning and append
+				*/
           html = this.drawPlanning(settings);
           this.model.target.html(html);
+
+          /*
+          *  Get occupation
+          */
           this.getOcupation(this.model.date.actual);
         } else {
           html = i18next.t('planning.no_data_found');
