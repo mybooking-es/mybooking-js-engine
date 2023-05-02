@@ -29,6 +29,10 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
     // Search form template
     this.form_selector_tmpl = 'form_selector_tmpl';
 
+    // Simple location
+    this.simple_location_id = 'simple_location_id';
+    this.simple_location_selector = '#simple_location_id';
+
     // Pickup place
     this.pickup_place_id = 'pickup_place';
     this.pickup_place_selector = '#pickup_place';
@@ -829,6 +833,11 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
         // Extract agent Id from location 
         this.extractAgentId();
 
+        // Setup simple location id
+        if (this.selectorModel.configuration.simpleLocation) {
+          this.setupSimpleLocation();
+        }        
+
         // Setup pickup/return places
         if (this.selectorModel.configuration.pickupReturnPlace) {
           this.setupPickupReturnPlace();
@@ -957,6 +966,51 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
       $(this.selectorModel.rental_location_code_selector).bind('change', function() {
          self.selectorController.rentalLocationChanged();
       });
+
+    }
+
+    /**
+     * Setup simple location
+     */ 
+    this.setupSimpleLocation = function() {
+
+      if ( $(this.selectorModel.simple_location_selector).length ) {
+        console.log('setup Simple location - select2');
+        var url = commonServices.URL_PREFIX + '/api/booking/frontend/simple-locations';
+
+        var urlParams = [];
+        if (commonServices.apiKey && commonServices.apiKey != '') {
+          urlParams.push('api_key='+commonServices.apiKey);
+        }  
+        if (this.requestLanguage != null) {
+          urlParams.push('lang='+this.requestLanguage);
+        }
+
+        if (urlParams.length > 0) {
+          url += '?';
+          url += urlParams.join('&');
+        }
+
+        // Setup component
+        $(this.selectorModel.simple_location_selector).select2({ width: '100%',
+          ajax: {
+            url: url,
+            processResults: function(data) {
+              var transformedData = [];
+              for (var idx=0; idx<data.length; idx++) {
+                var element = {
+                  'text': data[idx].name,
+                  'id': data[idx].id
+                }
+                transformedData.push(element);
+              }
+              return {results: transformedData};
+            },
+
+          }
+        });    
+
+      }
 
     }
 

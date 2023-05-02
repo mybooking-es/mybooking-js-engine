@@ -33,6 +33,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
     renting_duration: null,
     engine_fixed_rental_location: false,
     rental_location_code: null,
+    simple_location_id: null,
     pickup_place: null,
     pickup_place_other: null,
     custom_pickup_place: null,
@@ -139,6 +140,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
      * - date_to
      * - time_to
      * - renting_duration
+     * - simple_selector_id
      * - pickup_place
      * - return_place
      * - promotion_code
@@ -181,6 +183,9 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
             url_vars['engine_fixed_rental_location'] === 'true') {
           this.engine_fixed_rental_location = true;
         }
+      }
+      if (this.configuration.simpleLocation) {
+        this.simple_selector_id = decodeURIComponent(url_vars['simple_location_id']);
       }
       this.pickup_place = decodeURIComponent(url_vars['pickup_place']).replace(/\+/g, " ");
       this.pickup_place_other = decodeURIComponent(url_vars['pickup_place_other']).replace(/\+/g, " ");
@@ -276,6 +281,10 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
       if (this.rental_location_code != 'undefined' && this.rental_location_code != null && this.rental_location_code != '') {
         data.rental_location_code = this.rental_location_code;
         data.engine_fixed_rental_location = this.engine_fixed_rental_location;
+      }
+
+      if (this.simple_location_id !== 'undefined' && this.simple_location_id !== null && this.simple_location_id !== '') {
+        data.simple_location_id = this.simple_location_id;
       }
 
       if (this.pickup_place != 'undefined' && this.pickup_place != '') {
