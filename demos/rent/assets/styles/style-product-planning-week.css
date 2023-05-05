@@ -16,6 +16,10 @@
 	border-bottom: 1px solid lightgray;
 }
 
+.mybooking-product-planning-week-head .label {
+	margin-top: 0.5rem;
+}
+
 .mybooking-product-planning-week-content .mybooking-product-planning-week-head > .field {
 	margin-bottom: 0;
 }
@@ -23,9 +27,10 @@
 .mybooking-product-planning-week-content .mybooking-product-planning-week-head .mybooking-title {
 	font-size: 1.3em;
 	font-weight: bold;
+	margin: 0.3rem 0;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
 	.mybooking-product-planning-week-content .mybooking-product-planning-week-head {
 		flex-direction: column;
 		justify-content: center;
@@ -34,7 +39,6 @@
 	.mybooking-product-planning-week-content .mybooking-product-planning-week-head > div {
 		margin-bottom: 0.5rem !important;
 	}
-
 	.mybooking-product-planning-week-head .label {
 		display: none !important;
 	}

@@ -17,11 +17,11 @@
   </head>
 	<body class="mybooking-rent-product-planning-week">
 
-		<!-- Planning init -->
+		<!-- Planning init data-category-code="A" -->
 		<div class="mybooking-product-planning-week-content"
       data-interval="60"
       id="planning-1"
-      data-category-code="A"
+      
     >
 			<form class="mybooking-product-planning-week-head">
         <h1 class="mybooking-title mybooking-product-planning-week-title"></h1>
@@ -30,6 +30,20 @@
           <div class="control">
             <div class="select" data-default="Todas">
               <select name="category" style="min-width: 300px;">
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="field" style="display: none;">
+          <label class="label">Únidades</label>
+          <div class="control">
+            <div class="select" data-default="1">
+              <select name="units" style="min-width: 100px;">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
               </select>
             </div>
           </div>

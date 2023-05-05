@@ -263,6 +263,7 @@ define('passengersComponent', [
 
       this.setupControls();
 			this.setupEvents();
+      this.setupValidate();
       this.refreshTable();
     },
 
@@ -311,7 +312,39 @@ define('passengersComponent', [
      */ 
     clearForm: function() {
       document.getElementById('booking_passengers_form').reset();
-    }
+    },
+
+    setupValidate: function() {
+
+      $.extend($.validator.messages, {
+        required: i18next.t('myReservation.passenger.validations.fieldRequired')
+      });
+
+      $('form[name=booking_passengers_form]').validate(
+          {
+              submitHandler: function(form) {
+                return false;
+              },
+
+              invalidHandler : function (form, validator) {
+                $('#passengers_error').html(i18next.t('myReservation.passenger.validations.invalid'));
+                $('#passengers_error').show();
+              },
+
+              rules : {
+                  'passenger_name': 'required',
+                  'passenger_surname' : 'required',
+                  'passenger_document_id': 'required'
+              },
+
+              messages : {
+              },
+
+              errorClass : 'form-reservation-error'
+          }
+      );
+
+    },
 	};
 
   const passengersComponent = {

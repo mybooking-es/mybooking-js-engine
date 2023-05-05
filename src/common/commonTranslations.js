@@ -446,7 +446,11 @@ define("commonTranslations", [], function () {
             remove: {
               success: "Passenger removed successfully",
               error: "Error removing passenger"
-            }            
+            },
+            validations: {
+              invalid: "Please check the form.",
+              fieldRequired: "Required field",
+            }     
           }
         },
         selectorWizard: {
@@ -986,6 +990,10 @@ define("commonTranslations", [], function () {
             remove: {
               success: "Pasajero eliminado con éxito",
               error: "Error al eliminar pasajero"
+            },
+            validations: {
+              invalid: "Por favor, revise el formulario.",
+              fieldRequired: "Campo obligatorio",
             }            
           }          
         },
@@ -1524,7 +1532,11 @@ define("commonTranslations", [], function () {
             remove: {
               success: "El passatger s'ha eliminat correctament",
               error: "S'ha produït un error en treure el passatger"
-            }            
+            },
+            validations: {
+              invalid: "Si us plau, reviseu el formulari.",
+              fieldRequired: "Camp obligatori",
+            }         
           }          
         },
         selectorWizard: {
@@ -2067,7 +2079,11 @@ define("commonTranslations", [], function () {
             remove: {
               success: "Passagier erfolgreich entfernt",
               error: "Fehler beim Entfernen des Passagiers"
-            }            
+            },
+            validations: {
+              invalid: "Bitte überprüfen Sie das Formular.",
+              fieldRequired: "Pflichtfeld",
+            }
           }          
         },
         selectorWizard: {
@@ -2610,7 +2626,11 @@ define("commonTranslations", [], function () {
             remove: {
               success: "Passager supprimé avec succès",
               error: "Erreur lors de la suppression du passager"
-            }            
+            },
+            validations: {
+              invalid: "Veuillez vérifier le formulaire.",
+              fieldRequired: "Champ obligatoire",
+            }
           }          
         },
         selectorWizard: {
@@ -2686,10 +2706,10 @@ define("commonTranslations", [], function () {
           },
         },
         planning: {
-          api_conexion_error : "Désolé, une erreur de connexion s'est produite",
+          api_conexion_error: "Désolé, une erreur de connexion s'est produite",
           no_schedules_found: "Aucun horaire trouvé",
-          no_resources_found : "Aucune ressource trouvée",
-          no_data_found : "Aucune donnée trouvée",
+          no_resources_found: "Aucune ressource trouvée",
+          no_data_found: "Aucune donnée trouvée",
         },
       },
     },
@@ -3163,7 +3183,11 @@ define("commonTranslations", [], function () {
             remove: {
               success: "Passeggero rimosso con successo",
               error: "Errore durante la rimozione del passeggero"
-            }            
+            },
+            validations: {
+              invalid: "Controlla il modulo.",
+              fieldRequired: "Campo obbligatorio",
+            }
           }          
         },
         selectorWizard: {
@@ -3438,7 +3462,11 @@ define("commonTranslations", [], function () {
             remove: {
               success: "Пассажир успешно удален",
               error: "Ошибка удаления пассажира"
-            }            
+            },
+            validations: {
+              invalid: "Пожалуйста, проверьте форму.",
+              fieldRequired: "Обязательное поле",
+            } 
           }          
         },
         selectorWizard: {
