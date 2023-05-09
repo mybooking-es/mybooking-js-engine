@@ -1,6 +1,18 @@
 # Changelog
 
-## [1.1.1] 2023-04-XX
+## [1.1.2] - 2023.05.08
+
+### Added
+
+- Renting - Simple Location
+
+### Fixed
+
+- Renting - Variants : Price in modal
+- Activities - My reservation update customers data
+- Renting - Passengers validation
+
+## [1.1.1] 2023-04-20
 
 ### Fixed
 
