@@ -188,6 +188,8 @@ require(['jquery',
                  model.extras = data.extras;
                  model.coverages = data.coverages;
                  model.sales_process = data.sales_process;
+                 
+                 view.updateShoppingCart();
 
                  var airportSection = $('#airport-form-section');
                  if (airportSection.length > 0 )  {
@@ -197,12 +199,11 @@ require(['jquery',
                  }
                  var hotelSection = $('#hotel-form-section');
                  if (hotelSection.length > 0 )  {
-                  if (hotelSection.attr('data-hotel-required') === 'true') {
-                    model.isHotelDataRequired = true;
-                  }
-                }
-                 
-                 view.updateShoppingCart();
+                   if (hotelSection.attr('data-hotel-required') === 'true') {
+                     model.isHotelDataRequired = true;
+                   }
+                 }
+
                  // Hide the loader
                  commonLoader.hide();
                },
@@ -1108,13 +1109,19 @@ require(['jquery',
                         required: '#with_optional_external_driver:visible'
                     },
                     'flight_company': {
-                      required: model.isAirportDataRequired
+                      required: function(){
+                        return $('#flight_company').attr('required') === 'required' && model.isAirportDataRequired;
+                      }
                     },
                     'flight_number': {
-                      required: model.isAirportDataRequired
+                      required: function() {
+                        return $('#flight_number').attr('required') === 'required' && model.isAirportDataRequired;
+                      }
                     },
                     'flight_time': {
-                      required: model.isAirportDataRequired
+                      required: function() {
+                        return $('#flight_time').attr('required') === 'required' && model.isAirportDataRequired;
+                      }
                     },
                     'destination_accommodation': {
                       required: model.isHotelDataRequired
