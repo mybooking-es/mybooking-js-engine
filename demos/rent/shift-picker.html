@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+	<title>Mybooking ShiftPicker</title>
+	<script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+	<link rel="stylesheet"
+		href="https://cdnjs.cloudflare.com/ajax/libs/jquery-ui-bootstrap/0.5pre/css/custom-theme/jquery-ui-1.10.0.custom.css" />
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.5/css/bulma.min.css">
+	<link rel="stylesheet" href="./assets/styles/styles.css" />
+	<link rel="stylesheet" href="./assets/styles/style-shift-picker.css" />
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+</head>
+<body class="mybooking-shiftpicker">
+	<!-- ShiftPicker start -->
+	<div id="mybooking-shiftpicker-1" data-category-code="B-1" class="mybooking-shiftpicker-content">
+		<form class="mybooking-shiftpicker-form">
+			<div class="mybooking-shiftpicker-head">
+				<h1 class="h1">
+					Reservar turno
+				</h1>
+				<p>
+					Selecciona el número de vehículos y el día que deseas reservar para ver los turnos disponibles.
+				</p>
+				<div class="field">
+					<label class="label">
+						Selecciona cantidad
+					</label>
+					<div class="control">
+						<div class="select">
+							<select name="shiftpicker-units">
+							</select>
+						</div>
+					</div>
+				</div>
+				<div class="field">
+					<label class="label">
+						Escoge un día
+					</label>
+					<div class="control">
+						<input type="text" name="shiftpicker-date" />
+					</div>
+				</div>
+			</div>
+			<div class="mybooking-shiftpicker-container">
+				<div class="mybooking-shiftpicker-container-head">
+					<span class="shiftpicker-text-date"></span>
+				</div>
+				<div class="mybooking-shiftpicker-container-arrows">
+					<button data-direction="back" class="button" disabled>
+						<i class="fa fa-arrow-left"></i>
+						&nbsp;
+						Anterior
+					</button>
+					<button data-direction="next" class="button">
+						Siguiente
+						&nbsp;
+						<i class="fa fa-arrow-right"></i>
+					</button>
+				</div>
+				<ul class="mybooking-shiftpicker-container-list">
+					<li class="mybooking-shiftpicker-container-list-item" data-status="enabled">
+						<span class="mybooking-shiftpicker-container-list-item_text">10:00 -> 11:00</span>
+						<input type="radio" name="time" value="10:00-11:00" class="mybooking-shiftpicker-container-list-item_value">
+					</li>
+					<li class="mybooking-shiftpicker-container-list-item" data-status="enabled">
+						<span class="mybooking-shiftpicker-container-list-item_text">11:30 -> 12:00</span>
+						<input type="radio" name="time" value="11:30-12:00" class="mybooking-shiftpicker-container-list-item_value">
+					</li>
+					<li class="mybooking-shiftpicker-container-list-item" data-status="selected">
+						<span class="mybooking-shiftpicker-container-list-item_text">12:00 -> 12:30</span>
+						<input type="radio" name="time" value="12:00-12:30" class="mybooking-shiftpicker-container-list-item_value">
+					</li>
+					<li class="mybooking-shiftpicker-container-list-item" data-status="disabled">
+						<span class="mybooking-shiftpicker-container-list-item_text">15:00 -> 16:00</span>
+						<input type="radio" name="time" value="15:00-16:00" class="mybooking-shiftpicker-container-list-item_value">
+					</li>
+					<li class="mybooking-shiftpicker-container-list-item" data-status="enabled">
+						<span class="mybooking-shiftpicker-container-list-item_text">16:30 -> 17:00</span>
+						<input type="radio" name="time" value="16:30-17:00" class="mybooking-shiftpicker-container-list-item_value">
+					</li>
+					<li class="mybooking-shiftpicker-container-list-item" data-status="disabled">
+						<span class="mybooking-shiftpicker-container-list-item_text">17:30 -> 18:00</span>
+						<input type="radio" name="time" value="17:30-18:00" class="mybooking-shiftpicker-container-list-item_value">
+					</li>
+				</ul>
+				<div class="mybooking-shiftpicker-container-info" style="display: none;">
+					<h2 class="h2">
+						Tu selección
+					</h2>
+					<div class="mybooking-shiftpicker-container-info_content">
+						<strong>
+							<span class="time">30</span>
+							&nbsp;
+							<span class="time-format">minutos</span>
+						</strong>
+						<span>
+							<span class="units">2</span>
+							&nbsp;
+							Motos de agua
+						</span>
+						<span class="date">
+							12/05/2023
+						</span>
+						<span>
+							de
+							&nbsp;
+							<span class="time-from">12:30</span>
+							&nbsp;a&nbsp;
+							<span class="time-to">13:00</span>
+							&nbsp;
+							horas
+						</span>
+					</div>
+				</div>
+				<div class="mybooking-shiftpicker-container-buttons">
+					<button type="submit" class="button" disabled="disabled">
+						Reservar
+					</button>
+				</div>
+			</div>
+		</form>
+	</div>
+	<!-- ShiftPicker end -->
+
+	<script type="module">
+		import('./assets/js/mybooking-engine-init.js')
+			.then(async function (module) {
+				return await module.default();
+			})
+			.then(function (module) {
+				window.mybookingEngine = module;
+				var script = document.getElementById('engine');
+				script.setAttribute('src', script.getAttribute('data-src'));
+				script.removeAttribute('data-src');
+			});
+	</script>
+	<script id="engine" async data-src="../js/mybooking-js-engine.js"></script>
+</body>
+</html>

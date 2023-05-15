@@ -187,6 +187,13 @@ $(document).ready(function () {
     }
 });
 
+// Rent shift picker
+$(document).ready(function () {
+    if ($('body').hasClass('mybooking-shiftpicker')) {
+        require('./rent/shiftPicker/shiftPicker.js');           
+    }
+});
+
 // == Activities module
 
 // Activity Search JS

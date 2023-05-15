@@ -1,0 +1,77 @@
+
+/* 
+* Commons 
+*/
+.mybooking-shiftpicker-content .h1 {
+	font-size: 2rem;
+}
+.mybooking-shiftpicker-content .h2 {
+	font-size: 1.5rem;
+}
+.mybooking-shiftpicker-content .h1, 
+.mybooking-shiftpicker-content .h2 {
+	padding: 1rem 0;
+	font-weight: bold;
+}
+
+
+/* 
+* Form head
+*/
+.mybooking-shiftpicker-head	.field {
+	margin-top: 1rem;
+}
+.mybooking-shiftpicker-head	.field .control,
+.mybooking-shiftpicker-head	.field input:not([type="radio"]),
+.mybooking-shiftpicker-head	.field .select,
+.mybooking-shiftpicker-head	.field select {
+	width: 100%;
+}
+
+/* 
+* Container head
+*/
+.mybooking-shiftpicker-container-head {
+	font-size: 2rem;
+	margin: 1rem 0;
+	text-transform: capitalize;
+}
+.mybooking-shiftpicker-container-arrows {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin: 1rem 0;
+}
+
+/*
+* Container list
+*/
+.mybooking-shiftpicker-container-list li {
+	margin: 0.5rem 0;
+	padding: 0.5rem;
+	background-color: rgb(241, 241, 241);
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+/*
+* Container info panel
+*/
+.mybooking-shiftpicker-container-info_content {
+	border: 1px solid rgb(241, 241, 241);
+	margin-bottom: 1rem;
+	padding: 1rem 0;
+}
+.mybooking-shiftpicker-container-info_content > span,
+.mybooking-shiftpicker-container-info_content > strong {
+	display: block;
+	padding: 0 1rem;
+}
+
+/*
+* Container buttons
+*/
+.mybooking-shiftpicker-container-buttons .button {
+	width:  100%;
+}
