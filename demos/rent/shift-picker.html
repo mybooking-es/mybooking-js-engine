@@ -99,14 +99,14 @@
 	<li class="mybooking-shiftpicker-container-list-item" data-status="<%=model.availability ? 'enabled' : 'disabled'%>">
 		<span class="mybooking-shiftpicker-container-list-item_text"><%=model.time_from%> -> <%=model.time_to%></span>
 		<small>
-			<%=model.units ? units : 0%>
+			<%=model.available_units ? model.available_units : 0%>
 			&nbsp;
 			unidades
 		</small>
 		<small>
 			<%=!model.availability ? 'No disponible' : ''%>
 		</small>
-		<input type="radio" name="time" value="<%=model.time_from%> - <%=model.time_to%>" <%=!model.availability ? 'disabled' : ''%> class="mybooking-shiftpicker-container-list-item_value">
+		<input type="radio" name="time" value="<%=model.time_from%> - <%=model.time_to%>" <%=!model.availability ? 'disabled' : ''%> class="mybooking-shiftpicker-container-list-item_value" data-time-from="<%=model.time_from%>" data-time-to="<%=model.time_to%>">
 	</li>
 </script>
 
@@ -116,11 +116,25 @@
 	</h2>
 	<div class="mybooking-shiftpicker-container-info_content">
 		<strong>
-			<span class="time">
-				<%=model.duration%>
-			</span>
-			&nbsp;
-			<span class="time-format">minutos</span>
+			<% if (model.days > 0) { %>
+				<span class="time">
+						<%=model.days%>
+				</span>
+				&nbsp;
+				<span class="time-format">días</span>
+			<% } else if (model.hours > 0) { %>
+				<span class="time">
+						<%=model.hours%>
+				</span>
+				&nbsp;
+				<span class="time-format">horas</span>
+			<% } else if (model.minutes > 0) { %>
+				<span class="time">
+						<%=model.minutes%>
+				</span>
+				&nbsp;
+				<span class="time-format">minutos</span>
+			<% } %>
 		</strong>
 		<span>
 			<span class="units">
@@ -140,6 +154,10 @@
 			<span class="time-to"><%=model.time_to%></span>
 			&nbsp;
 			horas
+		</span>
+		<p>TODO Suplementos y extras</p>
+		<span class="date">
+			<%=model.shopping_cart.total_cost%> ** Formato
 		</span>
 	</div>
 </script>
