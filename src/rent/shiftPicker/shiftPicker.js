@@ -48,6 +48,7 @@ require([
 			units, // Selected units
 			dates: [], // All dates
 			date, // Selected date
+			datesTo: 7,
 			turns: [], // All turns
 			turn, // Selected turn
     };
@@ -61,6 +62,8 @@ require([
 	 	* Get category max units
 	 	*/
 		getMaxUnits: function() {
+			commonLoader.show();
+
 			const {
         category_code,
       } = this.model;
@@ -87,24 +90,27 @@ require([
             resolve(result.units);
           })
           .fail(function (error) {
-            console.log('Error', error);
+            console.error('Error', error);
             
 						alert('Se ha producido un error en las unidades'); // TODO
 
             resolve(1);
-          });
+          })
+					.then(function() {
+						commonLoader.hide();
+					});
       });
 		},
 
 		/**
 	 	* Get dates
 	 	*/
-		getDates: function() {
+		getDates: function(from, to) {
+			commonLoader.show();
+
 			const {
         category_code,
-				date,
 				rental_location_code,
-				api_date_format,
       } = this.model;
 
       let url = `${commonServices.URL_PREFIX}api/booking/frontend/dates`;
@@ -120,10 +126,12 @@ require([
         urlParams.push('rental_location_code=' + rental_location_code);
       }
 
-			// Dates
-			urlParams.push('from=' + date);
-			urlParams.push('to=' + YSDFormatter.formatDate(moment(date).add(7, 'days'), api_date_format));
+			// Category code
 			urlParams.push('product=' + category_code);
+
+			// Dates
+			urlParams.push('from=' + from);
+			urlParams.push('to=' + to);
 
       if (urlParams.length > 0) {
         url += '?';
@@ -139,12 +147,15 @@ require([
             resolve(result);
           })
           .fail(function (error) {
-            console.log('Error', error);
+            console.error('Error', error);
             
 						alert('Se ha producido un error en las fechas'); // TODO
 
             resolve(1);
-          });
+          })
+					.then(function() {
+						commonLoader.hide();
+					});
       });
 		},
 
@@ -152,7 +163,61 @@ require([
 	 	* Get turns
 	 	*/
 		getTurns: function() {
+			commonLoader.show();
 
+			const {
+        category_code,
+				rental_location_code,
+				units,
+				date,
+      } = this.model;
+
+      let url = `${commonServices.URL_PREFIX}api/booking/frontend/products/${category_code}/turns`;
+      const urlParams = [];
+
+      // APi Key
+      if (commonServices.apiKey && commonServices.apiKey !== '') {
+        urlParams.push('api_key=' + commonServices.apiKey);
+      }
+
+			// Rental location code
+			if (rental_location_code) {
+        urlParams.push('rental_location_code=' + rental_location_code);
+      }
+
+			// Category code
+			urlParams.push('product=' + category_code);
+
+			// Units
+			urlParams.push('units=' + units);
+
+			// Dates
+			urlParams.push('date=' + date);
+
+      if (urlParams.length > 0) {
+        url += '?';
+        url += urlParams.join('&');
+      }
+
+      // Returns a Promise with the response
+      return new Promise((resolve) => {
+        $.ajax({
+          url: url,
+        })
+          .done(function (result) {
+            resolve(result);
+          })
+          .fail(function (error) {
+            console.error('Error', error);
+            
+						alert('Se ha producido un error en los turnos'); // TODO
+
+            resolve([]);
+          })
+					.then(function() {
+						commonLoader.hide();
+					});
+      });
 		},
   };
 
@@ -161,11 +226,19 @@ require([
    */
   const controller = {
 		/**
+		 * Set new units value and refresh
+		*/
+		onUnitsChanged:  function(value) {
+			this.model.units = value;
+			
+			// Refresh
+			this.refresh();
+		},
+
+		/**
      * Initialize units selector
      */
     initializeUnitsSelector: async function() {
-      commonLoader.show();
-
 			const {
 				containerHTML
 			} = this.model;
@@ -179,31 +252,36 @@ require([
 				field.append(`<option value="${index}">${index} unidades / max. ${index * 2} personas</option>`); // TODO
 			}
 
-      commonLoader.hide();
+			// Setup field events
+			field.on('change',  (event) => {
+				event.preventDefault();
+
+				const value = $(event.currentTarget).val();
+
+				this.onUnitsChanged(value);
+			});
     },
 
 		/**
-		 * Set new units value and refresh
+		 * Set new date and refresh
 		*/
-		onUnitsChanged:  function(value) {
-			this.model.units = value;
+		onDateChanged:  function(value) {
+			this.model.date = value;
 			
 			// Refresh
 			this.refresh();
 		},
 
 		/**
-		 * Set new date and refresh
+		 * Set date
 		*/
-		onDateChanged:  function(value) {
+		refreshDate: function() {
 			const {
-				api_date_format,
+				containerHTML,
+				date,
 			} = this.model;
 
-			this.model.date = YSDFormatter.formatDate(value, api_date_format);
-			
-			// Refresh
-			this.refresh();
+			containerHTML.find('input[name=shiftpicker-date]').datepicker('setDate', new Date(date));
 		},
 
 		/**
@@ -219,19 +297,40 @@ require([
 			$.datepicker.setDefaults( $.datepicker.regional[requestLanguage] );
 			
 			const inputDate = containerHTML.find('input[name=shiftpicker-date]');
-
 			const instanceDate = new Date(date);
 			inputDate.datepicker({
 				minDate: instanceDate,
 			});
-
 			inputDate.datepicker('setDate', instanceDate);
 
+			// Setup events
 			inputDate.off('change');
 			inputDate.on('change', (event) => {
 				event.preventDefault();
 
-				const value = inputDate.datepicker('getDate');
+				const {
+					api_date_format,
+				} = this.model;
+
+				const value =  YSDFormatter.formatDate(inputDate.datepicker('getDate'), api_date_format);
+
+				// If field value is the first dates element
+				const buttonBack = containerHTML.find('.shiftpicker-arrow[data-direction=back]');
+				if (value === this.model.dates[0]) {
+					// Add left arrow disabled atribute
+					buttonBack.attr('disabled', 'disabled');
+				} else {
+					// Remove left arrow disabled atribute
+					buttonBack.removeAttr('disabled');
+				}
+
+				// If field value is last element
+				const index = this.model.dates.indexOf(value);
+				if (!index || index >= this.model.dates.length - 1) {
+					// Get next dates
+					const initialDate = this.model.dates.pop();
+					this.getNextDates(initialDate, YSDFormatter.formatDate(moment(value).add(this.model.datesTo, 'days'), api_date_format));
+				}
 
 				this.onDateChanged(value);
 			});
@@ -240,7 +339,7 @@ require([
 		/**
 		 * Initialize text date
 		*/
-		initializeTextDate: function() {
+		refreshTextDate: function() {
 			const {
 				containerHTML,
 				date,
@@ -252,33 +351,141 @@ require([
 		},
 
 		/**
+		 *Gest next moth in calendar
+		*/
+		getNextDates: async function(from, to) {
+			const newDates = await this.getDates(from, to);
+
+			// Remove first element
+			// newDates.shift();
+
+			this.model.dates =  [
+				...this.model.dates,
+				...newDates,
+			];
+		},
+
+		initializeTurnsSelector: async function() {
+			const {
+				containerHTML,
+			} = this.model;
+
+			const turnsSelector = containerHTML.find('.shiftpicker-turns');
+
+			// Get turns
+			const turns = await this.getTurns();
+
+			turns.forEach((turn)=> {
+				debugger;
+				// TODO
+				const {
+					from,
+					to,
+				} = turn;
+				
+				const URL = `<li class="mybooking-shiftpicker-container-list-item" data-status="enabled">
+						<span class="mybooking-shiftpicker-container-list-item_text">${from} -> ${to}</span>
+						<input type="radio" name="time" value="${from} - ${to}" class="mybooking-shiftpicker-container-list-item_value">
+					</li>`;
+				turnsSelector.append(URL);
+			});
+		},
+
+		/**
+		 * Initialize scroll buttons
+		*/
+		initializeScrollButtons: async function() {
+			const {
+				containerHTML,
+			} = this.model;
+
+			const buttons = containerHTML.find('.shiftpicker-arrow');
+			const buttonBack = containerHTML.find('.shiftpicker-arrow[data-direction=back]');
+			// const buttonNext = containerHTML.find('.shiftpicker-arrow[data-direction=next]');
+
+			// Set disabled atribute in left arrow when date is the first dates value
+			if (this.model.date === this.model.dates[0]) {
+				buttonBack.attr('disabled', 'disabled');
+			}
+
+			//  Setup events
+			buttons.on('click', (event) => {
+				event.preventDefault();
+
+				const {
+					api_date_format,
+				} = this.model;
+
+				const target = $(event.currentTarget);
+				let index = this.model.dates.indexOf(this.model.date);
+				const direction = target.attr('data-direction');
+
+				switch (direction) {
+					case 'next':
+						// Get next dates one day first the last element
+						if (!index || index >= this.model.dates.length - 1) {
+							const initialDate = this.model.dates.pop();
+							this.getNextDates(initialDate, YSDFormatter.formatDate(moment(this.model.date).add(this.model.datesTo, 'days'), api_date_format));
+						}
+						if (index === 0) {
+							// Remove left arrow disabled atribute
+							buttonBack.removeAttr('disabled');
+						}
+
+						this.model.date = this.model.dates[index + 1];
+						break;
+				
+					case 'back':
+							this.model.date = this.model.dates[index - 1];
+							if (index === 1) {
+								// Add left arrow disabled atribute
+								buttonBack.attr('disabled', 'disabled');
+							}
+							break;
+
+					default:
+						this.model.date = this.model.dates[index + 1];
+						break;
+				}
+
+				// Refresh
+				this.refresh();
+			});
+		},
+
+		/**
 		 * Initialize scroll calendar
 		*/
 		initializeScrollCalendar: async function() {
-			
-			commonLoader.show();
+			const {
+				api_date_format,
+				date,
+			} = this.model;
 
 			// Get dates
-			this.model.dates =  await this.getDates();
+			this.model.dates =  await this.getDates(date, YSDFormatter.formatDate(moment(date).add(this.model.datesTo, 'days'), api_date_format));
 			if (this.model.dates.length > 0) {
 				this.model.date =  this.model.dates[0];
 			}
 			
 			// Initialize date field
 			this.initializeDate();
-			// Initialize title text date
-			this.initializeTextDate();
-
-			commonLoader.hide();
+			// Refresh title text date
+			this.refreshTextDate();
+			// Initialize scroll buttons
+			this.initializeScrollButtons();
+			// Initialize turns selector
+			this.initializeTurnsSelector();
 		},
 
 		/*
 		* Refresh 
 		*/
 		refresh: function() {
-			//  TODO
-			this.initializeTextDate();
-			console.log('-------REFRESH: ', this.model);
+			this.refreshDate();
+			this.refreshTextDate();
+			
+			console.info('-------REFRESH: ', this.model);
 		}
   };
 
@@ -343,17 +550,6 @@ require([
      * Set Events
      */
     setupEvents: function () {
-			const {
-				containerHTML,
-			} = this.model;
-
-			containerHTML.find('select[name=shiftpicker-units]').on('change',  (event) => {
-				event.preventDefault();
-
-				const value = $(event.currentTarget).val();
-
-				this.onUnitsChanged(value);
-			});
     },
 
 		/**

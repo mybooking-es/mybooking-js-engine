@@ -16,7 +16,7 @@
 <body class="mybooking-shiftpicker">
 	<!-- ShiftPicker start -->
 	<div id="mybooking-shiftpicker-1" data-category-code="B-1" class="mybooking-shiftpicker-content">
-		<form class="mybooking-shiftpicker-form">
+		<form class="mybooking-shiftpicker-form" method="POST">
 			<div class="mybooking-shiftpicker-head">
 				<h1 class="h1">
 					Reservar turno
@@ -49,19 +49,19 @@
 					<span class="shiftpicker-text-date"></span>
 				</div>
 				<div class="mybooking-shiftpicker-container-arrows">
-					<button data-direction="back" class="button" disabled>
+					<button data-direction="back" class="button shiftpicker-arrow" disabled>
 						<i class="fa fa-arrow-left"></i>
 						&nbsp;
 						Anterior
 					</button>
-					<button data-direction="next" class="button">
+					<button data-direction="next" class="button shiftpicker-arrow">
 						Siguiente
 						&nbsp;
 						<i class="fa fa-arrow-right"></i>
 					</button>
 				</div>
-				<ul class="mybooking-shiftpicker-container-list">
-					<li class="mybooking-shiftpicker-container-list-item" data-status="enabled">
+				<ul class="mybooking-shiftpicker-container-list shiftpicker-turns">
+					<!-- <li class="mybooking-shiftpicker-container-list-item" data-status="enabled">
 						<span class="mybooking-shiftpicker-container-list-item_text">10:00 -> 11:00</span>
 						<input type="radio" name="time" value="10:00-11:00" class="mybooking-shiftpicker-container-list-item_value">
 					</li>
@@ -84,7 +84,7 @@
 					<li class="mybooking-shiftpicker-container-list-item" data-status="disabled">
 						<span class="mybooking-shiftpicker-container-list-item_text">17:30 -> 18:00</span>
 						<input type="radio" name="time" value="17:30-18:00" class="mybooking-shiftpicker-container-list-item_value">
-					</li>
+					</li> -->
 				</ul>
 				<div class="mybooking-shiftpicker-container-info" style="display: none;">
 					<h2 class="h2">
