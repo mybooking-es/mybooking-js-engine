@@ -529,6 +529,10 @@ define("commonTranslations", [], function () {
           no_data_found: "No data found",
           generic_error: "Sorry, an error has occurred."
         },
+        shiftPicker: {
+          no_data_found: "No data found",
+          generic_error: "Sorry, an error has occurred."
+        }
       },
     },
     es: {
@@ -1079,6 +1083,10 @@ define("commonTranslations", [], function () {
           no_data_found: "No se han encontrado datos",
           generic_error: "Lo lamentamos, se ha producido un error."
         },
+        shiftPicker: {
+          no_data_found: "No se han encontrado datos",
+          generic_error: "Lo lamentamos, se ha producido un error."
+        }
       },
     },
     ca: {
@@ -1618,6 +1626,10 @@ define("commonTranslations", [], function () {
           no_data_found: "No s'han trobat dades",
           generic_error: "Ho lamentem, s'ha produït un error."
         },
+        shiftPicker: {
+          no_data_found: "No s'han trobat dades",
+          generic_error: "Ho lamentem, s'ha produït un error."
+        }
       },
     },
     de: {
@@ -2165,6 +2177,10 @@ define("commonTranslations", [], function () {
           no_data_found: "Keine Daten gefunden",
           generic_error: "Leider ist ein Fehler aufgetreten."
         },
+        shiftPicker: {
+          no_data_found: "Keine Daten gefunden",
+          generic_error: "Leider ist ein Fehler aufgetreten."
+        }
       },
     },
     fr: {
@@ -2711,6 +2727,10 @@ define("commonTranslations", [], function () {
           no_resources_found: "Aucune ressource trouvée",
           no_data_found: "Aucune donnée trouvée",
         },
+        shiftPicker: {
+          no_resources_found: "Aucune ressource trouvée",
+          no_data_found: "Aucune donnée trouvée",
+        }
       },
     },
     it: {
@@ -3270,6 +3290,10 @@ define("commonTranslations", [], function () {
           no_data_found: "Nessun dato trovato",
           generic_error: "Spiacenti, si è verificato un errore."
         },
+        shiftPicker: {
+          no_data_found: "Nessun dato trovato",
+          generic_error: "Spiacenti, si è verificato un errore."
+        }
       },
     },
     ru: {
@@ -3547,6 +3571,10 @@ define("commonTranslations", [], function () {
           no_data_found: "Данные не найдены",
           generic_error: "Извините, произошла ошибка."
         },
+        shiftPicker: {
+          no_data_found: "Данные не найдены",
+          generic_error: "Извините, произошла ошибка."
+        }
       },
     },
   };

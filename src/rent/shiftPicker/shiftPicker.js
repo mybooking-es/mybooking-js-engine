@@ -1,7 +1,9 @@
 /******
  *
- * Renting Module ShiftPicker
- *
+ * Renting Module ShiftPicker (applied only for turns not flexible calendar)
+ * id: Id unique (REQUIRED)
+ * data-category-code: Category code (REQUIRED)
+ * data-rental-location-code: Rental location code (OPTIONAL)
  */
 require([
   'jquery',
@@ -12,6 +14,7 @@ require([
 	'commonTranslations',
 	'moment',
 	'YSDFormatter',
+	'ysdtemplate',
 	'jquery.i18next',
 ], function (
   $,
@@ -22,6 +25,7 @@ require([
   commonTranslations,
 	moment,
 	YSDFormatter,
+	tmpl,
 ) {
   /**
    * Contructor
@@ -31,8 +35,6 @@ require([
 		category_code,
 		rental_location_code,
 		units,
-		date,
-		turn,
   }) {
 
     /**
@@ -47,10 +49,10 @@ require([
 			maxUnits: 1, // Max units in selector
 			units, // Selected units
 			dates: [], // All dates
-			date, // Selected date
-			datesTo: 7,
+			date: undefined, // Selected date (default date is server date in commons model data)
+			datesTo: 30, // Dates array to time in days
 			turns: [], // All turns
-			turn, // Selected turn
+			turn: undefined, // Selected turn
     };
   }
 
@@ -92,7 +94,7 @@ require([
           .fail(function (error) {
             console.error('Error', error);
             
-						alert('Se ha producido un error en las unidades'); // TODO
+						alert(i18next.t('shiftPicker.generic_error'));
 
             resolve(1);
           })
@@ -149,7 +151,7 @@ require([
           .fail(function (error) {
             console.error('Error', error);
             
-						alert('Se ha producido un error en las fechas'); // TODO
+						alert(i18next.t('shiftPicker.generic_error'));
 
             resolve(1);
           })
@@ -210,7 +212,7 @@ require([
           .fail(function (error) {
             console.error('Error', error);
             
-						alert('Se ha producido un error en los turnos'); // TODO
+						alert(i18next.t('shiftPicker.generic_error'));
 
             resolve([]);
           })
@@ -240,7 +242,7 @@ require([
      */
     initializeUnitsSelector: async function() {
 			const {
-				containerHTML
+				containerHTML,
 			} = this.model;
 
 			// Get max units for select field
@@ -249,7 +251,13 @@ require([
 			const field = containerHTML.find('select[name=shiftpicker-units]');
 			field.html('');
 			for (let index = 1; index <= this.model.maxUnits; index++) {
-				field.append(`<option value="${index}">${index} unidades / max. ${index * 2} personas</option>`); // TODO
+				// Refresh template html 
+				const HTML = tmpl('script_shiftpicker_units_option')({
+					model: {
+						units: index,
+					}
+				});
+				field.append(HTML);
 			}
 
 			// Setup field events
@@ -312,7 +320,11 @@ require([
 					api_date_format,
 				} = this.model;
 
-				const value =  YSDFormatter.formatDate(inputDate.datepicker('getDate'), api_date_format);
+				const newDate = inputDate.datepicker('getDate');
+				if (!newDate || newDate === '') {
+					return; // TODO validate format date
+				}
+				const value =  YSDFormatter.formatDate(newDate, api_date_format);
 
 				// If field value is the first dates element
 				const buttonBack = containerHTML.find('.shiftpicker-arrow[data-direction=back]');
@@ -326,13 +338,20 @@ require([
 
 				// If field value is last element
 				const index = this.model.dates.indexOf(value);
-				if (!index || index >= this.model.dates.length - 1) {
+
+				if (index === -1 || index >= this.model.dates.length - 1) {
 					// Get next dates
 					const initialDate = this.model.dates.pop();
-					this.getNextDates(initialDate, YSDFormatter.formatDate(moment(value).add(this.model.datesTo, 'days'), api_date_format));
-				}
 
-				this.onDateChanged(value);
+					// Get next dates function with next date callback function
+					this.addScrollDates(initialDate, YSDFormatter.formatDate(moment(value).add(this.model.datesTo, 'days'), api_date_format), () => {
+						// Set date
+						this.onDateChanged(value);
+					});
+				} else {
+					// Set date
+					this.onDateChanged(value);
+				}
 			});
 		},
 
@@ -345,27 +364,35 @@ require([
 				date,
 			} = this.model;
 
-			const formatDate = moment(date).format("dddd, D MMMM YYYY");
-
+			const formatDate = moment(date).format('dddd, D MMMM YYYY');
 			containerHTML.find('.shiftpicker-text-date').html(formatDate);
 		},
 
 		/**
 		 *Gest next moth in calendar
 		*/
-		getNextDates: async function(from, to) {
+		addScrollDates: async function(from, to, callback) {
 			const newDates = await this.getDates(from, to);
-
-			// Remove first element
-			// newDates.shift();
 
 			this.model.dates =  [
 				...this.model.dates,
 				...newDates,
 			];
+
+			// Go next date callback function
+			if (callback && typeof callback === 'function') {
+				callback();
+			}
 		},
 
-		initializeTurnsSelector: async function() {
+		/**
+		 * Set new turn
+		*/
+		onTurnsSelectorChange: function(value) {
+			this.model.turn = value;
+		},
+
+		refreshTurnsSelector: async function() {
 			const {
 				containerHTML,
 			} = this.model;
@@ -374,21 +401,53 @@ require([
 
 			// Get turns
 			const turns = await this.getTurns();
+			turnsSelector.html('');
+			if (turns.length > 0)  {
+				turns.forEach((turn)=> {
+					const HTML = tmpl('script_shiftpicker_turns_item')({
+						model: turn,
+					});
+						
+					turnsSelector.append(HTML);
 
-			turns.forEach((turn)=> {
-				debugger;
-				// TODO
-				const {
-					from,
-					to,
-				} = turn;
-				
-				const URL = `<li class="mybooking-shiftpicker-container-list-item" data-status="enabled">
-						<span class="mybooking-shiftpicker-container-list-item_text">${from} -> ${to}</span>
-						<input type="radio" name="time" value="${from} - ${to}" class="mybooking-shiftpicker-container-list-item_value">
-					</li>`;
-				turnsSelector.append(URL);
+					// Setup events
+					turnsSelector.find('input[type=radio]').on('change', (event) => {
+						// Set turn value
+						const value = $(event.currentTarget).val();
+						this.onTurnsSelectorChange(value);
+
+						// Refresh info panel
+						this.refreshInfoPanel();
+					});
+				});
+			} else {
+				turnsSelector.append(`<li>${i18next.t('shiftPicker.no_data_found')}</li>`);
+			}
+		},
+
+		refreshInfoPanel: function() {
+			const {
+				containerHTML,
+				units,
+				date,
+				turn,
+				common,
+			} = this.model;
+
+			// Refresh template html 
+			const HTML = tmpl('script_shiftpicker_info')({
+				model: {
+					duration: 30, // TODO
+					units,
+					date: moment(date).format(common.dateFormat),
+					time_from: turn.split('-')[0],
+					time_to: turn.split('-')[1],
+				}
 			});
+			containerHTML.find('.shiftpicker-info').html(HTML);
+
+			// Set submit button enabled
+			containerHTML.find('button[type=submit]').removeAttr('disabled');
 		},
 
 		/**
@@ -401,7 +460,6 @@ require([
 
 			const buttons = containerHTML.find('.shiftpicker-arrow');
 			const buttonBack = containerHTML.find('.shiftpicker-arrow[data-direction=back]');
-			// const buttonNext = containerHTML.find('.shiftpicker-arrow[data-direction=next]');
 
 			// Set disabled atribute in left arrow when date is the first dates value
 			if (this.model.date === this.model.dates[0]) {
@@ -422,34 +480,48 @@ require([
 
 				switch (direction) {
 					case 'next':
-						// Get next dates one day first the last element
-						if (!index || index >= this.model.dates.length - 1) {
-							const initialDate = this.model.dates.pop();
-							this.getNextDates(initialDate, YSDFormatter.formatDate(moment(this.model.date).add(this.model.datesTo, 'days'), api_date_format));
-						}
 						if (index === 0) {
 							// Remove left arrow disabled atribute
 							buttonBack.removeAttr('disabled');
 						}
 
-						this.model.date = this.model.dates[index + 1];
+						// Get next dates one day first the last element
+						if (index >= this.model.dates.length - 1) {
+							// Rimove last dates item with is initial date from new request
+							const initialDate = this.model.dates.pop();
+
+							// Get next dates function with next date callback function
+							this.addScrollDates(initialDate, YSDFormatter.formatDate(moment(initialDate).add(this.model.datesTo, 'days'), api_date_format), () => {
+								// Move one position in next
+								this.model.date = this.model.dates[index + 1];
+								
+								// Refresh
+								this.refresh();
+							});
+						} else {
+							// Move one position in next
+							this.model.date = this.model.dates[index + 1];
+
+							// Refresh
+							this.refresh();
+						}
 						break;
 				
 					case 'back':
-							this.model.date = this.model.dates[index - 1];
-							if (index === 1) {
-								// Add left arrow disabled atribute
-								buttonBack.attr('disabled', 'disabled');
-							}
-							break;
+						// Move one position in back
+						this.model.date = this.model.dates[index - 1];
+						if (index === 1) {
+							// Add left arrow disabled atribute
+							buttonBack.attr('disabled', 'disabled');
+						}
+						
+						// Refresh
+						this.refresh();
+						break;
 
 					default:
-						this.model.date = this.model.dates[index + 1];
 						break;
 				}
-
-				// Refresh
-				this.refresh();
 			});
 		},
 
@@ -470,22 +542,28 @@ require([
 			
 			// Initialize date field
 			this.initializeDate();
-			// Refresh title text date
+			// Initialize title text date
 			this.refreshTextDate();
 			// Initialize scroll buttons
 			this.initializeScrollButtons();
 			// Initialize turns selector
-			this.initializeTurnsSelector();
+			this.refreshTurnsSelector();
 		},
 
 		/*
 		* Refresh 
 		*/
 		refresh: function() {
+			// Refresh date field
 			this.refreshDate();
+			// Refersh date text
 			this.refreshTextDate();
-			
-			console.info('-------REFRESH: ', this.model);
+			// Refresh turns selector
+			this.refreshTurnsSelector();
+			// Empty the information container
+			this.model.containerHTML.find('.shiftpicker-info').html('');
+			// Set submit button to disabled
+			this.model.containerHTML.find('button[type=submit]').attr('disabled', 'disabled');
 		}
   };
 
@@ -533,8 +611,6 @@ require([
 				};
 
 				this.setupControls();
-				this.setupEvents();
-				this.refresh();
 			});
 		},
 
@@ -546,19 +622,14 @@ require([
 			this.initializeScrollCalendar();
     },
 
-    /**
-     * Set Events
-     */
-    setupEvents: function () {
-    },
-
 		/**
-     * Set Validations
+     * Set Validations // TODO
      */
-		setupValidations: function() { // TODO
+		setupValidations: function() {
 			$('form[name=mybooking-shiftpicker-form]').validate({
 				submitHandler: function (form, event) {
           event.preventDefault();
+					return;
         },
         rules: {},
         messages: {},
@@ -594,8 +665,6 @@ require([
 						category_code: categoryCode,
 						rental_location_code: rentalLocationCode || undefined,
 						units: 1,
-						date: undefined,
-						turn: undefined,
 					};
 
           // Create a ShiftPicker instance

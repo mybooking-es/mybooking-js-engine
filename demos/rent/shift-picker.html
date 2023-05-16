@@ -15,7 +15,7 @@
 </head>
 <body class="mybooking-shiftpicker">
 	<!-- ShiftPicker start -->
-	<div id="mybooking-shiftpicker-1" data-category-code="B-1" class="mybooking-shiftpicker-content">
+	<div id="mybooking-shiftpicker-1" data-category-code="M" class="mybooking-shiftpicker-content">
 		<form class="mybooking-shiftpicker-form" method="POST">
 			<div class="mybooking-shiftpicker-head">
 				<h1 class="h1">
@@ -61,59 +61,8 @@
 					</button>
 				</div>
 				<ul class="mybooking-shiftpicker-container-list shiftpicker-turns">
-					<!-- <li class="mybooking-shiftpicker-container-list-item" data-status="enabled">
-						<span class="mybooking-shiftpicker-container-list-item_text">10:00 -> 11:00</span>
-						<input type="radio" name="time" value="10:00-11:00" class="mybooking-shiftpicker-container-list-item_value">
-					</li>
-					<li class="mybooking-shiftpicker-container-list-item" data-status="enabled">
-						<span class="mybooking-shiftpicker-container-list-item_text">11:30 -> 12:00</span>
-						<input type="radio" name="time" value="11:30-12:00" class="mybooking-shiftpicker-container-list-item_value">
-					</li>
-					<li class="mybooking-shiftpicker-container-list-item" data-status="selected">
-						<span class="mybooking-shiftpicker-container-list-item_text">12:00 -> 12:30</span>
-						<input type="radio" name="time" value="12:00-12:30" class="mybooking-shiftpicker-container-list-item_value">
-					</li>
-					<li class="mybooking-shiftpicker-container-list-item" data-status="disabled">
-						<span class="mybooking-shiftpicker-container-list-item_text">15:00 -> 16:00</span>
-						<input type="radio" name="time" value="15:00-16:00" class="mybooking-shiftpicker-container-list-item_value">
-					</li>
-					<li class="mybooking-shiftpicker-container-list-item" data-status="enabled">
-						<span class="mybooking-shiftpicker-container-list-item_text">16:30 -> 17:00</span>
-						<input type="radio" name="time" value="16:30-17:00" class="mybooking-shiftpicker-container-list-item_value">
-					</li>
-					<li class="mybooking-shiftpicker-container-list-item" data-status="disabled">
-						<span class="mybooking-shiftpicker-container-list-item_text">17:30 -> 18:00</span>
-						<input type="radio" name="time" value="17:30-18:00" class="mybooking-shiftpicker-container-list-item_value">
-					</li> -->
 				</ul>
-				<div class="mybooking-shiftpicker-container-info" style="display: none;">
-					<h2 class="h2">
-						Tu selección
-					</h2>
-					<div class="mybooking-shiftpicker-container-info_content">
-						<strong>
-							<span class="time">30</span>
-							&nbsp;
-							<span class="time-format">minutos</span>
-						</strong>
-						<span>
-							<span class="units">2</span>
-							&nbsp;
-							Motos de agua
-						</span>
-						<span class="date">
-							12/05/2023
-						</span>
-						<span>
-							de
-							&nbsp;
-							<span class="time-from">12:30</span>
-							&nbsp;a&nbsp;
-							<span class="time-to">13:00</span>
-							&nbsp;
-							horas
-						</span>
-					</div>
+				<div class="mybooking-shiftpicker-container-info shiftpicker-info">
 				</div>
 				<div class="mybooking-shiftpicker-container-buttons">
 					<button type="submit" class="button" disabled="disabled">
@@ -140,3 +89,58 @@
 	<script id="engine" async data-src="../js/mybooking-js-engine.js"></script>
 </body>
 </html>
+
+<!-- START TEMPLATES -->
+<script type="text/tmpl" id="script_shiftpicker_units_option">
+	<option value="<%=model.units%>"><%=model.units%> unidades / max. <%=model.units * 2%> personas</option>
+</script>
+
+<script type="text/tmpl" id="script_shiftpicker_turns_item">
+	<li class="mybooking-shiftpicker-container-list-item" data-status="<%=model.availability ? 'enabled' : 'disabled'%>">
+		<span class="mybooking-shiftpicker-container-list-item_text"><%=model.time_from%> -> <%=model.time_to%></span>
+		<small>
+			<%=model.units ? units : 0%>
+			&nbsp;
+			unidades
+		</small>
+		<small>
+			<%=!model.availability ? 'No disponible' : ''%>
+		</small>
+		<input type="radio" name="time" value="<%=model.time_from%> - <%=model.time_to%>" <%=!model.availability ? 'disabled' : ''%> class="mybooking-shiftpicker-container-list-item_value">
+	</li>
+</script>
+
+<script type="text/tmpl" id="script_shiftpicker_info">
+	<h2 class="h2">
+		Tu selección
+	</h2>
+	<div class="mybooking-shiftpicker-container-info_content">
+		<strong>
+			<span class="time">
+				<%=model.duration%>
+			</span>
+			&nbsp;
+			<span class="time-format">minutos</span>
+		</strong>
+		<span>
+			<span class="units">
+				<%=model.units%>
+			</span>
+			&nbsp;
+			Motos de agua
+		</span>
+		<span class="date">
+			<%=model.date%>
+		</span>
+		<span>
+			de
+			&nbsp;
+			<span class="time-from"><%=model.time_from%></span>
+			&nbsp;a&nbsp;
+			<span class="time-to"><%=model.time_to%></span>
+			&nbsp;
+			horas
+		</span>
+	</div>
+</script>
+<!-- END TEMPLATES -->
