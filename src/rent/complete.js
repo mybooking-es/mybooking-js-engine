@@ -260,6 +260,8 @@ require(['jquery',
             view.updateShoppingCartExtra(extraCode, quantity);
             // Hide the loader (OK)
             commonLoader.hide();
+            // Notify mediator
+            rentEngineMediator.onCompleteSetExtra(extraCode, quantity);            
         },
         error: function(data, textStatus, jqXHR) {
             // Hide the loader (Error)
@@ -309,6 +311,8 @@ require(['jquery',
             view.updateShoppingCartExtra(extraCode, 0);          
             // Hide the loader (OK)
             commonLoader.hide();
+            // Notify mediator
+            rentEngineMediator.onCompleteSetExtra(extraCode, 0);              
         },
         error: function(data, textStatus, jqXHR) {
             alert(i18next.t('complete.deleteExtra.error'));
@@ -1124,7 +1128,9 @@ require(['jquery',
                       }
                     },
                     'destination_accommodation': {
-                      required: model.isHotelDataRequired
+                      required: function() {
+                        return $('#destination_accommodation').attr('required') === 'required' || model.isHotelDataRequired;
+                      }
                     }
                 },
 
