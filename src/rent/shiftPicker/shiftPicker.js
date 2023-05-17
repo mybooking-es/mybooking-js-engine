@@ -355,6 +355,7 @@ require([
 				date,
 				time_from,
 				time_to,
+				units
 			} = this.model;
 
       const data = {
@@ -363,7 +364,8 @@ require([
 				date_to: moment(date).format(configuration.dateFormat),
 				time_to,
 				category_code: category_code,
-				engine_fixed_product: true
+				engine_fixed_product: true,
+				units
 			};
 
       if (sales_channel_code != null) {
