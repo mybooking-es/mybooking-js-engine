@@ -65,9 +65,10 @@
 				<div class="mybooking-shiftpicker-container-info shiftpicker-info">
 				</div>
 				<div class="mybooking-shiftpicker-container-buttons">
-					<button type="submit" class="button" disabled="disabled">
-						Reservar
-					</button>
+					<!-- // Reservation button -->
+					<div class="mb-form-group">
+						<input type="submit" class="button" disabled="disabled" value="Reservar"  />
+				 </div>
 				</div>
 			</div>
 		</form>
@@ -92,12 +93,14 @@
 
 <!-- START TEMPLATES -->
 <script type="text/tmpl" id="script_shiftpicker_units_option">
-	<option value="<%=model.units%>"><%=model.units%> unidades / max. <%=model.units * 2%> personas</option>
+	<option value="<%=model.units%>"><%=model.units%> unidades</option>
 </script>
 
 <script type="text/tmpl" id="script_shiftpicker_turns_item">
 	<li class="mybooking-shiftpicker-container-list-item shiftpicker-turn-item" data-status="<%=model.availability ? 'enabled' : 'disabled'%>" data-time-from="<%=model.time_from%>" data-time-to="<%=model.time_to%>">
-		<span class="mybooking-shiftpicker-container-list-item_text"><%=model.time_from%> -> <%=model.time_to%></span>
+		<span class="mybooking-shiftpicker-container-list-item_text">
+			<%=model.time_from%> <i class="fa fa-arrow-right"></i> <%=model.time_to%>
+		</span>
 		<div>
 			<% if (model.available_units) { %>
 				<small>
@@ -124,6 +127,7 @@
 			<h2 class="h2">
 				Tu selección
 			</h2>
+			<!-- // Info -->
 			<div>
 				<strong>
 					<% if (model.days > 0) { %>
@@ -166,11 +170,69 @@
 				&nbsp;
 				horas
 			</div>
-			<!-- Extras -->
-			<!-- Total -->
-			<strong>
-				<%=model.configuration.formatCurrency(model.shopping_cart.total_cost)%>
-			</strong>
+			<!-- // End info -->
+
+			<!-- // Extras -->
+			<% if (model.shopping_cart.extras.length > 0) { %>
+				<div class="mb-section">
+					<div class="mybooking-summary_details-title text-center">
+						<b>Extras</b>
+					</div>
+
+					<% for (var idx=0;idx<model.shopping_cart.extras.length;idx++) { %>
+						<div class="mybooking-summary_extras text-center">
+							<div class="mybooking-summary_extra-item">
+								<span class="mb-badge info mybooking-summary_extra-quantity">
+									<%=model.shopping_cart.extras[idx].quantity%>
+								</span>
+								<span class="mybooking-summary_extra-name">
+									<%=model.shopping_cart.extras[idx].extra_description%>
+								</span>
+								<span class="mybooking-summary_extra-amount">
+									<%=model.configuration.formatCurrency(model.shopping_cart.extras[idx].extra_cost)%>
+								</span>
+							</div>
+						</div>
+					<% } %>
+				</div>
+			<% } %>
+			<!-- // End Extras -->
+
+			<!-- // Supplements -->
+			<div class="mybooking-summary_extras text-center">
+				<!-- // Pick-up time -->
+				<% if (model.shopping_cart.time_from_cost > 0) { %>
+					<div class="mybooking-summary_extra-item">
+						<span class="mybooking-summary_extra-name">
+							<b>Suplementos</b>
+						</span>
+						<span class="mybooking-summary_extra-amount">
+							<%=model.configuration.formatCurrency(model.shopping_cart.time_from_cost)%>
+						</span>
+					</div>
+				<% } %>
+			</div>
+			<!-- // End Supplements -->
+
+			<!-- // Total -->
+			<% if (!model.configuration.hidePriceIfZero || model.shopping_cart.total_cost > 0) { %>
+				<div class="mb-section">
+					<div class="mybooking-summary_total text-center">
+						<span class="mybooking-summary_total-label">
+							<b>Total:</b>
+						</span>
+						<span class="mybooking-summary_total-amount">
+							<b>
+								<%=model.configuration.formatCurrency(model.shopping_cart.total_cost)%>
+							</b>
+						</span>
+					</div>
+					<div class="mybooking-product_taxes">
+						Taxes included
+					</div>
+				</div>
+			<% } %>
+			<!-- // End Total -->
 		</div>
 	</div>
 </script>
