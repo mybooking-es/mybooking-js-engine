@@ -13,11 +13,11 @@
 	<link rel="stylesheet" href="./assets/styles/style-shift-picker.css" />
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
 </head>
-<body class="mybooking-shiftpicker">
+<body class="mybooking-rent-shift-picker">
 	<!-- ShiftPicker start -->
-	<div id="mybooking-shiftpicker-1" data-category-code="M" class="mybooking-shiftpicker-content">
-		<form name="mybooking-shiftpicker-form" method="POST">
-			<div class="mybooking-shiftpicker-head">
+	<div id="shift-picker-1" data-category-code="M" class="mybooking-rent-shift-picker-content">
+		<form name="mybooking-rent-shift-picker-form" method="POST">
+			<div class="mybooking-rent-shift-picker-head">
 				<h1 class="h1">
 					Reservar turno
 				</h1>
@@ -44,11 +44,11 @@
 					</div>
 				</div>
 			</div>
-			<div class="mybooking-shiftpicker-container">
-				<div class="mybooking-shiftpicker-container-head">
+			<div class="mybooking-rent-shift-picker-container">
+				<div class="mybooking-rent-shift-picker-container-head">
 					<span class="shiftpicker-text-date"></span>
 				</div>
-				<div class="mybooking-shiftpicker-container-arrows">
+				<div class="mybooking-rent-shift-picker-container-arrows">
 					<button data-direction="back" class="button shiftpicker-arrow" disabled>
 						<i class="fa fa-arrow-left"></i>
 						&nbsp;
@@ -60,11 +60,11 @@
 						<i class="fa fa-arrow-right"></i>
 					</button>
 				</div>
-				<ul class="mybooking-shiftpicker-container-list shiftpicker-turns">
+				<ul class="mybooking-rent-shift-picker-container-list shiftpicker-turns">
 				</ul>
-				<div class="mybooking-shiftpicker-container-info shiftpicker-info">
+				<div class="mybooking-rent-shift-picker-container-info shiftpicker-info">
 				</div>
-				<div class="mybooking-shiftpicker-container-buttons">
+				<div class="mybooking-rent-shift-picker-container-buttons">
 					<!-- // Reservation button -->
 					<div class="mb-form-group">
 						<input type="submit" class="button" disabled="disabled" value="Reservar"  />
@@ -97,8 +97,8 @@
 </script>
 
 <script type="text/tmpl" id="script_shiftpicker_turns_item">
-	<li class="mybooking-shiftpicker-container-list-item shiftpicker-turn-item" data-status="<%=model.availability ? 'enabled' : 'disabled'%>" data-time-from="<%=model.time_from%>" data-time-to="<%=model.time_to%>">
-		<span class="mybooking-shiftpicker-container-list-item_text">
+	<li class="mybooking-rent-shift-picker-container-list-item shiftpicker-turn-item" data-status="<%=model.availability ? 'enabled' : 'disabled'%>" data-time-from="<%=model.time_from%>" data-time-to="<%=model.time_to%>">
+		<span class="mybooking-rent-shift-picker-container-list-item_text">
 			<%=model.time_from%> <i class="fa fa-arrow-right"></i> <%=model.time_to%>
 		</span>
 		<div>
@@ -117,12 +117,12 @@
 				</i>
 			</small>
 		</div>
-		<input type="radio" name="time" value="<%=model.time_from%> - <%=model.time_to%>" <%=!model.availability ? 'disabled="disabled"' : ''%> class="mybooking-shiftpicker-container-list-item_value">
+		<input type="radio" name="time" value="<%=model.time_from%> - <%=model.time_to%>" <%=!model.availability ? 'disabled="disabled"' : ''%> class="mybooking-rent-shift-picker-container-list-item_value">
 	</li>
 </script>
 
 <script type="text/tmpl" id="script_shiftpicker_info">
-	<div class="card-static_resume__container mybooking-shiftpicker-container-info_content">
+	<div class="card-static_resume__container mybooking-rent-shift-picker-container-info_content">
 		<div class="card-static_resume__container_inside">
 			<h2 class="h2">
 				Tu selección

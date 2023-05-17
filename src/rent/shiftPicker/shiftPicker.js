@@ -79,7 +79,7 @@ require([
         category_code,
       } = this.model;
 
-      let url = `${commonServices.URL_PREFIX}api/booking/frontend/products/${category_code}/inventory`;
+      let url = `${commonServices.URL_PREFIX}/api/booking/frontend/products/${category_code}/inventory`;
       const urlParams = [];
 
       // APi Key
@@ -130,7 +130,7 @@ require([
 				rental_location_code,
       } = this.model;
 
-      let url = `${commonServices.URL_PREFIX}api/booking/frontend/dates`;
+      let url = `${commonServices.URL_PREFIX}/api/booking/frontend/dates`;
       const urlParams = [];
 
       // APi Key
@@ -195,7 +195,7 @@ require([
 				date,
       } = this.model;
 
-      let url = `${commonServices.URL_PREFIX}api/booking/frontend/products/${category_code}/turns`;
+      let url = `${commonServices.URL_PREFIX}/api/booking/frontend/products/${category_code}/turns`;
       const urlParams = [];
 
       // APi Key
@@ -635,7 +635,7 @@ require([
 			containerHTML.find('.shiftpicker-info').html(HTML);
 
 			// Set submit button enabled
-			containerHTML.find('button[type=submit]').removeAttr('disabled');
+			containerHTML.find('input[type=submit]').removeAttr('disabled');
 		},
 
 		/**
@@ -814,11 +814,9 @@ require([
      * Set Validations // TODO
      */
 		setupValidations: function() {
-			$('form[name=mybooking-shiftpicker-form]').validate({
+			$('form[name=mybooking-rent-shift-picker-form]').validate({
 				submitHandler: function (form, event) {
           event.preventDefault();
-
-					debugger;
 
           this.gotoNextStep();
 
@@ -856,7 +854,7 @@ require([
      * Initizialize
      */
     init: function () {
-			$('.mybooking-shiftpicker .mybooking-shiftpicker-content').each(
+			$('.mybooking-rent-shift-picker .mybooking-rent-shift-picker-content').each(
         (index, item) => {
           // Unique id for instance
           const id = $(item).attr('id');

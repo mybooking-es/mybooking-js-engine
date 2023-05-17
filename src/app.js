@@ -189,7 +189,7 @@ $(document).ready(function () {
 
 // Rent shift picker
 $(document).ready(function () {
-    if ($('body').hasClass('mybooking-shiftpicker')) {
+    if ($('body').hasClass('mybooking-rent-shift-picker')) {
         require('./rent/shiftPicker/shiftPicker.js');           
     }
 });
