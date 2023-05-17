@@ -382,36 +382,13 @@ define('commonSettings', ['jquery','commonServices','commonLoader','commonTransl
     }
   };
 
-  /**
-   * On load => Check it is a sessionStorage item mbDuplicatedTab
-   */ 
-  $(window).on('load', function(){
-    // If exists a duplicated Tab item in season => 
-    if (sessionStorage.getItem('mbDuplicatedTab') === 'duplicatedTab') {
-      console.log('duplicated TAB');
-      mybookingSettings.data.duplicatedTab = true;
-    }
-    else {
-      sessionStorage.setItem('mbDuplicatedTab', 'duplicatedTab');
-      console.log('Not duplicated TAB');
-      mybookingSettings.data.duplicatedTab = false;
-    }
-  });
+  // Check if duplicate
+  $(document).on('ready', function(eventData) {
+    // Check that window is duplicate
+    // Refactor with jquery.duplicate plugin
+    mybookingSettings.data.duplicatedTab = window.mybookingPluginIsDuplicate();
+  }); 
 
-  /**
-   * Before unload => Remove mbDuplicatedTab (it is not executed when duplicate tab)
-   */ 
-  $(window).on('beforeunload', function(){
-    console.log('Clear duplicated tab - beforeunload');
-    sessionStorage.removeItem('mbDuplicatedTab');
-    mybookingSettings.data.duplicatedTab = false;
-  });
-  // ios compatibility
-  $(window).on('pagehide', function(){
-    console.log('Clear duplicated tab - pagehide');
-    sessionStorage.removeItem('mbDuplicatedTab');
-    mybookingSettings.data.duplicatedTab = false;
-  })
 
   return mybookingSettings;
 });
