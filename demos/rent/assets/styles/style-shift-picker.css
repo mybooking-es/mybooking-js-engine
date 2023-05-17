@@ -53,6 +53,11 @@
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
+	cursor: pointer;
+}
+.mybooking-shiftpicker-container-list li[data-status=disabled] {
+	cursor: default;
+	opacity: 0.8;
 }
 
 /*
@@ -60,8 +65,9 @@
 */
 .mybooking-shiftpicker-container-info_content {
 	border: 1px solid rgb(241, 241, 241);
+	margin: 0;
 	margin-bottom: 1rem;
-	padding: 1rem 0;
+	padding: 1rem;
 }
 .mybooking-shiftpicker-container-info_content > span,
 .mybooking-shiftpicker-container-info_content > strong {

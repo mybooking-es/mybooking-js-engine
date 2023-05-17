@@ -531,7 +531,8 @@ define("commonTranslations", [], function () {
         },
         shiftPicker: {
           no_data_found: "No data found",
-          generic_error: "Sorry, an error has occurred."
+          generic_error: "Sorry, an error has occurred.",
+          turn_not_available: "That turn is not available.",
         }
       },
     },
@@ -1085,7 +1086,8 @@ define("commonTranslations", [], function () {
         },
         shiftPicker: {
           no_data_found: "No se han encontrado datos",
-          generic_error: "Lo lamentamos, se ha producido un error."
+          generic_error: "Lo lamentamos, se ha producido un error.",
+          turn_not_available: "Ese turno no esta disponible",
         }
       },
     },
@@ -1628,7 +1630,8 @@ define("commonTranslations", [], function () {
         },
         shiftPicker: {
           no_data_found: "No s'han trobat dades",
-          generic_error: "Ho lamentem, s'ha produït un error."
+          generic_error: "Ho lamentem, s'ha produït un error.",
+          turn_not_available: "Aquest torn no està disponible.",
         }
       },
     },
@@ -2179,7 +2182,8 @@ define("commonTranslations", [], function () {
         },
         shiftPicker: {
           no_data_found: "Keine Daten gefunden",
-          generic_error: "Leider ist ein Fehler aufgetreten."
+          generic_error: "Leider ist ein Fehler aufgetreten.",
+          turn_not_available: "Dieser Zug ist nicht verfügbar.",
         }
       },
     },
@@ -2730,6 +2734,7 @@ define("commonTranslations", [], function () {
         shiftPicker: {
           no_resources_found: "Aucune ressource trouvée",
           no_data_found: "Aucune donnée trouvée",
+          turn_not_available: "Ce tour n'est pas disponible.",
         }
       },
     },
@@ -3292,7 +3297,8 @@ define("commonTranslations", [], function () {
         },
         shiftPicker: {
           no_data_found: "Nessun dato trovato",
-          generic_error: "Spiacenti, si è verificato un errore."
+          generic_error: "Spiacenti, si è verificato un errore.",
+          turn_not_available: "Quel turno non è disponibile.",
         }
       },
     },
@@ -3573,7 +3579,8 @@ define("commonTranslations", [], function () {
         },
         shiftPicker: {
           no_data_found: "Данные не найдены",
-          generic_error: "Извините, произошла ошибка."
+          generic_error: "Извините, произошла ошибка.",
+          turn_not_available: "Этот ход недоступен.",
         }
       },
     },

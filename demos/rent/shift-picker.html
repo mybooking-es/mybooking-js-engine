@@ -16,7 +16,7 @@
 <body class="mybooking-shiftpicker">
 	<!-- ShiftPicker start -->
 	<div id="mybooking-shiftpicker-1" data-category-code="M" class="mybooking-shiftpicker-content">
-		<form class="mybooking-shiftpicker-form" method="POST">
+		<form name="mybooking-shiftpicker-form" method="POST">
 			<div class="mybooking-shiftpicker-head">
 				<h1 class="h1">
 					Reservar turno
@@ -96,69 +96,82 @@
 </script>
 
 <script type="text/tmpl" id="script_shiftpicker_turns_item">
-	<li class="mybooking-shiftpicker-container-list-item" data-status="<%=model.availability ? 'enabled' : 'disabled'%>">
+	<li class="mybooking-shiftpicker-container-list-item shiftpicker-turn-item" data-status="<%=model.availability ? 'enabled' : 'disabled'%>" data-time-from="<%=model.time_from%>" data-time-to="<%=model.time_to%>">
 		<span class="mybooking-shiftpicker-container-list-item_text"><%=model.time_from%> -> <%=model.time_to%></span>
-		<small>
-			<%=model.available_units ? model.available_units : 0%>
-			&nbsp;
-			unidades
-		</small>
-		<small>
-			<%=!model.availability ? 'No disponible' : ''%>
-		</small>
-		<input type="radio" name="time" value="<%=model.time_from%> - <%=model.time_to%>" <%=!model.availability ? 'disabled' : ''%> class="mybooking-shiftpicker-container-list-item_value" data-time-from="<%=model.time_from%>" data-time-to="<%=model.time_to%>">
+		<div>
+			<% if (model.available_units) { %>
+				<small>
+					<i>
+						<%=model.available_units ? model.available_units : 0%>
+						&nbsp;
+						unidades disponibles
+					</i>
+				</small>
+			<% } %>
+			<small>
+				<i>
+					<%=!model.availability ? 'No disponible' : ''%>
+				</i>
+			</small>
+		</div>
+		<input type="radio" name="time" value="<%=model.time_from%> - <%=model.time_to%>" <%=!model.availability ? 'disabled="disabled"' : ''%> class="mybooking-shiftpicker-container-list-item_value">
 	</li>
 </script>
 
 <script type="text/tmpl" id="script_shiftpicker_info">
-	<h2 class="h2">
-		Tu selección
-	</h2>
-	<div class="mybooking-shiftpicker-container-info_content">
-		<strong>
-			<% if (model.days > 0) { %>
-				<span class="time">
-						<%=model.days%>
+	<div class="card-static_resume__container mybooking-shiftpicker-container-info_content">
+		<div class="card-static_resume__container_inside">
+			<h2 class="h2">
+				Tu selección
+			</h2>
+			<div>
+				<strong>
+					<% if (model.days > 0) { %>
+						<span class="time">
+								<%=model.days%>
+						</span>
+						&nbsp;
+						<span class="time-format">días</span>
+					<% } else if (model.hours > 0) { %>
+						<span class="time">
+								<%=model.hours%>
+						</span>
+						&nbsp;
+						<span class="time-format">horas</span>
+					<% } else if (model.minutes > 0) { %>
+						<span class="time">
+								<%=model.minutes%>
+						</span>
+						&nbsp;
+						<span class="time-format">minutos</span>
+					<% } %>
+				</strong>
+			</div>
+			<div>
+				<span class="units">
+					<%=model.units%>
 				</span>
 				&nbsp;
-				<span class="time-format">días</span>
-			<% } else if (model.hours > 0) { %>
-				<span class="time">
-						<%=model.hours%>
-				</span>
+				Unidades
+			</div>
+			<div class="date">
+				<%=model.date%>
+			</div>
+			<div>
+				de
 				&nbsp;
-				<span class="time-format">horas</span>
-			<% } else if (model.minutes > 0) { %>
-				<span class="time">
-						<%=model.minutes%>
-				</span>
+				<span class="time-from"><%=model.time_from%></span>
+				&nbsp;a&nbsp;
+				<span class="time-to"><%=model.time_to%></span>
 				&nbsp;
-				<span class="time-format">minutos</span>
-			<% } %>
-		</strong>
-		<span>
-			<span class="units">
-				<%=model.units%>
-			</span>
-			&nbsp;
-			Motos de agua
-		</span>
-		<span class="date">
-			<%=model.date%>
-		</span>
-		<span>
-			de
-			&nbsp;
-			<span class="time-from"><%=model.time_from%></span>
-			&nbsp;a&nbsp;
-			<span class="time-to"><%=model.time_to%></span>
-			&nbsp;
-			horas
-		</span>
-		<p>TODO Suplementos y extras</p>
-		<span class="date">
-			<%=model.shopping_cart.total_cost%> ** Formato
-		</span>
+				horas
+			</div>
+			<!-- Extras -->
+			<!-- Total -->
+			<strong>
+				<%=model.configuration.formatCurrency(model.shopping_cart.total_cost)%>
+			</strong>
+		</div>
 	</div>
 </script>
 <!-- END TEMPLATES -->

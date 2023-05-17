@@ -47,14 +47,16 @@ require([
 			requestLanguage: 'es', // Request language
 			category_code, // Product code
 			rental_location_code, // Rental location code
+			sales_channel_code: undefined, // Sales channel code
 			api_date_format: 'YYYY-MM-DD', // Api date format for requests
 			maxUnits: 1, // Max units in selector
 			units, // Selected units
 			dates: [], // All dates
-			date: undefined, // Selected date (default date is server date in commons model data)
 			datesTo: 30, // Dates array to time in days
+			date: undefined, // Selected date (default date is server date in commons model data)
 			turns: [], // All turns
-			turn: undefined, // Selected turn
+			time_from: undefined, // Selected turn
+			time_to: undefined, // Selected turn
 			shopping_cart: undefined, // Shopping cart
 			shoppingCartId: undefined, // Shopping cart ID
 			product: undefined, // Product
@@ -73,6 +75,7 @@ require([
 			commonLoader.show();
 
 			const {
+				requestLanguage,
         category_code,
       } = this.model;
 
@@ -82,6 +85,11 @@ require([
       // APi Key
       if (commonServices.apiKey && commonServices.apiKey !== '') {
         urlParams.push('api_key=' + commonServices.apiKey);
+      }
+
+			// Language
+      if (requestLanguage != null) {
+        urlParams.push('lang=' + requestLanguage);
       }
 
       if (urlParams.length > 0) {
@@ -117,6 +125,7 @@ require([
 			commonLoader.show();
 
 			const {
+				requestLanguage,
         category_code,
 				rental_location_code,
       } = this.model;
@@ -127,6 +136,11 @@ require([
       // APi Key
       if (commonServices.apiKey && commonServices.apiKey !== '') {
         urlParams.push('api_key=' + commonServices.apiKey);
+      }
+
+			// Language
+      if (requestLanguage != null) {
+        urlParams.push('lang=' + requestLanguage);
       }
 
 			// Rental location code
@@ -174,6 +188,7 @@ require([
 			commonLoader.show();
 
 			const {
+				requestLanguage,
         category_code,
 				rental_location_code,
 				units,
@@ -186,6 +201,11 @@ require([
       // APi Key
       if (commonServices.apiKey && commonServices.apiKey !== '') {
         urlParams.push('api_key=' + commonServices.apiKey);
+      }
+
+			// Language
+      if (requestLanguage != null) {
+        urlParams.push('lang=' + requestLanguage);
       }
 
 			// Rental location code
@@ -232,37 +252,44 @@ require([
      * Calculate price (build the shopping cart and choose the product)
      */
     calculatePriceAvailability: function() {
+			const {
+				shoppingCartId,
+				requestLanguage,
+			} = this.model;
 
-      var dataRequest = this.buildDataRequest();
-      debugger;
-      var dataRequestJSON =  encodeURIComponent(JSON.stringify(dataRequest));
-      // Build the URL
-      var url = commonServices.URL_PREFIX + '/api/booking/frontend/shopping-cart';
-      // Shopping cart ID
-      if (this.model.shoppingCartId == null) {
+      const dataRequest = this.buildDataRequest();
+      const dataRequestJSON =  encodeURIComponent(JSON.stringify(dataRequest));
+     
+			// Build the URL
+      let url = commonServices.URL_PREFIX + '/api/booking/frontend/shopping-cart';
+      
+			// Shopping cart ID
+      if (shoppingCartId == null) {
         this.model.shoppingCartId = this.getShoppingCartFreeAccessId();
       }
-      if (this.model.shoppingCartId) {
-        url+= '/'+this.model.shoppingCartId;
+      if (shoppingCartId) {
+        url+= '/' + shoppingCartId;
       }
-      var urlParams = [];
+
+      const urlParams = [];
+
       // Language
-      if (this.model.requestLanguage != null) {
-        urlParams.push('lang='+this.requestLanguage);
+      if (requestLanguage != null) {
+        urlParams.push('lang=' + requestLanguage);
       }
+
       // API Key
       if (commonServices.apiKey && commonServices.apiKey != '') {
-        urlParams.push('api_key='+commonServices.apiKey);
+        urlParams.push('api_key=' + commonServices.apiKey);
       } 
+
       // Build URL
       if (urlParams.length > 0) {
         url += '?';
         url += urlParams.join('&');
       }
 
-
       // Request  
-      var self = this;
       commonLoader.show();
       $.ajax({
         type: 'POST',
@@ -271,21 +298,22 @@ require([
         dataType : 'json',
         contentType : 'application/json; charset=utf-8',
         crossDomain: true,
-        success: function(data, textStatus, jqXHR) {
-          if (self.model.shoppingCartId == null || 
-          		self.model.shoppingCartId != data.shopping_cart.free_access_id) {
-            self.model.shoppingCartId = data.shopping_cart.free_access_id;
-            self.putShoppingCartFreeAccessId(self.shoppingCartId);
+        success: (data, textStatus, jqXHR) => {
+          if (this.model.shoppingCartId == null || this.model.shoppingCartId != data.shopping_cart.free_access_id) {
+            this.model.shoppingCartId = data.shopping_cart.free_access_id;
+            this.putShoppingCartFreeAccessId(this.shoppingCartId);
           }
-          self.model.shopping_cart = data.shopping_cart;
-          self.model.product_available = data.product_available;
+          this.model.shopping_cart = data.shopping_cart;
+          this.model.product_available = data.product_available;
           if (data.products && Array.isArray(data.products) && data.products.length > 0) {
-            self.model.product = data.products[0];
+            this.model.product = data.products[0];
           }
           else {
-            self.model.product = null;
+            this.model.product = null;
           }
-          self.refreshInfoPanel();
+
+					// Refresh info panel
+          this.refreshInfoPanel();
         },
         error: function(data, textStatus, jqXHR) {
           alert(i18next.t('selector.error_loading_data'));
@@ -297,7 +325,6 @@ require([
           commonLoader.hide();
         }
       });
-
     },
 
     /**
@@ -317,41 +344,45 @@ require([
 
     /**
      * Build data request
-     * (TODO Custom pickup/return place)
+     * (Custom pickup/return place)
      */
     buildDataRequest: function() {
+			const {
+				configuration,
+				category_code,
+				rental_location_code,
+				sales_channel_code,
+				date,
+				time_from,
+				time_to,
+			} = this.model;
 
-    	debugger;
-    	// TODO Refactor use time_from and time_to in model
-    	var turnSplit = this.model.turn.split(' - ');
+      const data = {
+				date_from: moment(date).format(configuration.dateFormat),
+				time_from,
+				date_to: moment(date).format(configuration.dateFormat),
+				time_to,
+				category_code: category_code,
+				engine_fixed_product: true
+			};
 
-      var data = {date_from: moment(this.model.date).format('DD/MM/YYYY'),
-                  time_from: turnSplit[0],
-                  date_to: moment(this.model.date).format('DD/MM/YYYY'),
-                  time_to: turnSplit[1],
-                  category_code: this.model.category_code,
-                  engine_fixed_product: true
-                  };
-
-      if (this.salesChannelCode != null) {
-        data.sales_channel_code = this.salesChannelCode;
+      if (sales_channel_code != null) {
+        data.sales_channel_code = sales_channel_code;
       }
 
-      if (this.rentalLocationCode != null) {
-        data.rental_location_code = this.rentalLocationCode;
-        data.engine_fixed_rental_location = ($(this.form_selector).find('input[type=hidden][name=rental_location_code]').length == 0);
+      if (rental_location_code != null) {
+        data.rental_location_code = rental_location_code;
+        data.engine_fixed_rental_location = ($(this.form_selector).find('input[type=hidden][name=rental_location_code]').length == 0); // TODO
       }
 
       // Agent (from cookies)
-      var agentId = customCookie.get('__mb_agent_id'); 
+      const agentId = customCookie.get('__mb_agent_id'); 
       if (agentId != null) {
         data.agent_id = agentId; 
       }
 
       return data;
-
-    }  
-   
+    }
   };
 
   /***
@@ -519,8 +550,12 @@ require([
 		/**
 		 * Set new turn
 		*/
-		onTurnsSelectorChange: function(value) {
-			this.model.turn = value;
+		onTurnsSelectorChange: function(time_from, time_to) {
+			// Set turn
+			this.model.time_from = time_from;
+			this.model.time_to = time_to;
+
+			// Calculate price and availability
 			this.calculatePriceAvailability();
 		},
 
@@ -533,6 +568,7 @@ require([
 
 			// Get turns
 			const turns = await this.getTurns();
+
 			turnsSelector.html('');
 			if (turns.length > 0)  {
 				turns.forEach((turn)=> {
@@ -542,17 +578,33 @@ require([
 					
 					turnsSelector.append(HTML);
 				});
-				// Setup events
-				turnsSelector.find('input[type=radio]').on('change', (event) => {
-					// Set turn value
-					const value = $(event.currentTarget).val();
-					this.onTurnsSelectorChange(value);
 
-					// Refresh info panel
-					//this.refreshInfoPanel();
+				// Setup events
+				turnsSelector.find('.shiftpicker-turn-item').on('click', (event) => {
+					const item = $(event.currentTarget);
+
+					if (item.attr('data-status') === 'disabled') {
+						alert(i18next.t('shiftPicker.turn_not_available'));
+
+						return;
+					}
+
+					const field = item.find('input[type=radio]');
+					// Check radio is not disabled
+					if (!field.attr('disabled')) {
+						const time_from = item.attr('data-time-from');
+						const time_to = item.attr('data-time-to');
+
+						// Set turn value
+						this.onTurnsSelectorChange(time_from, time_to);
+
+						// Set radio button to checked
+						field.attr('checked', 'checked');
+					}
 				});
 
 			} else {
+				// Info not data found
 				turnsSelector.append(`<li>${i18next.t('shiftPicker.no_data_found')}</li>`);
 			}
 		},
@@ -561,9 +613,7 @@ require([
 			const {
 				containerHTML,
 				units,
-				date,
-				turn,
-				common,
+				configuration,
 			} = this.model;
 
 			// Refresh template html 
@@ -573,10 +623,11 @@ require([
 					hours: this.model.shopping_cart.hours,
 					minutes: this.model.shopping_cart.minutes,
 					units,
-					date: moment(this.model.shopping_cart.date_from).format(common.dateFormat),
+					date: moment(this.model.shopping_cart.date_from).format(configuration.dateFormat),
 					time_from: this.model.shopping_cart.time_from,
 					time_to: this.model.shopping_cart.time_to,
-					shopping_cart: this.model.shopping_cart
+					shopping_cart: this.model.shopping_cart,
+					configuration,
 				}
 			});
 			containerHTML.find('.shiftpicker-info').html(HTML);
@@ -742,7 +793,7 @@ require([
 					...this.model,
 					requestLanguage,
 					date: data.serverDate,
-					common: data,
+					configuration: data,
 				};
 
 				this.setupControls();
@@ -761,11 +812,14 @@ require([
      * Set Validations // TODO
      */
 		setupValidations: function() {
-			var self = this;
 			$('form[name=mybooking-shiftpicker-form]').validate({
 				submitHandler: function (form, event) {
           event.preventDefault();
-          self.gotoNextStep();
+
+					debugger;
+
+          this.gotoNextStep();
+
 					return;
         },
         rules: {},
@@ -781,16 +835,13 @@ require([
      * Go to the next step (select extras or complete URL)
      */
     gotoNextStep: function() {
-
       if (commonServices.extrasStep) {
-        window.location.href= commonServices.chooseExtrasUrl;
+        window.location.href = commonServices.chooseExtrasUrl;
       }
       else {
-        window.location.href= commonServices.completeUrl;
+        window.location.href = commonServices.completeUrl;
       }
-
-    },   
-
+    },
   };
 
   // -----------------------------------------
