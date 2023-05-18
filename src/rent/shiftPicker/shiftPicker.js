@@ -4,7 +4,7 @@
  * id: Id unique (REQUIRED)
  * data-category-code: Category code (REQUIRED)
  * data-rental-location-code: Rental location code (OPTIONAL)
- * data-sales-channel-code: // TODO
+ * data-sales-channel-code: Sales channel code (OPTIONAL)
  */
 require([
   'jquery',
@@ -940,12 +940,14 @@ require([
           const containerHTML = $('#' + id);
 					const categoryCode = containerHTML.attr('data-category-code');
 					const rentalLocationCode = containerHTML.attr('data-rental-location-code');
+					const salesChannelCode = containerHTML.attr('data-sales-channel-code');
 
           // Default settings for instance
 					const settings = {
 						containerHTML,
 						category_code: categoryCode,
 						rental_location_code: rentalLocationCode || undefined,
+						sales_channel_code: salesChannelCode || undefined,
 						units: 1,
 					};
 
