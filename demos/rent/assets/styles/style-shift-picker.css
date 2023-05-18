@@ -27,6 +27,27 @@
 .mybooking-rent-shift-picker-head	.field select {
 	width: 100%;
 }
+// Calendar
+.shiftpicker-date-disabled {
+	background-color: lightgray;
+}
+.shiftpicker-date-full {
+	background-color: red;
+}
+.shiftpicker-date-enabled:not(.ui-datepicker-unselectable) {
+	background-color: green;
+}
+.shiftpicker-date-enabled > span,
+.shiftpicker-date-full > span,
+.shiftpicker-date-enabled > a,
+.shiftpicker-date-full > a {
+	color: lightgray !important;
+}
+.shiftpicker-date-disabled > a.ui-state-hover,
+.shiftpicker-date-enabled > a.ui-state-hover,
+.shiftpicker-date-full > a.ui-state-hover {
+	border-radius: 0;
+}
 
 /* 
 * Container head
@@ -58,6 +79,10 @@
 .mybooking-rent-shift-picker-container-list li[data-status=disabled] {
 	cursor: default;
 	opacity: 0.8;
+}
+.mybooking-rent-shift-picker-container-list li[data-selected=true] {
+	background-color: green;
+	color: white;
 }
 
 /*

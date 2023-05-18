@@ -4,6 +4,7 @@
  * id: Id unique (REQUIRED)
  * data-category-code: Category code (REQUIRED)
  * data-rental-location-code: Rental location code (OPTIONAL)
+ * data-sales-channel-code: // TODO
  */
 require([
   'jquery',
@@ -51,8 +52,10 @@ require([
 			api_date_format: 'YYYY-MM-DD', // Api date format for requests
 			maxUnits: 1, // Max units in selector
 			units, // Selected units
-			dates: [], // All dates
-			datesTo: 30, // Dates array to time in days
+			availableDates: [], // All available dates
+			disabledDates: [], // Disabled dates
+			fullDates: [], // Dates with not free units of product availables
+			datesTo: 365, // Number of days in availabled dates request
 			date: undefined, // Selected date (default date is server date in commons model data)
 			turns: [], // All turns
 			time_from: undefined, // Selected turn
@@ -119,7 +122,36 @@ require([
 		},
 
 		/**
-	 	* Get dates
+	 	* Filter available days in array format
+	 	*/
+		filterDates: function(data) {
+			// Get entries 
+			const entries = Object.entries(data);
+
+			const availableDates = [];
+			const disabledDates = [];
+			const fullDates = [];
+
+			entries.map((array) => {
+				const key = array[0];
+				const data = array[1];
+
+				// Filter selectable day with non stop sales and available units
+				if (data.selectable_day && data.free) {
+					availableDates.push(key);
+				} else if (!data.free) {
+					fullDates.push(key);
+					disabledDates.push(key);
+				} else {
+					disabledDates.push(key);
+				}
+			});
+
+			return [ availableDates, disabledDates, fullDates ];
+		},
+
+		/**
+	 	* Get available dates
 	 	*/
 		getDates: function(from, to) {
 			commonLoader.show();
@@ -130,7 +162,7 @@ require([
 				rental_location_code,
       } = this.model;
 
-      let url = `${commonServices.URL_PREFIX}/api/booking/frontend/dates`;
+      let url = `${commonServices.URL_PREFIX}/api/booking/frontend/products/${category_code}/occupation`;
       const urlParams = [];
 
       // APi Key
@@ -148,9 +180,6 @@ require([
         urlParams.push('rental_location_code=' + rental_location_code);
       }
 
-			// Category code
-			urlParams.push('product=' + category_code);
-
 			// Dates
 			urlParams.push('from=' + from);
 			urlParams.push('to=' + to);
@@ -165,15 +194,18 @@ require([
         $.ajax({
           url: url,
         })
-          .done(function (result) {
-            resolve(result);
+          .done((result) => {
+						// Filter available days in request result data
+						const dates = this.filterDates(result.occupation);
+
+            resolve(dates);
           })
           .fail(function (error) {
             console.error('Error', error);
             
 						alert(i18next.t('shiftPicker.generic_error'));
 
-            resolve(1);
+            resolve([]);
           })
 					.then(function() {
 						commonLoader.hide();
@@ -341,7 +373,6 @@ require([
       sessionStorage.setItem('shopping_cart_free_access_id', value);
     },
 
-
     /**
      * Build data request
      * (Custom pickup/return place)
@@ -457,6 +488,27 @@ require([
 		},
 
 		/**
+		 * Disable dates in calendar 
+		*/
+		disableDates: function(date) {
+			const formatDate = YSDFormatter.formatDate(date, this.model.api_date_format);
+			const isEnabled = this.model.disabledDates.indexOf(formatDate) === -1;
+			const isAvailable = this.model.fullDates.indexOf(formatDate) === -1;
+
+			console.log(date, isEnabled, isAvailable);
+			
+			let result =  [ true, 'shiftpicker-date-enabled' ];
+			if (!isEnabled) {
+				result = [ false, 'shiftpicker-date-disabled' ];
+			} 
+			if (!isAvailable) {
+				result = [ false, 'shiftpicker-date-full' ];
+			}
+
+			return result;
+		},
+
+		/**
 		 * Initialize date
 		*/
 		initializeDate: function() {
@@ -470,8 +522,11 @@ require([
 			
 			const inputDate = containerHTML.find('input[name=shiftpicker-date]');
 			const instanceDate = new Date(date);
+
+			const self = this;
 			inputDate.datepicker({
 				minDate: instanceDate,
+				beforeShowDay: self.disableDates.bind(self),
 			});
 			inputDate.datepicker('setDate', instanceDate);
 
@@ -492,7 +547,7 @@ require([
 
 				// If field value is the first dates element
 				const buttonBack = containerHTML.find('.shiftpicker-arrow[data-direction=back]');
-				if (value === this.model.dates[0]) {
+				if (value === this.model.availableDates[0]) {
 					// Add left arrow disabled atribute
 					buttonBack.attr('disabled', 'disabled');
 				} else {
@@ -501,11 +556,11 @@ require([
 				}
 
 				// If field value is last element
-				const index = this.model.dates.indexOf(value);
+				const index = this.model.availableDates.indexOf(value);
 
-				if (index === -1 || index >= this.model.dates.length - 1) {
+				if (index === -1 || index >= this.model.availableDates.length - 1) {
 					// Get next dates
-					const initialDate = this.model.dates.pop();
+					const initialDate = this.model.availableDates.pop();
 
 					// Get next dates function with next date callback function
 					this.addScrollDates(initialDate, YSDFormatter.formatDate(moment(value).add(this.model.datesTo, 'days'), api_date_format), () => {
@@ -536,11 +591,21 @@ require([
 		 *Gest next moth in calendar
 		*/
 		addScrollDates: async function(from, to, callback) {
-			const newDates = await this.getDates(from, to);
+			const [ newAvailableDates, newDisabledDates, newFullDates ] = await this.getDates(from, to);
 
-			this.model.dates =  [
-				...this.model.dates,
-				...newDates,
+			this.model.availableDates =  [
+				...this.model.availableDates,
+				...newAvailableDates,
+			];
+
+			this.model.fullDates = [
+				...this.model.fullDates,
+				...newFullDates,
+			];
+
+			this.model.disabledDates = [
+				...this.model.disabledDates,
+				...newDisabledDates,
 			];
 
 			// Go next date callback function
@@ -602,6 +667,10 @@ require([
 
 						// Set radio button to checked
 						field.attr('checked', 'checked');
+
+						// Remove all selected items and add data selected in item selected
+						turnsSelector.find('.shiftpicker-turn-item').removeAttr('data-selected');
+						item.attr('data-selected', 'true');
 					}
 				});
 
@@ -650,7 +719,7 @@ require([
 			const buttonBack = containerHTML.find('.shiftpicker-arrow[data-direction=back]');
 
 			// Set disabled atribute in left arrow when date is the first dates value
-			if (this.model.date === this.model.dates[0]) {
+			if (this.model.date === this.model.availableDates[0]) {
 				buttonBack.attr('disabled', 'disabled');
 			}
 
@@ -663,7 +732,7 @@ require([
 				} = this.model;
 
 				const target = $(event.currentTarget);
-				let index = this.model.dates.indexOf(this.model.date);
+				let index = this.model.availableDates.indexOf(this.model.date);
 				const direction = target.attr('data-direction');
 
 				switch (direction) {
@@ -674,21 +743,21 @@ require([
 						}
 
 						// Get next dates one day first the last element
-						if (index >= this.model.dates.length - 1) {
+						if (index >= this.model.availableDates.length - 1) {
 							// Rimove last dates item with is initial date from new request
-							const initialDate = this.model.dates.pop();
+							const initialDate = this.model.availableDates.pop();
 
 							// Get next dates function with next date callback function
 							this.addScrollDates(initialDate, YSDFormatter.formatDate(moment(initialDate).add(this.model.datesTo, 'days'), api_date_format), () => {
 								// Move one position in next
-								this.model.date = this.model.dates[index + 1];
+								this.model.date = this.model.availableDates[index + 1];
 								
 								// Refresh
 								this.refresh();
 							});
 						} else {
 							// Move one position in next
-							this.model.date = this.model.dates[index + 1];
+							this.model.date = this.model.availableDates[index + 1];
 
 							// Refresh
 							this.refresh();
@@ -697,7 +766,7 @@ require([
 				
 					case 'back':
 						// Move one position in back
-						this.model.date = this.model.dates[index - 1];
+						this.model.date = this.model.availableDates[index - 1];
 						if (index === 1) {
 							// Add left arrow disabled atribute
 							buttonBack.attr('disabled', 'disabled');
@@ -723,9 +792,19 @@ require([
 			} = this.model;
 
 			// Get dates
-			this.model.dates =  await this.getDates(date, YSDFormatter.formatDate(moment(date).add(this.model.datesTo, 'days'), api_date_format));
-			if (this.model.dates.length > 0) {
-				this.model.date =  this.model.dates[0];
+			const [ availableDates, disabledDates, fullDates ] =  await this.getDates(date, YSDFormatter.formatDate(moment(date).add(this.model.datesTo, 'days'), api_date_format));
+			
+			if (availableDates.length > 0) {
+				this.model.availableDates = availableDates;
+				this.model.date = this.model.availableDates[0];
+			}
+
+			if (fullDates.length > 0) {
+				this.model.fullDates = fullDates;
+			}
+
+			if (disabledDates.length > 0) {
+				this.model.disabledDates = disabledDates;
 			}
 			
 			// Initialize date field
