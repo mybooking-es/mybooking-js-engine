@@ -103,7 +103,6 @@
         $(window).on("beforeunload", function () {
             if (mybookingPluginTestIfDuplicate() == false) {
                 mybookingPluginSetItem(ItemType.Local, "");
-                mybookingPluginSetItem(ItemType.Session, "");
             }
         });
 
