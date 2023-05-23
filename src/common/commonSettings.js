@@ -384,17 +384,34 @@ define('commonSettings', ['jquery','commonServices','commonLoader','commonTransl
 
   /**
    * On load => Check it is a sessionStorage item mbDuplicatedTab
+   * 
+   * Note: On Safari when the user duplicates the tab a new session is created
+   *       It does not happen on Chrome or Firefox.
+   * 
+   * If you open the home page with selector and click on search, you can
+   * check the shopping_cart free_access_id. If you duplicate the tab on
+   * Safari it will create a new session and so a new instance of shopping_cart.
+   * 
+   * It does not happen on Chrome or Firefox. Thats the reason why we must show
+   * the message
+   * 
    */ 
-  $(window).on('load', function(){
-    // If exists a duplicated Tab item in season => 
-    if (sessionStorage.getItem('mbDuplicatedTab') === 'duplicatedTab') {
-      console.log('duplicated TAB');
-      mybookingSettings.data.duplicatedTab = true;
-    }
-    else {
-      sessionStorage.setItem('mbDuplicatedTab', 'duplicatedTab');
-      console.log('Not duplicated TAB');
-      mybookingSettings.data.duplicatedTab = false;
+  $(window).on('load', function(eventData){
+    console.log('load Event');
+    // Check to be sure it is only execute once by page
+    // Wordpress with Divi Theme triggers it twice
+    if (eventData.target === document) {
+      console.log('Check duplicated Tab');
+      // If exists a duplicated Tab item in season => 
+      if (sessionStorage.getItem('mbDuplicatedTab') === 'duplicatedTab') {
+        console.log('duplicated TAB');
+        mybookingSettings.data.duplicatedTab = true;
+      }
+      else {
+        sessionStorage.setItem('mbDuplicatedTab', 'duplicatedTab');
+        console.log('Not duplicated TAB');
+        mybookingSettings.data.duplicatedTab = false;
+      }
     }
   });
 
@@ -406,12 +423,16 @@ define('commonSettings', ['jquery','commonServices','commonLoader','commonTransl
     sessionStorage.removeItem('mbDuplicatedTab');
     mybookingSettings.data.duplicatedTab = false;
   });
-  // ios compatibility
+
+  /**
+   * IOS compatibility
+   */ 
   $(window).on('pagehide', function(){
     console.log('Clear duplicated tab - pagehide');
     sessionStorage.removeItem('mbDuplicatedTab');
     mybookingSettings.data.duplicatedTab = false;
-  })
+  });
+
 
   return mybookingSettings;
 });

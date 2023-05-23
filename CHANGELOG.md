@@ -1,6 +1,6 @@
 # Changelog
 
-## [1.1.2] - 2023.05.08
+## [1.1.1] - 2023.05.22
 
 ### Added
 
@@ -11,13 +11,8 @@
 - Renting - Variants : Price in modal
 - Activities - My reservation update customers data
 - Renting - Passengers validation
-
-## [1.1.1] 2023-04-20
-
-### Fixed
-
+- Duplicate tab management
 - Activities: My reservation - Update data was not worked since Babel
-
 
 ## [1.1.0] 2023-04-06
 

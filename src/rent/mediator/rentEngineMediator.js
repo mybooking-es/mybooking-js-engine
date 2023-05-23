@@ -14,6 +14,7 @@ define('rentEngineMediator', ['jquery', 'YSDEventTarget'],
     chooseMultipleProductsDelegate: null,
     chooseExtrasDelegate: null,
     checkoutDelegate: null,
+    checkoutSetExtraDelegate: null,
     checkoutSetupReservationFormDelegate: null,
     newReservationPaymentDelegate: null,
     existingReservationPaymentDelegate: null,
@@ -113,23 +114,29 @@ define('rentEngineMediator', ['jquery', 'YSDEventTarget'],
         this.checkoutSetupReservationFormDelegate = delegate.checkoutSetupReservationForm;
       }   
 
+      // Checkout -> SetExtras
+      if (typeof delegate.checkoutSetExtra === 'function') {
+        this.checkoutSetExtraDelegate = delegate.checkoutSetExtra;
+      }
+
       // Checkout -> Checkout
       if (typeof delegate.checkout === 'function') {
         this.checkoutDelegate = delegate.checkout;
       }            
 
-      // 
+      // Checkout -> Go to Payment
       if (typeof delegate.newReservationPayment === 'function') {
         this.newReservationPaymentDelegate = delegate.newReservationPayment;
-      }
-
-      if (typeof delegate.existingReservationPayment === 'function') {
-        this.existingReservationPaymentDelegate = delegate.existingReservationPayment;
       }
 
       // Summary => SetupReservationForm
       if (typeof delegate.summaryUpdateBooking === 'function') {
         this.summaryUpdateBookingDelegate = delegate.summaryUpdateBooking;
+      }
+
+      // My reservation -> Go to Payment
+      if (typeof delegate.existingReservationPayment === 'function') {
+        this.existingReservationPaymentDelegate = delegate.existingReservationPayment;
       }
 
       // My reservation => SetupReservationForm
@@ -276,8 +283,25 @@ define('rentEngineMediator', ['jquery', 'YSDEventTarget'],
 
     },
 
-
     // --------- Complete
+
+    /**
+     * When the user sets an extra
+     * 
+     * == Parameters::
+     * 
+     * @param extraCode [String] The extra
+     * @param quantity [Number] The quantity
+     * 
+     */ 
+    onCompleteSetExtra: function(extraCode, quantity) {
+
+      console.log('rentEngineMediator_completeSetExtra');
+      if (typeof this.checkoutSetExtraDelegate === 'function') {
+        this.checkoutSetExtraDelegate(extraCode, quantity);
+      }
+
+    },
 
     /**
      * When the reservation form is ready
