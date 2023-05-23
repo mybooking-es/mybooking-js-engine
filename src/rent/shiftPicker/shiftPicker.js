@@ -37,6 +37,7 @@ require([
 		containerHTML,
 		category_code,
 		rental_location_code,
+		sales_channel_code,
 		units,
   }) {
 
@@ -48,7 +49,7 @@ require([
 			requestLanguage: 'es', // Request language
 			category_code, // Product code
 			rental_location_code, // Rental location code
-			sales_channel_code: undefined, // Sales channel code
+			sales_channel_code, // Sales channel code
 			api_date_format: 'YYYY-MM-DD', // Api date format for requests
 			maxUnits: 1, // Max units in selector
 			units, // Selected units
@@ -80,9 +81,12 @@ require([
 			const {
 				requestLanguage,
         category_code,
+				sales_channel_code,
+				rental_location_code,
       } = this.model;
 
       let url = `${commonServices.URL_PREFIX}/api/booking/frontend/products/${category_code}/inventory`;
+
       const urlParams = [];
 
       // APi Key
@@ -93,6 +97,16 @@ require([
 			// Language
       if (requestLanguage != null) {
         urlParams.push('lang=' + requestLanguage);
+      }
+
+			// Sales channel code
+			if (sales_channel_code != null) {
+				urlParams.push('sales_channel_code=' + sales_channel_code);
+      }
+
+			// Rental location code
+			if (rental_location_code) {
+        urlParams.push('rental_location_code=' + rental_location_code);
       }
 
       if (urlParams.length > 0) {
@@ -159,10 +173,12 @@ require([
 			const {
 				requestLanguage,
         category_code,
+				sales_channel_code,
 				rental_location_code,
       } = this.model;
 
       let url = `${commonServices.URL_PREFIX}/api/booking/frontend/products/${category_code}/occupation`;
+
       const urlParams = [];
 
       // APi Key
@@ -173,6 +189,11 @@ require([
 			// Language
       if (requestLanguage != null) {
         urlParams.push('lang=' + requestLanguage);
+      }
+
+			// Sales channel code
+			if (sales_channel_code != null) {
+				urlParams.push('sales_channel_code=' + sales_channel_code);
       }
 
 			// Rental location code
@@ -222,12 +243,14 @@ require([
 			const {
 				requestLanguage,
         category_code,
+				sales_channel_code,
 				rental_location_code,
 				units,
 				date,
       } = this.model;
 
       let url = `${commonServices.URL_PREFIX}/api/booking/frontend/products/${category_code}/turns`;
+
       const urlParams = [];
 
       // APi Key
@@ -238,6 +261,11 @@ require([
 			// Language
       if (requestLanguage != null) {
         urlParams.push('lang=' + requestLanguage);
+      }
+
+			// Sales channel code
+			if (sales_channel_code != null) {
+				urlParams.push('sales_channel_code=' + sales_channel_code);
       }
 
 			// Rental location code
@@ -287,6 +315,8 @@ require([
 			const {
 				shoppingCartId,
 				requestLanguage,
+				sales_channel_code,
+				rental_location_code,
 			} = this.model;
 
       const dataRequest = this.buildDataRequest();
@@ -305,15 +335,25 @@ require([
 
       const urlParams = [];
 
+      // API Key
+      if (commonServices.apiKey && commonServices.apiKey != '') {
+        urlParams.push('api_key=' + commonServices.apiKey);
+      }
+
       // Language
       if (requestLanguage != null) {
         urlParams.push('lang=' + requestLanguage);
       }
 
-      // API Key
-      if (commonServices.apiKey && commonServices.apiKey != '') {
-        urlParams.push('api_key=' + commonServices.apiKey);
-      } 
+			// Sales channel code
+			if (sales_channel_code != null) {
+				urlParams.push('sales_channel_code=' + sales_channel_code);
+      }
+
+			// Rental location code
+			if (rental_location_code) {
+        urlParams.push('rental_location_code=' + rental_location_code);
+      }
 
       // Build URL
       if (urlParams.length > 0) {
@@ -405,7 +445,7 @@ require([
 
       if (rental_location_code != null) {
         data.rental_location_code = rental_location_code;
-        data.engine_fixed_rental_location = ($(this.form_selector).find('input[type=hidden][name=rental_location_code]').length == 0); // TODO
+        data.engine_fixed_rental_location = ($(this.form_selector).find('input[type=hidden][name=rental_location_code]').length == 0);
       }
 
       // Agent (from cookies)
@@ -494,8 +534,6 @@ require([
 			const formatDate = YSDFormatter.formatDate(date, this.model.api_date_format);
 			const isEnabled = this.model.disabledDates.indexOf(formatDate) === -1;
 			const isAvailable = this.model.fullDates.indexOf(formatDate) === -1;
-
-			console.log(date, isEnabled, isAvailable);
 			
 			let result =  [ true, 'shiftpicker-date-enabled' ];
 			if (!isEnabled) {
