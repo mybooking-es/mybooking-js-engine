@@ -373,7 +373,7 @@ require([
         success: (data, textStatus, jqXHR) => {
           if (this.model.shoppingCartId == null || this.model.shoppingCartId != data.shopping_cart.free_access_id) {
             this.model.shoppingCartId = data.shopping_cart.free_access_id;
-            this.putShoppingCartFreeAccessId(this.shoppingCartId);
+            this.putShoppingCartFreeAccessId(this.model.shoppingCartId);
           }
           this.model.shopping_cart = data.shopping_cart;
           this.model.product_available = data.product_available;
@@ -916,6 +916,7 @@ require([
 				};
 
 				this.setupControls();
+				this.setupValidations();
 			});
 		},
 
@@ -931,11 +932,13 @@ require([
      * Set Validations // TODO
      */
 		setupValidations: function() {
+			const self = this;
+
 			$('form[name=mybooking-rent-shift-picker-form]').validate({
 				submitHandler: function (form, event) {
           event.preventDefault();
 
-          this.gotoNextStep();
+          self.gotoNextStep();
 
 					return;
         },
