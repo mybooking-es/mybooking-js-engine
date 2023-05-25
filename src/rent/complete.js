@@ -1290,6 +1290,9 @@ require(['jquery',
      */ 
     setupOptionalExternalDriver: function(doesApplyExternalDriver) {
       if (doesApplyExternalDriver) {
+        if (!$('.js-mb-delivery-slot-skipper-container').is(':visible')) {
+          $('.js-mb-delivery-slot-skipper-container').show();
+        }
         $('.js-mb-optional-external-driver').show();
         if (!$('form[name=reservation_form] select[name=with_optional_external_driver]').data('select2')) {
           $('form[name=reservation_form] select[name=with_optional_external_driver]').select2({
@@ -1311,7 +1314,9 @@ require(['jquery',
      */ 
     setupDeliverySlots: function() {
 
-      $('.js-mb-delivery-slot-skipper-container').show();
+      if (!$('.js-mb-delivery-slot-skipper-container').is(':visible')) {
+        $('.js-mb-delivery-slot-skipper-container').show();
+      }
       $('.js-mb-delivery-slot').show();
 
       // Prepare hours available End Point call
