@@ -1288,15 +1288,21 @@ require(['jquery',
     /**
      * Setup optional external driver
      */ 
-    setupOptionalExternalDriver: function() {
-      $('.js-mb-delivery-slot-skipper-container').show();
-      $('.js-mb-optional-external-driver').show();
-      $('form[name=reservation_form] select[name=with_optional_external_driver]').select2({
-        placeholder: i18next.t('common.selectOption'),
-        allowClear: true,
-        width: '100%',
-        theme: 'bootstrap4'
-      });
+    setupOptionalExternalDriver: function(doesApplyExternalDriver) {
+      if (doesApplyExternalDriver) {
+        $('.js-mb-optional-external-driver').show();
+        if (!$('form[name=reservation_form] select[name=with_optional_external_driver]').data('select2')) {
+          $('form[name=reservation_form] select[name=with_optional_external_driver]').select2({
+            placeholder: i18next.t('common.selectOption'),
+            allowClear: true,
+            width: '100%',
+            theme: 'bootstrap4'
+          });
+        }
+      }
+      else {
+        $('.js-mb-optional-external-driver').hide();        
+      }
 
     },
 
@@ -1426,9 +1432,7 @@ require(['jquery',
         this.setupDeliverySlots();
       }
       // External driver (skipper)
-      if (model.configuration.optionalExternalDriver) {
-        this.setupOptionalExternalDriver();
-      }
+      this.setupOptionalExternalDriver(model.shopping_cart.apply_optional_external_driver);
 
     },
 
@@ -1439,6 +1443,10 @@ require(['jquery',
 
       // Updates the summary
       this.updateShoppingCartSummary();
+
+      // External driver (skipper)
+      this.setupOptionalExternalDriver(model.shopping_cart.apply_optional_external_driver);
+
       // Update the extra
       if (model.isCoverage(extraCode)) {
         this.updateExtras();
