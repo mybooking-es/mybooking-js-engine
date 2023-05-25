@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.2] - 2023.05.25
+
+### Added
+
+- Renting - Shift picker
+- Renting - Skipper and driving license management
+
 ## [1.1.1] - 2023.05.22
 
 ### Added
