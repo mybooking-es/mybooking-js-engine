@@ -191,12 +191,16 @@ require(['jquery',
                  
                  view.updateShoppingCart();
 
+                 // Airport and hotel form required  conditional rules
+                 // In the html it must exist a id="airport-form-section" and a atribute data-airport-required="true"
+                 // in this case it will only be required when the pick-up site is the airport
                  var airportSection = $('#airport-form-section');
                  if (airportSection.length > 0 )  {
                   if (data.shopping_cart.pickup_place_type === 'airport' && airportSection.attr('data-airport-required') === 'true') {
                     model.isAirportDataRequired = true;
                   }
                  }
+                 // In the html it must exist a id="hotel-form-section" and a atribute data-hotel-required="true"
                  var hotelSection = $('#hotel-form-section');
                  if (hotelSection.length > 0 )  {
                    if (hotelSection.attr('data-hotel-required') === 'true') {
@@ -969,15 +973,22 @@ require(['jquery',
 
       // Configure driver document id date
       if (document.getElementById('driver_document_id_date_day')) {
-        var dataControlDateOfBirth = new DateControl(document.getElementById('driver_document_id_date_day'),
+        new DateControl(document.getElementById('driver_document_id_date_day'),
                         document.getElementById('driver_document_id_date_month'),
                         document.getElementById('driver_document_id_date_year'),
                         document.getElementById('driver_document_id_date'),
                         commonSettings.language(model.requestLanguage));
       }
+      if (document.getElementById('driver_document_id_expiration_date_day')) {
+        new DateControl(document.getElementById('driver_document_id_expiration_date_day'),
+                        document.getElementById('driver_document_id_expiration_date_month'),
+                        document.getElementById('driver_document_id_expiration_date_year'),
+                        document.getElementById('driver_document_id_expiration_date'),
+                        commonSettings.language(model.requestLanguage));
+      }
       // Configure driver date of birth and driver license date
       if (document.getElementById('driver_date_of_birth_day')) {
-        var dataControlDateOfBirth = new DateControl(document.getElementById('driver_date_of_birth_day'),
+        new DateControl(document.getElementById('driver_date_of_birth_day'),
                         document.getElementById('driver_date_of_birth_month'),
                         document.getElementById('driver_date_of_birth_year'),
                         document.getElementById('driver_date_of_birth'),
@@ -985,7 +996,7 @@ require(['jquery',
       }
       // Configure driver driving license date 
       if (document.getElementById('driver_driving_license_date_day')) {
-        var dataControlDateOfBirth = new DateControl(document.getElementById('driver_driving_license_date_day'),
+        new DateControl(document.getElementById('driver_driving_license_date_day'),
                         document.getElementById('driver_driving_license_date_month'),
                         document.getElementById('driver_driving_license_date_year'),
                         document.getElementById('driver_driving_license_date'),
@@ -994,14 +1005,14 @@ require(['jquery',
 
       // Configure additional driver driving license date 
       if (document.getElementById('additional_driver_1_driving_license_date_day')) {
-        var dataControlDateOfBirth = new DateControl(document.getElementById('additional_driver_1_driving_license_date_day'),
+        new DateControl(document.getElementById('additional_driver_1_driving_license_date_day'),
                         document.getElementById('additional_driver_1_driving_license_date_month'),
                         document.getElementById('additional_driver_1_driving_license_date_year'),
                         document.getElementById('additional_driver_1_driving_license_date'),
                         commonSettings.language(model.requestLanguage));
       }
       if (document.getElementById('additional_driver_2_driving_license_date_day')) {
-        var dataControlDateOfBirth = new DateControl(document.getElementById('additional_driver_2_driving_license_date_day'),
+        new DateControl(document.getElementById('additional_driver_2_driving_license_date_day'),
                         document.getElementById('additional_driver_2_driving_license_date_month'),
                         document.getElementById('additional_driver_2_driving_license_date_year'),
                         document.getElementById('additional_driver_2_driving_license_date'),

@@ -364,6 +364,16 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
           dateControl.setDate(model.booking.driver_document_id_date);
         }        
       }
+      if (document.getElementById('driver_document_id_expiration_date_day')) {
+        var dateControl = new DateControl(document.getElementById('driver_document_id_expiration_date_day'),
+                        document.getElementById('driver_document_id_expiration_date_month'),
+                        document.getElementById('driver_document_id_expiration_date_year'),
+                        document.getElementById('driver_document_id_expiration_date'),
+                        commonSettings.language(model.requestLanguage));
+        if (model.booking.driver_document_id_expiration_date) {
+          dateControl.setDate(model.booking.driver_document_id_expiration_date);
+        }        
+      }
 
       // Configure driver date of birth 
       if (document.getElementById('driver_date_of_birth_day')) {
@@ -387,6 +397,16 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
           dateControl.setDate(model.booking.driver_driving_license_date);
         }
       }
+      if (document.getElementById('driver_driving_license_expiration_date_day')) {
+        var dateControl = new DateControl(document.getElementById('driver_driving_license_expiration_date_day'),
+                        document.getElementById('driver_driving_license_expiration_date_month'),
+                        document.getElementById('driver_driving_license_expiration_date_year'),
+                        document.getElementById('driver_driving_license_expiration_date'),
+                        commonSettings.language(model.requestLanguage));
+        if (model.booking.driver_driving_license_expiration_date) {
+          dateControl.setDate(model.booking.driver_driving_license_expiration_date);
+        }
+      }
 
       // Configure driving license country
       if ($('select[name=driver_driving_license_country]').length) {
@@ -404,6 +424,16 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
           dateControl.setDate(model.booking.additional_driver_1_driving_license_date);
         }        
       }
+      if (document.getElementById('additional_driver_1_driving_license_expiration_date_day')) {
+        var dateControl = new DateControl(document.getElementById('additional_driver_1_driving_license_expiration_date_day'),
+                        document.getElementById('additional_driver_1_driving_license_expiration_date_month'),
+                        document.getElementById('additional_driver_1_driving_license_expiration_date_year'),
+                        document.getElementById('additional_driver_1_driving_license_expiration_date'),
+                        commonSettings.language(model.requestLanguage));
+        if (model.booking.additional_driver_1_driving_license_expiration_date) {
+          dateControl.setDate(model.booking.additional_driver_1_driving_license_expiration_date);
+        }        
+      }
       // Configuration additional driver 2 driving license date
       if (document.getElementById('additional_driver_2_driving_license_date_day')) {
         var dateControl = new DateControl(document.getElementById('additional_driver_2_driving_license_date_day'),
@@ -413,6 +443,16 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
                         commonSettings.language(model.requestLanguage));
         if (model.booking.additional_driver_2_driving_license_date) {
           dateControl.setDate(model.booking.additional_driver_2_driving_license_date);
+        }        
+      }
+      if (document.getElementById('additional_driver_2_driving_license_expiration_date_day')) {
+        var dateControl = new DateControl(document.getElementById('additional_driver_2_driving_license_expiration_date_day'),
+                        document.getElementById('additional_driver_2_driving_license_expiration_date_month'),
+                        document.getElementById('additional_driver_2_driving_license_expiration_date_year'),
+                        document.getElementById('additional_driver_2_driving_license_expiration_date'),
+                        commonSettings.language(model.requestLanguage));
+        if (model.booking.additional_driver_2_driving_license_expiration_date) {
+          dateControl.setDate(model.booking.additional_driver_2_driving_license_expiration_date);
         }        
       }
 
