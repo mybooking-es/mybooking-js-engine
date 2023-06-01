@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es">
+	<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Mybooking planning diary</title>
+    <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-ui-bootstrap/0.5pre/css/custom-theme/jquery-ui-1.10.0.custom.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.5/css/bulma.min.css">
+    <link rel="stylesheet" href="./assets/styles/styles.css" />
+    <link rel="stylesheet" href="./assets/styles/style-planning.css" />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+  </head>
+	
+	<body class="mybooking-rent-planning">
+
+		<!-- Without family and category -->
+    <div
+			class="mybooking-planning-content"
+			data-direction="columns"
+			data-type="diary" 
+			id="planning-1"
+			data-category-code="PS"
+		>
+      <form class="mybooking-planning-head">
+        <div class="field">
+          <label class="label">Fecha</label>
+          <div class="control">
+            <input type="text" name="date"  />
+            <div class="button-box">
+              <button data-action="date" data-direction="back" class="button"><i class="fa fa-arrow-left"></i></button>
+              <button data-action="date" data-direction="next" class="button"><i class="fa fa-arrow-right"></i></button>
+            </div>
+          </div>
+        </div>
+        <div class="field" style="display: none;">
+          <label class="label">Sucursal</label>
+          <div class="control">
+            <div class="select" data-default="Todas">
+              <select name="rentalLocation" style="min-width: 300px;">
+              </select>
+            </div>
+          </div>
+        </div>
+				<div class="field" style="display: none;">
+          <label class="label">Familia</label>
+          <div class="control">
+            <div class="select" data-default="Todas">
+              <select name="family" style="min-width: 300px;">
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="field" style="display: none;">
+          <label class="label">Categoría</label>
+          <div class="control">
+            <div class="select" data-default="Todas">
+              <select name="category" style="min-width: 300px;">
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="field">
+          <label class="label"></label>
+          <div class="control" style="top: 6px;">
+            <div class="button-box">
+              <button data-action="scroll" data-direction="back" class="button"><i class="fa fa-arrow-left"></i></button>
+              <button data-action="scroll" data-direction="next" class="button"><i class="fa fa-arrow-right"></i></button>
+            </div>
+          </div>
+        </div>
+			</form>
+			<div class="mybooking-planning-table"></div>
+		</div>
+		
+		<script type="module">
+      import('./assets/js/mybooking-engine-init.js')
+        .then(async function (module) {
+          return await module.default();
+        })
+        .then(function(module) {
+          window.mybookingEngine = module;
+          var script = document.getElementById('engine');
+          script.setAttribute('src', script.getAttribute('data-src'));
+          script.removeAttribute('data-src');
+        });
+    </script>
+    <script id="engine" async data-src="../js/mybooking-js-engine.js"></script>
+	</body>
+</html>

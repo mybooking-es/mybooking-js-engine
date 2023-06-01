@@ -1113,17 +1113,11 @@ require([
 				this.model = {
 					...this.model,
 					// Rental location availabily control
-					isRentalLocationSelectorAvailable:
-						!this.model.rentalLocation && data.multipleRentalLocations,
+					isRentalLocationSelectorAvailable: !this.model.rentalLocation && data.multipleRentalLocations,
 					// Family availabily control
-					isFamilySelectorAvailable:
-						!this.model.category &&
-						!this.model.family &&
-						data.useRentingFamilies,
+					isFamilySelectorAvailable: !this.model.category && !this.model.family && data.useRentingFamilies,
 					// Category availabily control
-					isCategorySelectorAvailable:
-						!this.model.category &&
-						data.productType === 'category_of_resources',
+					isCategorySelectorAvailable: !this.model.category && data.productType === 'category_of_resources',
 					configuration: data,
 					requestLanguage,
 					date: {
@@ -1138,7 +1132,7 @@ require([
 					target: this.model.planningHTML.find('.mybooking-planning-head'),
 					columnsWidth: this.model.cells.width,
 				});
-			});
+			}, 'rent', this.model.category);
 		},
 
     /**
