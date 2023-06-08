@@ -105,8 +105,6 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
     // == Other fields
     // promotion code    
     promotion_code_selector: '#promotion_code',
-    // driver age
-    driver_age_rule_selector: '#driver_age_rule',
     // number of products
     number_of_products_selector: '#number_of_products',
     // accept age

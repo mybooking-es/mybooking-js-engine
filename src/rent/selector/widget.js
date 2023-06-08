@@ -96,8 +96,6 @@ require(['jquery', 'commonSettings', 'commonLoader', './SelectorRent'],
         // Duration
         this.selector.model.duration_id = 'widget_renting_duration';
         this.selector.model.duration_selector = '#widget_renting_duration';
-        // Driver age
-        this.selector.model.driver_age_rule_selector = '#widget_driver_age_rule';
         // Number of products
         this.selector.model.number_of_products_selector = '#widget_number_of_products';
         // Family

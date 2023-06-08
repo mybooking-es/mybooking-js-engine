@@ -67,8 +67,6 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
     this.duration_id = 'renting_duration';
     this.duration_selector = '#renting_duration';
 
-    // Driver age rule
-    this.driver_age_rule_selector = '#driver_age_rule';
     // Promotion Code
     this.promotion_code_selector = '#promotion_code';
     // Number of products
@@ -81,6 +79,10 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
     this.rental_location_code = 'rental_location_code',
     this.rental_location_code_selector = '#rental_location_code',   
     this.rental_location_selector = '.rental_location', 
+     // Driver age rule
+     this.driver_age_rule_id = 'driver_age_rule_id',
+     this.driver_age_rule_id_selector = '#driver_age_rule_id',   
+     this.driver_age_rule_selector = '.driver_age_rule';
     // Accept age
     this.accept_age_selector = '#accept_age';
 
@@ -99,6 +101,7 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
     this.returnHours = []; // Available return hours
     this.families = []; // Families
     this.rentalLocations = []; // Rental Locations
+    this.driverAgeRules = []; // Age rules
     this.durations = []; // Durations
 
     this.dateToMinDate = null;
@@ -107,6 +110,9 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
       this.selectorView = _selectorView;
     }
 
+     /**
+     * Load families
+     */ 
     this.loadFamilies = function() { /* Load families */
 
       console.log('loadFamilies');
@@ -178,7 +184,33 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
           alert(i18next.t('selector.error_loading_data'));
         }
       });      
-    };    
+    };
+
+    /**
+     * Load age rules
+     */ 
+    this.loadAgeRules = function() { /* Load age rules */
+      console.log('loadAgeRules');
+      var self = this;
+      var url = commonServices.URL_PREFIX + '/api/booking/frontend/driver-age-rules';
+      if (commonServices.apiKey && commonServices.apiKey != '') {
+        url += '?api_key='+commonServices.apiKey;
+      }  
+      // Request
+      $.ajax({
+        type: 'GET',
+        url: url,
+        dataType: 'json',
+        success: function(data, textStatus, jqXHR) {
+          self.driverAgeRules = data;
+
+          self.selectorView.update('driverAgeRules', null);
+        },
+        error: function(data, textStatus, jqXHR) {
+          alert(i18next.t('selector.error_loading_data'));
+        }
+      });      
+    };  
 
     /**
      * Access the API to get the available pickup days in a month
@@ -754,6 +786,11 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
         }
       }
 
+      // Load age rules
+      if ( this.selectorModel.configuration.useDriverAgeRules) {
+        this.loadAgeRules();
+      }
+
       // Load families
       if (this.selectorModel.configuration.selectFamily) {
         this.loadFamilies();
@@ -808,7 +845,12 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
         if (this.selectorModel.configuration.rentDateSelector === 'date_from_duration') {
           this.loadDurations();
         }
-      }  
+      }
+
+      // Load age rules
+      if ( this.selectorModel.configuration.useDriverAgeRules) {
+        this.loadAgeRules();
+      }
 
       if (this.selectorModel.configuration.selectFamily) {
         this.loadFamilies();
@@ -1290,7 +1332,27 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
           promotionCodeUrl += urlParams.join('&');
         }
 
+        $.validator.addMethod("ageAllowed", function(value, element) {
+          var isVisible = self.selectorModel.driver_age_rule_selector + ':visible';
+
+          if (!isVisible) {
+            return true;
+          }
+
+          if (!value) {
+            return false;
+          }
+
+          var isAllowed = $(element).find('option[value=' + value + ']').attr('allowed') === 'true';
+
+          return isAllowed;
+       });
+
         $(this.selectorModel.form_selector).validate({
+           submitHandler: function(form) {
+            // console.log($(form).formParams());
+            return true;
+           } ,
            invalidHandler: function(form)
            {
              $(self.selectorModel.form_selector + ' label.form-reservation-error').remove();
@@ -1299,6 +1361,10 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
                rental_location_code: {
                    required: self.selectorModel.rental_location_code_selector + ':visible'
                },
+               driver_age_rule_id: {
+                required: self.selectorModel.driver_age_rule_selector + ':visible',
+                ageAllowed: true,
+              },
                pickup_place: {
                    required: self.selectorModel.pickup_place_selector + ':visible'
                },
@@ -1352,6 +1418,16 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
                rental_location_code: {
                    required: i18next.t('common.required')
                },
+               driver_age_rule_id: {
+                required: i18next.t('common.required'),
+                ageAllowed:  function (showMessage, element) {
+                  if (showMessage) {
+                    var value = $(element).val();
+                  
+                    return $(element).find('option[value=' + value + ']').attr('message_not_allowed');
+                  }
+                }
+              },
                pickup_place: {
                    required: i18next.t('selector.validations.pickupPlaceRequired')
                },
@@ -1441,6 +1517,15 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
     this.loadFamilies = function() {
 
       this.selectorModel.loadFamilies();
+
+    }
+
+    /**
+     * Setup the age rules
+     */
+    this.loadAgeRules = function() {
+
+      this.selectorModel.loadAgeRules();
 
     }
 
@@ -1729,7 +1814,20 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
                                                         i18next.t('selector.select'));
             $(this.selectorModel.rental_location_selector).show();
           }          
-          break;  
+          break; 
+        case 'driverAgeRules':
+          if ($(this.selectorModel.driver_age_rule_selector).length > 0 && this.selectorModel.driverAgeRules.length > 0) {
+            var dataSource = new MemoryDataSource(this.selectorModel.driverAgeRules);
+            var driver_age_rule_id  = this.selectorModel.shopping_cart ? this.selectorModel.shopping_cart.driver_age_rule_id : null;
+            new SelectSelector(this.selectorModel.driver_age_rule_id,
+                                              dataSource, 
+                                              driver_age_rule_id, 
+                                              true,
+                                              i18next.t('selector.select'));
+
+            $(this.selectorModel.driver_age_rule_selector).show();
+          }
+          break;
         case 'place':
           if (id== 'pickup_place') {
             // Enable return place selector

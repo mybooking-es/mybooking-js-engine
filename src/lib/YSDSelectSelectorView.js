@@ -78,6 +78,14 @@ define(function() {
           option.setAttribute('value', data_options[idx].id);
           option.text = option.innerText = data_options[idx].description;
 
+          // Age allowed and message option
+          if (data_options[idx].allowed !== undefined) {
+            option.setAttribute('allowed', data_options[idx].allowed);
+          }
+          if (data_options[idx].message_not_allowed !== undefined && data_options[idx].message_not_allowed !== '') {
+            option.setAttribute('message_not_allowed', data_options[idx].message_not_allowed);
+          }
+
           selectControl.appendChild(option);
 
         }
