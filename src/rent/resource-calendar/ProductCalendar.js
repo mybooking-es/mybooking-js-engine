@@ -393,7 +393,8 @@ define('ProductCalendar', ['jquery', 'YSDEventTarget',
           }
 
           // Check that the day can not end if not available collection hours
-          if (typeof self.productCalendarModel.availabilityData.occupation[dateStr]['during_the_day_periods'] !== 'undefined' &&
+          if (typeof self.productCalendarModel.availabilityData.occupation[dateStr] !== 'undefined' &&
+              typeof self.productCalendarModel.availabilityData.occupation[dateStr]['during_the_day_periods'] !== 'undefined' &&
               self.productCalendarModel.availabilityData.occupation[dateStr]['during_the_day_periods'].length > 0 && 
               typeof self.productCalendarModel.availabilityData.occupation[dateStr]['partial_collection'] !== 'undefined') {
             if (self.productCalendarModel.availabilityData.occupation[dateStr]['partial_collection'].length == 0) {

@@ -814,7 +814,7 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
               }
               // Load return hours
               if (productModel.availabilityData && 
-                  typeof productModel.availabilityData.occupation[dateFromStr] !== 'undefined' &&
+                  typeof productModel.availabilityData.occupation[dateToStr] !== 'undefined' &&
                   typeof productModel.availabilityData.occupation[dateToStr]['partial_collection'] !== 'undefined' &&
                   productModel.availabilityData.occupation[dateToStr]['partial_collection'].length > 0) {
                 productModel.returnHours = productModel.availabilityData.occupation[dateToStr]['partial_collection']; 
@@ -1722,10 +1722,12 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
                 dataSource, timeTo, true, 'hh:mm',
                 function() {
                     if (timeTo != null) {
-                      $(productModel.time_to_selector).val(timeTo);
                       // Show the summary (because it is preloaded)
-                      productModel.product_available = true;
-                      productView.update('shopping_cart');
+                      if ($(productModel.time_from_selector).val() !== '') {
+                        $(productModel.time_to_selector).val(timeTo);
+                        productModel.product_available = true;
+                        productView.update('shopping_cart');
+                      }
                     }
                 } );
           }
