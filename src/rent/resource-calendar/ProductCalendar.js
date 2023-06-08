@@ -354,6 +354,17 @@ define('ProductCalendar', ['jquery', 'YSDEventTarget',
             return;
           }
         }
+
+        // Check that the day can not start if not selectable for  delivery
+        if (!self.productCalendarModel.availabilityData.occupation[dateStr].selectable_day_delivery) {
+          event.stopPropagation();
+          // Clear the selection
+          $(self.productCalendarModel.dateSelector).data('dateRangePicker').clear();
+          // Shows an message
+          alert(self.productCalendarModel.i18next.t('calendar_selector.delivery_not_allowed'));
+          return;          
+        }
+        
         // Check that the day can not start if not selectable (holidays)
         if (!self.productCalendarModel.availabilityData.occupation[dateStr].selectable_day) {
             event.stopPropagation();
@@ -363,12 +374,12 @@ define('ProductCalendar', ['jquery', 'YSDEventTarget',
             alert(self.productCalendarModel.i18next.t('calendar_selector.no_deliveries_collection'));
             return;          
         }
+
         self.productCalendarController.firstDateSelected(obj.date1);
       })
       .bind('datepicker-change',function(event,obj) {
         // Avoid trigger the event while updating calendar data
         if (!self.productCalendarModel.updatingData) {
-
           var dateStr = moment(obj.date2 || obj.date1).format('YYYY-MM-DD');  
 
           // Check min days (only duration scope days)
@@ -390,6 +401,16 @@ define('ProductCalendar', ['jquery', 'YSDEventTarget',
                 return;
               }
             }
+          }
+
+          // Check that the day can not end if not selectable for collection
+          if (!self.productCalendarModel.availabilityData.occupation[dateStr].selectable_day_collection) {
+            event.stopPropagation();
+            // Clear the selection
+            $(self.productCalendarModel.dateSelector).data('dateRangePicker').clear();
+            // Shows an message
+            alert(self.productCalendarModel.i18next.t('calendar_selector.collection_not_allowed'));
+            return;          
           }
 
           // Check that the day can not end if not available collection hours

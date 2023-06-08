@@ -112,9 +112,7 @@ define('customSelector', ['jquery', 'commonSettings', 'commonLoader', 'YSDEventT
         // Time To
         this.selector.model.time_to_id = 'custom_time_to';      
         this.selector.model.time_to_selector = '#custom_time_to';  
-        
-        // Driver age
-        this.selector.model.driver_age_rule_selector = '#custom_driver_age_rule';
+
         // Number of products
         this.selector.model.number_of_products_selector = '#custom_number_of_products';
         // Family
