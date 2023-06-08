@@ -211,7 +211,7 @@ define('commonSettings', ['jquery','commonServices','commonLoader','commonTransl
              mybookingSettings.data.selectRentalLocation = data.select_rental_location;
              mybookingSettings.data.productType = data.product_type;
              mybookingSettings.data.assignationTimeReturnPickup = data.assignation_time_return_pickup;
-            mybookingSettings.data.useDriverAgeRules = data.use_driver_age_rule;
+             mybookingSettings.data.useDriverAgeRules = data.use_driver_age_rules || false;
              // - Renting dates
              mybookingSettings.data.minDays = data.min_days;
              mybookingSettings.data.timeToFrom = data.time_to_from;

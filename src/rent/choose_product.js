@@ -325,7 +325,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
       }
       
       if (this.driver_age_rule_id != 'undefined' && this.driver_age_rule_id != '') {
-        data.driver_age_rule_id = this.driver_age_rule_id;
+        data.driver_age_rule = this.driver_age_rule_id;
       }
 
       if (this.number_of_products != 'undefined' && this.number_of_products != '') {
