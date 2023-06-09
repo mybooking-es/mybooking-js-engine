@@ -212,14 +212,28 @@ require([
      * Get calendar of dates
      */
     getCalendar: function ({ from, to }) {
-      let url =
-        commonServices.URL_PREFIX +
-        '/api/booking/frontend/dates?api_key=' +
-        commonServices.apiKey +
-        '&from=' +
-        from +
-        '&to=' +
-        to;
+      let url = commonServices.URL_PREFIX + '/api/booking/frontend/dates';
+    
+      const urlParams = [];
+      if (this.model.requestLanguage != null) {
+        urlParams.push('lang='+this.model.requestLanguage);
+      }
+
+      if (commonServices.apiKey && commonServices.apiKey != '') {
+        urlParams.push('api_key='+commonServices.apiKey);
+      } 
+
+      urlParams.push('from='+from);
+      urlParams.push('to='+to);
+
+      if (this.model.category) {
+        urlParams.push('product=' + this.model.category);
+      }
+
+      if (urlParams.length > 0) {
+        url += '?';
+        url += urlParams.join('&');
+      }
 
       // Returns a Promise with the response
       return new Promise((resolve) => {
@@ -808,7 +822,7 @@ require([
 						description +
 						' <span class="dashicons dashicons-info" data-product="' +
 						item.category_code +
-						'"></span></span>';
+						'" style="display:none"></span></span>';
 				}
 		
 				html += '<th>';
@@ -844,7 +858,7 @@ require([
 						item.description +
 						' <span class="dashicons dashicons-info" data-product="' +
 						item.category_code +
-						'"></span></span>';
+						'" style="display:none"></span></span>';
 				}
 		
 				html += '<tr>';
@@ -1021,6 +1035,14 @@ require([
           this.model.target.html(html);
 
           /*
+          *  Show button info
+          */
+          if (this.model.configuration.productType === 'resource') {
+            $('.js-product-info-btn').css('cursor', 'pointer');
+            $('.js-product-info-btn .dashicons-info').show();
+          }
+
+          /*
           *  Get occupation
           */
           this.getOcupation(this.model.date.actual);
@@ -1155,18 +1177,23 @@ require([
       );
 
       // Bind the event to show detailed product
-      $('.mybooking-planning-table').on(
-        'click',
-        '.js-product-info-btn',
-        (event) => {
-          const target = event.target;
-          // console.log('click');
-          // console.log(target);
-          // console.log($(this));
-          // console.log($(this).attr('data-product'));
-          this.productDetailIconClick($(target).attr('data-product'));
-        }
-      );
+      if (this.model.configuration.productType === 'resource') {
+        $('.mybooking-planning-table').off(
+          'click');
+        $('.mybooking-planning-table').on(
+          'click',
+          '.js-product-info-btn',
+          (event) => {
+            const target = event.target;
+            // console.log('click');
+            // console.log(target);
+            // console.log($(this));
+            // console.log($(this).attr('data-product'));
+            this.productDetailIconClick($(target).attr('data-product'));
+          }
+        );
+      }
+      
     },
 
     /**

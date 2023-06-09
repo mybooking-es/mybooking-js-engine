@@ -124,6 +124,10 @@
 			urlParams.push('from='+from);
 			urlParams.push('to='+to);
 
+			if (this.model.category) {
+				urlParams.push('product=' + this.model.category);
+			}
+
 			if (urlParams.length > 0) {
         url += '?';
         url += urlParams.join('&');
