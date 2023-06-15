@@ -984,7 +984,8 @@ require(['jquery',
                         document.getElementById('driver_document_id_expiration_date_month'),
                         document.getElementById('driver_document_id_expiration_date_year'),
                         document.getElementById('driver_document_id_expiration_date'),
-                        commonSettings.language(model.requestLanguage));
+                        commonSettings.language(model.requestLanguage),
+                        undefined, 'future');
       }
       // Configure driver date of birth and driver license date
       if (document.getElementById('driver_date_of_birth_day')) {

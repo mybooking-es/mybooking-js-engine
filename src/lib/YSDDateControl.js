@@ -10,8 +10,7 @@ define(['jquery','moment'], function($, moment){
    * @param locale The locale
    * @param dateFormat the Date Format
    */
-  var YSDDateControl = function(comboDay, comboMonth, comboYear, hiddenDate, locale, dateFormat) {
-  	
+  var YSDDateControl = function(comboDay, comboMonth, comboYear, hiddenDate, locale, dateFormat, direction) {
     // Creates the model
     var theModel = new YSDDateControlModel(locale, dateFormat);
   
@@ -19,7 +18,7 @@ define(['jquery','moment'], function($, moment){
     var theController = new YSDDateControlController(theModel);
   
     // Creates the view
-    var theView = new YSDDateControlView(theController, theModel, comboDay, comboMonth, comboYear, hiddenDate);
+    var theView = new YSDDateControlView(theController, theModel, comboDay, comboMonth, comboYear, hiddenDate, direction);
 
     // Associates the view with the model and the controller
     theModel.setView(theView);
@@ -188,7 +187,7 @@ define(['jquery','moment'], function($, moment){
 
   /* ------------------ The view --------------------- */
   
-  var YSDDateControlView = function(controller, model, comboDay, comboMonth, comboYear, hiddenDate)
+  var YSDDateControlView = function(controller, model, comboDay, comboMonth, comboYear, hiddenDate, direction)
   {
     this.controller = controller;
     this.model = model;
@@ -197,6 +196,8 @@ define(['jquery','moment'], function($, moment){
     this.comboMonth = comboMonth; 
     this.comboYear = comboYear;    	
     this.hiddenDate = hiddenDate; 
+
+    this.direction = direction;
 		
     /* The view is notified of changes in the model */
   	
@@ -296,17 +297,46 @@ define(['jquery','moment'], function($, moment){
        comboYearLiteral.text = comboYearLiteral.innerText = YSDDateControlModelData[model.locale].literals['year'];
        comboYear.appendChild(comboYearLiteral);
 
-       var start_year = new Date().getFullYear();
-  	   var end_year = start_year - model.getYears();
-  	
-  	   for (var idxYear = start_year; idxYear > end_year; idxYear--)
-  	   {
-  	     var optionYear = document.createElement('option');
-  	     optionYear.setAttribute('value', idxYear);	
-  	     optionYear.text = optionYear.innerText = idxYear;
-  	     comboYear.appendChild(optionYear);
-  	   }
-  	   	 
+      function pastListYears () {
+        var start_year = new Date().getFullYear();
+        var end_year = start_year - model.getYears();
+      
+        for (var idxYear = start_year; idxYear > end_year; idxYear--)
+        {
+          var optionYear = document.createElement('option');
+          optionYear.setAttribute('value', idxYear);	
+          optionYear.text = optionYear.innerText = idxYear;
+          comboYear.appendChild(optionYear);
+        }
+      }
+
+      function futureListYears () {
+        var start_year = new Date().getFullYear();
+        var end_year = start_year + 30; // TODO 
+      
+        for (var idxYear = start_year; idxYear <= end_year; idxYear++)
+        {
+          var optionYear = document.createElement('option');
+          optionYear.setAttribute('value', idxYear);	
+          optionYear.text = optionYear.innerText = idxYear;
+          comboYear.appendChild(optionYear);
+        }
+      }
+      
+
+      switch (this.direction) {
+      case 'past':
+        pastListYears();
+        break;
+      case 'future':
+        futureListYears();
+        break;
+      
+      default:
+        pastListYears();
+        break;
+      }
+
   	   // Configure the events
   	 
   	   $(comboDay).bind('change',
