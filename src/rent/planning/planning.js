@@ -1003,7 +1003,7 @@ require([
           .format(this.model.api_date_format);
         this.model.resources = await this.getPlanning({
           from: this.model.date.actual,
-          to: dateTo,
+          to: this.model.type !== 'diary' ? dateTo : this.model.date.actual,
         });
 
 				/*
