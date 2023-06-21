@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.1.3] - 2023.06.21
+
+### Added
+
+- Renting - Include rental location in search with non exclusive categories for rental location
+
+### Fixed
+
+- Planning - Was showing reservations in differents dates
+
 ## [1.1.2] - 2023.05.25
 
 ### Added
