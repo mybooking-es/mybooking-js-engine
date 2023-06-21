@@ -233,7 +233,12 @@ define(['jquery','moment'], function($, moment){
   	     
   	      comboDay.selectedIndex = model.day;       // Elements begin by 0, but the first is the literal "Day"
   	      comboMonth.selectedIndex = model.month+1; // Add 1 for the literal "Month"
-  	      comboYear.selectedIndex = (model.current_year - model.year) + 1; // Add 1 for the literal "Year"  
+  	      
+          if (this.direction !== 'future') {
+            comboYear.selectedIndex = (model.current_year - model.year) + 1; // Add 1 for the literal "Year"
+          } else {
+            comboYear.selectedIndex = -(model.current_year - model.year) + 1; // Add 1 for the literal "Year"
+          }
   	 	
   	    case 'day' : /* day */
   	    case 'month': /* month */
