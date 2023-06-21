@@ -177,7 +177,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
       this.date_to = decodeURIComponent(url_vars['date_to']);
       this.time_to = decodeURIComponent(url_vars['time_to']);
       this.renting_duration = decodeURIComponent(url_vars['renting_duration']);
-      if (this.configuration.selectRentalLocation) {
+      if (this.configuration.selectorRentalLocation) {
         this.rental_location_code = decodeURIComponent(url_vars['rental_location_code']);
         if (typeof url_vars['engine_fixed_rental_location'] !== 'undefined' && 
             url_vars['engine_fixed_rental_location'] === 'true') {

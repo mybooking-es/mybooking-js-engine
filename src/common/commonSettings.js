@@ -35,6 +35,7 @@ define('commonSettings', ['jquery','commonServices','commonLoader','commonTransl
       multipleDestinations: false,
       multipleRentalLocations: false,
       selectDestination: false, 
+      selectorRentalLocation: false,
       selectRentalLocation: false,  
       productType: null,   
       assignationTimeReturnPickup: null, 
@@ -208,6 +209,7 @@ define('commonSettings', ['jquery','commonServices','commonLoader','commonTransl
              mybookingSettings.data.useRentingFamilies = data.use_renting_families;
              mybookingSettings.data.selectFamily = data.select_family;
              mybookingSettings.data.selectDestination = data.select_destination;
+             mybookingSettings.data.selectorRentalLocation = data.selector_rental_location;
              mybookingSettings.data.selectRentalLocation = data.select_rental_location;
              mybookingSettings.data.productType = data.product_type;
              mybookingSettings.data.assignationTimeReturnPickup = data.assignation_time_return_pickup;

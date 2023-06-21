@@ -750,7 +750,7 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
     this.applyRentalLocationSelector = function() {
 
       var not_hidden_rental_location_code = ($(this.selectorModel.form_selector).find('input[type=hidden][name=rental_location_code]').length == 0);
-      return (not_hidden_rental_location_code && this.selectorModel.configuration.selectRentalLocation);
+      return (not_hidden_rental_location_code && this.selectorModel.configuration.selectorRentalLocation);
 
     }
 
@@ -777,7 +777,8 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
         this.loadPickupPlaces();
       }
       else {
-        if (this.applyRentalLocationSelector()) {
+        if (!this.selectorModel.configuration.simpleLocation && 
+             this.applyRentalLocationSelector()) {
           this.loadRentalLocations();
         }
         else {
@@ -825,7 +826,8 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
       else {
 
         // Load rental locations
-        if (this.applyRentalLocationSelector()) {
+        if (!this.selectorModel.configuration.simpleLocation && 
+            this.applyRentalLocationSelector()) {
           this.loadRentalLocations();
         }
 
