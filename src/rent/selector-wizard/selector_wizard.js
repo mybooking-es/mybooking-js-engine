@@ -1,7 +1,7 @@
 define('selector_wizard', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDSelectSelector',
          'commonServices','commonSettings',
          'commonTranslations', 'i18next', 'moment', 
-         './selector_wizard_select_place', './selector_wizard_select_date', './selector_wizard_select_time',
+         './selector_wizard_select_place', './selector_wizard_select_date', './selector_wizard_select_time', './selector_wizard_select_age',
          'ysdtemplate', 'customCookie',
          'jquery.i18next',
          'jquery.validate', 'jquery.ui', 'jquery.ui.datepicker-es',
@@ -9,7 +9,7 @@ define('selector_wizard', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource
          'jquery.ui.datepicker.validation'],
          function($, MemoryDataSource, RemoteDataSource, SelectSelector,commonServices, commonSettings, 
                   commonTranslations, i18next, moment, 
-                  selectorWizardSelectPlace, selectorWizardSelectDate, selectorWizardSelectTime,
+                  selectorWizardSelectPlace, selectorWizardSelectDate, selectorWizardSelectTime, SelectorWizardSelectAge,
                   tmpl, customCookie) {
 
   var selectorWizardModel = {
@@ -34,6 +34,7 @@ define('selector_wizard', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource
       returnPlaceDescription: null,
     	dateTo: null,
     	timeTo: null,
+      ageId: null,
       agentId: null,
       salesChannelCode: null,
       familyId: null,
@@ -144,6 +145,17 @@ define('selector_wizard', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource
     timeToSelected: function(value) {
       selectorWizardModel.selectionData.timeTo = value;
       selectorWizardView.update('time_to_selected');
+    },
+
+    /**
+     *
+     * Age selected
+     *
+     */
+    ageSelected: function(value) {
+      selectorWizardModel.selectionData.ageId = value;
+
+      selectorWizardView.update('age_selected');
     }
 
   }
@@ -315,17 +327,22 @@ define('selector_wizard', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource
           break;
         case 'time_to_selected': // Wizard time to selected
           selectorWizardSelectTime.model.removeListeners('time_selected');
+          this.stepAge();
+          break;
+        case 'age_selected': // Wizard age selected
+          selectorWizardSelectTime.model.removeListeners('age_selected');
+          
           this.stepFinishWizard();
           break;
-  		}
+      }
 
-  	},
+    },
 
     startFromShoppingCart: function(shopping_cart) {
       selectorWizardModel.shoppingCart = shopping_cart;
     },
 
-  	showWizard: function() {
+    showWizard: function() {
 
       // Hide the body overflow-y on the wizard
       selectorWizardModel.bodyOverflowY = $('body').css('overflow-y');
@@ -537,7 +554,26 @@ define('selector_wizard', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource
     },
 
     /**
-     * Step 7 : Finish wizard
+    * Step 7 :  Age
+    */
+    stepAge: function() {
+      // Setup the event date from selected
+      SelectorWizardSelectAge.model.addListener('age_selected', function(event){
+        if (event.type === 'age_selected') {
+          selectorWizardController.ageSelected(event.data);
+        }
+     });
+
+      // Show the select date from step
+      $('#step_title').html(i18next.t('selectorWizard.age'));
+      this.showWizardHeader();
+
+      // Show the step
+      SelectorWizardSelectAge.view.init();
+    },
+
+    /**
+     * Step 8 : Finish wizard
      */
     stepFinishWizard: function() {
 
@@ -551,6 +587,7 @@ define('selector_wizard', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource
       params.push('return_place='+commonSettings.data.encodeData(selectorWizardModel.selectionData.returnPlace));
       params.push('date_to='+commonSettings.data.encodeData(selectorWizardModel.selectionData.dateTo));
       params.push('time_to='+commonSettings.data.encodeData(selectorWizardModel.selectionData.timeTo));
+      params.push('driver_age_rule_id='+commonSettings.data.encodeData(selectorWizardModel.selectionData.ageId));
       // Appends the agent id
       if (selectorWizardModel.selectionData.agentId != null) {
         params.push('agent_id='+commonSettings.data.encodeData(selectorWizardModel.selectionData.agentId));
