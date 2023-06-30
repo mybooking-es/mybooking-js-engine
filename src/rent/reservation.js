@@ -528,14 +528,23 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
                     },
                     'payment_method_select': {
                         required: 'input[name=payment_method_select]:visible'
-                    }
+                    },
+                    'privacy_read' :  {
+                      required: '#privacy_read:visible'
+                    },   
                 },
                 messages: {
                     'payment_method_id': i18next.t('myReservation.pay.paymentMethodRequired'),
-                    'payment_method_select': i18next.t('myReservation.pay.paymentMethodRequired')
+                    'payment_method_select': i18next.t('myReservation.pay.paymentMethodRequired'),
+                    'privacy_read': {
+                      'required': i18next.t('activities.checkout.validations.privacyReadRequired')
+                    },   
                 },
                 errorPlacement : function(error, element) {
-                  if (element.attr('name') == 'payment_method_id')  {
+                  if (element.attr('name') == 'privacy_read')
+                  {
+                      error.insertAfter(element.parent().parent());
+                  } else  if (element.attr('name') == 'payment_method_id')  {
                      error.insertBefore('#btn_pay');
                   }
                   else if (element.attr('name') == 'payment_method_select')  {

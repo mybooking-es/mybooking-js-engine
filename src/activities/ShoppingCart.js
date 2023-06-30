@@ -377,6 +377,9 @@ require(['jquery','i18next', 'ysdtemplate',
                           },
                           'conditions_read_pay_now' :  {
                               required: '#conditions_read_pay_now:visible'
+                          },
+                          'privacy_read' :  {
+                            required: '#privacy_read:visible'
                           },    
                       },
 
@@ -420,6 +423,9 @@ require(['jquery','i18next', 'ysdtemplate',
                           },   
                           'conditions_read_pay_now': {
                               'required': i18next.t('activities.checkout.validations.conditionsReadRequired')
+                          },
+                          'privacy_read': {
+                            'required': i18next.t('activities.checkout.validations.privacyReadRequired')
                           }   
 
                       },
@@ -428,7 +434,8 @@ require(['jquery','i18next', 'ysdtemplate',
 
                           if (element.attr('name') == 'conditions_read_request_reservation' || 
                               element.attr('name') == 'conditions_read_payment_on_delivery' ||
-                              element.attr('name') == 'conditions_read_pay_now') {
+                              element.attr('name') == 'conditions_read_pay_now'  ||
+                              element.attr('name') == 'privacy_read') {
                               error.insertAfter(element.parent());
                           }
                           else if (element.attr('name') === 'payment_method_value' || 

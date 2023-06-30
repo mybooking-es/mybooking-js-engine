@@ -1109,7 +1109,10 @@ require(['jquery',
                     },
                     'conditions_read_pay_now' :  {
                         required: '#conditions_read_pay_now:visible'
-                    },                                        
+                    },
+                    'privacy_read' :  {
+                      required: '#privacy_read:visible'
+                    },                                         
                     'payment_method_select': {
                         required: 'input[name=payment_method_select]:visible'
                     },
@@ -1210,6 +1213,9 @@ require(['jquery',
                     },   
                     'conditions_read_pay_now': {
                         'required': i18next.t('complete.reservationForm.validations.conditionsReadRequired')
+                    },
+                    'privacy_read': {
+                      'required': i18next.t('activities.checkout.validations.privacyReadRequired')
                     },                                     
                     'payment_method_select': {
                         'required': i18next.t('complete.reservationForm.validations.selectPaymentMethod')
@@ -1243,7 +1249,8 @@ require(['jquery',
 
                     if (element.attr('name') == 'conditions_read_request_reservation' || 
                         element.attr('name') == 'conditions_read_payment_on_delivery' ||
-                        element.attr('name') == 'conditions_read_pay_now')
+                        element.attr('name') == 'conditions_read_pay_now' ||
+                        element.attr('name') == 'privacy_read')
                     {
                         error.insertAfter(element.parent().parent());
                     }

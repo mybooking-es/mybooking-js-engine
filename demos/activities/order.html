@@ -157,6 +157,19 @@
 
                           <div class="form-row">
                             <div class="form-group col-md-12">
+                              <label for="conditions_read_pay_now">
+                                <input type="checkbox" name="conditions_read_pay_now" name="conditions_read_pay_now">&nbsp;He leído y acepto las condiciones del alquiler
+                              </label>
+                            </div>
+                            <div class="form-group col-md-12">
+                              <label for="privacy_read">
+                                <input type="checkbox" name="privacy_read" name="privacy_read">&nbsp;He leído y acepto la política de privacidad
+                              </label>
+                            </div>
+                          </div>
+
+                          <div class="form-row">
+                            <div class="form-group col-md-12">
                               <button type="submit" class="btn btn-success w-100"><%=i18next.t('complete.reservationForm.payment_button',{amount: configuration.formatCurrency(paymentAmount)})%></a>
                             </div>
                           </div>
