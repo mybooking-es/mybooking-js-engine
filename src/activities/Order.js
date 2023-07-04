@@ -448,16 +448,19 @@ require(['jquery', 'i18next', 'ysdtemplate', 'YSDMemoryDataSource','YSDSelectSel
                             'required': i18next.t('activities.checkout.validations.conditionsReadRequired')
                           },
                           'privacy_read': {
-                            'required': i18next.t('activities.checkout.validations.privacyReadRequired')
+                            'required': i18next.t('activities.checkout.validations.privacyPolicyRequired')
                           }   
 
                       },
 
                       errorPlacement: function (error, element) {
-                        if (element.attr('name') == 'conditions_read_pay_now'  ||
-                              element.attr('name') == 'privacy_read') {
-                              error.insertAfter(element.parent());
-                        } else if (element.attr('name') == 'payment_method_value')  {
+                        if (element.attr('name') == 'conditions_read_pay_now' || 
+                          element.attr('name') == 'privacy_read')
+                        { 
+                          error.insertAfter(element.parent());
+                          element.parent().css('display', 'block');
+                        } 
+                        else if (element.attr('name') == 'payment_method_value')  {
                           error.insertBefore('#btn_pay');
                         }
                         else if (element.attr('name') == 'payment_method_select')  {

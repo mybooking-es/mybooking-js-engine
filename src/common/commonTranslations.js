@@ -837,6 +837,7 @@ define("commonTranslations", [], function () {
             emailRequired: "El correo electrónico es obligatorio",
             phoneNumberRequired: "El número de teléfono es obligatorio",
             commentsRequired: "El mensaje es obligatorio",
+            privacyPolicyRequired: "No ha marcado que ha leído la política de privacidad"
           },
           message_sent_successfully: "Mensaje enviado con éxito",
           error_sending_message: "Error enviando mensaje",
@@ -984,6 +985,9 @@ define("commonTranslations", [], function () {
             error:
               "Lo sentimos, se ha producido un error actualizando la reserva",
           },
+          validations: {
+            privacyPolicyRequired: "No ha marcado que ha leído la política de privacidad"
+          },
           passenger: {
             listed: {
               error: "Error al recuperar pasajeros"
@@ -998,7 +1002,7 @@ define("commonTranslations", [], function () {
             },
             validations: {
               invalid: "Por favor, revise el formulario.",
-              fieldRequired: "Campo obligatorio",
+              fieldRequired: "Campo obligatorio"
             }            
           }          
         },

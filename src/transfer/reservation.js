@@ -204,30 +204,21 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
                     controller.btnPaymentClick();
                     return false;
                 },
-                errorClass: 'text-danger',
                 rules : {
                     'payment_method_id': 'required',
-                    'privacy_read' :  {
-                      required: '#privacy_read:visible'
-                    },
                 },
                 messages: {
                     'payment_method_id': i18next.t('myReservation.pay.paymentMethodRequired'),
-                    'privacy_read': {
-                      'required': i18next.t('activities.checkout.validations.privacyReadRequired')
-                    },
                 },
                 errorPlacement : function(error, element) {
-                  if (element.attr('name') == 'privacy_read')
-                  {
-                      error.insertAfter(element.parent().parent());
-                  } else if (element.attr('name') == 'payment_method_id')  {
-                     error.insertBefore('#btn_pay');
+                  if (element.attr('name') == 'payment_method_id')  {
+                    error.insertBefore('#btn_pay');
                   }
                   else {
                      error.insertAfter(element);
                   }
-                }
+                },
+                errorClass : 'form-reservation-error',
             }
         );
 
