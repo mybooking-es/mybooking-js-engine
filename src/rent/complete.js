@@ -493,6 +493,10 @@ require(['jquery',
       if (!$('.js-mb-optional-external-driver').is(':visible')) {
         delete reservation.with_optional_external_driver;
       }
+      // Control the web hostname to manage the reservation origin
+      reservation.web_hostname = window.location.hostname;
+      
+      // Convert to JSON
       var reservationJSON = JSON.stringify(reservation);
       // Prepare the URL
       var url = commonServices.URL_PREFIX + '/api/booking/frontend/shopping-cart';
@@ -907,8 +911,12 @@ require(['jquery',
       if (commonServices.jsUseSelect2) {
         // Setup country selector
         var selectors = ['select[name=country]',
+                         'select[name=customer_origin_country]',
+                         'select[name=driver_origin_country]',
                          'select[name=driver_driving_license_country]',
+                         'select[name=additional_driver_1_origin_country]',
                          'select[name=additional_driver_1_driving_license_country]',
+                         'select[name=additional_driver_2_origin_country]',
                          'select[name=additional_driver_2_driving_license_country]'];
         console.log(selectors);
         var $countrySelector = null;

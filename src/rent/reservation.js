@@ -259,8 +259,16 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
 
 
        if (model.booking.manager_complete_authorized) {
+         // The reservation form fields are defined in a micro-template
+         var locale = model.requestLanguage;
+         var localeReservationFormScript = 'script_reservation_form_'+locale;
+         if (locale != null && document.getElementById(localeReservationFormScript)) {
+            var reservationForm = tmpl(localeReservationFormScript)({booking: model.booking,
+                                                                     configuration: model.configuration});
+            $('form[name=reservation_form]').html(reservationForm);           
+         }
          // Micro-template reservation
-         if (document.getElementById('script_reservation_form')) {
+         else if (document.getElementById('script_reservation_form')) {
            var reservationForm = tmpl('script_reservation_form')(
                 {booking: model.booking,
                  configuration: model.configuration});
@@ -318,8 +326,12 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
       if (commonServices.jsUseSelect2) {
         // Configure address country
         var selectors = ['select[name=customer_address\\[country\\]]',
+                         'select[name=customer_origin_country]',
+                         'select[name=driver_origin_country]',
                          'select[name=driver_driving_license_country]',
+                         'select[name=additional_driver_1_origin_country]',
                          'select[name=additional_driver_1_driving_license_country]',
+                         'select[name=additional_driver_2_origin_country]',
                          'select[name=additional_driver_2_driving_license_country]'];
         var $countrySelector = null;
         for (var idx=0; idx<selectors.length; idx++) { 
