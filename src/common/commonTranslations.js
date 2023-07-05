@@ -303,6 +303,7 @@ define("commonTranslations", [], function () {
             emailRequired: "Email is required",
             phoneNumberRequired: "Phone number is required",
             commentsRequired: "Message is required",
+            privacyPolicyRequired: "You have not marked that you have read the privacy policy"
           },
           message_sent_successfully: "Message sent successfully",
           error_sending_message: "Error sending message",
@@ -434,6 +435,9 @@ define("commonTranslations", [], function () {
           updateReservation: {
             success: "Reservation updated successfully",
             error: "We are sorry. There was an error updating the reservation",
+          },
+          validations: {
+            privacyPolicyRequired: "You have not marked that you have read the privacy policy"
           },
           passenger: {
             listed: {
@@ -1397,6 +1401,7 @@ define("commonTranslations", [], function () {
             emailRequired: "El correu electrònic és obligatori",
             phoneNumberRequired: "El número de telèfon és obligatori",
             commentsRequired: "El missatge és obligatori",
+            privacyPolicyRequired: "No ha marcat que ha llegit la política de privadesa"
           },
           message_sent_successfully: "El missatge s'ha enviat amb èxit",
           error_sending_message: "S'ha produït un error enviant el missatge",
@@ -1534,6 +1539,9 @@ define("commonTranslations", [], function () {
           updateReservation: {
             success: "Reserva actualitzada",
             error: "Ho sentim. S'ha produït un error actualitzant la reserva",
+          },
+          validations: {
+            privacyPolicyRequired: "No ha marcat que ha llegit la política de privadesa"
           },
           passenger: {
             listed: {
@@ -1941,6 +1949,7 @@ define("commonTranslations", [], function () {
             emailRequired: "E-Mail ist erforderlich",
             phoneNumberRequired: "Telefonnummer ist erforderlich",
             commentsRequired: "Nachricht ist erforderlich",
+            privacyPolicyRequired: "Sie haben nicht markiert, dass Sie die Datenschutzerklärung gelesen haben"
           },
           message_sent_successfully: "Nachricht erfolgreich gesendet",
           error_sending_message: "Fehler beim Senden der Nachricht",
@@ -2086,6 +2095,9 @@ define("commonTranslations", [], function () {
             success: "Reservierung erfolgreich aktualisiert",
             error:
               "Wir entschuldigen uns. Beim Aktualisieren der Reservierung ist ein Fehler aufgetreten",
+          },
+          validations: {
+            privacyPolicyRequired: "Sie haben nicht markiert, dass Sie die Datenschutzerklärung gelesen haben"
           },
           passenger: {
             listed: {
@@ -2493,6 +2505,7 @@ define("commonTranslations", [], function () {
             emailRequired: "Champ obligatoire",
             phoneNumberRequired: "Champ obligatoire",
             commentsRequired: "Champ obligatoire",
+            privacyPolicyRequired: "Vous n'avez pas marqué que vous avez lu la politique de confidentialité"
           },
           message_sent_successfully: "Message envoyé avec succès",
           error_sending_message: "Erreur lors de l'envoi du message",
@@ -2638,6 +2651,9 @@ define("commonTranslations", [], function () {
             success: "Réservation mise à jour avec succès",
             error:
               "Nous sommes désolés. Une erreur s'est produite lors de la mise à jour de la réservation",
+          },
+          validations: {
+            privacyPolicyRequired: "Vous n'avez pas marqué que vous avez lu la politique de confidentialité"
           },
           passenger: {
             listed: {
@@ -3044,6 +3060,7 @@ define("commonTranslations", [], function () {
             emailRequired: "L'email è richiesta",
             phoneNumberRequired: "Il numero di telefono è richiesto",
             commentsRequired: "Il messaggio è richiesto",
+            privacyPolicyRequired: "Non hai segnalato di aver letto l'informativa sulla privacy"
           },
           message_sent_successfully: "Messaggio inviato con successo",
           error_sending_message: "Errore durante l'invio del messaggio",
@@ -3201,6 +3218,9 @@ define("commonTranslations", [], function () {
             error:
               "Siamo spiacenti. Si è verificato un errore durante l'aggiornamento della prenotazione",
           },
+          validations: {
+            privacyPolicyRequired: "Non hai segnalato di aver letto l'informativa sulla privacy"
+          },
           passenger: {
             listed: {
               error: "Errore durante il recupero dei passeggeri"
@@ -3351,6 +3371,7 @@ define("commonTranslations", [], function () {
             emailRequired: "Электронная почта обязательна",
             phoneNumberRequired: "Номер телефона обязателен",
             commentsRequired: "Сообщение обязательно",
+            privacyPolicyRequired: "Вы не отметили, что ознакомились с политикой конфиденциальности"
           },
           message_sent_successfully: "Сообщение успешно отправлено",
           error_sending_message: "Ошибка отправки сообщения",
@@ -3484,6 +3505,9 @@ define("commonTranslations", [], function () {
           updateReservation: {
             success: "Бронирование успешно обновлено",
             error: "Мы сожалеем. При обновлении бронирования произошла ошибка",
+          },
+          validations: {
+            privacyPolicyRequired: "Вы не отметили, что ознакомились с политикой конфиденциальности"
           },
           passenger: {
             listed: {

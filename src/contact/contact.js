@@ -126,10 +126,10 @@ require(['jquery',
                       required: i18next.t('contact.validations.emailRequired')
                   },
                   'comments': {
-                    required: i18next.t('contact.validations.commentsRequired')
+                      required: i18next.t('contact.validations.commentsRequired')
                   },
                   'privacy_read': {
-                    'required': i18next.t('contact.validations.privacyPolicyRequired')
+                      required: i18next.t('contact.validations.privacyPolicyRequired')
                   }                     
               },
 
