@@ -39,7 +39,6 @@ define('modify_reservation_selector', ['jquery', 'commonSettings', 'commonLoader
     },
 
     startFromShoppingCart(shopping_cart) {
-      debugger;
       if (this.SelectorTransfer != null) {
         this.SelectorTransfer.view.startFromShoppingCart(shopping_cart);
       } 

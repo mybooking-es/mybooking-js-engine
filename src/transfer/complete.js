@@ -352,7 +352,7 @@ require(['jquery',
                 // remove the shopping cart id from the session
                 model.deleteShoppingCartFreeAccessId();
                 model.putBookingFreeAccessId(bookingId);
-                debugger;
+
                 if (payNow && payment_method_id != null && payment_method_id != '') {
                     // Notify the event
                     var event = {type: 'newReservationWithPaymentRequested',
@@ -986,7 +986,7 @@ require(['jquery',
        if (document.getElementById('script_transfer_reservation_summary')) {
          var reservationDetail = tmpl('script_transfer_reservation_summary')({shopping_cart: model.shopping_cart,
                                                                      configuration: model.configuration});
-                                                                     debugger;
+
          $('#mybooking_transfer_reservation_detail').html(reservationDetail);
        }
       
@@ -1020,7 +1020,7 @@ require(['jquery',
           var productInfo = tmpl('script_transfer_product_detail')(
                         {configuration: model.configuration, 
                          shopping_cart: model.shopping_cart});
-                         debugger;
+
           $('#selected_product').html(productInfo);
         }
       }
@@ -1193,7 +1193,6 @@ require(['jquery',
      */
     gotoPayment: function(url, paymentData) {
 
-      debugger;
       $.form(url, paymentData, 'POST').submit();
 
     },
@@ -1205,7 +1204,7 @@ require(['jquery',
      * Go to Summary page
      */
     gotoSummary: function(bookingId) {
-      debugger;
+
       window.location.href = commonServices.transferSummaryUrl + '?id=' + bookingId;
 
     },
