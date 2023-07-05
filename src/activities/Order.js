@@ -431,36 +431,18 @@ require(['jquery', 'i18next', 'ysdtemplate', 'YSDMemoryDataSource','YSDSelectSel
                           'payment_method_select': {
                               required: 'input[name=payment_method_select]:visible'
                            },
-                           'conditions_read_pay_now' :  {
-                            required: '#conditions_read_pay_now:visible'
-                           },
-                            'privacy_read' :  {
-                              required: '#privacy_read:visible'
-                           },   
 
                       },
 
                       messages : {
 
                           'payment_method_value': i18next.t('activities.payment.paymentMethodNotSelected'),
-                          'payment_method_select': i18next.t('activities.payment.paymentMethodNotSelected'),
-                          'conditions_read_pay_now': {
-                            'required': i18next.t('activities.checkout.validations.conditionsReadRequired')
-                          },
-                          'privacy_read': {
-                            'required': i18next.t('activities.checkout.validations.privacyPolicyRequired')
-                          }   
+                          'payment_method_select': i18next.t('activities.payment.paymentMethodNotSelected')
 
                       },
 
                       errorPlacement: function (error, element) {
-                        if (element.attr('name') == 'conditions_read_pay_now' || 
-                          element.attr('name') == 'privacy_read')
-                        { 
-                          error.insertAfter(element.parent());
-                          element.parent().css('display', 'block');
-                        } 
-                        else if (element.attr('name') == 'payment_method_value')  {
+                        if (element.attr('name') == 'payment_method_value')  {
                           error.insertBefore('#btn_pay');
                         }
                         else if (element.attr('name') == 'payment_method_select')  {

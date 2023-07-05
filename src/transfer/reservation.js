@@ -204,21 +204,21 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
                     controller.btnPaymentClick();
                     return false;
                 },
+                errorClass: 'text-danger',
                 rules : {
-                    'payment_method_id': 'required',
+                    'payment_method_id': 'required'
                 },
                 messages: {
-                    'payment_method_id': i18next.t('myReservation.pay.paymentMethodRequired'),
+                    'payment_method_id': i18next.t('myReservation.pay.paymentMethodRequired')
                 },
                 errorPlacement : function(error, element) {
                   if (element.attr('name') == 'payment_method_id')  {
-                    error.insertBefore('#btn_pay');
+                     error.insertBefore('#btn_pay');
                   }
                   else {
                      error.insertAfter(element);
                   }
-                },
-                errorClass : 'form-reservation-error',
+                }
             }
         );
 

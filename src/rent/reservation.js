@@ -459,31 +459,13 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
           dateControl.setDate(model.booking.additional_driver_2_driving_license_expiration_date);
         }        
       }
-      
+
       $('form[name=booking_information_form]').validate(
           {
-            submitHandler: function() {
-                controller.btnUpdateClick();
-                return false;
-            },
-            errorClass: 'form-reservation-error',
-            rules : {
-              'privacy_read' :  {
-                required: '#privacy_read:visible'
-              },
-            },
-            messages: {
-              'privacy_read': {
-                'required': i18next.t('myReservation.validations.privacyPolicyRequired')
-              },
-            },
-            errorPlacement : function (error, element) {
-              if (element.attr('name') == 'privacy_read')
-              {
-                error.insertAfter(element.parent());
-                element.parent().css('display', 'block');
-              } 
-            }
+              submitHandler: function(form) {
+                  controller.btnUpdateClick();
+                  return false;
+              }
           }
       );
 
@@ -546,11 +528,11 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
                     },
                     'payment_method_select': {
                         required: 'input[name=payment_method_select]:visible'
-                    },
+                    }
                 },
                 messages: {
                     'payment_method_id': i18next.t('myReservation.pay.paymentMethodRequired'),
-                    'payment_method_select': i18next.t('myReservation.pay.paymentMethodRequired'),
+                    'payment_method_select': i18next.t('myReservation.pay.paymentMethodRequired')
                 },
                 errorPlacement : function(error, element) {
                   if (element.attr('name') == 'payment_method_id')  {
