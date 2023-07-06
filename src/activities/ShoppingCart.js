@@ -436,12 +436,7 @@ require(['jquery','i18next', 'ysdtemplate',
                       },
 
                       errorPlacement: function (error, element) {
-
-                          if (element.attr('name') == 'conditions_read_request_reservation' || 
-                              element.attr('name') == 'conditions_read_payment_on_delivery') {
-                              error.insertAfter(element.parent());
-                          }
-                          else if (element.attr('name') == 'conditions_read_pay_now' || 
+                           if (element.attr('name') == 'conditions_read_request_reservation' || element.attr('name') == 'conditions_read_pay_now' || 
                               element.attr('name') == 'privacy_read_pay_now' || element.attr('name') == 'privacy_read_request_reservation')
                           { 
                             error.insertAfter(element.parent());
