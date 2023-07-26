@@ -426,7 +426,7 @@ require(['jquery',
       },
 
       completeActionChange: function() {
-          
+          debugger;
           if ($('input[name=complete_action]:checked').val() === 'pay_now') {
             $('#request_reservation_container').hide();
             $('#payment_on_delivery_container').hide();
@@ -660,7 +660,7 @@ require(['jquery',
         // Setup country selector
         var selectors = ['customer_address_country'];
         for (var idx=0; idx<selectors.length; idx++) { 
-          $countrySelector = $(selectors[idx]);    
+          var $countrySelector = $(selectors[idx]);    
           if ($countrySelector.length > 0 && typeof values[idx] !== 'undefined') {
             $countrySelector.select2({
               width: '100%',
@@ -688,7 +688,6 @@ require(['jquery',
       }
 
       // Configure Telephone with prefix
-      //var countryCode = commonUI.intlTelInputCountryCode();
       var countryCode = model.configuration.countryCode;
       if (typeof countryCode === 'undefined' || countryCode == null) {
         countryCode = commonUI.intlTelInputCountryCode(); 
@@ -1141,6 +1140,7 @@ require(['jquery',
       //  - pay on delivery
       //  - pay now
       if ($('input[name=complete_action]').length > 0) {
+        $('input[name=complete_action]').unbind('change');
         $('input[name=complete_action]').bind('change', function() {
            controller.completeActionChange();
         });

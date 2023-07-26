@@ -472,8 +472,16 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
         }        
       }
 
+      $.extend($.validator.messages, {
+        required: i18next.t('complete.reservationForm.validations.fieldRequired')
+      });
+
       $('form[name=booking_information_form]').validate(
-          {
+          {   
+              ignore: "",
+              invalidHandler : function (form, validator) {
+                alert(i18next.t('myReservation.passenger.validations.invalid'));
+              },
               submitHandler: function(form) {
                   controller.btnUpdateClick();
                   return false;

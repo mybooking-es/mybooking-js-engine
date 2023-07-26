@@ -441,11 +441,11 @@ define('rentEngineMediator', ['jquery', 'YSDEventTarget'],
      * When the reservation form is ready
      * 
      */ 
-    onSummaryUpdateBooking: function() {
+    onSummaryUpdateBooking: function(booking) {
 
       console.log('rentEngineMediator_summarySetupReservationForm');
       if (typeof this.summaryUpdateBookingDelegate === 'function') {
-        this.summaryUpdateBookingDelegate();
+        this.summaryUpdateBookingDelegate(booking);
       }
 
     },

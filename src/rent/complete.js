@@ -906,8 +906,8 @@ require(['jquery',
       else {
         var countriesArray = [];
       }
-      var values = ['','','','']; 
-
+      var values = ['','','','','','','','']; 
+      debugger;
       if (commonServices.jsUseSelect2) {
         // Setup country selector
         var selectors = ['select[name=country]',
@@ -940,9 +940,14 @@ require(['jquery',
       else {
         // Setup country selector
         var selectors = ['country',
+                         'customer_origin_country', 
+                         'driver_origin_country',
                          'driver_driving_license_country',
+                         'additional_driver_1_origin_country',
                          'additional_driver_1_driving_license_country',
-                         'additional_driver_2_driving_license_country'];
+                         'additional_driver_2_origin_country',
+                         'additional_driver_2_driving_license_country'
+                        ];
         for (var idx=0; idx<selectors.length; idx++) { 
           var countryElement = document.getElementById(selectors[idx]);
           if (countryElement && countryElement.tagName === 'SELECT') {
