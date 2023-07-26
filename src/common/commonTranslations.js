@@ -460,6 +460,7 @@ define("commonTranslations", [], function () {
           returnPlace: "Return Point",
           dateTo: "Return date",
           timeTo: "Return time",
+          age: "Age"
         },
         activities: {
           common: {
@@ -1009,6 +1010,7 @@ define("commonTranslations", [], function () {
           returnPlace: "Lugar de devolución",
           dateTo: "Fecha de devolución",
           timeTo: "Hora de devolución",
+          age: "Edad"
         },
         activities: {
           common: {
@@ -1556,6 +1558,7 @@ define("commonTranslations", [], function () {
           returnPlace: "Punt de devolució",
           dateTo: "Data de devolució",
           timeTo: "Hora de devolució",
+          age: "Edat"
         },
         activities: {
           common: {
@@ -2108,6 +2111,7 @@ define("commonTranslations", [], function () {
           returnPlace: "Rückgabepunkt",
           dateTo: "Rückflugdatum",
           timeTo: "Zeit zurück drehen",
+          age: "Alter"
         },
         activities: {
           common: {
@@ -2660,6 +2664,7 @@ define("commonTranslations", [], function () {
           returnPlace: "Point de retour",
           dateTo: "Date de retour",
           timeTo: "Heure de retour",
+          age: "Âge"
         },
         activities: {
           common: {
@@ -3222,6 +3227,7 @@ define("commonTranslations", [], function () {
           returnPlace: "Punto di ritorno",
           dateTo: "Data di ritorno",
           timeTo: "Tempo di ritorno",
+          age: "Età"
         },
         activities: {
           common: {
@@ -3506,6 +3512,7 @@ define("commonTranslations", [], function () {
           returnPlace: "Пункт возврата",
           dateTo: "Дата возвращения",
           timeTo: "Время возврата",
+          age: "Возраст"
         },
         activities: {
           common: {
