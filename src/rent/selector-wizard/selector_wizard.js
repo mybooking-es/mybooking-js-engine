@@ -327,7 +327,12 @@ define('selector_wizard', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource
           break;
         case 'time_to_selected': // Wizard time to selected
           selectorWizardSelectTime.model.removeListeners('time_selected');
-          this.stepAge();
+          if (selectorWizardModel.configuration.useDriverAgeRules) {
+            this.stepAge();
+          }
+          else {
+            this.stepFinishWizard();
+          }
           break;
         case 'age_selected': // Wizard age selected
           selectorWizardSelectTime.model.removeListeners('age_selected');
@@ -587,7 +592,9 @@ define('selector_wizard', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource
       params.push('return_place='+commonSettings.data.encodeData(selectorWizardModel.selectionData.returnPlace));
       params.push('date_to='+commonSettings.data.encodeData(selectorWizardModel.selectionData.dateTo));
       params.push('time_to='+commonSettings.data.encodeData(selectorWizardModel.selectionData.timeTo));
-      params.push('driver_age_rule_id='+commonSettings.data.encodeData(selectorWizardModel.selectionData.ageId));
+      if (selectorWizardModel.selectionData.ageId !== null) {
+        params.push('driver_age_rule_id='+commonSettings.data.encodeData(selectorWizardModel.selectionData.ageId));
+      }
       // Appends the agent id
       if (selectorWizardModel.selectionData.agentId != null) {
         params.push('agent_id='+commonSettings.data.encodeData(selectorWizardModel.selectionData.agentId));
