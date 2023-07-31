@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.3] - 2023.07.31
+
+### Added
+
+- Renting : Selector Wizard
+- Checkout and contact : Privacy policy
+
 ## [1.1.3] - 2023.06.21
 
 ### Added
