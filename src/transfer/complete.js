@@ -722,7 +722,6 @@ require(['jquery',
 
         $('form[name=mybooking_transfer_reservation_form]').validate(
             {
-                errorClass: 'text-danger',
                 submitHandler: function(form) {
                     console.log('COMPLETE - submit');
                     if (!model.reservationFormSubmitted) {
@@ -779,7 +778,16 @@ require(['jquery',
                     },
                     'conditions_read_pay_now' :  {
                         required: '#conditions_read_pay_now:visible'
-                    },                                        
+                    },
+                    'privacy_read_request_reservation' :  {
+                        required: '#privacy_read_request_reservation:visible'
+                    },
+                    'privacy_read_payment_on_delivery' :  {
+                        required: '#privacy_read_payment_on_delivery:visible'
+                    }, 
+                    'privacy_read_pay_now' :  {
+                        required: '#privacy_read_pay_now:visible'
+                    },                                 
                     'payment_method_select': {
                         required: 'input[name=payment_method_select]:visible'
                     },
@@ -872,7 +880,16 @@ require(['jquery',
                     },   
                     'conditions_read_pay_now': {
                         'required': i18next.t('complete.reservationForm.validations.conditionsReadRequired')
-                    },                                     
+                    },
+                    'privacy_read_request_reservation' :  {
+                        'required': i18next.t('complete.reservationForm.validations.privacyPolicyRequired')
+                    },
+                    'privacy_read_payment_on_delivery' :  {
+                        'required': i18next.t('complete.reservationForm.validations.privacyPolicyRequired')
+                    }, 
+                    'privacy_read_pay_now' :  {
+                        'required': i18next.t('complete.reservationForm.validations.privacyPolicyRequired')
+                    },                                                
                     'payment_method_select': {
                         'required': i18next.t('complete.reservationForm.validations.selectPaymentMethod')
                     },
@@ -919,13 +936,15 @@ require(['jquery',
                     },
                 },
 
-                errorPlacement: function (error, element) {
-
+                errorPlacement: function (error, element) {  
                     if (element.attr('name') == 'conditions_read_request_reservation' || 
-                        element.attr('name') == 'conditions_read_payment_on_delivery' ||
-                        element.attr('name') == 'conditions_read_pay_now')
+                    element.attr('name') == 'conditions_read_payment_on_delivery' || 
+                    element.attr('name') == 'conditions_read_pay_now' || element.attr('name') == 'privacy_read_request_reservation'  || 
+                      element.attr('name') == 'privacy_read_payment_on_delivery'  || 
+                      element.attr('name') == 'privacy_read_pay_now')
                     {
-                        error.insertAfter(element.parent().parent());
+                        error.insertAfter(element.parent());
+                        element.parent().css('display', 'block');
                     }
                     else if (element.attr('name') == 'payment_method_select') {
                         error.insertAfter(document.getElementById('payment_method_select_error'));
@@ -938,7 +957,6 @@ require(['jquery',
                 },
 
                 errorClass : 'form-reservation-error'
-
             }
         );
 

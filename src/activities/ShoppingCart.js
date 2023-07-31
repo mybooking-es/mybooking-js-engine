@@ -377,7 +377,13 @@ require(['jquery','i18next', 'ysdtemplate',
                           },
                           'conditions_read_pay_now' :  {
                               required: '#conditions_read_pay_now:visible'
-                          },    
+                          },
+                          'privacy_read_pay_now' :  {
+                            required: '#privacy_read_pay_now:visible'
+                          },
+                          'privacy_read_request_reservation' :  {
+                            required: '#privacy_read_request_reservation:visible'
+                          },
                       },
 
                       messages : {
@@ -420,16 +426,21 @@ require(['jquery','i18next', 'ysdtemplate',
                           },   
                           'conditions_read_pay_now': {
                               'required': i18next.t('activities.checkout.validations.conditionsReadRequired')
-                          }   
-
+                          },
+                          'privacy_read_pay_now': {
+                            'required': i18next.t('activities.checkout.validations.privacyPolicyRequired')
+                          },
+                          'privacy_read_request_reservation': {
+                            'required': i18next.t('activities.checkout.validations.privacyPolicyRequired')
+                          }
                       },
 
                       errorPlacement: function (error, element) {
-
-                          if (element.attr('name') == 'conditions_read_request_reservation' || 
-                              element.attr('name') == 'conditions_read_payment_on_delivery' ||
-                              element.attr('name') == 'conditions_read_pay_now') {
-                              error.insertAfter(element.parent());
+                           if (element.attr('name') == 'conditions_read_request_reservation' || element.attr('name') == 'conditions_read_pay_now' || 
+                              element.attr('name') == 'privacy_read_pay_now' || element.attr('name') == 'privacy_read_request_reservation')
+                          { 
+                            error.insertAfter(element.parent());
+                            element.parent().css('display', 'block');
                           }
                           else if (element.attr('name') === 'payment_method_value' || 
                                    element.attr('name') === 'payment_method_select') {

@@ -106,7 +106,10 @@ require(['jquery',
                   },
                   'comments': {
                   	  required: true
-                  }                            
+                  },
+                  'privacy_read' :  {
+                    required: '#privacy_read:visible'
+                  },                            
               },
 
               messages : {
@@ -123,9 +126,26 @@ require(['jquery',
                       required: i18next.t('contact.validations.emailRequired')
                   },
                   'comments': {
-                  	  required: i18next.t('contact.validations.commentsRequired')
-                  }                        
-              }
+                      required: i18next.t('contact.validations.commentsRequired')
+                  },
+                  'privacy_read': {
+                      required: i18next.t('contact.validations.privacyPolicyRequired')
+                  }                     
+              },
+
+              errorPlacement: function (error, element) {
+                if (element.attr('name') == 'privacy_read')
+                {
+                  error.insertAfter(element.parent());
+                  element.parent().css('display', 'block');
+                }
+                else
+                {
+                    error.insertAfter(element);
+                }                
+              },
+
+              errorClass : 'form-reservation-error',
         });
 
   	}
