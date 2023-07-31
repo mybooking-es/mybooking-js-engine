@@ -139,6 +139,10 @@ require(['jquery',
                   error.insertAfter(element.parent());
                   element.parent().css('display', 'block');
                 }
+                else
+                {
+                    error.insertAfter(element);
+                }                
               },
 
               errorClass : 'form-reservation-error',

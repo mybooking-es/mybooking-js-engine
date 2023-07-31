@@ -1260,8 +1260,9 @@ require(['jquery',
                 errorPlacement: function (error, element) {
 
                     if (element.attr('name') == 'conditions_read_request_reservation' || 
-                    element.attr('name') == 'conditions_read_payment_on_delivery' || 
-                    element.attr('name') == 'conditions_read_pay_now' || element.attr('name') == 'privacy_read_request_reservation'  || 
+                      element.attr('name') == 'conditions_read_payment_on_delivery' || 
+                      element.attr('name') == 'conditions_read_pay_now' ||
+                      element.attr('name') == 'privacy_read_request_reservation'  || 
                       element.attr('name') == 'privacy_read_payment_on_delivery'  || 
                       element.attr('name') == 'privacy_read_pay_now')
                     { 
