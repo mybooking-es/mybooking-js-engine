@@ -260,6 +260,7 @@ require(['jquery',
         crossDomain: true,
         success: function(data, textStatus, jqXHR) {
             model.shopping_cart = data.shopping_cart;
+            model.sales_process = data.sales_process;
             // Updates the shopping cart
             view.updateShoppingCartExtra(extraCode, quantity);
             // Hide the loader (OK)
@@ -311,6 +312,7 @@ require(['jquery',
         crossDomain: true,
         success: function(data, textStatus, jqXHR) {
             model.shopping_cart = data.shopping_cart;
+            model.sales_process = data.sales_process;
             // Updates the shopping cart
             view.updateShoppingCartExtra(extraCode, 0);          
             // Hide the loader (OK)
@@ -431,6 +433,7 @@ require(['jquery',
             success: function(data, textStatus, jqXHR) {
                 // Update the shopping cart
                 model.shopping_cart = data.shopping_cart;
+                model.sales_process = data.sales_process;
                 view.updateShoppingCartPromotionCode();
                 // Hide the loader
                 commonLoader.hide();
@@ -906,12 +909,13 @@ require(['jquery',
       else {
         var countriesArray = [];
       }
-      var values = ['','','','','','','','']; 
+      var values = ['','','','','','','','','']; 
       debugger;
       if (commonServices.jsUseSelect2) {
         // Setup country selector
         var selectors = ['select[name=country]',
                          'select[name=customer_origin_country]',
+                         'select[name=driver_address\\[country\\]]',
                          'select[name=driver_origin_country]',
                          'select[name=driver_driving_license_country]',
                          'select[name=additional_driver_1_origin_country]',
@@ -941,6 +945,7 @@ require(['jquery',
         // Setup country selector
         var selectors = ['country',
                          'customer_origin_country', 
+                         'driver_address_country',
                          'driver_origin_country',
                          'driver_driving_license_country',
                          'additional_driver_1_origin_country',
@@ -1325,7 +1330,8 @@ require(['jquery',
     setupPromotionCode: function() {
 
       if ( $('#apply_promotion_code_btn').length > 0) {
-        $('#apply_promotion_code_btn').bind('click', function() {
+        $('#apply_promotion_code_btn').off('click');
+        $('#apply_promotion_code_btn').on('click', function() {
            controller.applyPromotionCodeBtnClick($('#promotion_code').val());
         });
       }
@@ -1508,6 +1514,11 @@ require(['jquery',
       }
       // Update the payment
       this.updatePayment();
+
+      // Setup Promotion Code         
+      if (model.configuration.promotionCode) {
+        this.setupPromotionCode();
+      }
 
     },
 

@@ -319,14 +319,20 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
         var countriesArray = [];
       }
       var values = [model.booking.address_country,
+                    model.booking.customer_origin_country,
+                    model.booking.driver_address_country,
+                    model.booking.driver_origin_country,
                     model.booking.driver_driving_license_country,
+                    model.booking.additional_driver_1_origin_country,
                     model.booking.additional_driver_1_driving_license_country,
+                    model.booking.additional_driver_2_origin_country,
                     model.booking.additional_driver_2_driving_license_country]; 
 
       if (commonServices.jsUseSelect2) {
         // Configure address country
         var selectors = ['select[name=customer_address\\[country\\]]',
                          'select[name=customer_origin_country]',
+                         'select[name=driver_address\\[country\\]]',
                          'select[name=driver_origin_country]',
                          'select[name=driver_driving_license_country]',
                          'select[name=additional_driver_1_origin_country]',
@@ -352,8 +358,13 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
       else {
         // Setup country selector
         var selectors = ['country', 
+                         'customer_origin_country',
+                         'driver_address_country',
+                         'driver_origin_country',
                          'driver_driving_license_country', 
+                         'additional_driver_1_origin_country',
                          'additional_driver_1_driving_license_country',
+                         'additional_driver_2_origin_country',
                          'additional_driver_2_driving_license_country'];
         for (var idx=0; idx<selectors.length; idx++) { 
           if (document.getElementById(selectors[idx])) {
