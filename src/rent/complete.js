@@ -909,8 +909,8 @@ require(['jquery',
       else {
         var countriesArray = [];
       }
+
       var values = ['','','','','','','','','']; 
-      debugger;
       if (commonServices.jsUseSelect2) {
         // Setup country selector
         var selectors = ['select[name=country]',
@@ -1113,6 +1113,33 @@ require(['jquery',
                         required: '#customer_phone:visible',
                         minlength: 9
                     },
+                    'customer_document_id': {
+                      required: '#customer_document_id:visible'
+                    },
+                    'street': {
+                        required: '#street:visible'
+                    },
+                    'city': {
+                        required: '#city:visible'
+                    },    
+                    'state': {
+                        required: '#state:visible'
+                    }, 
+                    'zip': {
+                        required: '#zip:visible'
+                    }, 
+                    'country': {
+                        required: '#country:visible'
+                    },
+                    'driver_date_of_birth_day': {
+                      required: "#driver_date_of_birth_day:visible"
+                    },
+                    'driver_date_of_birth_month': {
+                      required: "#driver_date_of_birth_month:visible"
+                    },
+                    'driver_date_of_birth_year': {
+                      required: "#driver_date_of_birth_year:visible"
+                    },                    
                     'driver_date_of_birth': {
                         required: "#driver_date_of_birth_day:visible"
                     },
@@ -1222,7 +1249,16 @@ require(['jquery',
                     }, 
                     'country': {
                         'required': i18next.t('complete.reservationForm.validations.fieldRequired')
-                    },                                  
+                    },                              
+                    'driver_date_of_birth_day': {
+                      'required': ''
+                    },
+                    'driver_date_of_birth_month': {
+                      'required': ''
+                    },    
+                    'driver_date_of_birth_year': {
+                      'required': ''
+                    },                                       
                     'driver_date_of_birth': {
                         'required': i18next.t('complete.reservationForm.validations.driverDateOfBirthRequired')
                     },
@@ -1276,7 +1312,6 @@ require(['jquery',
                 },
 
                 errorPlacement: function (error, element) {
-
                     if (element.attr('name') == 'conditions_read_request_reservation' || 
                       element.attr('name') == 'conditions_read_payment_on_delivery' || 
                       element.attr('name') == 'conditions_read_pay_now' ||
@@ -1309,7 +1344,16 @@ require(['jquery',
                     else if (element.attr('name') == 'country' && 
                              $('#country + span.select2-container').length) {
                         error.insertAfter('#country + span.select2-container');
-                    }                     
+                    }
+                    else if (element.attr('name') == 'driver_date_of_birth_day') {
+                      
+                    }
+                    else if (element.attr('name') == 'driver_date_of_birth_month') {
+                      
+                    }
+                    else if (element.attr('name') == 'driver_date_of_birth_day') {
+                      
+                    }  
                     else
                     {
                         error.insertAfter(element);

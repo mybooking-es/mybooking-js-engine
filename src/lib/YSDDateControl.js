@@ -247,13 +247,14 @@ define(['jquery','moment'], function($, moment){
   	      if ( typeof model.year == 'number' && typeof model.month == 'number' && typeof model.day == 'number')
   	      {
             hiddenDate.value = moment([model.year, model.month, model.day]).format(this.model.dateFormat);
-  	        //hiddenDate.value = new Date(model.year, model.month, model.day).toUTCString();
+            $(hiddenDate).trigger('change');
   	      }
   	      else
   	      {
   	        if (hiddenDate.value != '') { // Make sure the date is reset when year, month day are not complete
   	          hiddenDate.value = '';
-  	        }	
+              $(hiddenDate).trigger('change');
+            }	
   	      }
   	     
   	      break; 	
@@ -269,6 +270,7 @@ define(['jquery','moment'], function($, moment){
   	
        // days 
        var comboDayLiteral = document.createElement('option');
+       comboDayLiteral.setAttribute('value', '');
        comboDayLiteral.text = comboDayLiteral.innerText = YSDDateControlModelData[model.locale].literals['day'];
        comboDay.appendChild(comboDayLiteral);
   	  
@@ -283,6 +285,7 @@ define(['jquery','moment'], function($, moment){
   	
   	   // months
        var comboMonthLiteral = document.createElement('option');
+       comboMonthLiteral.setAttribute('value', '');
        comboMonthLiteral.text = comboMonthLiteral.innerText = YSDDateControlModelData[model.locale].literals['month'];
        comboMonth.appendChild(comboMonthLiteral);
   	 
@@ -299,6 +302,7 @@ define(['jquery','moment'], function($, moment){
   	 
   	   // years  	 
        var comboYearLiteral = document.createElement('option');
+       comboYearLiteral.setAttribute('value', '');
        comboYearLiteral.text = comboYearLiteral.innerText = YSDDateControlModelData[model.locale].literals['year'];
        comboYear.appendChild(comboYearLiteral);
 
