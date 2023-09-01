@@ -1131,6 +1131,30 @@ require(['jquery',
                     'country': {
                         required: '#country:visible'
                     },
+                    'driver_document_id_date_day': {
+                      required: "#driver_document_id_date_day:visible"
+                    },
+                    'driver_document_id_date_month': {
+                      required: "#driver_document_id_date_month:visible"
+                    },
+                    'driver_document_id_date_year': {
+                      required: "#driver_document_id_date_year:visible"
+                    },
+                    'driver_document_id_date': {
+                      required: "#driver_document_id_date:visible"
+                    },
+                    'driver_document_id_expiration_date_day': {
+                      required: "#driver_document_id_expiration_date_day:visible"
+                    },
+                    'driver_document_id_expiration_date_month': {
+                      required: "#driver_document_id_expiration_date_month:visible"
+                    },
+                    'driver_document_id_expiration_date_year': {
+                      required: "#driver_document_id_expiration_date_year:visible"
+                    },
+                    'driver_document_id_expiration_date': {
+                      required: "#driver_document_id_expiration_date:visible"
+                    },
                     'driver_date_of_birth_day': {
                       required: "#driver_date_of_birth_day:visible"
                     },
@@ -1139,9 +1163,45 @@ require(['jquery',
                     },
                     'driver_date_of_birth_year': {
                       required: "#driver_date_of_birth_year:visible"
-                    },                    
+                    },
                     'driver_date_of_birth': {
-                        required: "#driver_date_of_birth_day:visible"
+                        required: "#driver_date_of_birth:visible"
+                    },
+                    'driver_driving_license_date_day': {
+                      required: "#driver_driving_license_date_day:visible"
+                    },
+                    'driver_driving_license_date_month': {
+                      required: "#driver_driving_license_date_month:visible"
+                    },
+                    'driver_driving_license_date_year': {
+                      required: "#driver_driving_license_date_year:visible"
+                    },
+                    'driver_driving_license_date': {
+                        required: "#driver_driving_license_date:visible"
+                    },
+                    'additional_driver_2_driving_license_date_day': {
+                      required: "#additional_driver_2_driving_license_date_day:visible"
+                    },
+                    'additional_driver_2_driving_license_date_month': {
+                      required: "#additional_driver_2_driving_license_date_month:visible"
+                    },
+                    'additional_driver_2_driving_license_date_year': {
+                      required: "#additional_driver_2_driving_license_date_year:visible"
+                    },
+                    'additional_driver_2_driving_license_date': {
+                        required: "#additional_driver_2_driving_license_date:visible"
+                    },
+                    'additional_driver_1_driving_license_date_day': {
+                      required: "#additional_driver_1_driving_license_date_day:visible"
+                    },
+                    'additional_driver_1_driving_license_date_month': {
+                      required: "#additional_driver_1_driving_license_date_month:visible"
+                    },
+                    'additional_driver_1_driving_license_date_year': {
+                      required: "#additional_driver_1_driving_license_date_year:visible"
+                    },
+                    'additional_driver_1_driving_license_date': {
+                        required: "#additional_driver_1_driving_license_date:visible"
                     },
                     'number_of_adults': {
                         required: '#number_of_adults:visible'
@@ -1249,18 +1309,6 @@ require(['jquery',
                     }, 
                     'country': {
                         'required': i18next.t('complete.reservationForm.validations.fieldRequired')
-                    },                              
-                    'driver_date_of_birth_day': {
-                      'required': ''
-                    },
-                    'driver_date_of_birth_month': {
-                      'required': ''
-                    },    
-                    'driver_date_of_birth_year': {
-                      'required': ''
-                    },                                       
-                    'driver_date_of_birth': {
-                        'required': i18next.t('complete.reservationForm.validations.driverDateOfBirthRequired')
                     },
                     'number_of_adults': {
                         'required': i18next.t('complete.reservationForm.validations.numberOfAdultsRequired')
@@ -1345,18 +1393,9 @@ require(['jquery',
                              $('#country + span.select2-container').length) {
                         error.insertAfter('#country + span.select2-container');
                     }
-                    else if (element.attr('name') == 'driver_date_of_birth_day') {
-                      
-                    }
-                    else if (element.attr('name') == 'driver_date_of_birth_month') {
-                      
-                    }
-                    else if (element.attr('name') == 'driver_date_of_birth_day') {
-                      
-                    }  
                     else
                     {
-                        error.insertAfter(element);
+                      error.insertAfter(element);
                     }
 
                 },
