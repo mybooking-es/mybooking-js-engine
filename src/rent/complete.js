@@ -907,7 +907,7 @@ require(['jquery',
         var countriesArray = [];
       }
       var values = ['','','','','','','','']; 
-      debugger;
+
       if (commonServices.jsUseSelect2) {
         // Setup country selector
         var selectors = ['select[name=country]',
@@ -1108,6 +1108,24 @@ require(['jquery',
                         required: '#customer_phone:visible',
                         minlength: 9
                     },
+                    'customer_document_id': {
+                      required: '#customer_document_id:visible'
+                    },
+                    'street': {
+                        required: '#street:visible'
+                    },
+                    'city': {
+                        required: '#city:visible'
+                    },    
+                    'state': {
+                        required: '#state:visible'
+                    }, 
+                    'zip': {
+                        required: '#zip:visible'
+                    }, 
+                    'country': {
+                        required: '#country:visible'
+                    },
                     'driver_date_of_birth': {
                         required: "#driver_date_of_birth_day:visible"
                     },
@@ -1271,7 +1289,6 @@ require(['jquery',
                 },
 
                 errorPlacement: function (error, element) {
-
                     if (element.attr('name') == 'conditions_read_request_reservation' || 
                       element.attr('name') == 'conditions_read_payment_on_delivery' || 
                       element.attr('name') == 'conditions_read_pay_now' ||
@@ -1304,7 +1321,25 @@ require(['jquery',
                     else if (element.attr('name') == 'country' && 
                              $('#country + span.select2-container').length) {
                         error.insertAfter('#country + span.select2-container');
-                    }                     
+                    }
+                    else if (element.attr('name') == 'driver_date_of_birth') {
+                      $('#driver_date_of_birth_day').addClass('form-reservation-error');
+                      $('#driver_date_of_birth_month').addClass('form-reservation-error');
+                      $('#driver_date_of_birth_year').addClass('form-reservation-error');
+                      error.insertAfter(element);
+                    }
+                    else if (element.attr('name') == 'driver_document_id_date') {
+                      $('#driver_document_id_date_day').addClass('form-reservation-error');
+                      $('#driver_document_id_date_month').addClass('form-reservation-error');
+                      $('#driver_document_id_date_year').addClass('form-reservation-error');
+                      error.insertAfter(element);
+                    }       
+                    else if (element.attr('name') == 'driver_document_id_expiration_date') {
+                      $('#driver_document_id_expiration_date_day').addClass('form-reservation-error');
+                      $('#driver_document_id_expiration_date_month').addClass('form-reservation-error');
+                      $('#driver_document_id_expiration_date_year').addClass('form-reservation-error');
+                      error.insertAfter(element);
+                    }       
                     else
                     {
                         error.insertAfter(element);
