@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.5] - 2023.09.25
+
+### Fixed
+
+- Date Control to manage date before current date
+- Added new country fields to selector
+
 ## [1.1.4] - 2023.07.31
 
 ### Added
