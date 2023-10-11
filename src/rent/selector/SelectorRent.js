@@ -1467,7 +1467,8 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
            },
            errorPlacement: function (error, element) {
 
-            error.insertAfter(element.parent());
+            // error.insertAfter(element.parent());
+            error.insertAfter(element);
 
            },
            errorClass : 'form-reservation-error'
