@@ -1082,7 +1082,7 @@ define("commonTranslations", [], function () {
           selectDropOffPlace: "Seleccionar lugar de destino",
           chooseVehicle: {
             vehicleFound:
-              "Hemos encontrado <strong>{{available}}</strong> vehículos disponibles",
+              "Hemos encontrado&nbsp;<strong>{{available}}</strong>&nbsp;vehículos disponibles",
             vehicleNotFound:
               "Lo sentimos. No hemos encontrados vehículos disponibles en esas fechas",
           },
@@ -1632,7 +1632,7 @@ define("commonTranslations", [], function () {
           selectDropOffPlace: "Escollir punt de destí",
           chooseVehicle: {
             vehicleFound:
-              "Hem trobat <strong>{{available}}</strong> vehicles disponibles",
+              "Hem trobat&nbsp;<strong>{{available}}</strong>&nbsp;vehicles disponibles",
             vehicleNotFound: "Ho sentim. No em trobat cap vehicle disponible",
           },
         },
@@ -2188,7 +2188,7 @@ define("commonTranslations", [], function () {
           selectDropOffPlace: "Abgabeort auswählen",
           chooseVehicle: {
             vehicleFound:
-              "<strong>{{available}}</strong>verfügbare Fahrzeuge gefunden",
+              "<strong>{{available}}</strong>&nbsp;verfügbare Fahrzeuge gefunden",
             vehicleNotFound:
               "Es tut uns leid. Nicht verfügbare Fahrzeuge gefunden",
           },
@@ -2745,7 +2745,7 @@ define("commonTranslations", [], function () {
           selectDropOffPlace: "Sélectionnez le lieu de dépôt",
           chooseVehicle: {
             vehicleFound:
-              "<strong>{{available}}</strong> véhicules disponibles trouvés",
+              "<strong>{{available}}</strong>&nbsp;véhicules disponibles trouvés",
             vehicleNotFound:
               "Nous sommes désolés. Véhicules non disponibles trouvés",
           },
@@ -3314,7 +3314,7 @@ define("commonTranslations", [], function () {
           selectDropOffPlace: "Seleziona il luogo di riconsegna",
           chooseVehicle: {
             vehicleFound:
-              "<strong>{{available}}</strong> veicoli disponibili trovati",
+              "<strong>{{available}}</strong>&nbsp;veicoli disponibili trovati",
             vehicleNotFound: "Siamo spiacenti. Veicoli non disponibili trovati",
           },
         },
@@ -3601,7 +3601,7 @@ define("commonTranslations", [], function () {
           selectDropOffPlace: "Выберите место возврата",
           chooseVehicle: {
             vehicleFound:
-              "Найдено <strong>{{available}}</strong> доступных транспортных средства",
+              "Найдено&nbsp;<strong>{{available}}</strong>&nbsp;доступных транспортных средства",
             vehicleNotFound: "Мы сожалеем. Не найдены доступные автомобили",
           },
         },
