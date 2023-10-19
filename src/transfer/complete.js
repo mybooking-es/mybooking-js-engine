@@ -999,6 +999,13 @@ require(['jquery',
      */
     updateShoppingCartSummary: function() { // Updates the shopping cart summary (total)
 
+      // Summary sticky
+      if (document.getElementById('script_transfer_reservation_summary_sticky')) {
+        var reservationDetailSticky = tmpl('script_transfer_reservation_summary_sticky')({shopping_cart: model.shopping_cart,
+                                                                                 configuration: model.configuration});
+        $('#mybooking_transfer_reservation_detail_sticky').html(reservationDetailSticky);
+      }
+
        // Summary
        if (document.getElementById('script_transfer_reservation_summary')) {
          var reservationDetail = tmpl('script_transfer_reservation_summary')({shopping_cart: model.shopping_cart,
