@@ -593,8 +593,41 @@ require(['jquery',
             }
         });
 
-    }
+    },
 
+    /**
+     * Modal video toogle
+     */
+    productVideoonClick: function(type) {
+      const productGallery = $('.mybooking-modal_product-gallery');
+      const productImage = productGallery.find('.mybooking-carousel-inner');
+      const productImageBtn = productGallery.find('[data-target="image"]');
+      const productVideoBtn = productGallery.find('[data-target="video"]');
+
+      const result = tmpl('script_transfer_product_detail_video')({
+        product: model.productDetail
+      });
+
+      switch (type) {
+        case 'image':
+          productVideoBtn.show();
+
+          $('#mybooking_transfer_product_detail_video').html('');
+
+          productImage.show();
+          productImageBtn.hide();
+          break;
+      
+        default:
+          productImage.hide();
+          productImageBtn.show();
+
+          $('#mybooking_transfer_product_detail_video').html(result);
+
+          productVideoBtn.hide();
+          break;
+      }
+    }
   };
 
   var controller = { // THE CONTROLLER
@@ -671,7 +704,41 @@ require(['jquery',
 
       paymentMethodSelectChange: function(value) {
         $('input[name=payment]').val(value);
+      },
+
+      /**
+     * Modal video toogle TODO refactor (is similar to product video method)
+     */
+    extraVideoonClick: function(type) {
+      const extraGallery = $('.mybooking-modal_extra-gallery');
+      const extraImage = extraGallery.find('.mybooking-carousel-inner');
+      const extraImageBtn = extraGallery.find('[data-target="image"]');
+      const extraVideoBtn = extraGallery.find('[data-target="video"]');
+
+      const result = tmpl('script_transfer_extra_detail_video')({
+        extra: model.extraDetail
+      });
+
+      switch (type) {
+        case 'image':
+          extraVideoBtn.show();
+
+          $('#mybooking_transfer_extra_detail_video').html('');
+
+          extraImage.show();
+          extraImageBtn.hide();
+          break;
+      
+        default:
+          extraImage.hide();
+          extraImageBtn.show();
+
+          $('#mybooking_transfer_extra_detail_video').html(result);
+
+          extraVideoBtn.hide();
+          break;
       }
+    }
 
   };
 
@@ -1784,7 +1851,14 @@ require(['jquery',
           // Bind the event to show detailed extra
           $('.js-extra-info-btn').bind('click', function(){
             controller.extraDetailIconClick($(this).attr('data-extra'));
-          });  
+          });
+          
+          // Bind the event to show video
+          $('.mybooking-detail_modal').on('click', '.js-extra-toogle-video', function() {
+            const target = $(this).attr('data-target');
+
+            controller.extraVideoonClick(target);
+          });
         }
 
     },
