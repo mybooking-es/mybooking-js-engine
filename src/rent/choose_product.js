@@ -712,6 +712,38 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
       
     },
 
+    // Toogle Video
+    productVideoonClick: function(type) {
+      const productGallery = $('.mybooking-modal_product-gallery');
+      const productImage = productGallery.find('.mybooking-carousel-inner');
+      const productImageBtn = productGallery.find('[data-target="image"]');
+      const productVideoBtn = productGallery.find('[data-target="video"]');
+
+      const result = tmpl('script_transfer_product_detail_video')({
+        product: model.productDetail
+      });
+
+      switch (type) {
+        case 'image':
+          productVideoBtn.show();
+
+          $('#mybooking_transfer_product_detail_video').html('');
+
+          productImage.show();
+          productImageBtn.hide();
+          break;
+      
+        default:
+          productImage.hide();
+          productImageBtn.show();
+
+          $('#mybooking_transfer_product_detail_video').html(result);
+
+          productVideoBtn.hide();
+          break;
+      }
+    },
+
     /**
      * Show products in Grid
      */ 
@@ -1023,6 +1055,13 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
           $('.js-product-info-btn').bind('click', function(){
             controller.productDetailIconClick($(this).attr('data-product'));
           });  
+          // Bind the event to show video
+          $('.mybooking-detail_modal').on('click', '.js-product-toogle-video', function() {
+            const target = $(this).attr('data-target');
+
+            controller.productVideoonClick(target);
+          });
+
           // Setup coverage
           this.setupCoverage();        
         }  
