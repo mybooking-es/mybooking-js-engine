@@ -1016,9 +1016,9 @@ require(['jquery',
       
        // Setup the events
        
-       if ($('#mybooking_transfer_modify_reservation_button').length) {
+       if ($('.js-modify-reservation-button').length) {
          // The user clicks on the modify reservation button
-         $('#mybooking_transfer_modify_reservation_button').bind('click', function() { 
+         $('.js-modify-reservation-button').bind('click', function() { 
               // Setup the selector
               if (!view.selectorLoaded) {
                 selector.view.startFromShoppingCart(model.shopping_cart);

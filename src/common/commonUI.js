@@ -149,7 +149,7 @@ define('commonUI',['jquery', 'commonServices', 'jquery.modal'],function($, commo
                 slidesToScroll: 1,
                 autoplay: true,
                 autoplaySpeed: 4000,
-                adaptiveHeight: true,
+                // adaptiveHeight: true,
                 arrows: true,
                 dots: true,
                 prevArrow: '<button type="button" class="slick-prev">&nbsp;</type>',

@@ -969,9 +969,9 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
           }
 
           // Modify reservation button
-          if ($('#modify_reservation_button').length) {
+          if ($('.js-modify-reservation-button').length) {
             // The user clicks on the modify reservation button
-            $('#modify_reservation_button').on('click', function() {
+            $('.js-modify-reservation-button').on('click', function() {
               // Setup the wizard
               if (!view.selectorLoaded) {
                 if (commonServices.selectorInProcess == 'wizard') {

@@ -304,9 +304,9 @@ require(['jquery',
          
          // Setup the events
          
-         if ($('#modify_reservation_button').length) {
+         if ($('.js-modify-reservation-button').length) {
            // The user clicks on the modify reservation button
-           $('#modify_reservation_button').bind('click', function() { 
+           $('.js-modify-reservation-button').bind('click', function() { 
                 // Setup the wizard
                 if (!view.selectorLoaded) {
                   if (commonServices.selectorInProcess == 'wizard') {
