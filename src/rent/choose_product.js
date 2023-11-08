@@ -1170,7 +1170,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
               window.location.href = product.external_detail_url;
               return;
             }
-            else if (commonServices.rentingDetailPageUrlPrefix !== '') {
+            else if ( commonServices.rentingDetailPages && commonServices.rentingDetailPageUrlPrefix !== '' ) {
               // Virtual detail page
               var url = commonServices.siteURL;
               url += '/';
