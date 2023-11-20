@@ -316,9 +316,9 @@ define("commonTranslations", [], function () {
           no_deliveries_collection:
             "Day does not accept delivery or collection",
           delivery_not_allowed:
-            "It is not possible to deliver on the date. Only return times are available",
+            "It is not possible to deliver on the date.",
           collection_not_allowed:
-            "It is not possible to return on the date. Only delivery times are available",
+            "It is not possible to return on the date.",
         },
         selector: {
           select: "Select",
@@ -854,9 +854,9 @@ define("commonTranslations", [], function () {
           busy: "Ocupado",
           no_deliveries_collection: "El día no acepta entregas ni devoluciones",
           delivery_not_allowed:
-            "No es posible entregar en la fecha. Sólo hay disponibles horarios de devolución",
+            "No es posible entregar en la fecha.",
           collection_not_allowed:
-            "No es posible devolver en la fecha. Sólo hay disponibles horarios de entrega",
+            "No es posible devolver en la fecha.",
         },
         selector: {
           select: "Seleccionar",
@@ -1416,9 +1416,9 @@ define("commonTranslations", [], function () {
           no_deliveries_collection:
             "El dia no accepte lliraments ni devolucions",
           delivery_not_allowed:
-            "No es pot lliurar en la data. Només estan disponibles els horaris de tornada",
+            "No es pot lliurar en la data.",
           collection_not_allowed:
-            "No és possible tornar a la data. Només estan disponibles els horaris de lliurament.",
+            "No és possible tornar a la data.",
         },
         selector: {
           select: "Seleccionar",
@@ -1967,9 +1967,9 @@ define("commonTranslations", [], function () {
           no_deliveries_collection:
             "Day akzeptiert keine Lieferung oder Abholung",
           delivery_not_allowed:
-            "Eine Lieferung zum Termin ist nicht möglich. Nur Rückfahrtzeiten sind verfügbar",
+            "Eine Lieferung zum Termin ist nicht möglich.",
           collection_not_allowed:
-            "Eine Rückgabe am Datum ist nicht möglich. Es sind nur Lieferzeiten verfügbar",
+            "Eine Rückgabe am Datum ist nicht möglich.",
         },
         selector: {
           select: "Selektionär",
@@ -2522,9 +2522,9 @@ define("commonTranslations", [], function () {
           no_deliveries_collection:
             "Day n'accepte pas la livraison ou la collecte",
           delivery_not_allowed:
-            "Il n'est pas possible de livrer à la date. Seuls les horaires de retour sont disponibles",
+            "Il n'est pas possible de livrer à la date.",
           collection_not_allowed:
-            "Il n'est pas possible de revenir à la date. Seuls les délais de livraison sont disponibles",
+            "Il n'est pas possible de revenir à la date.",
         },
         selector: {
           select: "Sélectionnez",
@@ -3078,9 +3078,9 @@ define("commonTranslations", [], function () {
           busy: "Occupato",
           no_deliveries_collection: "Day non accetta consegna o ritiro",
           delivery_not_allowed:
-            "Non è possibile consegnare in data. Sono disponibili solo i tempi di ritorno",
+            "Non è possibile consegnare in data.",
           collection_not_allowed:
-            "Non è possibile restituire la data. Sono disponibili solo i tempi di consegna",
+            "Non è possibile restituire la data.",
         },
         selector: {
           select: "Seleziona",
@@ -3390,9 +3390,9 @@ define("commonTranslations", [], function () {
           busy: "занятый",
           no_deliveries_collection: "День не принимает доставку или самовывоз",
           delivery_not_allowed:
-            "Доставка в указанный день невозможна. Доступно только время возврата",
+            "Доставка в указанный день невозможна.",
           collection_not_allowed:
-            "Вернуть дату невозможно. Доступны только сроки доставки",
+            "Вернуть дату невозможно.",
         },
         selector: {
           select: "селекционер",

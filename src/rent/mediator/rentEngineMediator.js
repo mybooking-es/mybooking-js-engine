@@ -160,13 +160,15 @@ define('rentEngineMediator', ['jquery', 'YSDEventTarget'],
      * @coverageCode:: The current coverage code
      * @products:: The products detail
      * @shoppingCart:: The current shopping cart
+     * @rateType:: The rate type (in case there are multiple rate types)
      *
      */
     onChooseSingleProduct: function ( productCode, 
                                       hasCoverage, 
                                       coverageCode, 
                                       products, 
-                                      shoppingCart ) {
+                                      shoppingCart,
+                                      rateType ) {
 
       console.log('rentEngineMediator_chooseSingleProduct');
 
@@ -175,6 +177,7 @@ define('rentEngineMediator', ['jquery', 'YSDEventTarget'],
         var selectedProduct = products.find(function(element) { return element.code === productCode });
         var data = { 
                       productCode: productCode,
+                      rateType: rateType,
                       product: selectedProduct,
                       products: products,
                       shoppingCart: shoppingCart,
@@ -192,7 +195,7 @@ define('rentEngineMediator', ['jquery', 'YSDEventTarget'],
         this.chooseSingleProductDelegate( data, this );
       }
       else {
-        this.continueSelectSingleProduct( productCode, coverageCode );
+        this.continueSelectSingleProduct( productCode, coverageCode, rateType );
       }
 
     },
@@ -200,10 +203,10 @@ define('rentEngineMediator', ['jquery', 'YSDEventTarget'],
     /**
      * Select the product
      */
-    continueSelectSingleProduct: function( productCode, coverageCode ) {
+    continueSelectSingleProduct: function( productCode, coverageCode, rateType ) {
 
       if (this.chooseProduct != null) {
-        this.chooseProduct.model.selectProduct( productCode, 1, coverageCode );
+        this.chooseProduct.model.selectProduct( productCode, 1, coverageCode, rateType );
       }
 
     },

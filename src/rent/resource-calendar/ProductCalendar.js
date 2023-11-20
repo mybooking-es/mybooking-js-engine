@@ -241,9 +241,10 @@ define('ProductCalendar', ['jquery', 'YSDEventTarget',
             var info = null;
             // Check the availability
             if (self.productCalendarModel.availabilityData) {
-              // Day is not selectable [calendar]
+              // Day is not selectable [calendar] 
               if (self.productCalendarModel.availabilityData['occupation'][theDate] && 
-                !self.productCalendarModel.availabilityData['occupation'][theDate].selectable_day) {
+                  !self.productCalendarModel.availabilityData['occupation'][theDate].selectable_day &&
+                  !self.productCalendarModel.configuration.calendarShowAvailabilityNotSelectable) {
                 return [true, 'not-selectable-day']; // The reservation can not start or end on the date 
               }    
               // Product is not available [rent]
@@ -295,7 +296,10 @@ define('ProductCalendar', ['jquery', 'YSDEventTarget',
             // Show prices
             if (self.productCalendarModel.availabilityData && typeof self.productCalendarModel.availabilityData.prices !== 'undefined') {
               var prices = self.productCalendarModel.availabilityData.prices;
-              if (prices[dateStr] && self.productCalendarModel.availabilityData.occupation[dateStr].selectable_day) {
+              // If the day is selectable or duration scope is by days
+              if (prices[dateStr] && 
+                  (self.productCalendarModel.availabilityData.occupation[dateStr].selectable_day || 
+                   self.productCalendarModel.configuration.calendarShowAvailabilityNotSelectable) ) {
                 var priceValue = new Number(prices[dateStr]);
                 var priceStr = self.productCalendarModel.configuration.formatCurrency(prices[dateStr],
                                                                          self.productCalendarModel.configuration.currencySymbol,
@@ -310,7 +314,9 @@ define('ProductCalendar', ['jquery', 'YSDEventTarget',
             // Min days
             if (self.productCalendarModel.availabilityData && typeof self.productCalendarModel.availabilityData.min_days !== 'undefined') {
               var minDays = self.productCalendarModel.availabilityData.min_days;
-              if (minDays[dateStr] && minDays[dateStr] > 1 && self.productCalendarModel.availabilityData.occupation[dateStr].selectable_day) {
+              if (minDays[dateStr] && minDays[dateStr] > 1 && 
+                  (self.productCalendarModel.availabilityData.occupation[dateStr].selectable_day || 
+                   self.productCalendarModel.configuration.calendarShowAvailabilityNotSelectable) ) {
                 var minDaysLiteral = self.productCalendarModel.i18next.t('calendar_selector.min_duration', {days: minDays[dateStr]});
                 renderMinDays = "<div class=\"mybooking-product_calendar-mindays mybooking-product_calendar-mindays-data\">"+minDaysLiteral+"</div>";
               }
