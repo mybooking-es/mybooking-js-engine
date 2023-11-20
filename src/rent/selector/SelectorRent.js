@@ -295,6 +295,7 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
      * Access the API to get the available pickup hours in a date
      */
     this.loadPickupHours = function(date) { /* Load pickup hours */
+      console.log('loadPickupHours. date:'+date);
       var self=this;
       // Build URL
       var url = commonServices.URL_PREFIX + '/api/booking/frontend/times?date='+date+'&action=deliveries';
@@ -328,6 +329,7 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
      * Access the API to get the available return hours in a date
      */
     this.loadReturnHours = function(date) { /* Load return hours */
+      console.log('loadPickupHours. date:'+date);
       var self=this;
       // Build URL
       var url = commonServices.URL_PREFIX + '/api/booking/frontend/times?date='+date+'&action=collections';
@@ -477,11 +479,14 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
 
     /**
      * Pickup place changed
+     * 
+     * When loading from shopping cart this method is not called because it is initialized on
+     * loadPickupPlaces
      */ 
     this.pickupPlaceChanged = function() { 
 
        console.log('pickup place changed');
-
+       
        // Clear shopping cart data to avoid to be reloaded
        if (this.selectorModel.shopping_cart) {
          this.selectorModel.shopping_cart.date_from = null;
@@ -495,6 +500,9 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
          this.selectorModel.shopping_cart.custom_return_place = null;
          this.selectorModel.shopping_cart.return_place_other = null;
        }   
+
+       // -- Enabled date from
+       $(this.selectorModel.date_from_selector).attr('disabled', false);
 
        // -- Disable fields selectors (return place, time from ,date to, time to)
 
@@ -535,8 +543,15 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
          }
        }
 
-       // Load the return places
-       this.selectorView.loadReturnPlaces(true);
+       // Take into account if prefill selector
+       if (this.selectorModel.configuration.prefillSelector) {
+         // Update the pickup place
+         this.selectorView.update('place', 'pickup_place');
+       }
+       else {
+         // Default behaviour when no prefill => load return places when change pickup place
+         this.selectorView.loadReturnPlaces(true);
+       } 
     }
 
     /**
@@ -570,6 +585,9 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
 
     /**
      * Return place changed
+     * 
+     * When loading from shopping cart this method is not called because it is initialized on
+     * loadPickupPlaces
      */ 
     this.returnPlaceChanged = function() { 
 
@@ -602,10 +620,15 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
 
         // - Initialize date_to 
         $(this.selectorModel.date_to_selector).datepicker('setDate', null);
-        
         // - Initialize time_to
         if (this.selectorModel.configuration.timeToFrom) {
           $(this.selectorModel.time_to_selector).val('');
+        }
+
+        // Take into account if prefill selector        
+        if (this.selectorModel.configuration.prefillSelector) {
+          // Update the pickup place
+          this.selectorView.update('place', 'return_place');
         }
 
     }
@@ -643,6 +666,15 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
         if ($(this.selectorModel.date_to_selector).attr('disabled')) {  
           $(this.selectorModel.date_to_selector).attr('disabled', false);
         }  
+
+        // If prefill model => loadReturnPlaces 
+        // When setup the date from load return places
+        // because of paralelism execution of preloading causes the date_to
+        // to be empty if return places are loaded before date_from is setup
+        if (this.selectorModel.configuration.prefillSelector && 
+            this.selectorModel.configuration.pickupReturnPlace) {
+          this.selectorView.loadReturnPlaces(true);
+        }
 
         // == Time From
         if (this.selectorModel.configuration.timeToFrom) {
@@ -774,7 +806,7 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
 
       // Start loading first data
       if (this.selectorModel.configuration.pickupReturnPlace) {
-        this.loadPickupPlaces();
+        this.loadPickupPlaces(); // The other fields are automatically assigned after pickup_place assignation
       }
       else {
         if (!this.selectorModel.configuration.simpleLocation && 
@@ -1066,12 +1098,12 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
       var self = this;
 
       // Bind pickup place changed
-      $(this.selectorModel.pickup_place_selector).bind('change', function() {
+      $(this.selectorModel.pickup_place_selector).on('change', function() {
          self.selectorController.pickupPlaceChanged();
       });
 
       // Bind return place changed
-      $(this.selectorModel.return_place_selector).bind('change', function() {
+      $(this.selectorModel.return_place_selector).on('change', function() {
           self.selectorController.returnPlaceChanged();
       });
 
@@ -1178,7 +1210,7 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
               var date = moment(instance.lastVal, self.selectorModel.configuration.dateFormat);
             }
             else {
-              var date = moment();
+              var date = moment().tz(self.selectorModel.configuration.timezone);
             }
             self.selectorModel.loadPickupDays(date.year(), date.month()+1);
           },
@@ -1194,18 +1226,21 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
             }              
           },
           onChangeMonthYear: function(year, month, instance) {
-             console.log('date_from changed month : ' + month+ ' year: '+year);
-             // If pickup/return place are allowed, load the days 
-             // if the user has selected a pickup place
-             if (self.selectorModel.configuration.pickupReturnPlace) {
-               if ($(self.selectorModel.pickup_place_selector).val() != null &&
-                   $(self.selectorModel.pickup_place_selector).val() != '') { 
-                 self.selectorModel.loadPickupDays(year, month);         
-               }         
-             }   
-             else {
-               self.selectorModel.loadPickupDays(year, month);
-             }      
+            // Only when the calendar is visible to avoid load pickup dates on setup date_from
+            if ($(this).datepicker( "widget" ).is(":visible")) {
+              console.log('date_from changed month : ' + month+ ' year: '+year);
+              // If pickup/return place are allowed, load the days 
+              // if the user has selected a pickup place
+              if (self.selectorModel.configuration.pickupReturnPlace) {
+                if ($(self.selectorModel.pickup_place_selector).val() != null &&
+                    $(self.selectorModel.pickup_place_selector).val() != '') { 
+                  self.selectorModel.loadPickupDays(year, month);         
+                }         
+              }   
+              else {
+                self.selectorModel.loadPickupDays(year, month);
+              }      
+             }
           },
           onSelect: function(dateText, inst) {
              self.selectorController.dateFromChanged();       
@@ -1243,18 +1278,21 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
             }              
           },
           onChangeMonthYear: function(year, month, instance) {
-            console.log('date_to changed month : ' + month+ ' year: '+year);
-             // If pickup/return place are allowed, load the days 
-             // if the user has selected a return place
-             if (self.selectorModel.configuration.pickupReturnPlace) {
-               if ($(self.selectorModel.return_place_selector).val() != null &&
-                   $(self.selectorModel.return_place_selector).val() != '') { 
-                 self.selectorModel.loadReturnDays(year, month);         
-               }         
-             }   
-             else {
-               self.selectorModel.loadReturnDays(year, month);
-             }                    
+            // Only when the calendar is visible to avoid load pickup dates on setup date_from
+            if ($(this).datepicker( "widget" ).is(":visible")) {
+              console.log('date_to changed month : ' + month+ ' year: '+year);
+              // If pickup/return place are allowed, load the days 
+              // if the user has selected a return place
+              if (self.selectorModel.configuration.pickupReturnPlace) {
+                if ($(self.selectorModel.return_place_selector).val() != null &&
+                    $(self.selectorModel.return_place_selector).val() != '') { 
+                  self.selectorModel.loadReturnDays(year, month);         
+                }         
+              }   
+              else {
+                self.selectorModel.loadReturnDays(year, month);
+              }    
+            }                
           },
           onSelect: function(dateText, inst) {
              self.selectorController.dateToChanged();
@@ -1562,6 +1600,8 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
 
         var self = this;
 
+        console.log('load pickup places');
+
         // Build URL
         var url = commonServices.URL_PREFIX + '/api/booking/frontend/pickup-places';
         var urlParams = [];
@@ -1641,17 +1681,30 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
                     // Assign the delivery date
                     if (self.selectorModel.shopping_cart.date_from) {
                       var date_from = moment(self.selectorModel.shopping_cart.date_from).format(self.selectorModel.configuration.dateFormat); 
-                      $(self.selectorModel.date_from_selector).datepicker("setDate", date_from); // It causes change month => load the calendar days
+                      $(self.selectorModel.date_from_selector).datepicker("setDate", date_from); 
                       if (self.selectorModel.configuration.timeToFrom) {
                         self.loadPickupHours();
                       }
                     }
                     self.loadReturnPlaces(false); // date_to is assigned after return_place assignation
                   }
+                  else {
+                    // Prefill selector => Assign the first pickup place
+                    if (self.selectorModel.configuration.prefillSelector) {
+                      var firstOption = $(self.selectorModel.pickup_place_selector+" option:eq(1)").val();
+                      // Select first pickup place
+                      if (firstOption !== '') {
+                        $(self.selectorModel.pickup_place_selector).val(firstOption);
+                        $(self.selectorModel.pickup_place_selector).trigger('change');
+                      }
+                    }
+                  }
                   // End - Assign the pickup place
 
-                  // Update the pickup place
-                  self.update('place', 'pickup_place');
+                  // When not prefill selector => Update the pickup place (to avoid clear date_to)
+                  if (!self.selectorModel.configuration.prefillSelector) {
+                    self.update('place', 'pickup_place');
+                  }
 
                 });
         
@@ -1751,7 +1804,7 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
                     // Assign the collection date
                     if (self.selectorModel.shopping_cart.date_to) {
                       var date_to = moment(self.selectorModel.shopping_cart.date_to).format(self.selectorModel.configuration.dateFormat); 
-                      $(self.selectorModel.date_to_selector).datepicker("setDate", date_to); // It causes the month to change => load the calendar days
+                      $(self.selectorModel.date_to_selector).datepicker("setDate", date_to); 
                       if (self.selectorModel.configuration.timeToFrom) {
                         self.loadReturnHours();
                       } 
@@ -1765,7 +1818,6 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
                       else {
                         $(self.selectorModel.return_place_selector).val($(self.selectorModel.pickup_place_selector).val());
                         $(self.selectorModel.return_place_other_selector).val('');
-                        //$(self.selectorModel.return_place_selector).trigger('change');
                       }
                       // In both cases notify that the return place has changed
                       self.selectorController.returnPlaceChanged();
@@ -1773,8 +1825,10 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
                   }
                   // End - Assign the return place if selected   
 
-                  // Update the pickup place
-                  self.update('place', 'return_place');
+                  // When not prefill selector => Update the return place (to avoid clear date_to)
+                  if (!self.selectorModel.configuration.prefillSelector) {
+                    self.update('place', 'return_place');
+                  }
 
                 } );
 
@@ -1836,12 +1890,26 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
             if ($(this.selectorModel.pickup_place_selector).attr('disabled')) {
               $(this.selectorModel.pickup_place_selector).attr('disabled', false);
             }    
+            // Force Load pickup days
+            if (this.selectorModel.configuration.prefillSelector) {
+              var date = moment().tz(this.selectorModel.configuration.timezone);
+              this.selectorModel.loadPickupDays(date.year(), date.month()+1);
+            }
+
           }
           else if (id == 'return_place') {
             // Enable return place selector
             if ($(this.selectorModel.return_place_selector).attr('disabled')) {
               $(this.selectorModel.return_place_selector).attr('disabled', false);
-            }            
+            }    
+            // Force Load return days
+            if (this.selectorModel.configuration.prefillSelector) {
+              var dateFrom = $(this.selectorModel.date_from_selector).datepicker('getDate');
+              if (dateFrom) {
+                var date = moment(dateFrom).add(this.selectorModel.configuration.selectorDateToDays, 'day');
+                this.selectorModel.loadReturnDays(date.year(), date.month()+1);
+              }
+            }
           }
           break;
         case 'days':
@@ -1850,18 +1918,88 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
             // Enable the control
             if ($(this.selectorModel.date_from_selector).attr('disabled')) {  
               $(this.selectorModel.date_from_selector).attr('disabled', false);
-            }              
+            }    
+            // Prefill selector
+            if (this.selectorModel.configuration.prefillSelector) {     
+              if (!$(this.selectorModel.date_from_selector).datepicker( "widget" ).is(":visible")) {
+                // Setup the first available date in calendar (just after loadPickupDays)
+                if (this.selectorModel.pickupDays && this.selectorModel.pickupDays.length > 0) {
+                  var firstAvailableDate = this.selectorModel.pickupDays[0];
+                  if (firstAvailableDate) {
+                    var firstDateValue = moment(firstAvailableDate).format(this.selectorModel.configuration.dateFormat);
+                    $(this.selectorModel.date_from_selector).datepicker( "setDate", firstDateValue);
+                    $(this.selectorModel.date_from_selector).trigger('change');
+                  }  
+                }
+                console.log('pickup days loaded');
+
+                // If not pickup/return places => Load return days
+                if (!this.selectorModel.configuration.pickupReturnPlace) {
+                  var dateFrom = $(this.selectorModel.date_from_selector).datepicker('getDate');
+                  if (dateFrom) {
+                    var date = moment(dateFrom).add(this.selectorModel.configuration.selectorDateToDays, 'day');
+                    this.selectorModel.loadReturnDays(date.year(), date.month()+1);
+                  }
+                }
+
+              }            
+            }   
           }
           else if (id == 'date_to') {
             $(this.selectorModel.date_to_selector).datepicker('refresh');
+            console.log('update date_to');
+            // Prefill selector
+            if (this.selectorModel.configuration.prefillSelector) {     
+              // Setup the first available date in calendar (just after loadPickupDays)
+              if (!$(this.selectorModel.date_to_selector).datepicker( "widget" ).is(":visible")) {
+                // Setup the first available date in calendar (just after loadReturnDays)
+                if (this.selectorModel.returnDays && this.selectorModel.returnDays.length > 0) {
+                  var dateFrom = $(this.selectorModel.date_from_selector).datepicker('getDate');
+                  if (dateFrom) {
+                    if (this.selectorModel.returnDays) {
+                      var candidateDateTo = moment(dateFrom).add(this.selectorModel.configuration.selectorDateToDays, 'day');
+                      var candidateDateToFormatted = moment(candidateDateTo).format('YYYY-MM-DD');
+                      var selectedValues = this.selectorModel.returnDays.filter(function(value){
+                        return value >= candidateDateToFormatted;
+                      });
+                      if (selectedValues.length > 0) {
+                        var selectedValue = selectedValues[0];
+                        var formattedValue = moment(selectedValue).format(this.selectorModel.configuration.dateFormat);
+                        $(this.selectorModel.date_to_selector).datepicker( "setDate", formattedValue);
+                        $(this.selectorModel.date_to_selector).trigger('change');  
+                        this.selectorController.dateToChanged();
+                      }
+                    }
+                  }               
+                }
+                console.log('return days loaded');        
+              }    
+            }
           }
           break;
         case 'hours':
           if (id == 'time_from') {
+            console.log('update time_from');
             var dataSource = new MemoryDataSource(this.selectorModel.pickupHours);
-            var timeFrom = this.selectorModel.shopping_cart ? this.selectorModel.shopping_cart.time_from : null;
+            var timeFrom = null;
+            if (this.selectorModel.shopping_cart && this.selectorModel.shopping_cart.time_from) {
+              timeFrom = this.selectorModel.shopping_cart.time_from;
+            }
+            else {
+              if (this.selectorModel.configuration.prefillSelector) {
+                timeFrom = this.selectorModel.configuration.defaultTimeStart;
+              }
+              else {
+                timeFrom = null;
+              }
+            }
             if (timeFrom != null && this.selectorModel.pickupHours.indexOf(timeFrom) == -1) {
-              timeFrom = null;
+              if (this.selectorModel.pickupHours.length > 0) {
+                timeFrom = this.selectorModel.pickupHours[0];
+              }
+              else {
+                timeFrom = null;
+              }
             }            
             var pickupTime = new SelectSelector(this.selectorModel.time_from_id,
                                                 dataSource, 
@@ -1881,10 +2019,28 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
 
           }
           else if (id == 'time_to') {
+            console.log('update time_to');
             var dataSource = new MemoryDataSource(this.selectorModel.returnHours);
-            var timeTo = this.selectorModel.shopping_cart ? this.selectorModel.shopping_cart.time_to : null;
+
+            var timeTo = null;
+            if (this.selectorModel.shopping_cart && this.selectorModel.shopping_cart.time_to) {
+              timeTo = this.selectorModel.shopping_cart.time_to;
+            }
+            else {
+              if (this.selectorModel.configuration.prefillSelector) {
+                timeTo = this.selectorModel.configuration.defaultTimeEnd;
+              }
+              else {
+                timeTo = null;
+              }
+            }
             if (timeTo != null && this.selectorModel.returnHours.indexOf(timeTo) == -1) {
-              timeTo = null;
+              if (this.selectorModel.returnHours.length > 0) {
+                timeTo = this.selectorModel.returnHours[0];
+              }
+              else {
+                timeTo = null;
+              }
             }
             var pickupTime = new SelectSelector(this.selectorModel.time_to_id,
                                                 dataSource, 

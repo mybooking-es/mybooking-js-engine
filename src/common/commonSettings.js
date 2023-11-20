@@ -30,6 +30,8 @@ define('commonSettings', ['jquery','commonServices','commonLoader','commonTransl
       promotionCode: true,      
       engineCustomerAccess: false,
       // Renting MODULE
+      prefillSelector: true,
+      selectorDateToDays: 5,
       useRentingFamilies: false,
       selectFamily: false,
       multipleDestinations: false,
@@ -40,6 +42,8 @@ define('commonSettings', ['jquery','commonServices','commonLoader','commonTransl
       productType: null,   
       assignationTimeReturnPickup: null, 
       useDriverAgeRules: null,
+      calendarShowAvailabilityNotSelectable: false,
+      chooseProductMultipleRateTypes: false,
       // - Renting dates
       minDays   : 1,
       timeToFrom: true,
@@ -207,6 +211,20 @@ define('commonSettings', ['jquery','commonServices','commonLoader','commonTransl
              mybookingSettings.data.promotionCode = data.promotion_code || false;
              // Renting
              mybookingSettings.data.useRentingFamilies = data.use_renting_families;
+             mybookingSettings.data.prefillSelector = data.prefill_selector;
+             mybookingSettings.data.selectorDateToDays = data.selector_date_to_days;
+             if (typeof data.prefill_selector === 'undefined') {
+              mybookingSettings.data.prefillSelector = true;
+              mybookingSettings.data.selectorDateToDays = 7;
+             }  
+             mybookingSettings.data.calendarShowAvailabilityNotSelectable = data.calendar_show_availability_not_selectable;           
+             if (typeof data.calendar_show_availability_not_selectable === 'undefined') {
+              mybookingSettings.data.calendarShowAvailabilityNotSelectable = true;
+             } 
+             mybookingSettings.data.chooseProductMultipleRateTypes = data.choose_product_multiple_rate_types;
+             if (typeof data.choose_product_multiple_rate_types === 'undefined') {
+              mybookingSettings.data.chooseProductMultipleRateTypes = false;
+             }
              mybookingSettings.data.selectFamily = data.select_family;
              mybookingSettings.data.selectDestination = data.select_destination;
              mybookingSettings.data.selectorRentalLocation = data.selector_rental_location;

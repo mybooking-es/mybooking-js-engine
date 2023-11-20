@@ -487,15 +487,23 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
      * @productCode:: The product code
      * @quantity:: The quantity
      * @coverageCode:: The coverageCode (if it uses coverage)
+     * @rateType:: The rate type (if it uses multiple rate type)
      */
-    buildSelectProductDataParams: function(productCode, quantity, coverageCode) {
+    buildSelectProductDataParams: function(productCode, quantity, coverageCode, rateType) {
 
       var data = {
         product: productCode
       };
 
+      // The quantity
       if (typeof quantity != 'undefined') {
         data.quantity = quantity;
+      }
+
+      // The rate type
+      if (this.configuration.chooseProductMultipleRateTypes && 
+          typeof rateType !== 'undefined') {
+        data.rate_type = rateType;
       }
 
       // Apply coverage
@@ -519,7 +527,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
     /**
      * Set the product
      */
-    selectProduct: function(productCode, quantity, coverageCode) {
+    selectProduct: function(productCode, quantity, coverageCode, rateType) {
 
        // Build the URL
        var url = commonServices.URL_PREFIX + '/api/booking/frontend/shopping-cart';
@@ -544,7 +552,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
        $.ajax({
                type: 'POST',
                url : url,
-               data: this.buildSelectProductDataParams(productCode, quantity, coverageCode),
+               data: this.buildSelectProductDataParams(productCode, quantity, coverageCode, rateType),
                dataType : 'json',
                contentType : 'application/json; charset=utf-8',
                crossDomain: true,
@@ -735,13 +743,14 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
     /**
      * Select producto button click
      */
-    selectProductBtnClick: function(productCode) {
+    selectProductBtnClick: function(productCode, rateType) {
 
       rentEngineMediator.onChooseSingleProduct( productCode, 
                                                 model.hasCoverage,
                                                 view.getCurrentSelectedCoverage(), 
                                                 model.products, 
-                                                model.shopping_cart
+                                                model.shopping_cart,
+                                                rateType
                                               );
         
     },
@@ -967,65 +976,94 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
         }
 
         // Show the products
-        if (document.getElementById('script_detailed_product')) {
-          var available = 0;
-          for (var idx=0;idx<model.products.length;idx++) {
-            if (model.products[idx].availability) {
-              available += 1;
-            }
+        var available = 0;
+        for (var idx=0;idx<model.products.length;idx++) {
+          if (model.products[idx].availability) {
+            available += 1;
+          }
+        }
+        
+        if (model.configuration.chooseProductMultipleRateTypes) {
+
+          if (document.getElementById('script_detailed_product_multiple_rates')) {
+
+            var result = tmpl('script_detailed_product_multiple_rates')({
+              shoppingCartProductQuantities: model.getShoppingCartProductQuantities(),
+              shoppingCart: model.shopping_cart, 
+              products: model.products,
+              configuration: model.configuration,
+              available: available,
+              i18next: i18next});
+            $('#product_listing').html(result);
+
+            // Bind the event to choose the product
+            $('.btn-choose-product').bind('click', function() {
+              controller.selectProductBtnClick($(this).attr('data-product'),
+                                               $(this).attr('data-rate-type-id'));
+            });
+            // Bind the event to show detailed product
+            $('.js-product-info-btn').bind('click', function(){
+              controller.productDetailIconClick($(this).attr('data-product'));
+            });  
           }
 
-          var result = tmpl('script_detailed_product')({
-                              shoppingCartProductQuantities: model.getShoppingCartProductQuantities(),
-                              shoppingCart: model.shopping_cart, 
-                              products: model.products,
-                              configuration: model.configuration,
-                              available: available,
-                              i18next: i18next});
-          $('#product_listing').html(result);
+        }
+        else {
 
-          // Add variants resume
-          model.shopping_cart.items.forEach((item) => {
-            if (item.parent_variant_item_id) {
-              this.refreshVariantsResume(item.parent_variant_item_id);
-            }
-          });
-
-          // Bind the event to change to grid
-          $('.js-mb-grid').on('click', function(){
-            controller.showProductsInGridButtonClick();
-          });
-
-          $('.js-mb-list').on('click', function(){
-            controller.showProductsInListButtonClick();
-          });
-
-          // Bind the event to change to list
-
-          // Bind the event to choose the product
-          $('.btn-choose-product').bind('click', function() {
-            controller.selectProductBtnClick($(this).attr('data-product'));
-          });
-          // Bind the events to manage multiple products
-          $('.select-choose-product').bind('change', function() {
-              var productCode = $(this).attr('data-value');
-              var productQuantity = $(this).val();
-              controller.productQuantityChanged(productCode, productQuantity);
-          }); 
-          // Bind the event to choose variant
-          $('.btn-choose-variant').bind('click', function() {
-            controller.selectVariantBtnClick($(this).attr('data-product'));
-          });       
-          $('#go_to_complete').bind('click', function() {
-            controller.multipleProductsNextButtonClick();
-          });
-          // Bind the event to show detailed product
-          $('.js-product-info-btn').bind('click', function(){
-            controller.productDetailIconClick($(this).attr('data-product'));
-          });  
-          // Setup coverage
-          this.setupCoverage();        
-        }  
+          if (document.getElementById('script_detailed_product')) {
+  
+            var result = tmpl('script_detailed_product')({
+                                shoppingCartProductQuantities: model.getShoppingCartProductQuantities(),
+                                shoppingCart: model.shopping_cart, 
+                                products: model.products,
+                                configuration: model.configuration,
+                                available: available,
+                                i18next: i18next});
+            $('#product_listing').html(result);
+  
+            // Add variants resume
+            model.shopping_cart.items.forEach((item) => {
+              if (item.parent_variant_item_id) {
+                this.refreshVariantsResume(item.parent_variant_item_id);
+              }
+            });
+  
+            // Bind the event to change to grid
+            $('.js-mb-grid').on('click', function(){
+              controller.showProductsInGridButtonClick();
+            });
+  
+            $('.js-mb-list').on('click', function(){
+              controller.showProductsInListButtonClick();
+            });
+  
+            // Bind the event to change to list
+  
+            // Bind the event to choose the product
+            $('.btn-choose-product').bind('click', function() {
+              controller.selectProductBtnClick($(this).attr('data-product'));
+            });
+            // Bind the events to manage multiple products
+            $('.select-choose-product').bind('change', function() {
+                var productCode = $(this).attr('data-value');
+                var productQuantity = $(this).val();
+                controller.productQuantityChanged(productCode, productQuantity);
+            }); 
+            // Bind the event to choose variant
+            $('.btn-choose-variant').bind('click', function() {
+              controller.selectVariantBtnClick($(this).attr('data-product'));
+            });       
+            $('#go_to_complete').bind('click', function() {
+              controller.multipleProductsNextButtonClick();
+            });
+            // Bind the event to show detailed product
+            $('.js-product-info-btn').bind('click', function(){
+              controller.productDetailIconClick($(this).attr('data-product'));
+            });  
+            // Setup coverage
+            this.setupCoverage();        
+          }  
+        }
 
     },
 

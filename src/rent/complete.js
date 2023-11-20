@@ -1021,6 +1021,14 @@ require(['jquery',
                         document.getElementById('driver_driving_license_date'),
                         commonSettings.language(model.requestLanguage));
       }
+      // Configure driver driving license expiration date 
+      if (document.getElementById('driver_driving_license_expiration_date_day')) {
+        new DateControl(document.getElementById('driver_driving_license_expiration_date_day'),
+                        document.getElementById('driver_driving_license_expiration_date_month'),
+                        document.getElementById('driver_driving_license_expiration_date_year'),
+                        document.getElementById('driver_driving_license_expiration_date'),
+                        commonSettings.language(model.requestLanguage));
+      }
 
       // Configure additional driver driving license date 
       if (document.getElementById('additional_driver_1_driving_license_date_day')) {
