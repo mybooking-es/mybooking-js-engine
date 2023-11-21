@@ -426,7 +426,6 @@ require(['jquery',
       },
 
       completeActionChange: function() {
-          debugger;
           if ($('input[name=complete_action]:checked').val() === 'pay_now') {
             $('#request_reservation_container').hide();
             $('#payment_on_delivery_container').hide();

@@ -1860,10 +1860,9 @@ require(['jquery',
           $('.js-extra-info-btn').bind('click', function(){
             controller.extraDetailIconClick($(this).attr('data-extra'));
           });
-          
           // Bind the event to show video
-          $('.mybooking-detail_modal').on('click', '.js-extra-toogle-video', function() {
-            const target = $(this).attr('data-target');
+          $('.mybooking-detail_modal').bind('click', '.js-extra-toogle-video', function(event) {
+            const target = $(event.target).attr('data-target');
 
             controller.extraVideoonClick(target);
           });
@@ -1923,16 +1922,6 @@ require(['jquery',
                                                     if ( $('.mybooking-carousel-inner').length ) {  
                                                       commonUI.showSlider('.mybooking-carousel-inner');
                                                     }
-                                                    $('#modal_product_photos').on('click', function(){
-                                                      $('.mybooking-modal_product-description').hide();
-                                                      $('.mybooking-modal_product-container').show();
-                                                      commonUI.playSlider('.mybooking-carousel-inner');
-                                                    });
-                                                    $('#modal_product_info').on('click', function(){
-                                                      $('.mybooking-modal_product-container').hide();
-                                                      $('.mybooking-modal_product-description').show();
-                                                      commonUI.pauseSlider('.mybooking-carousel-inner');
-                                                    });
                                                   }, 50);
                                                 },
                                                 function(event, modal) { // On hide

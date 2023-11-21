@@ -1228,16 +1228,6 @@ require([
               if ($('.mybooking-carousel-inner').length) {
                 commonUI.showSlider('.mybooking-carousel-inner');
               }
-              $('#modal_product_photos').on('click', function () {
-                $('.mybooking-modal_product-description').hide();
-                $('.mybooking-modal_product-container').show();
-                commonUI.playSlider('.mybooking-carousel-inner');
-              });
-              $('#modal_product_info').on('click', function () {
-                $('.mybooking-modal_product-container').hide();
-                $('.mybooking-modal_product-description').show();
-                commonUI.pauseSlider('.mybooking-carousel-inner');
-              });
             }, 150);
           },
           function () {

@@ -721,26 +721,6 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
     },
 
     /**
-     * Show products in Grid
-     */ 
-    showProductsInGridButtonClick: function() {
-
-      $('.mybooking-product_container').removeClass('mybooking-product_list');
-      $('.mybooking-product_container').addClass('mybooking-product_grid');
-
-    },
-
-    /**
-     * Show products in List
-     */ 
-    showProductsInListButtonClick: function() {
-
-      $('.mybooking-product_container').removeClass('mybooking-product_grid');
-      $('.mybooking-product_container').addClass('mybooking-product_list');
-
-    },
-
-    /**
      * Select producto button click
      */
     selectProductBtnClick: function(productCode, rateType) {
@@ -1039,6 +1019,12 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
             $('.js-product-info-btn').bind('click', function(){
               controller.productDetailIconClick($(this).attr('data-product'));
             });  
+            // Bind the event to show video
+            $('.mybooking-detail_modal').bind('click', '.js-product-toogle-video', function(event) {
+              const target = $(event.target).attr('data-target');
+
+              controller.productVideoonClick(target);
+            });
           }
 
         }
@@ -1060,15 +1046,6 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
               if (item.parent_variant_item_id) {
                 this.refreshVariantsResume(item.parent_variant_item_id);
               }
-            });
-  
-            // Bind the event to change to grid
-            $('.js-mb-grid').on('click', function(){
-              controller.showProductsInGridButtonClick();
-            });
-  
-            $('.js-mb-list').on('click', function(){
-              controller.showProductsInListButtonClick();
             });
   
             // Bind the event to change to list
@@ -1095,8 +1072,9 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
               controller.productDetailIconClick($(this).attr('data-product'));
             });  
             // Bind the event to show video
-            $('.mybooking-detail_modal').on('click', '.js-product-toogle-video', function() {
-              const target = $(this).attr('data-target');
+            $('.mybooking-detail_modal').bind('click', '.js-product-toogle-video', function(event) {
+              const target = $(event.target).attr('data-target');
+              
               controller.productVideoonClick(target);
             });
             // Setup coverage
@@ -1150,16 +1128,6 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
                                                       if ( $('.mybooking-carousel-inner').length ) {  
                                                         commonUI.showSlider('.mybooking-carousel-inner');
                                                       }
-                                                      $('#modal_product_photos').on('click', function(){
-                                                        $('.mybooking-modal_product-description').hide();
-                                                        $('.mybooking-modal_product-container').show();
-                                                        commonUI.playSlider('.mybooking-carousel-inner');
-                                                      });
-                                                      $('#modal_product_info').on('click', function(){
-                                                        $('.mybooking-modal_product-container').hide();
-                                                        $('.mybooking-modal_product-description').show();
-                                                        commonUI.pauseSlider('.mybooking-carousel-inner');
-                                                      });
                                                     },50);
                                                   },
                                                   function(event, modal) { // on Hide
