@@ -454,6 +454,9 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
          this.selectorModel.shopping_cart.time_to = null;
        }  
 
+       // -- Enabled date from
+       $(this.selectorModel.date_from_selector).attr('disabled', false);
+
        // -- Disable fields selectors (return place, time from ,date to, time to)
 
        // Disable time from
