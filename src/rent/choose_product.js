@@ -707,7 +707,10 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
       // Check if open the product in a tab
       if (model.products) {
         var product = model.products.find(element => element.code === productCode);
-        if (product && product.external_detail_url && product.external_detail_url !== '') {
+        // Use external link if not use detail page as an extra step in the 
+        // reservation process
+        var useDetailPage = ($('#product_listing').attr('data-use-renting-detail-page') === 'true');
+        if (!useDetailPage && product && product.external_detail_url && product.external_detail_url !== '') {
           externalLink = true;
           window.open(product.external_detail_url);
         }
