@@ -1716,6 +1716,11 @@ require(['jquery',
                                                                      configuration: model.configuration});
          $('#reservation_detail').html(reservationDetail);
        }
+       if ( model.configuration.multipleProductsSelection && document.getElementById('script_mybooking_summary_product_detail_table')) {
+        var reservationTableDetail = tmpl('script_mybooking_summary_product_detail_table')({shopping_cart: model.shopping_cart,
+                                                                    configuration: model.configuration});
+        $('#mybooking_summary_product_detail_table').html(reservationTableDetail);
+      }
       
        // Setup the events
        
