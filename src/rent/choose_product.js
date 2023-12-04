@@ -1014,7 +1014,8 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
             $('#product_listing').html(result);
 
             // Bind the event to choose the product
-            $('.btn-choose-product').bind('click', function() {
+            $('.btn-choose-product').bind('click', function(e) {
+              e.preventDefault();
               controller.selectProductBtnClick($(this).attr('data-product'),
                                                $(this).attr('data-rate-type-id'));
             });
@@ -1054,7 +1055,8 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
             // Bind the event to change to list
   
             // Bind the event to choose the product
-            $('.btn-choose-product').bind('click', function() {
+            $('.btn-choose-product').bind('click', function(e) {
+              e.preventDefault();
               controller.selectProductBtnClick($(this).attr('data-product'));
             });
             // Bind the events to manage multiple products
