@@ -147,15 +147,21 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
     },
 
     updateBookingSummary: function() { // Updates the shopping cart summary (total)
+      var reservationDetail = tmpl('script_reservation_summary')(
+          {
+            booking: model.booking,
+            configuration: model.configuration
+          });
+      $('#reservation_detail').html(reservationDetail);
 
-       var reservationDetail = tmpl('script_reservation_summary')(
-            {booking: model.booking,
-             configuration: model.configuration});
-       $('#reservation_detail').html(reservationDetail);
-
+      if ( model.configuration.multipleProductsSelection && document.getElementById('script_mybooking_summary_product_detail_table')) {
+        var reservationTableDetail = tmpl('script_mybooking_summary_product_detail_table')({
+          bookings: model.booking.booking_lines,
+          configuration: model.configuration
+        });
+        $('#mybooking_summary_product_detail_table').html(reservationTableDetail);
+      }
     }
-
-
   };
 
 

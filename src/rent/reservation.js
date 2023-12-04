@@ -246,64 +246,71 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
     },
 
     updateBookingSummary: function() { // Updates the shopping cart summary (total)
+      var showReservationForm = (model.configuration.rentingFormFillDataAddress || 
+                                model.configuration.rentingFormFillDataDriverDetail || 
+                                model.configuration.rentingFormFillDataNamedResources) &&
+                                model.booking.manager_complete_authorized;
+      var reservationDetail = tmpl('script_reservation_summary')(
+          {
+            booking: model.booking,
+            configuration: model.configuration,
+            showReservationForm: showReservationForm
+          });
+      $('#reservation_detail').html(reservationDetail);
 
-       var showReservationForm = (model.configuration.rentingFormFillDataAddress || 
-                                  model.configuration.rentingFormFillDataDriverDetail || 
-                                  model.configuration.rentingFormFillDataNamedResources) &&
-                                  model.booking.manager_complete_authorized;
-       var reservationDetail = tmpl('script_reservation_summary')(
-            {booking: model.booking,
-             configuration: model.configuration,
-             showReservationForm: showReservationForm});
-       $('#reservation_detail').html(reservationDetail);
+      if ( model.configuration.multipleProductsSelection && document.getElementById('script_mybooking_summary_product_detail_table')) {
+        var reservationTableDetail = tmpl('script_mybooking_summary_product_detail_table')({
+          bookings: model.booking.booking_lines,
+          configuration: model.configuration
+        });
+        $('#mybooking_summary_product_detail_table').html(reservationTableDetail);
+      }
 
-
-       if (model.booking.manager_complete_authorized) {
-         // The reservation form fields are defined in a micro-template
-         var locale = model.requestLanguage;
-         var localeReservationFormScript = 'script_reservation_form_'+locale;
-         if (locale != null && document.getElementById(localeReservationFormScript)) {
-            var reservationForm = tmpl(localeReservationFormScript)({booking: model.booking,
-                                                                     configuration: model.configuration});
-            $('form[name=reservation_form]').html(reservationForm);           
-         }
-         // Micro-template reservation
-         else if (document.getElementById('script_reservation_form')) {
-           var reservationForm = tmpl('script_reservation_form')(
-                {booking: model.booking,
-                 configuration: model.configuration});
-           $('#reservation_form_container').html(reservationForm);
-           $('#reservation_form_container').show();
-         }
-         // Micro-template payment
-         if (document.getElementById('script_payment_detail')) {
-           // If the booking is pending show the payment controls
-           if (model.sales_process.can_pay) {
-             var amount = 0;
-             if (model.sales_process.can_pay_pending) {
-               amount = model.booking.total_pending;
-             }
-             else if (model.sales_process.can_pay_deposit) {
-               amount = model.booking.booking_amount;
-             }
-             else if (model.sales_process.can_pay_total) {
-               amount = model.booking.total_cost;
-             }
-             var paymentInfo = tmpl('script_payment_detail')(
-              {
-                sales_process: model.sales_process,
-                amount: amount,
-                booking: model.booking,
-                configuration: model.configuration,
-                i18next: i18next            
-              });
-             $('#payment_detail').html(paymentInfo);
-             this.setupPaymentFormValidation();
-             $('#payment_detail').show();
-           }
-         }
-       }
-
+      if (model.booking.manager_complete_authorized) {
+        // The reservation form fields are defined in a micro-template
+        var locale = model.requestLanguage;
+        var localeReservationFormScript = 'script_reservation_form_'+locale;
+        if (locale != null && document.getElementById(localeReservationFormScript)) {
+          var reservationForm = tmpl(localeReservationFormScript)({booking: model.booking,
+                                                                    configuration: model.configuration});
+          $('form[name=reservation_form]').html(reservationForm);           
+        }
+        // Micro-template reservation
+        else if (document.getElementById('script_reservation_form')) {
+          var reservationForm = tmpl('script_reservation_form')(
+              {booking: model.booking,
+                configuration: model.configuration});
+          $('#reservation_form_container').html(reservationForm);
+          $('#reservation_form_container').show();
+        }
+        // Micro-template payment
+        if (document.getElementById('script_payment_detail')) {
+          // If the booking is pending show the payment controls
+          if (model.sales_process.can_pay) {
+            var amount = 0;
+            if (model.sales_process.can_pay_pending) {
+              amount = model.booking.total_pending;
+            }
+            else if (model.sales_process.can_pay_deposit) {
+              amount = model.booking.booking_amount;
+            }
+            else if (model.sales_process.can_pay_total) {
+              amount = model.booking.total_cost;
+            }
+            var paymentInfo = tmpl('script_payment_detail')(
+            {
+              sales_process: model.sales_process,
+              amount: amount,
+              booking: model.booking,
+              configuration: model.configuration,
+              i18next: i18next            
+            });
+            $('#payment_detail').html(paymentInfo);
+            this.setupPaymentFormValidation();
+            $('#payment_detail').show();
+          }
+        }
+      }
     },
 
     setupReservationForm: function() {

@@ -1702,28 +1702,33 @@ require(['jquery',
      * Updates the shopping cart summary
      */
     updateShoppingCartSummary: function() { // Updates the shopping cart summary (total)
+      // Summary sticky
+      if (document.getElementById('script_reservation_summary_sticky')) {
+        var reservationDetailSticky = tmpl('script_reservation_summary_sticky')({
+          shopping_cart: model.shopping_cart,
+          configuration: model.configuration
+        });
+        $('#reservation_detail_sticky').html(reservationDetailSticky);
+      }
 
-       // Summary sticky
-       if (document.getElementById('script_reservation_summary_sticky')) {
-         var reservationDetailSticky = tmpl('script_reservation_summary_sticky')({shopping_cart: model.shopping_cart,
-                                                                                  configuration: model.configuration});
-         $('#reservation_detail_sticky').html(reservationDetailSticky);
-       }
+      // Summary
+      if (document.getElementById('script_reservation_summary')) {
+        var reservationDetail = tmpl('script_reservation_summary')({
+          booking: model.shopping_cart,
+          configuration: model.configuration
+        });
+        $('#reservation_detail').html(reservationDetail);
+      }
 
-       // Summary
-       if (document.getElementById('script_reservation_summary')) {
-         var reservationDetail = tmpl('script_reservation_summary')({shopping_cart: model.shopping_cart,
-                                                                     configuration: model.configuration});
-         $('#reservation_detail').html(reservationDetail);
-       }
-       if ( model.configuration.multipleProductsSelection && document.getElementById('script_mybooking_summary_product_detail_table')) {
-        var reservationTableDetail = tmpl('script_mybooking_summary_product_detail_table')({shopping_cart: model.shopping_cart,
-                                                                    configuration: model.configuration});
+      if ( model.configuration.multipleProductsSelection && document.getElementById('script_mybooking_summary_product_detail_table')) {
+        var reservationTableDetail = tmpl('script_mybooking_summary_product_detail_table')({
+          bookings: model.shopping_cart.items,
+          configuration: model.configuration
+        });
         $('#mybooking_summary_product_detail_table').html(reservationTableDetail);
       }
       
        // Setup the events
-       
        if ($('#modify_reservation_button').length) {
          // The user clicks on the modify reservation button
          $('#modify_reservation_button').bind('click', function() { 
