@@ -1714,6 +1714,7 @@ require(['jquery',
       // Summary
       if (document.getElementById('script_reservation_summary')) {
         var reservationDetail = tmpl('script_reservation_summary')({
+          shopping_cart: model.shopping_cart, // Retrocompatibility in override complete views
           booking: model.shopping_cart,
           configuration: model.configuration
         });
