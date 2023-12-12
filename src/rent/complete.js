@@ -1094,7 +1094,8 @@ require(['jquery',
                         document.getElementById('driver_driving_license_expiration_date_month'),
                         document.getElementById('driver_driving_license_expiration_date_year'),
                         document.getElementById('driver_driving_license_expiration_date'),
-                        commonSettings.language(model.requestLanguage));
+                        commonSettings.language(model.requestLanguage),
+                        undefined, 'future');
       }
 
       // Configure additional driver driving license date 
