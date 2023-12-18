@@ -233,7 +233,7 @@ define('ActivityOneTime', ['jquery','ysdtemplate',
                 var result = tmpl('script_one_time_selector')({activity: activityOneTimeModel.activity, i18next: i18next});
                 $('#buy_selector').html(result);
                 if (activityOneTimeModel.activity && typeof activityOneTimeModel.activity.available !== 'undefined') {
-                  if (activityModel.activity.available != 0) {
+                  if (activityOneTimeModel.activity.available != 0) {
                     activityOneTimeModel.loadTickets();
                   }
                 }
