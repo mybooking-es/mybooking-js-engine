@@ -410,7 +410,8 @@ define('ProductCalendar', ['jquery', 'YSDEventTarget',
           }
 
           // Check that the day can not end if not selectable for collection
-          if (!self.productCalendarModel.availabilityData.occupation[dateStr].selectable_day_collection) {
+          if (typeof self.productCalendarModel.availabilityData.occupation[dateStr] !== 'undefined' && 
+              !self.productCalendarModel.availabilityData.occupation[dateStr].selectable_day_collection) {
             event.stopPropagation();
             // Clear the selection
             $(self.productCalendarModel.dateSelector).data('dateRangePicker').clear();
