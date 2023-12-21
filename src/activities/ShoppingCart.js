@@ -461,11 +461,12 @@ require(['jquery','i18next', 'ysdtemplate',
           },
 
           updateShoppingCart: function() { /* Update the shopping cart */
-              $('#reservation_container').empty();
               $('#payment_detail').empty();
               if (model.shoppingCart && model.shoppingCart.items &&
                   !$.isEmptyObject(model.shoppingCart.items)) {
-                  this.updateReservationForm();
+                  if ( $('#reservation_container').children().length === 0 ) {
+                    this.updateReservationForm();
+                  }
                   this.updateShoppingCartProducts();
                   this.updatePayment();
                   this.setupValidation();
