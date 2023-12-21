@@ -1244,43 +1244,107 @@ require(['jquery',
                         required: "#driver_date_of_birth:visible"
                     },
                     'driver_driving_license_date_day': {
-                      required: "#driver_driving_license_date_day:visible"
+                      required: "#driver_driving_license_date_day:visible"                       
                     },
                     'driver_driving_license_date_month': {
-                      required: "#driver_driving_license_date_month:visible"
+                      required: "#driver_driving_license_date_month:visible"                         
                     },
                     'driver_driving_license_date_year': {
-                      required: "#driver_driving_license_date_year:visible"
+                      required: "#driver_driving_license_date_year:visible"                     
                     },
                     'driver_driving_license_date': {
-                        required: "#driver_driving_license_date:visible"
-                    },
-                    'additional_driver_2_driving_license_date_day': {
-                      required: "#additional_driver_2_driving_license_date_day:visible"
-                    },
-                    'additional_driver_2_driving_license_date_month': {
-                      required: "#additional_driver_2_driving_license_date_month:visible"
-                    },
-                    'additional_driver_2_driving_license_date_year': {
-                      required: "#additional_driver_2_driving_license_date_year:visible"
-                    },
-                    'additional_driver_2_driving_license_date': {
-                        required: "#additional_driver_2_driving_license_date:visible"
+                      required: "#driver_driving_license_date:visible"                        
                     },
                     'additional_driver_1_driving_license_date_day': {
-                      required: "#additional_driver_1_driving_license_date_day:visible"
+                      //required: "#additional_driver_1_driving_license_date_day:visible"
+                      required: function() {
+                        if ($('#additional_driver_1_driving_license_date_day').length) {
+                          if ($('#additional_driver_1_driving_license_date_day').attr('required')) {
+                            return true;
+                          }
+                        }
+                        return false;
+                      }  
                     },
                     'additional_driver_1_driving_license_date_month': {
-                      required: "#additional_driver_1_driving_license_date_month:visible"
+                      //required: "#additional_driver_1_driving_license_date_month:visible"
+                      required: function() {
+                        if ($('#additional_driver_1_driving_license_date_month').length) {
+                          if ($('#additional_driver_1_driving_license_date_month').attr('required')) {
+                            return true;
+                          }
+                        }
+                        return false;
+                      }                       
                     },
                     'additional_driver_1_driving_license_date_year': {
-                      required: "#additional_driver_1_driving_license_date_year:visible"
+                      //required: "#additional_driver_1_driving_license_date_year:visible"
+                      required: function() {
+                        if ($('#additional_driver_1_driving_license_date_year').length) {
+                          if ($('#additional_driver_1_driving_license_date_year').attr('required')) {
+                            return true;
+                          }
+                        }
+                        return false;
+                      }                        
                     },
                     'additional_driver_1_driving_license_date': {
-                        required: "#additional_driver_1_driving_license_date:visible"
+                        //required: "#additional_driver_1_driving_license_date:visible"
+                        required: function() {
+                          if ($('#additional_driver_1_driving_license_date').length) {
+                            if ($('#additional_driver_1_driving_license_date').attr('required')) {
+                              return true;
+                            }
+                          }
+                          return false;
+                        }                             
                     },
+                    'additional_driver_2_driving_license_date_day': {
+                      //required: "#additional_driver_2_driving_license_date_day:visible"
+                      required: function() {
+                        if ($('#additional_driver_2_driving_license_date_day').length) {
+                          if ($('#additional_driver_2_driving_license_date_day').attr('required')) {
+                            return true;
+                          }
+                        }
+                        return false;
+                      }  
+                    },
+                    'additional_driver_2_driving_license_date_month': {
+                      //required: "#additional_driver_2_driving_license_date_month:visible"
+                      required: function() {
+                        if ($('#additional_driver_2_driving_license_date_month').length) {
+                          if ($('#additional_driver_2_driving_license_date_month').attr('required')) {
+                            return true;
+                          }
+                        }
+                        return false;
+                      }                       
+                    },
+                    'additional_driver_2_driving_license_date_year': {
+                      //required: "#additional_driver_2_driving_license_date_year:visible"
+                      required: function() {
+                        if ($('#additional_driver_2_driving_license_date_year').length) {
+                          if ($('#additional_driver_2_driving_license_date_year').attr('required')) {
+                            return true;
+                          }
+                        }
+                        return false;
+                      }                        
+                    },
+                    'additional_driver_2_driving_license_date': {
+                        //required: "#additional_driver_2_driving_license_date:visible"
+                        required: function() {
+                          if ($('#additional_driver_2_driving_license_date').length) {
+                            if ($('#additional_driver_2_driving_license_date').attr('required')) {
+                              return true;
+                            }
+                          }
+                          return false;
+                        }                             
+                    },                    
                     'number_of_adults': {
-                        required: '#number_of_adults:visible'
+                        required: '#number_of_adults:visible'               
                     },
                     'conditions_read_request_reservation' :  {
                         required: '#conditions_read_request_reservation:visible'
