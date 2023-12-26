@@ -6,7 +6,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "rm -rf dist && webpack --config webpack.config.js",
-    "start": "npx env-cmd --file config/env.json supervisor -e 'html|js|json' -w . node server.js"
+    "start": "npx env-cmd --file config/env.json supervisor -e 'html|js|json' -w . node server.js",
+    "format": "npx prettier --write \"src/**/*.js\"",
+    "eslint": "npx eslint src/**/*.js"
   },
   "repository": {
     "type": "git",
@@ -30,6 +32,7 @@
     "elliptic": "^6.5.4",
     "env-cmd": "^10.1.0",
     "eslint": "^8.28.0",
+    "eslint-plugin-requirejs": "^4.0.1",
     "express": "^4.17.1",
     "http": "0.0.1-security",
     "jquery": ">=3.5.0",
@@ -37,6 +40,7 @@
     "load-google-maps-api": "^2.0.1",
     "loadash": "^1.0.0",
     "minimist": ">=1.2.3",
+    "prettier": "^3.1.1",
     "reload": "^3.2.0",
     "serialize-javascript": "^6.0.0",
     "supervisor": "^0.12.0",
