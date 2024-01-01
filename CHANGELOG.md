@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.0.0] - 2023.12.20
+
+### New
+
+- Prefill selector with default values
+- Multiple rates management
+- Prepare plugin V2
+
 ## [1.1.5] - 2023.09.25
 
 ### Fixed
