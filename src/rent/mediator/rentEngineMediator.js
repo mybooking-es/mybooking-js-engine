@@ -161,6 +161,7 @@ define('rentEngineMediator', ['jquery', 'YSDEventTarget'],
      * @products:: The products detail
      * @shoppingCart:: The current shopping cart
      * @rateType:: The rate type (in case there are multiple rate types)
+     * @extraCode:: The extra code
      *
      */
     onChooseSingleProduct: function ( productCode, 
@@ -168,7 +169,8 @@ define('rentEngineMediator', ['jquery', 'YSDEventTarget'],
                                       coverageCode, 
                                       products, 
                                       shoppingCart,
-                                      rateType ) {
+                                      rateType,
+                                      extraCode ) {
 
       console.log('rentEngineMediator_chooseSingleProduct');
 
@@ -178,6 +180,7 @@ define('rentEngineMediator', ['jquery', 'YSDEventTarget'],
         var data = { 
                       productCode: productCode,
                       rateType: rateType,
+                      extraCode: extraCode,
                       product: selectedProduct,
                       products: products,
                       shoppingCart: shoppingCart,
@@ -195,7 +198,7 @@ define('rentEngineMediator', ['jquery', 'YSDEventTarget'],
         this.chooseSingleProductDelegate( data, this );
       }
       else {
-        this.continueSelectSingleProduct( productCode, coverageCode, rateType );
+        this.continueSelectSingleProduct( productCode, coverageCode, rateType, extraCode );
       }
 
     },
@@ -203,10 +206,10 @@ define('rentEngineMediator', ['jquery', 'YSDEventTarget'],
     /**
      * Select the product
      */
-    continueSelectSingleProduct: function( productCode, coverageCode, rateType ) {
+    continueSelectSingleProduct: function( productCode, coverageCode, rateType, extraCode ) {
 
       if (this.chooseProduct != null) {
-        this.chooseProduct.model.selectProduct( productCode, 1, coverageCode, rateType );
+        this.chooseProduct.model.selectProduct( productCode, 1, coverageCode, rateType, extraCode );
       }
 
     },

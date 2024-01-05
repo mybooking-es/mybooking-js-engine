@@ -2050,7 +2050,8 @@ require(['jquery',
         }
         theUrl += 'id=';
         theUrl += bookingId;
-        window.location.href = theUrl;
+        $.form(commonServices.summaryUrl, {id: bookingId}, 'GET').submit();
+        //window.location.href = theUrl;
       }
 
     },

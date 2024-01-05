@@ -488,8 +488,9 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
      * @quantity:: The quantity
      * @coverageCode:: The coverageCode (if it uses coverage)
      * @rateType:: The rate type (if it uses multiple rate type)
+     * @extraCode:: The extra code (to include an extra automatically)
      */
-    buildSelectProductDataParams: function(productCode, quantity, coverageCode, rateType) {
+    buildSelectProductDataParams: function(productCode, quantity, coverageCode, rateType, extraCode) {
 
       var data = {
         product: productCode
@@ -504,6 +505,11 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
       if (this.configuration.chooseProductMultipleRateTypes && 
           typeof rateType !== 'undefined') {
         data.rate_type = rateType;
+      }
+
+      // The extra code
+      if (typeof extraCode !== 'undefined') {
+        data.extra_code = extraCode;
       }
 
       // Apply coverage
@@ -527,7 +533,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
     /**
      * Set the product
      */
-    selectProduct: function(productCode, quantity, coverageCode, rateType) {
+    selectProduct: function(productCode, quantity, coverageCode, rateType, extraCode) {
 
        // Build the URL
        var url = commonServices.URL_PREFIX + '/api/booking/frontend/shopping-cart';
@@ -552,7 +558,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
        $.ajax({
                type: 'POST',
                url : url,
-               data: this.buildSelectProductDataParams(productCode, quantity, coverageCode, rateType),
+               data: this.buildSelectProductDataParams(productCode, quantity, coverageCode, rateType, extraCode),
                dataType : 'json',
                contentType : 'application/json; charset=utf-8',
                crossDomain: true,
@@ -726,14 +732,15 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
     /**
      * Select producto button click
      */
-    selectProductBtnClick: function(productCode, rateType) {
+    selectProductBtnClick: function(productCode, rateType, extraCode) {
 
       rentEngineMediator.onChooseSingleProduct( productCode, 
                                                 model.hasCoverage,
                                                 view.getCurrentSelectedCoverage(), 
                                                 model.products, 
                                                 model.shopping_cart,
-                                                rateType
+                                                rateType,
+                                                extraCode
                                               );
         
     },
@@ -1017,7 +1024,8 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
             $('.btn-choose-product').bind('click', function(e) {
               e.preventDefault();
               controller.selectProductBtnClick($(this).attr('data-product'),
-                                               $(this).attr('data-rate-type-id'));
+                                               $(this).attr('data-rate-type-id'),
+                                               $(this).attr('data-extra-code'));
             });
             // Bind the event to show detailed product
             $('.js-product-info-btn').bind('click', function(){
@@ -1057,7 +1065,9 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
             // Bind the event to choose the product
             $('.btn-choose-product').bind('click', function(e) {
               e.preventDefault();
-              controller.selectProductBtnClick($(this).attr('data-product'));
+              controller.selectProductBtnClick($(this).attr('data-product'),
+                                               $(this).attr('data-rate-type-id'),
+                                               $(this).attr('data-extra-code'));
             });
             // Bind the events to manage multiple products
             $('.select-choose-product').bind('change', function() {
