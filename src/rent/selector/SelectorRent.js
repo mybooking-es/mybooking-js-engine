@@ -1070,6 +1070,8 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
           url += urlParams.join('&');
         }
 
+        var self = this;
+
         // Setup component
         $(this.selectorModel.simple_location_selector).select2({ width: '100%',
           ajax: {
@@ -1088,6 +1090,17 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
 
           }
         });    
+
+        // Select current value (Create and option)
+        if (self.selectorModel.shopping_cart && 
+            self.selectorModel.shopping_cart.simple_location_id !== null&&
+            self.selectorModel.shopping_cart.simple_location_name !== null) {
+          var selectedOption = new Option(self.selectorModel.shopping_cart.simple_location_name, 
+                                          self.selectorModel.shopping_cart.simple_location_id, 
+                                          true, 
+                                          true);
+          $(this.selectorModel.simple_location_selector).append(selectedOption).trigger('change');
+        }
 
       }
 
