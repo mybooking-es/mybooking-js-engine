@@ -1937,7 +1937,7 @@ require(['jquery',
             controller.extraDetailIconClick($(this).attr('data-extra'));
           });
           // Bind the event to show video
-          $('.mybooking-detail_modal').bind('click', '.js-extra-toogle-video', function(event) {
+          $('.mybooking-detail_modal').on('click', '.js-extra-toogle-video', function(event) {
             const target = $(event.target).attr('data-target');
 
             controller.extraVideoonClick(target);

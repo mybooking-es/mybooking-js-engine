@@ -1032,7 +1032,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
               controller.productDetailIconClick($(this).attr('data-product'));
             });  
             // Bind the event to show video
-            $('.mybooking-detail_modal').bind('click', '.js-product-toogle-video', function(event) {
+            $('.mybooking-detail_modal').on('click', '.js-product-toogle-video', function(event) {
               const target = $(event.target).attr('data-target');
 
               controller.productVideoonClick(target);
@@ -1087,7 +1087,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
               controller.productDetailIconClick($(this).attr('data-product'));
             });  
             // Bind the event to show video
-            $('.mybooking-detail_modal').bind('click', '.js-product-toogle-video', function(event) {
+            $('.mybooking-detail_modal').on('click', '.js-product-toogle-video', function(event) {
               const target = $(event.target).attr('data-target');
               
               controller.productVideoonClick(target);
