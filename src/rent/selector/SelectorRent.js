@@ -317,7 +317,7 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
         dataType: 'json',
         success: function(data, textStatus, jqXHR) {
           self.pickupHours = data;
-          self.selectorView.update('hours', 'time_from', data);
+          self.selectorView.update('hours', 'time_from');
         },
         error: function(data, textStatus, jqXHR) {
           alert(i18next.t('selector.error_loading_data'));
@@ -351,7 +351,7 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
         dataType: 'json',
         success: function(data, textStatus, jqXHR) {
           self.returnHours = data;
-          self.selectorView.update('hours', 'time_to', data);
+          self.selectorView.update('hours', 'time_to');
         },
         error: function(data, textStatus, jqXHR) {
           alert(i18next.t('selector.error_loading_data'));
@@ -384,7 +384,13 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
         url: url,
         dataType: 'json',
         success: function(data, textStatus, jqXHR) {
-          self.durations = data;
+          self.durations = [
+            {
+              value: '',
+              text: ''
+            },
+            ...data,
+          ];
           self.selectorView.update('durations', null);
         },
         error: function(data, textStatus, jqXHR) {
@@ -452,6 +458,7 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
          this.selectorModel.shopping_cart.time_from = null;
          this.selectorModel.shopping_cart.date_to = null;
          this.selectorModel.shopping_cart.time_to = null;
+         this.selectorModel.shopping_cart.renting_duration = null;
        }  
 
        // -- Enabled date from
@@ -478,6 +485,10 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
          $(this.selectorModel.time_to_selector).val('');
        }
 
+      if (this.selectorModel.configuration.rentDateSelector === 'date_from_duration') {
+        $(this.selectorModel.duration_selector).val('');
+      }
+
     }
 
     /**
@@ -496,6 +507,7 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
          this.selectorModel.shopping_cart.time_from = null;
          this.selectorModel.shopping_cart.date_to = null;
          this.selectorModel.shopping_cart.time_to = null;
+         this.selectorModel.shopping_cart.renting_duration = null;
          this.selectorModel.shopping_cart.pickup_place = null;
          this.selectorModel.shopping_cart.custom_pickup_place = null;
          this.selectorModel.shopping_cart.pickup_place_other = null;
@@ -529,6 +541,10 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
        if (this.selectorModel.configuration.timeToFrom) {
          $(this.selectorModel.time_to_selector).val('');
        }
+
+       if (this.selectorModel.configuration.rentDateSelector === 'date_from_duration') {
+        $(this.selectorModel.duration_selector).val('');
+      }
 
        // Custom address allowed
        if (this.selectorModel.configuration.customPickupReturnPlaces) {          
@@ -660,6 +676,7 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
           this.selectorModel.shopping_cart.time_from = null;
           this.selectorModel.shopping_cart.date_to = null;
           this.selectorModel.shopping_cart.time_to = null;
+          this.selectorModel.shopping_cart.renting_duration = null;
         } 
 
         // == Date To
@@ -689,11 +706,12 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
 
           // Load Pickup Hours
           this.selectorView.loadPickupHours();
-        }
-        else if (this.selectorModel.configuration.rentDateSelector === 'date_from_duration') {
-          this.selectorView.loadDurations();      
-        }
 
+          // == Duration
+          if (this.selectorModel.configuration.rentDateSelector === 'date_from_duration') {
+            this.selectorView.loadDurations();      
+          }
+        }
     }
 
 
@@ -869,18 +887,13 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
         // No delivery/collection place => Directly assign date_from and date_to from shopping_cart
         var date_from = moment(shopping_cart.date_from).format(this.selectorModel.configuration.dateFormat); 
         var date_to = moment(shopping_cart.date_to).format(this.selectorModel.configuration.dateFormat); 
-        $(this.selectorModel.date_from_selector).datepicker("setDate", date_from); // It causes change month => load the calendar days
-        $(this.selectorModel.date_to_selector).datepicker("setDate", date_to); // It causes the month to change => load the calendar days
+        $(this.selectorModel.date_from_selector).datepicker('setDate', date_from); // It causes change month => load the calendar days
+        $(this.selectorModel.date_to_selector).datepicker('setDate', date_to); // It causes the month to change => load the calendar days
 
         // Load pickup hours
         if (this.selectorModel.configuration.timeToFrom) {
           this.loadPickupHours();
           this.loadReturnHours();
-        }
-        
-        // Load durations
-        if (this.selectorModel.configuration.rentDateSelector === 'date_from_duration') {
-          this.loadDurations();
         }
       }
 
@@ -933,7 +946,7 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
         // Setup time from / to
         if (this.selectorModel.configuration.timeToFrom) {
           this.setupTimeToFrom();
-        }       
+        }
 
         // Setup validation
         this.setupValidation();
@@ -1446,7 +1459,7 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
                    required: self.selectorModel.configuration.timeToFrom,
                    same_day_time_from: true
                },
-               duration: {
+               renting_duration: {
                    required: self.selectorModel.configuration.rentDateSelector === 'date_from_duration'
                },
                promotion_code: {
@@ -1509,7 +1522,7 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
                    required:i18next.t('selector.validations.timeToRequired'),
                    same_day_time_from: i18next.t('selector.validations.sameDayTimeToGreaterTimeFrom')
                },
-               duration: {
+               renting_duration: {
                    required: i18next.t('common.required')
                },               
                promotion_code: {
@@ -1698,9 +1711,13 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
                     // Assign the delivery date
                     if (self.selectorModel.shopping_cart.date_from) {
                       var date_from = moment(self.selectorModel.shopping_cart.date_from).format(self.selectorModel.configuration.dateFormat); 
-                      $(self.selectorModel.date_from_selector).datepicker("setDate", date_from); 
+                      $(self.selectorModel.date_from_selector).datepicker('setDate', date_from); 
                       if (self.selectorModel.configuration.timeToFrom) {
                         self.loadPickupHours();
+                      }
+                      // Load durations
+                      if (self.selectorModel.configuration.rentDateSelector === 'date_from_duration') {
+                        self.loadDurations();
                       }
                     }
                     self.loadReturnPlaces(false); // date_to is assigned after return_place assignation
@@ -1821,7 +1838,7 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
                     // Assign the collection date
                     if (self.selectorModel.shopping_cart.date_to) {
                       var date_to = moment(self.selectorModel.shopping_cart.date_to).format(self.selectorModel.configuration.dateFormat); 
-                      $(self.selectorModel.date_to_selector).datepicker("setDate", date_to); 
+                      $(self.selectorModel.date_to_selector).datepicker('setDate', date_to); 
                       if (self.selectorModel.configuration.timeToFrom) {
                         self.loadReturnHours();
                       } 
@@ -1944,7 +1961,7 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
                   var firstAvailableDate = this.selectorModel.pickupDays[0];
                   if (firstAvailableDate) {
                     var firstDateValue = moment(firstAvailableDate).format(this.selectorModel.configuration.dateFormat);
-                    $(this.selectorModel.date_from_selector).datepicker( "setDate", firstDateValue);
+                    $(this.selectorModel.date_from_selector).datepicker('setDate', firstDateValue);
                     $(this.selectorModel.date_from_selector).trigger('change');
                   }  
                 }
@@ -1982,7 +1999,7 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
                       if (selectedValues.length > 0) {
                         var selectedValue = selectedValues[0];
                         var formattedValue = moment(selectedValue).format(this.selectorModel.configuration.dateFormat);
-                        $(this.selectorModel.date_to_selector).datepicker( "setDate", formattedValue);
+                        $(this.selectorModel.date_to_selector).datepicker('setDate', formattedValue);
                         $(this.selectorModel.date_to_selector).trigger('change');  
                         this.selectorController.dateToChanged();
                       }
