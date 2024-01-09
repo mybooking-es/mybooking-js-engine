@@ -1721,7 +1721,7 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
                 function() {
                     if (timeTo != null) {
                       // Show the summary (because it is preloaded)
-                      if ($(productModel.time_from_selector).val() !== '') {
+                      if (productModel.preselectedTimeFrom !== '') {
                         $(productModel.time_to_selector).val(timeTo);
                         productModel.product_available = true;
                         productView.update('shopping_cart');
