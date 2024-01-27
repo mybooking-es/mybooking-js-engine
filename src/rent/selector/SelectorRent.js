@@ -3,7 +3,7 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
          'i18next', 'moment','ysdtemplate', 'customCookie', 'jquery.i18next',
          'jquery.validate', 'jquery.ui', 'jquery.ui.datepicker-es',
          'jquery.ui.datepicker-en', 'jquery.ui.datepicker-ca', 'jquery.ui.datepicker-it',
-         'jquery.ui.datepicker.validation'],
+         'jquery.ui.datepicker.validation', 'moment-timezone'],
          function($, MemoryDataSource, RemoteDataSource, SelectSelector,
                   commonServices, commonSettings, commonTranslations, commonLoader, 
                   i18next, moment, tmpl, customCookie) {
@@ -1221,10 +1221,10 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
     this.setupDateControls = function() {
 
       var self = this;
-
       $.datepicker.setDefaults( $.datepicker.regional[this.selectorModel.requestLanguage || 'es'] );
       var locale = $.datepicker.regional[this.selectorModel.requestLanguage || 'es'];
-      var maxDate = moment().add(650, 'days').tz(this.selectorModel.configuration.timezone).format(this.selectorModel.configuration.dateFormat);
+      var maxDate = moment().add(650, 'days').tz(this.selectorModel.configuration.timezone).format(
+                      this.selectorModel.configuration.dateFormat);
 
       // Date From
       $(this.selectorModel.date_from_selector).datepicker({
