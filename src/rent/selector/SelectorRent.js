@@ -707,10 +707,9 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
           // Load Pickup Hours
           this.selectorView.loadPickupHours();
 
+        } else if (this.selectorModel.configuration.rentDateSelector === 'date_from_duration') {
           // == Duration
-          if (this.selectorModel.configuration.rentDateSelector === 'date_from_duration') {
-            this.selectorView.loadDurations();      
-          }
+          this.selectorView.loadDurations();      
         }
     }
 
