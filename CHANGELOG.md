@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.1.0] - 2024.02.13
+
+### New
+
+- Multiple tenants configuration in one plugin using parameters
+
 ## [2.0.0] - 2023.12.20
 
 ### New
