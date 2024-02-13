@@ -1038,7 +1038,8 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
                                                                 not_hidden_family_id: not_hidden_family_id,
                                                                 not_hidden_rental_location_code: not_hidden_rental_location_code,
                                                                 family_id:  (this.selectorModel.shopping_cart ? this.selectorModel.shopping_cart.family_id : null),
-                                                                rental_location_code: (this.selectorModel.shopping_cart ? this.selectorModel.shopping_cart.rental_location_code : null)
+                                                                rental_location_code: (this.selectorModel.shopping_cart ? this.selectorModel.shopping_cart.rental_location_code : null),
+                                                                company: commonServices.company
                                                                });
         // Assign to the form
         $(this.selectorModel.form_selector).append(html);

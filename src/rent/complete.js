@@ -2015,7 +2015,23 @@ require(['jquery',
      */
     payment: function(url, bookingId, paymentData) {
 
-      var summaryUrl = commonServices.summaryUrl + '?id=' + bookingId;
+      var summaryUrl = commonServices.summaryUrl;
+
+      // Append the id querystring
+      if (summaryUrl.indexOf('?') > 0) {
+        summaryUrl += '&';
+      }
+      else {
+        summaryUrl += '?';
+      }
+      summaryUrl += 'id=';
+      summaryUrl += bookingId;      
+
+      // Add the summary_url to the paymentData
+      if (commonServices.company && commonServices.company !== '') {
+        paymentData.summary_url = summaryUrl;
+      }
+
       rentEngineMediator.onNewReservationPayment(url, summaryUrl, paymentData);
 
     },
@@ -2050,7 +2066,12 @@ require(['jquery',
         }
         theUrl += 'id=';
         theUrl += bookingId;
-        $.form(commonServices.summaryUrl, {id: bookingId}, 'GET').submit();
+        var parameters = {id: bookingId};
+        // Append the company (single site for multiple companies)
+        if (commonServices.company && commonServices.company !== '') {
+          parameters.company = commonServices.company;
+        }
+        $.form(commonServices.summaryUrl, parameters, 'GET').submit();
         //window.location.href = theUrl;
       }
 

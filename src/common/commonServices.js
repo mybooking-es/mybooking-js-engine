@@ -18,8 +18,18 @@ define('commonServices',[],function(){
         return siteURL + theUrl;
       }
 
-    }
+  }
 
+  var getUrlVars = function() {
+      var vars = [], hash;
+      var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+      for(var i = 0; i < hashes.length; i++) {
+        hash = hashes[i].split('=');
+        vars.push(hash[0]);
+        vars[hash[0]] = hash[1];
+      }
+      return vars;
+  }
 
   var commonServices = {
 
@@ -28,6 +38,8 @@ define('commonServices',[],function(){
     // Engine Connection
     URL_PREFIX: mybookingEngine && mybookingEngine.baseURL ? mybookingEngine.baseURL() : '',
     apiKey: mybookingEngine && mybookingEngine.apiKey ? mybookingEngine.apiKey() : '',
+    widget: false,
+    company: null,
     // Loader
     customLoader: mybookingEngine && mybookingEngine.customLoader ? mybookingEngine.customLoader() : false,
     // Use select2
@@ -60,6 +72,30 @@ define('commonServices',[],function(){
 
   };
 
+  // Extract the company for the widget
+  var urlVars = getUrlVars();
+  if (typeof urlVars['company'] != 'undefined') {
+    commonServices.URL_PREFIX = `https://${urlVars['company']}.mybooking.es`;
+    commonServices.apiKey = 'widget';
+    commonServices.widget = true;
+    commonServices.company = urlVars['company'];
+    // Append the company to the complete URL
+    if (commonServices.completeUrl && commonServices.completeUrl.indexOf('?') > -1) {
+      commonServices.completeUrl = commonServices.completeUrl + '&company=' + commonServices.company;
+    }
+    else {
+      commonServices.completeUrl = commonServices.completeUrl + '?company=' + commonServices.company;
+    }
+    // Append the company to the summary URL
+    if (commonServices.summaryUrl && commonServices.summaryUrl.indexOf('?') > -1) {
+      commonServices.summaryUrl = commonServices.summaryUrl + '&company=' + commonServices.company;
+    } else {
+      commonServices.summaryUrl = commonServices.summaryUrl + '?company=' + commonServices.company;
+    }
+    
+  }
+
+  console.log('commonServices', commonServices);
 
   return commonServices;
 
