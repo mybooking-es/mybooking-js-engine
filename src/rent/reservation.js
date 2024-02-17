@@ -20,12 +20,16 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
 
     // -------------- Load settings ----------------------------
 
+    // OPTIMIZATION 2024-01-27 START 
+/*          
     loadSettings: function() {
       commonSettings.loadSettings(function(data){
         model.configuration = data;
         view.init();
       });
     },  
+*/    
+    // OPTIMIZATION 2024-01-27 END
 
     // ------------ Product information detail ------------------------
 
@@ -86,6 +90,13 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
                contentType : 'application/json; charset=utf-8',
                crossDomain: true,
                success: function(data, textStatus, jqXHR) {
+                
+                 // OPTIMIZATION 2024-01-27 START - Load configuration within shopping cart and setup selector
+                 // Setup the configuration data
+                 commonSettings.setupConfigurationData(data.settings);
+                 model.configuration = commonSettings.data; 
+                 // OPTIMIZATION 2024-01-27 END
+
                  model.booking = data.booking;
                  model.bookingFreeAccessId = data.booking.free_access_id;
                  model.sales_process = data.sales_process;
@@ -621,7 +632,10 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
   // has been rendered
   commonLoader.show();
 
+  // OPTIMIZATION 2024-01-27 START 
   // Load settings
-  model.loadSettings();
+  // model.loadSettings();
+  view.init();
+  // OPTIMIZATION 2024-01-27 END
 
 });

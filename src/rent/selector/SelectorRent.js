@@ -103,6 +103,7 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
     this.rentalLocations = []; // Rental Locations
     this.driverAgeRules = []; // Age rules
     this.durations = []; // Durations
+    this.promotionCode = null; // The promotion code
 
     this.dateToMinDate = null;
 
@@ -1037,6 +1038,7 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
         var html = tmpl(this.selectorModel.form_selector_tmpl)({configuration: this.selectorModel.configuration,
                                                                 not_hidden_family_id: not_hidden_family_id,
                                                                 not_hidden_rental_location_code: not_hidden_rental_location_code,
+                                                                promotionCode: this.selectorModel.promotionCode,
                                                                 family_id:  (this.selectorModel.shopping_cart ? this.selectorModel.shopping_cart.family_id : null),
                                                                 rental_location_code: (this.selectorModel.shopping_cart ? this.selectorModel.shopping_cart.rental_location_code : null),
                                                                 company: commonServices.company

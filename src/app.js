@@ -53,6 +53,7 @@ require('./common/commonSettings.js');
 require('./common/commonTranslations.js');
 require('./common/commonLoader');
 require('./common/commonUI.js');
+require('./common/commonPromotionCode.js');
 
 // == Contact module
 

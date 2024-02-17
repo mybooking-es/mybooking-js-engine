@@ -56,10 +56,12 @@ require('./common/commonSettings.js');
 require('./common/commonTranslations.js');
 require('./common/commonLoader.js');
 require('./common/commonUI.js');
+require('./common/commonPromotionCode.js');
 
 
-// == Agent (extract URL into cookie)
+// == Agent code extraction
 $(document).ready(function() {
+    // Extract agent to cookie
     require('./common/commonAgent.js');
 });
 

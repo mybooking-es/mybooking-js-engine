@@ -3,8 +3,8 @@
  * Renting Module selector Widget
  *
  */
-require(['jquery', 'commonSettings', 'commonLoader', './SelectorRent'],
-         function($, commonSettings, commonLoader, SelectorRent) {
+require(['jquery', 'commonSettings', 'commonLoader', 'commonPromotionCode', './SelectorRent'],
+         function($, commonSettings, commonLoader, commonPromotionCode, SelectorRent) {
 
   /***
    * Model
@@ -12,6 +12,7 @@ require(['jquery', 'commonSettings', 'commonLoader', './SelectorRent'],
   var widgetSelectorModel = {
     requestLanguage: null,
     configuration: null,
+    promotionCode: null,
     
     /**
      * Load settings
@@ -19,6 +20,9 @@ require(['jquery', 'commonSettings', 'commonLoader', './SelectorRent'],
     loadSettings: function() {
       commonSettings.loadSettings(function(data){
         commonLoader.hide();
+        // Extract the promotion code from the URL
+        widgetSelectorModel.promotionCode = commonPromotionCode.promotionCode;
+        //
         widgetSelectorModel.configuration = data;
         widgetSelectorView.init();
       });
@@ -51,6 +55,7 @@ require(['jquery', 'commonSettings', 'commonLoader', './SelectorRent'],
         // Setup request language and settings
         this.selector.model.requestLanguage = widgetSelectorModel.requestLanguage;
         this.selector.model.configuration = widgetSelectorModel.configuration;
+        this.selector.model.promotionCode = widgetSelectorModel.promotionCode;
 
         // == Selectors
 
