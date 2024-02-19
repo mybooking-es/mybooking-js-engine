@@ -7,8 +7,8 @@ define('commonPromotionCode', ['jquery', 'commonSettings'],
 
   // Extract the promotion code from the URL
   var urlVars = commonSettings.getUrlVars(); 
-  if (typeof urlVars['promotion_code'] != 'undefined') {
-    data.promotionCode = decodeURIComponent(urlVars['promotion_code']);
+  if (typeof urlVars['promotionCode'] != 'undefined') {
+    data.promotionCode = decodeURIComponent(urlVars['promotionCode']);
   }
 
   return data;
