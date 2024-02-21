@@ -31,9 +31,11 @@ require(['jquery',
 
     // -------------- Load settings ----------------------------
 
+    // OPTIMIZATION 2024-01-27 START    
     /**
      * Load settings
      */ 
+/*    
     loadSettings: function() {
       commonSettings.loadSettings(function(data){
         model.configuration = data;
@@ -57,6 +59,8 @@ require(['jquery',
         }
       });
     },      
+*/
+    // OPTIMIZATION 2024-01-27 END
 
     // ------------ Load customer classifiers -----------------
 
@@ -184,6 +188,37 @@ require(['jquery',
                contentType : 'application/json; charset=utf-8',
                crossDomain: true,
                success: function(data, textStatus, jqXHR) {
+
+                 // OPTIMIZATION 2024-01-27 START - Load configuration within shopping cart and setup selector
+
+                 // Setup the configuration data
+                 commonSettings.setupConfigurationData(data.settings);
+                 model.configuration = commonSettings.data; 
+                 // Configure selector
+                 if (commonServices.selectorInProcess == 'wizard') {
+                   selectorWizard.model.requestLanguage = model.requestLanguage;
+                   selectorWizard.model.configuration = model.configuration;
+                 }
+                 else {
+                   selector.model.requestLanguage = model.requestLanguage;
+                   selector.model.configuration = model.configuration;
+                   selector.view.init();
+                 }
+                 // Complements
+                 if (model.configuration.engineCustomerAccess) {
+                   view.setupLoginForm();
+                 }
+                 // Check duplicated Tab
+                 if (model.configuration.duplicatedTab) {
+                   alert(i18next.t('common.duplicateTab'));
+                   // Clear the session for this tab so it can start a new process
+                   sessionStorage.clear();
+                   commonLoader.hide();
+                   $('form[name=reservation_form]').html(i18next.t('common.duplicateTab'));
+                   return;
+                 }
+                 // OPTIMIZATION 2024-01-27 END
+
                  model.shopping_cart = data.shopping_cart;
                  model.extras = data.extras;
                  model.coverages = data.coverages;
@@ -760,7 +795,9 @@ require(['jquery',
                       // Localize UI
                       //$('.nav').localize();
                    });
-
+      
+      // OPTIMIZATION 2024-01-27 START
+/*
       // Configure selector
       if (commonServices.selectorInProcess == 'wizard') {
         selectorWizard.model.requestLanguage = model.requestLanguage;
@@ -776,6 +813,8 @@ require(['jquery',
       if (model.configuration.engineCustomerAccess) {
         this.setupLoginForm();
       }
+*/
+      // OPTIMIZATION 2024-01-27 END
 
       // Load shopping cart
       model.loadShoppingCart();
@@ -2101,7 +2140,10 @@ require(['jquery',
   // the search has been rendered (in model.loadShoppingCart)
   commonLoader.show();
   
+  // OPTIMIZATION 2024-01-27 START  
   // Load the settings
-  model.loadSettings();
+  // model.loadSettings();
+  view.init();
+  // OPTIMIZATION 2024-01-27 END
 
 });

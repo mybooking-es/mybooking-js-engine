@@ -187,12 +187,30 @@ define('commonSettings', ['jquery','commonServices','commonLoader','commonTransl
         url += '?';
         url += urlParams.join('&');
       }
+      var self = this;
       $.ajax({
            type: 'GET',
            url : url,
            contentType : 'application/json; charset=utf-8',
            crossDomain: true,
            success: function(data, textStatus, jqXHR) {
+            // Hold the configuration
+            self.setupConfigurationData(data);
+            // Run the callback
+            if (callback) {
+              callback(mybookingSettings.data);
+            }            
+           },
+           error: function(data, textStatus, jqXHR) {
+             // Hide the loader if error
+             commonLoader.hide();
+             alert('Error obteniendo la información');
+           }
+      });
+    },
+
+    setupConfigurationData: function(data) {
+      if (typeof data !== 'undefined' && data != null) {
              // Server information
              mybookingSettings.data.serverDate = data.server_date;
              mybookingSettings.data.serverTime = data.server_time;
@@ -310,16 +328,7 @@ define('commonSettings', ['jquery','commonServices','commonLoader','commonTransl
              if (typeof data.engine_customer_access !== 'undefined') {
                mybookingSettings.data.engineCustomerAccess = true;
              }
-             if (callback) {
-                callback(mybookingSettings.data);
-             }
-           },
-           error: function(data, textStatus, jqXHR) {
-             // Hide the loader if error
-             commonLoader.hide();
-             alert('Error obteniendo la información');
-           }
-      });
+      }
     },
 
     /**

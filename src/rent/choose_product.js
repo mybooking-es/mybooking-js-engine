@@ -69,9 +69,11 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
 
     // -------------- Load settings ----------------------------
 
+    // OPTIMIZATION 2024-01-27 START
     /**
      * Load the settings
      */
+/*
     loadSettings: function() {
       commonSettings.loadSettings(function(data){
         model.configuration = data;
@@ -93,8 +95,10 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
         else {
           view.init();
         }
-      });
+      });     
     },   
+*/
+    // OPTIMIZATION 2024-01-27 END
 
     // ------------ Products information detail ------------------------
 
@@ -170,63 +174,73 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
      */
     extractVariables: function() { // Load variables from the request
 
-      var url_vars = this.getUrlVars();
+      var urlVars = this.getUrlVars();
 
-      this.date_from = decodeURIComponent(url_vars['date_from']);
-      this.time_from = decodeURIComponent(url_vars['time_from']);
-      this.date_to = decodeURIComponent(url_vars['date_to']);
-      this.time_to = decodeURIComponent(url_vars['time_to']);
-      this.renting_duration = decodeURIComponent(url_vars['renting_duration']);
+      this.date_from = decodeURIComponent(urlVars['date_from']);
+      this.time_from = decodeURIComponent(urlVars['time_from']);
+      this.date_to = decodeURIComponent(urlVars['date_to']);
+      this.time_to = decodeURIComponent(urlVars['time_to']);
+      this.renting_duration = decodeURIComponent(urlVars['renting_duration']);
+      // OPTIMIZATION 2024-01-27 START
+      this.rental_location_code = decodeURIComponent(urlVars['rental_location_code']);
+      if (typeof urlVars['engine_fixed_rental_location'] !== 'undefined' && 
+          urlVars['engine_fixed_rental_location'] === 'true') {
+        this.engine_fixed_rental_location = true;
+      }      
+      this.simple_selector_id = decodeURIComponent(urlVars['simple_location_id']);
+      // OPTIMIZATION 2024-01-27 END
+/*
       if (this.configuration.selectorRentalLocation) {
-        this.rental_location_code = decodeURIComponent(url_vars['rental_location_code']);
-        if (typeof url_vars['engine_fixed_rental_location'] !== 'undefined' && 
-            url_vars['engine_fixed_rental_location'] === 'true') {
+        this.rental_location_code = decodeURIComponent(urlVars['rental_location_code']);
+        if (typeof urlVars['engine_fixed_rental_location'] !== 'undefined' && 
+            urlVars['engine_fixed_rental_location'] === 'true') {
           this.engine_fixed_rental_location = true;
         }
       }
       if (this.configuration.simpleLocation) {
-        this.simple_selector_id = decodeURIComponent(url_vars['simple_location_id']);
+        this.simple_selector_id = decodeURIComponent(urlVars['simple_location_id']);
       }
-      this.pickup_place = decodeURIComponent(url_vars['pickup_place']).replace(/\+/g, " ");
-      this.pickup_place_other = decodeURIComponent(url_vars['pickup_place_other']).replace(/\+/g, " ");
-      this.custom_pickup_place = decodeURIComponent(url_vars['custom_pickup_place']);
-      this.return_place = decodeURIComponent(url_vars['return_place']).replace(/\+/g, " ");
-      this.return_place_other = decodeURIComponent(url_vars['return_place_other']).replace(/\+/g, " ");
-      this.custom_return_place = decodeURIComponent(url_vars['custom_return_place']);      
-      this.promotion_code = decodeURIComponent(url_vars['promotion_code']);
-      this.sales_channel_code = decodeURIComponent(url_vars['sales_channel_code']);
-      this.family_id = decodeURIComponent(url_vars['family_id']);
-      if (typeof url_vars['engine_fixed_family'] !== 'undefined' && 
-          url_vars['engine_fixed_family'] === 'true') {
+*/      
+      this.pickup_place = decodeURIComponent(urlVars['pickup_place']).replace(/\+/g, " ");
+      this.pickup_place_other = decodeURIComponent(urlVars['pickup_place_other']).replace(/\+/g, " ");
+      this.custom_pickup_place = decodeURIComponent(urlVars['custom_pickup_place']);
+      this.return_place = decodeURIComponent(urlVars['return_place']).replace(/\+/g, " ");
+      this.return_place_other = decodeURIComponent(urlVars['return_place_other']).replace(/\+/g, " ");
+      this.custom_return_place = decodeURIComponent(urlVars['custom_return_place']);      
+      this.promotion_code = decodeURIComponent(urlVars['promotion_code']);
+      this.sales_channel_code = decodeURIComponent(urlVars['sales_channel_code']);
+      this.family_id = decodeURIComponent(urlVars['family_id']);
+      if (typeof urlVars['engine_fixed_family'] !== 'undefined' && 
+          urlVars['engine_fixed_family'] === 'true') {
         this.engine_fixed_family = true;
       }
-      this.category_code = decodeURIComponent(url_vars['category_code']);
-      if (typeof url_vars['engine_fixed_product'] !== 'undefined' && 
-          url_vars['engine_fixed_product'] === 'true') {
+      this.category_code = decodeURIComponent(urlVars['category_code']);
+      if (typeof urlVars['engine_fixed_product'] !== 'undefined' && 
+          urlVars['engine_fixed_product'] === 'true') {
         this.engine_fixed_product = true;
       }
-      this.driver_age_rule_id = decodeURIComponent(url_vars['driver_age_rule_id']);
-      this.number_of_adults = decodeURIComponent(url_vars['number_of_adults']);
-      this.number_of_children = decodeURIComponent(url_vars['number_of_children']);
-      this.number_of_products = decodeURIComponent(url_vars['number_of_products']);
-      this.agent_id = decodeURIComponent(url_vars['agent_id']);
-      this.category_code = decodeURIComponent(url_vars['category_code']);
+      this.driver_age_rule_id = decodeURIComponent(urlVars['driver_age_rule_id']);
+      this.number_of_adults = decodeURIComponent(urlVars['number_of_adults']);
+      this.number_of_children = decodeURIComponent(urlVars['number_of_children']);
+      this.number_of_products = decodeURIComponent(urlVars['number_of_products']);
+      this.agent_id = decodeURIComponent(urlVars['agent_id']);
+      this.category_code = decodeURIComponent(urlVars['category_code']);
 
-      this.optional_external_driver = decodeURIComponent(url_vars['optional_external_driver']);
-      this.driving_license_type_id = decodeURIComponent(url_vars['driving_license_type_id']);
-      this.simple_location_id = decodeURIComponent(url_vars['simple_location_id']); 
-      this.characteristic_length = decodeURIComponent(url_vars['characteristic_length']);
-      this.characteristic_width = decodeURIComponent(url_vars['characteristic_width']);
-      this.characteristic_height = decodeURIComponent(url_vars['characteristic_height']);
-      this.characteristic_weight = decodeURIComponent(url_vars['characteristic_weight']);
-      this.characteristic_total_surface = decodeURIComponent(url_vars['characteristic_total_surface']);
-      this.characteristic_living_space = decodeURIComponent(url_vars['characteristic_living_space']);
-      this.key_characteristic_1 = decodeURIComponent(url_vars['key_characteristic_1']);
-      this.key_characteristic_2 = decodeURIComponent(url_vars['key_characteristic_2']);
-      this.key_characteristic_3 = decodeURIComponent(url_vars['key_characteristic_3']);
-      this.key_characteristic_4 = decodeURIComponent(url_vars['key_characteristic_4']);
-      this.key_characteristic_5 = decodeURIComponent(url_vars['key_characteristic_5']);
-      this.key_characteristic_6 = decodeURIComponent(url_vars['key_characteristic_6']);
+      this.optional_external_driver = decodeURIComponent(urlVars['optional_external_driver']);
+      this.driving_license_type_id = decodeURIComponent(urlVars['driving_license_type_id']);
+      this.simple_location_id = decodeURIComponent(urlVars['simple_location_id']); 
+      this.characteristic_length = decodeURIComponent(urlVars['characteristic_length']);
+      this.characteristic_width = decodeURIComponent(urlVars['characteristic_width']);
+      this.characteristic_height = decodeURIComponent(urlVars['characteristic_height']);
+      this.characteristic_weight = decodeURIComponent(urlVars['characteristic_weight']);
+      this.characteristic_total_surface = decodeURIComponent(urlVars['characteristic_total_surface']);
+      this.characteristic_living_space = decodeURIComponent(urlVars['characteristic_living_space']);
+      this.key_characteristic_1 = decodeURIComponent(urlVars['key_characteristic_1']);
+      this.key_characteristic_2 = decodeURIComponent(urlVars['key_characteristic_2']);
+      this.key_characteristic_3 = decodeURIComponent(urlVars['key_characteristic_3']);
+      this.key_characteristic_4 = decodeURIComponent(urlVars['key_characteristic_4']);
+      this.key_characteristic_5 = decodeURIComponent(urlVars['key_characteristic_5']);
+      this.key_characteristic_6 = decodeURIComponent(urlVars['key_characteristic_6']);
 
     },
 
@@ -242,6 +256,16 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
 
     isShoppingCartData: function() {
 
+      // OPTIMIZATION 2024-01-27 START
+      var dateFromdateTo = (this.date_from != 'undefined' && this.date_from != '' &&
+                            this.date_to != 'undefined' && this.date_to != '');
+      var dateFromDuration = (this.date_from != 'undefined' && this.date_from != '' &&
+                              this.renting_duration != 'undefined' && this.renting_duration != '');  
+      
+      return (dateFromdateTo || dateFromDuration);
+      // OPTIMIZATION 2024-01-27 END
+
+/*      
       if (this.configuration.rentDateSelector === 'date_from_date_to') {
         // Dates => check Start and End date
         return (this.date_from != 'undefined' && this.date_from != '' &&
@@ -252,7 +276,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
         return (this.date_from != 'undefined' && this.date_from != '' &&
                 this.renting_duration != 'undefined' && this.renting_duration != '');
       }
-
+*/
     },
 
     buildLoadShoppingCartDataParams: function() { /* Build create/update shopping cart data */
@@ -464,6 +488,33 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
     },
 
     shoppingCartResultProcess: function(data, textStatus, jqXHR) {
+
+       // OPTIMIZATION 2024-01-27 START - Load configuration within shopping cart and setup selector
+       // Setup the configuration data
+       commonSettings.setupConfigurationData(data.settings);
+       model.configuration = commonSettings.data; 
+       // Configure selector
+       if (commonServices.selectorInProcess == 'wizard') {
+         selectorWizard.model.requestLanguage = model.requestLanguage;
+         selectorWizard.model.configuration = model.configuration;
+       }
+       else {
+         selector.model.requestLanguage = model.requestLanguage;
+         selector.model.configuration = model.configuration;
+         selector.view.init();
+       }
+
+       // Check duplicated Tab
+       if (model.configuration.duplicatedTab) {
+         alert(i18next.t('common.duplicateTab'));
+         // Clear the session for this tab so it can start a new process
+         sessionStorage.clear();
+         commonLoader.hide();
+         $('#product_listing').html(i18next.t('common.duplicateTab'));
+         return;
+       }
+       // OPTIMIZATION 2024-01-27 END
+
        model.shopping_cart = data.shopping_cart;
        model.products = data.products;
        model.sales_process = data.sales_process;
@@ -472,8 +523,8 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
          model.half_day_turns = data.half_day_turns;
        }
        // Store the shopping cart free access id in the session
-       var free_access_id = model.getShoppingCartFreeAccessId();
-       if (free_access_id == null || free_access_id != model.shopping_cart.free_access_id) {
+       var freeAccessId = model.getShoppingCartFreeAccessId();
+       if (freeAccessId == null || freeAccessId != model.shopping_cart.free_access_id) {
          model.putShoppingCartFreeAccessId(model.shopping_cart.free_access_id);
        }
        view.showShoppingCart();
@@ -892,6 +943,8 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
                       //$('.nav').localize();
                    });
 
+      // OPTIMIZATION 2024-01-27 START
+/*                   
       // Configure selector
       if (commonServices.selectorInProcess == 'wizard') {
         selectorWizard.model.requestLanguage = model.requestLanguage;
@@ -902,6 +955,8 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
         selector.model.configuration = model.configuration;
         selector.view.init();
       }
+*/
+      // OPTIMIZATION 2024-01-27 END
 
       // Extract the query parameters from the query string
       model.extractVariables();
@@ -1229,6 +1284,9 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
   // The loader is show on start and hidden after the result of
   // the search has been rendered (in model.loadShoppingCart)
   commonLoader.show();
-  model.loadSettings();
+  // OPTIMIZATION 2024-01-27 START
+  //model.loadSettings();
+  view.init();
+  // OPTIMIZATION 2024-01-27 END
 
 });

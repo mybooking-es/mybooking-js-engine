@@ -3,7 +3,7 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
          'i18next', 'moment','ysdtemplate', 'customCookie', 'jquery.i18next',
          'jquery.validate', 'jquery.ui', 'jquery.ui.datepicker-es',
          'jquery.ui.datepicker-en', 'jquery.ui.datepicker-ca', 'jquery.ui.datepicker-it',
-         'jquery.ui.datepicker.validation'],
+         'jquery.ui.datepicker.validation', 'moment-timezone'],
          function($, MemoryDataSource, RemoteDataSource, SelectSelector,
                   commonServices, commonSettings, commonTranslations, commonLoader, 
                   i18next, moment, tmpl, customCookie) {
@@ -103,6 +103,7 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
     this.rentalLocations = []; // Rental Locations
     this.driverAgeRules = []; // Age rules
     this.durations = []; // Durations
+    this.promotionCode = null; // The promotion code
 
     this.dateToMinDate = null;
 
@@ -1037,6 +1038,7 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
         var html = tmpl(this.selectorModel.form_selector_tmpl)({configuration: this.selectorModel.configuration,
                                                                 not_hidden_family_id: not_hidden_family_id,
                                                                 not_hidden_rental_location_code: not_hidden_rental_location_code,
+                                                                promotionCode: this.selectorModel.promotionCode,
                                                                 family_id:  (this.selectorModel.shopping_cart ? this.selectorModel.shopping_cart.family_id : null),
                                                                 rental_location_code: (this.selectorModel.shopping_cart ? this.selectorModel.shopping_cart.rental_location_code : null),
                                                                 company: commonServices.company
@@ -1221,10 +1223,10 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
     this.setupDateControls = function() {
 
       var self = this;
-
       $.datepicker.setDefaults( $.datepicker.regional[this.selectorModel.requestLanguage || 'es'] );
       var locale = $.datepicker.regional[this.selectorModel.requestLanguage || 'es'];
-      var maxDate = moment().add(650, 'days').tz(this.selectorModel.configuration.timezone).format(this.selectorModel.configuration.dateFormat);
+      var maxDate = moment().add(650, 'days').tz(this.selectorModel.configuration.timezone).format(
+                      this.selectorModel.configuration.dateFormat);
 
       // Date From
       $(this.selectorModel.date_from_selector).datepicker({
