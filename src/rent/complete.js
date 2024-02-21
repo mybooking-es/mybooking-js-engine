@@ -1190,70 +1190,70 @@ require(['jquery',
                         minlength: 9
                     },
                     'customer_document_id': {
-                      required: '#customer_document_id:visible'
+                      required: '#customer_document_id[required]:visible'
                     },
                     'street': {
-                        required: '#street:visible'
+                        required: '#street[required]:visible'
                     },
                     'city': {
-                        required: '#city:visible'
+                        required: '#city[required]:visible'
                     },    
                     'state': {
-                        required: '#state:visible'
+                        required: '#state[required]:visible'
                     }, 
                     'zip': {
-                        required: '#zip:visible'
+                        required: '#zip[required]:visible'
                     }, 
                     'country': {
-                        required: '#country:visible'
+                        required: '#country[required]:visible'
                     },
                     'driver_document_id_date_day': {
-                      required: "#driver_document_id_date_day:visible"
+                      required: "#driver_document_id_date_day[required]:visible"
                     },
                     'driver_document_id_date_month': {
-                      required: "#driver_document_id_date_month:visible"
+                      required: "#driver_document_id_date_month[required]:visible"
                     },
                     'driver_document_id_date_year': {
-                      required: "#driver_document_id_date_year:visible"
+                      required: "#driver_document_id_date_year[required]:visible"
                     },
                     'driver_document_id_date': {
-                      required: "#driver_document_id_date:visible"
+                      required: "#driver_document_id_date[required]:visible"
                     },
                     'driver_document_id_expiration_date_day': {
-                      required: "#driver_document_id_expiration_date_day:visible"
+                      required: "#driver_document_id_expiration_date_day[required]:visible"
                     },
                     'driver_document_id_expiration_date_month': {
-                      required: "#driver_document_id_expiration_date_month:visible"
+                      required: "#driver_document_id_expiration_date_month[required]:visible"
                     },
                     'driver_document_id_expiration_date_year': {
-                      required: "#driver_document_id_expiration_date_year:visible"
+                      required: "#driver_document_id_expiration_date_year[required]:visible"
                     },
                     'driver_document_id_expiration_date': {
-                      required: "#driver_document_id_expiration_date:visible"
+                      required: "#driver_document_id_expiration_date[required]:visible"
                     },
                     'driver_date_of_birth_day': {
-                      required: "#driver_date_of_birth_day:visible"
+                      required: "#driver_date_of_birth_day[required]:visible"
                     },
                     'driver_date_of_birth_month': {
-                      required: "#driver_date_of_birth_month:visible"
+                      required: "#driver_date_of_birth_month[required]:visible"
                     },
                     'driver_date_of_birth_year': {
-                      required: "#driver_date_of_birth_year:visible"
+                      required: "#driver_date_of_birth_year[required]:visible"
                     },
                     'driver_date_of_birth': {
-                        required: "#driver_date_of_birth:visible"
+                        required: "#driver_date_of_birth[required]:visible"
                     },
                     'driver_driving_license_date_day': {
-                      required: "#driver_driving_license_date_day:visible"                       
+                      required: "#driver_driving_license_date_day[required]:visible"                       
                     },
                     'driver_driving_license_date_month': {
-                      required: "#driver_driving_license_date_month:visible"                         
+                      required: "#driver_driving_license_date_month[required]:visible"                         
                     },
                     'driver_driving_license_date_year': {
-                      required: "#driver_driving_license_date_year:visible"                     
+                      required: "#driver_driving_license_date_year[required]:visible"                     
                     },
                     'driver_driving_license_date': {
-                      required: "#driver_driving_license_date:visible"                        
+                      required: "#driver_driving_license_date[required]:visible"                        
                     },
                     'additional_driver_1_driving_license_date_day': {
                       //required: "#additional_driver_1_driving_license_date_day:visible"
