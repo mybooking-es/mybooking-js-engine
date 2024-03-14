@@ -19,6 +19,9 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
     // Search result
     shopping_cart: null,   // Shopping cart
     products: null,        // Search products
+    total_products: 0,     // Total products
+    is_lazy_loading: false,  // Lazy loading
+    lazy_loading_limit: 3, // Lazy loading limit
     sales_process: null,   // Sales process information
     half_day_turns: null,  // Half day turns
     // Product detail
@@ -53,7 +56,6 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
     agent_id: null,
     optional_external_driver: null, 
     driving_license_type_id: null,
-    simple_location_id: null, 
     characteristic_length: null,
     characteristic_width: null,
     characteristic_height: null,
@@ -424,6 +426,46 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
 
     },
 
+    /*
+    * Load the lazy loading remaining products
+    */
+    loadRemainProducts: function() {
+      // Build the URL
+      var url = commonServices.URL_PREFIX + '/api/booking/frontend/shopping-cart';
+      var freeAccessId = this.getShoppingCartFreeAccessId();
+      if (freeAccessId) {
+        url += '/' + freeAccessId;
+      }
+      url += '?include_products=true';
+      if (model.requestLanguage != null) {
+        url += '&lang=' + model.requestLanguage;
+      }
+      if (commonServices.apiKey && commonServices.apiKey != '') {
+        url += '&api_key=' + commonServices.apiKey;
+      }
+      // Add a offset and a limit
+      url += '&offset=' + model.products.length;
+      url += '&limit=' + model.lazy_loading_limit;
+      // Request
+      $.ajax({
+            type: 'GET',
+            url : url,
+            dataType : 'json',
+            contentType : 'application/json; charset=utf-8',
+            crossDomain: true,
+            success: function(data, textStatus, jqXHR) {
+              Array.prototype.push.apply(model.products, data.products);
+              view.showRemainProducts(data.products);
+              commonLoader.hide();
+              model.is_lazy_loading = false;            
+            },
+            error: function(data, textStatus, jqXHR) {
+              commonLoader.hide();
+              alert(i18next.t('chooseProduct.loadShoppingCart.error'));
+            }
+      });
+    },
+
     loadShoppingCart: function() {
 
        // Build the URL
@@ -438,7 +480,9 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
        }
        if (commonServices.apiKey && commonServices.apiKey != '') {
          url += '&api_key=' + commonServices.apiKey;
-       }  
+       }
+       // Add a initial limit
+       url += '&limit=' + model.lazy_loading_limit;
        // Request
        if (this.isShoppingCartData()) { // create or update shopping cart
          $.ajax({
@@ -517,6 +561,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
 
        model.shopping_cart = data.shopping_cart;
        model.products = data.products;
+       model.total_products = data.total;
        model.sales_process = data.sales_process;
        // Half day turns
        if (typeof data.half_day_turns !== 'undefined') {
@@ -943,6 +988,9 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
                       //$('.nav').localize();
                    });
 
+      // Setup the lazy loading
+      this.setupLazyLoading();
+
       // OPTIMIZATION 2024-01-27 START
 /*                   
       // Configure selector
@@ -964,6 +1012,56 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
       // Load shopping cart
       model.loadShoppingCart();
 
+    },
+
+    showRemainProducts: function(products) {
+      // Show the products
+      var available = 0;
+      for (var idx=0;idx<model.products.length;idx++) {
+        if (model.products[idx].availability) {
+          available += 1;
+        }
+      }
+
+      const nameTmpl = model.configuration.chooseProductMultipleRateTypes ? 'script_detailed_product_multiple_rates' : 'script_detailed_product';
+
+      if (document.getElementById(nameTmpl)) {
+        var result = tmpl(nameTmpl)({
+          shoppingCartProductQuantities: model.getShoppingCartProductQuantities(),
+          shoppingCart: model.shopping_cart, 
+          products: products,
+          configuration: model.configuration,
+          available: available,
+          i18next: i18next});
+      }
+      $('#product_listing').append(result);
+    },
+
+    setupLazyLoading: function() {
+      let scrollTimeout;
+      let lastScrollTop = 0;
+      $(window).scroll(function() {
+        if (model.is_lazy_loading) {
+          return;
+        }
+
+        clearTimeout(scrollTimeout);
+        scrollTimeout = setTimeout(function() {
+          const currentScrollTop = $(this).scrollTop();
+          const isADowloadScroll = currentScrollTop > lastScrollTop;
+          console.log(isADowloadScroll, currentScrollTop, lastScrollTop);
+          lastScrollTop = currentScrollTop;
+          const isInBottomPageArea = currentScrollTop + $(window).height() > $(document).height() - 100;
+          
+          if (isInBottomPageArea && isADowloadScroll) {
+            if (model.products.length + 1 < model.total_products) {
+              commonLoader.show();
+              model.is_lazy_loading = true;
+              model.loadRemainProducts();
+            }
+          }
+        }, 250);
+      });
     },
 
     refreshVariantsResume: function(productCode) {
@@ -1044,7 +1142,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
                 // Compatibility with old version of the theme
                 var modifyReservationModalSelector = '#choose_productModal';
                 if ($('#modify_reservation_modal').length || $('#modify_reservation_modal_MBM').length > 0) {
-                  modifyReservationModalSelector = '#modify_reservation_modal'
+                  modifyReservationModalSelector = '#modify_reservation_modal';
                 }
                 // Show the modal to change dates
                 commonUI.showModal(modifyReservationModalSelector);
@@ -1099,14 +1197,14 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
 
           if (document.getElementById('script_detailed_product')) {
   
-            var result = tmpl('script_detailed_product')({
+            var detailedProduct = tmpl('script_detailed_product')({
                                 shoppingCartProductQuantities: model.getShoppingCartProductQuantities(),
                                 shoppingCart: model.shopping_cart, 
                                 products: model.products,
                                 configuration: model.configuration,
                                 available: available,
                                 i18next: i18next});
-            $('#product_listing').html(result);
+            $('#product_listing').html(detailedProduct);
   
             // Add variants resume
             model.shopping_cart.items.forEach((item) => {
@@ -1278,7 +1376,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
     model: model,
     controller: controller,
     view: view
-  }
+  };
   rentEngineMediator.setChooseProduct( rentChooseProduct );
 
   // The loader is show on start and hidden after the result of
