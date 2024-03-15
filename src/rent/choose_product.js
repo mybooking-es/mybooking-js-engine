@@ -454,13 +454,13 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
             contentType : 'application/json; charset=utf-8',
             crossDomain: true,
             success: function(data, textStatus, jqXHR) {
+              $('.mybooking-page-container').find('#product_listing_loading').remove();
               Array.prototype.push.apply(model.products, data.products);
               view.showRemainProducts(data.products);
-              commonLoader.hide();
-              model.is_lazy_loading = false;            
+              model.is_lazy_loading = false;
             },
             error: function(data, textStatus, jqXHR) {
-              commonLoader.hide();
+              $('.mybooking-page-container').find('#product_listing_loading').remove();
               alert(i18next.t('chooseProduct.loadShoppingCart.error'));
             }
       });
@@ -1053,10 +1053,11 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
           lastScrollTop = currentScrollTop;
           const isInBottomPageArea = currentScrollTop + $(window).height() > $(document).height() - 100;
           
-          if (isInBottomPageArea && isADowloadScroll) {
+          if (isADowloadScroll) {
             if (model.products.length + 1 < model.total_products) {
-              commonLoader.show();
               model.is_lazy_loading = true;
+              const loadingHtml = '<div id="product_listing_loading" style="padding: 1rem; text-align: center; background-color: rgba(0,0,0,0,6);">Loading ...</div>';
+              $('.mybooking-page-container').append(loadingHtml);
               model.loadRemainProducts();
             }
           }
