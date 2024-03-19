@@ -1322,7 +1322,13 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
               }   
               else {
                 self.selectorModel.loadReturnDays(year, month);
-              }    
+              }
+              if (self.selectorModel.configuration.prefillSelector) {    
+                let date_to = $(self.selectorModel.date_to_selector).datepicker('getDate');
+                if(date_to !== instance.lastVal){
+                  instance.lastVal = date_to;
+                }
+              } 
             }                
           },
           onSelect: function(dateText, inst) {
@@ -1986,30 +1992,25 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
             console.log('update date_to');
             // Prefill selector
             if (this.selectorModel.configuration.prefillSelector) {     
-              // Setup the first available date in calendar (just after loadPickupDays)
-              if (!$(this.selectorModel.date_to_selector).datepicker( "widget" ).is(":visible")) {
-                // Setup the first available date in calendar (just after loadReturnDays)
-                if (this.selectorModel.returnDays && this.selectorModel.returnDays.length > 0) {
-                  var dateFrom = $(this.selectorModel.date_from_selector).datepicker('getDate');
-                  if (dateFrom) {
-                    if (this.selectorModel.returnDays) {
-                      var candidateDateTo = moment(dateFrom).add(this.selectorModel.configuration.selectorDateToDays, 'day');
-                      var candidateDateToFormatted = moment(candidateDateTo).format('YYYY-MM-DD');
-                      var selectedValues = this.selectorModel.returnDays.filter(function(value){
-                        return value >= candidateDateToFormatted;
-                      });
-                      if (selectedValues.length > 0) {
-                        var selectedValue = selectedValues[0];
-                        var formattedValue = moment(selectedValue).format(this.selectorModel.configuration.dateFormat);
-                        $(this.selectorModel.date_to_selector).datepicker('setDate', formattedValue);
-                        $(this.selectorModel.date_to_selector).trigger('change');  
-                        this.selectorController.dateToChanged();
-                      }
-                    }
-                  }               
-                }
-                console.log('return days loaded');        
-              }    
+              // Setup the first available date in calendar (just after loadReturnDays)
+              if (this.selectorModel.returnDays && this.selectorModel.returnDays.length > 0) {
+                var dateFrom = $(this.selectorModel.date_from_selector).datepicker('getDate');
+                if (dateFrom) {
+                  var candidateDateTo = moment(dateFrom).add(this.selectorModel.configuration.selectorDateToDays, 'day');
+                  var candidateDateToFormatted = moment(candidateDateTo).format('YYYY-MM-DD');
+                  var selectedValues = this.selectorModel.returnDays.filter(function(value){
+                    return value >= candidateDateToFormatted;
+                  });
+                  if (selectedValues.length > 0) {
+                    var selectedValue = selectedValues[0];
+                    var formattedValue = moment(selectedValue).format(this.selectorModel.configuration.dateFormat);
+                    $(this.selectorModel.date_to_selector).datepicker('setDate', formattedValue);
+                    $(this.selectorModel.date_to_selector).trigger('change');  
+                    this.selectorController.dateToChanged();
+                  }
+                }               
+              }
+              console.log('return days loaded');  
             }
           }
           break;
@@ -2052,6 +2053,15 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
             if ($(this.selectorModel.time_from_selector).attr('disabled')) {   
               $(this.selectorModel.time_from_selector).attr('disabled', false);
             } 
+
+            if (this.selectorModel.configuration.rentDateSelector === 'date_from_duration') {
+              // Load durations in base date_from
+              this.loadDurations(); 
+              if ($(this.selectorModel.duration_selector).attr('disabled')) {   
+                // Enable duration control if disabled
+                $(this.selectorModel.duration_selector).attr('disabled', false);
+              }
+            }
 
           }
           else if (id == 'time_to') {
