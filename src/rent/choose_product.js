@@ -454,10 +454,12 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
             contentType : 'application/json; charset=utf-8',
             crossDomain: true,
             success: function(data, textStatus, jqXHR) {
-              $('.mybooking-page-container').find('#product_listing_loading').remove();
-              Array.prototype.push.apply(model.products, data.products);
-              view.showRemainProducts(data.products);
-              model.is_lazy_loading = false;
+              if (data.products.length > 0) {
+                $('.mybooking-page-container').find('#product_listing_loading').remove();
+                Array.prototype.push.apply(model.products, data.products);
+                view.showRemainProducts(data.products);
+                model.is_lazy_loading = false;
+              }
             },
             error: function(data, textStatus, jqXHR) {
               $('.mybooking-page-container').find('#product_listing_loading').remove();
@@ -1041,17 +1043,16 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
       let scrollTimeout;
       let lastScrollTop = 0;
       $(window).scroll(function() {
+        clearTimeout(scrollTimeout);
+
         if (model.is_lazy_loading) {
           return;
         }
-
-        clearTimeout(scrollTimeout);
+        
         scrollTimeout = setTimeout(function() {
           const currentScrollTop = $(this).scrollTop();
           const isADowloadScroll = currentScrollTop > lastScrollTop;
-          console.log(isADowloadScroll, currentScrollTop, lastScrollTop);
           lastScrollTop = currentScrollTop;
-          const isInBottomPageArea = currentScrollTop + $(window).height() > $(document).height() - 100;
           
           if (isADowloadScroll) {
             if (model.products.length + 1 < model.total_products) {
