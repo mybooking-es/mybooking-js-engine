@@ -505,11 +505,22 @@ require(['jquery',
      */  
     sendBookingRequest: function() { 
 
+      var paymentAmountOverride = null;
+
       // Prepare the request data
       var reservation = $('form[name=reservation_form]').formParams(false);
       if (typeof reservation.complete_action != 'undefined') {
         if (reservation.complete_action != 'pay_now') {
           reservation.payment = 'none';
+        }
+      }
+      // Allows to setup the payment amount using an input type hidden with 
+      // name payment_amount_override (deposit or total)
+      if (typeof reservation.payment_amount_override !== 'undefined') {
+        if (reservation.payment_amount_override === 'deposit') {
+          paymentAmountOverride = 'deposit';
+        } else if (reservation.payment_amount_override === 'total') {
+          paymentAmountOverride = 'total';
         }
       }
       // Prepare phone prefix
@@ -592,6 +603,10 @@ require(['jquery',
                         id: bookingId,
                         payment: model.sales_process.can_pay_deposit ? 'deposit' : 'total', 
                         payment_method_id: payment_method_id
+                    }
+                    // Allows to override the amount depending
+                    if (paymentAmountOverride !== null) {
+                      paymentData.payment = paymentAmountOverride;
                     }
                     view.payment(commonServices.URL_PREFIX + '/reserva/pagar',
                                  bookingId, 
@@ -1539,7 +1554,15 @@ require(['jquery',
                 },
 
                 errorPlacement: function (error, element) {
-                    if (element.attr('name') == 'conditions_read_request_reservation' || 
+                    if (element.attr('type') == 'radio') {
+                      if (element.parent() && element.parent().parent()) {
+                        error.insertAfter(element.parent().parent());
+                      }
+                      else {
+                        error.insertAfter(element.parent());
+                      }                    
+                    }
+                    else if (element.attr('name') == 'conditions_read_request_reservation' || 
                       element.attr('name') == 'conditions_read_payment_on_delivery' || 
                       element.attr('name') == 'conditions_read_pay_now' ||
                       element.attr('name') == 'privacy_read_request_reservation'  || 
