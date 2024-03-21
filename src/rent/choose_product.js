@@ -1060,6 +1060,10 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
               const loadingHtml = '<div id="product_listing_loading" style="padding: 1rem; text-align: center; background-color: rgba(0,0,0,0,6);">Loading ...</div>';
               $('.mybooking-page-container').append(loadingHtml);
               model.loadRemainProducts();
+            } else {
+              if (model.configuration.multipleProductsSelection) {
+                $('#go_to_complete').show();
+              }
             }
           }
         }, 250);
@@ -1094,6 +1098,8 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
     },
 
     showShoppingCart: function() {
+        // Unbind the events in product listing delegate events
+        $('#product_listing').off();
 
         // Show the reservation summary 
         if (document.getElementById('script_reservation_summary')) {
@@ -1176,14 +1182,14 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
             $('#product_listing').html(result);
 
             // Bind the event to choose the product
-            $('.btn-choose-product').bind('click', function(e) {
+            $('#product_listing').on('click', '.btn-choose-product', function(e) {
               e.preventDefault();
               controller.selectProductBtnClick($(this).attr('data-product'),
                                                $(this).attr('data-rate-type-id'),
                                                $(this).attr('data-extra-code'));
             });
             // Bind the event to show detailed product
-            $('.js-product-info-btn').bind('click', function(){
+            $('#product_listing').on('click', '.js-product-info-btn', function(){
               controller.productDetailIconClick($(this).attr('data-product'));
             });  
             // Bind the event to show video
@@ -1218,27 +1224,27 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
             // Bind the event to change to list
   
             // Bind the event to choose the product
-            $('.btn-choose-product').bind('click', function(e) {
+            $('#product_listing').on('click', '.btn-choose-product', function(e) {
               e.preventDefault();
               controller.selectProductBtnClick($(this).attr('data-product'),
                                                $(this).attr('data-rate-type-id'),
                                                $(this).attr('data-extra-code'));
             });
             // Bind the events to manage multiple products
-            $('.select-choose-product').bind('change', function() {
+            $('#product_listing').on('change', '.select-choose-product', function() {
                 var productCode = $(this).attr('data-value');
                 var productQuantity = $(this).val();
                 controller.productQuantityChanged(productCode, productQuantity);
             }); 
             // Bind the event to choose variant
-            $('.btn-choose-variant').bind('click', function() {
+            $('#product_listing').on('click', '.btn-choose-variant', function() {
               controller.selectVariantBtnClick($(this).attr('data-product'));
             });       
             $('#go_to_complete').bind('click', function() {
               controller.multipleProductsNextButtonClick();
             });
             // Bind the event to show detailed product
-            $('.js-product-info-btn').bind('click', function(){
+            $('#product_listing').on('click', '.js-product-info-btn', function(){
               controller.productDetailIconClick($(this).attr('data-product'));
             });  
             // Bind the event to show video
