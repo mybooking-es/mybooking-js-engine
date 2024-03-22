@@ -443,7 +443,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
       if (commonServices.apiKey && commonServices.apiKey != '') {
         url += '&api_key=' + commonServices.apiKey;
       }
-      // Add a offset and a limit
+      // Add a offset and a limit to paginate
       url += '&offset=' + model.products.length;
       url += '&limit=' + model.lazy_loading_limit;
       // Request
@@ -454,15 +454,22 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
             contentType : 'application/json; charset=utf-8',
             crossDomain: true,
             success: function(data, textStatus, jqXHR) {
+              // If there are products, show them
               if (data.products.length > 0) {
+                // Remove the loader
                 $('.mybooking-page-container').find('#product_listing_loading').remove();
+                // Add the products
                 Array.prototype.push.apply(model.products, data.products);
+                // Show the products
                 view.showRemainProducts(data.products);
+                // Set the lazy loading flag
                 model.is_lazy_loading = false;
               }
             },
             error: function(data, textStatus, jqXHR) {
+              // Remove the loader
               $('.mybooking-page-container').find('#product_listing_loading').remove();
+              // Alert the error
               alert(i18next.t('chooseProduct.loadShoppingCart.error'));
             }
       });
@@ -990,9 +997,6 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
                       //$('.nav').localize();
                    });
 
-      // Setup the lazy loading
-      this.setupLazyLoading();
-
       // OPTIMIZATION 2024-01-27 START
 /*                   
       // Configure selector
@@ -1014,6 +1018,8 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
       // Load shopping cart
       model.loadShoppingCart();
 
+      // Setup the lazy loading
+      this.setupLazyLoading();
     },
 
     showRemainProducts: function(products) {
@@ -1024,10 +1030,11 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
           available += 1;
         }
       }
-
+      // Get template: detailed product or detailed product multiple rates
       const nameTmpl = model.configuration.chooseProductMultipleRateTypes ? 'script_detailed_product_multiple_rates' : 'script_detailed_product';
 
       if (document.getElementById(nameTmpl)) {
+        // Append the new products
         var result = tmpl(nameTmpl)({
           shoppingCartProductQuantities: model.getShoppingCartProductQuantities(),
           shoppingCart: model.shopping_cart, 
@@ -1035,32 +1042,41 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
           configuration: model.configuration,
           available: available,
           i18next: i18next});
+        $('#product_listing').append(result);
       }
-      $('#product_listing').append(result);
     },
 
     setupLazyLoading: function() {
       let scrollTimeout;
       let lastScrollTop = 0;
+      // Scroll event
       $(window).scroll(function() {
+        // Clear the timeout
         clearTimeout(scrollTimeout);
-
+        // Return if the lazy loading is already in process
         if (model.is_lazy_loading) {
           return;
         }
-        
+        // Set a timeout to check the scroll
         scrollTimeout = setTimeout(function() {
+          // Get the current scroll top
           const currentScrollTop = $(this).scrollTop();
+          // Check if the user is scrolling down
           const isADowloadScroll = currentScrollTop > lastScrollTop;
+          // Update the last scroll top
           lastScrollTop = currentScrollTop;
-          
+          // If the user is scrolling down load the remaining products
           if (isADowloadScroll) {
             if (model.products.length + 1 < model.total_products) {
+              // Set the lazy loading flag
               model.is_lazy_loading = true;
+              // Show the loading message
               const loadingHtml = '<div id="product_listing_loading" style="padding: 1rem; text-align: center; background-color: rgba(0,0,0,0,6);">Loading ...</div>';
               $('.mybooking-page-container').append(loadingHtml);
+              // Load the next step remaining products
               model.loadRemainProducts();
             } else {
+              // Show the next button in multiple product selection
               if (model.configuration.multipleProductsSelection) {
                 $('#go_to_complete').show();
               }
@@ -1094,6 +1110,20 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
           total: model.getTotal(productCode),
         });
         $(`.product-variant-resume[data-product-code=${ productCode }]`).html(resumeHtml);
+      }
+    },
+
+    verifyFirstLazyLoading: function() {
+      // Return if the lazy loading is already in process
+      if (model.is_lazy_loading) {
+        return;
+      }
+      // If there are more products and list is shorter than windows height setup a first lazy loading
+      if (model.total_products > model.products.length && 
+        $('body').height() <= $(window).height()) {
+        model.is_lazy_loading = true;
+        model.loadRemainProducts();
+        console.log('First lazy loading');
       }
     },
 
@@ -1258,6 +1288,8 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
           }  
         }
 
+        // Verify first lazy loading products charge
+        this.verifyFirstLazyLoading();
     },
 
     /***
