@@ -418,6 +418,16 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
         data.key_characteristic_6 = this.key_characteristic_6;
       }  
       
+      // Append the referrer and the search (to manage conversions)
+      if (typeof sessionStorage !== 'undefined') {
+        if (sessionStorage.getItem('mybookingReferrer') !== null) {
+          data.web_referrer = sessionStorage.getItem('mybookingReferrer');
+        }
+        if (sessionStorage.getItem('mybookingSearch') !== null) {
+          data.web_search = sessionStorage.getItem('mybookingSearch');
+        }
+      }
+
       var jsonData = encodeURIComponent(JSON.stringify(data));
 
       return jsonData;
