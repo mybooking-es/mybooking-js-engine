@@ -608,6 +608,16 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
 
       }
 
+      // Append the referrer and the search (to manage conversions)
+      if (typeof sessionStorage !== 'undefined') {
+        if (sessionStorage.getItem('mybookingReferrer') !== null) {
+          data.web_referrer = sessionStorage.getItem('mybookingReferrer');
+        }
+        if (sessionStorage.getItem('mybookingSearch') !== null) {
+          data.web_search = sessionStorage.getItem('mybookingSearch');
+        }
+      }
+
       return data;
 
     }  
