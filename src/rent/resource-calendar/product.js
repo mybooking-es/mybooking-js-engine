@@ -143,8 +143,9 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
         }
         else {
           var freeAccessId = productModel.getShoppingCartFreeAccessId();
-          if (typeof freeAccessId !== 'undefined' && freeAccessId && freeAccessId !== '') {
-            // If does exists a shopping cart, load it
+          if (productModel.performanceId === null && 
+              typeof freeAccessId !== 'undefined' && freeAccessId && freeAccessId !== '') {
+            // If does exists a shopping cart, load it (does not load for performances because it can be different)
             productModel.loadShoppingCart();
           }
           else {
@@ -1858,7 +1859,7 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
 
     // Performance - 2024-03-03 - Get the performance ID from the URL
     var urlVars = commonSettings.getUrlVars();
-    if (typeof urlVars['performanceId'] !== 'undefined' && urlVars['performance_id'] !== '') {
+    if (typeof urlVars['performance_id'] !== 'undefined' && urlVars['performance_id'] !== '') {
       productModel.performanceId = urlVars['performance_id'];
     }
 
