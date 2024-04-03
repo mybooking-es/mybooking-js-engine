@@ -1858,7 +1858,7 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
 
     // Performance - 2024-03-03 - Get the performance ID from the URL
     var urlVars = commonSettings.getUrlVars();
-    if (urlVars['performance_id'] !== '') {
+    if (typeof urlVars['performanceId'] !== 'undefined' && urlVars['performance_id'] !== '') {
       productModel.performanceId = urlVars['performance_id'];
     }
 
