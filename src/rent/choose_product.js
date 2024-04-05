@@ -1075,11 +1075,6 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
               $('.mybooking-page-container').append(loadingHtml);
               // Load the next step remaining products
               model.loadRemainProducts();
-            } else {
-              // Show the next button in multiple product selection
-              if (model.configuration.multipleProductsSelection) {
-                $('#go_to_complete').show();
-              }
             }
           }
         }, 250);
