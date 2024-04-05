@@ -41,6 +41,7 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
     selectedDateFrom: null, // Selected date from
     selectedDateTo: null, // Selected date to
     shoppingCartId: null, // The shoppingCart Id
+    performanceId: null, // The performance Id
 
     availabilityData: null, // Availability data
     pickupHours: [],  // Available pickup hours
@@ -118,6 +119,13 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
     loadSettings: function() {
       commonSettings.loadSettings(function(data){
         productModel.configuration = data;
+        // Performance - 2024-03-03
+        if (productModel.performanceId !== null && productModel.performanceId !== '') {
+          console.log('performanceId', productModel.performanceId);
+          productModel.configuration.rentingProductOneJournal = true;
+          productModel.configuration.rentingProductMultipleJournals = false;
+          console.log('settings', productModel.configuration);
+        }
         // Check duplicated Tab
         if (productModel.configuration.duplicatedTab) {
           // Initialize i18next for translations
@@ -254,6 +262,10 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
       if (productModel.salesChannelCode && productModel.salesChannelCode != '') {
         url += '&sales_channel_code='+productModel.salesChannelCode;
       }
+      // Performance - 2024-03-03
+      if (productModel.performanceId && productModel.performanceId != '') {
+        url += '&performance_id='+productModel.performanceId;
+      }  
       url += '&duration_scope='+productView.getDurationScopeVal();
 
       // Get the firstday
@@ -423,6 +435,10 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
       if (commonServices.apiKey && commonServices.apiKey != '') {
         url += '&api_key='+commonServices.apiKey;
       }    
+      // Performance - 2024-03-03
+      if (this.performanceId && this.performanceId !== '') {
+        url += '&performance_id='+this.performanceId;
+      }
       // Request                  
       $.ajax({
         type: 'GET',
@@ -548,6 +564,11 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
         data.return_place = $(this.return_place_selector).val();
       }
 
+      // Performance - 2024-03-03
+      if (this.performanceId !== null && this.performanceId !== '') {
+        data.performance_id = this.performanceId;
+      }
+
       // Agent (from cookies)
       var agentId = customCookie.get('__mb_agent_id'); 
       if (agentId != null) {
@@ -585,6 +606,16 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
 
         }  
 
+      }
+
+      // Append the referrer and the search (to manage conversions)
+      if (typeof sessionStorage !== 'undefined') {
+        if (sessionStorage.getItem('mybookingReferrer') !== null) {
+          data.web_referrer = sessionStorage.getItem('mybookingReferrer');
+        }
+        if (sessionStorage.getItem('mybookingSearch') !== null) {
+          data.web_search = sessionStorage.getItem('mybookingSearch');
+        }
       }
 
       return data;
@@ -921,7 +952,7 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
           }
         }
         productModel.today = moment().format('YYYY-MM-DD');
-
+        
         // Initialize i18next for translations
         i18next.init({  
                         lng: productModel.requestLanguage,
@@ -1824,6 +1855,13 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
 
   // Check the product_selector and its data-code attribute
   if ($('#product_selector').length && $('#product_selector').attr('data-code') != 'undefined') {
+
+    // Performance - 2024-03-03 - Get the performance ID from the URL
+    var urlVars = commonSettings.getUrlVars();
+    if (urlVars['performance_id'] !== '') {
+      productModel.performanceId = urlVars['performance_id'];
+    }
+
     productModel.code = $('#product_selector').attr('data-code');
     commonLoader.show();
     productModel.loadSettings();

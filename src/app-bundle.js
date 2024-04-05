@@ -63,6 +63,7 @@ require('./common/commonPromotionCode.js');
 $(document).ready(function() {
     // Extract agent to cookie
     require('./common/commonAgent.js');
+    require('./common/commonReferrer.js');
 });
 
 // == Contact module
