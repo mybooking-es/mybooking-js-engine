@@ -1077,7 +1077,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
           lastScrollTop = currentScrollTop;
           // If the user is scrolling down load the remaining products
           if (isADowloadScroll) {
-            if (model.products.length + 1 < model.total_products) {
+            if (model.products && model.products.length < model.total_products) {
               // Set the lazy loading flag
               model.is_lazy_loading = true;
               // Show the loading message
