@@ -42,6 +42,7 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
     selectedDateTo: null, // Selected date to
     shoppingCartId: null, // The shoppingCart Id
     performanceId: null, // The performance Id
+    fixedPerformanceId: false, // Fixed performance Id by attr
 
     availabilityData: null, // Availability data
     pickupHours: [],  // Available pickup hours
@@ -1856,6 +1857,15 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
 
   // Check the product_selector and its data-code attribute
   if ($('#product_selector').length && $('#product_selector').attr('data-code') != 'undefined') {
+
+    // Performance - 2024-03-03 - Get the performance ID from the attribute
+    var performanceIdAttr = $('#product_selector').attr('data-performance-id');
+    if (typeof performanceIdAttr !== 'undefined') {
+      if (performanceIdAttr !== '') {
+        productModel.performanceId = performanceIdAttr;
+        productModel.fixedPerformanceId = true;
+      }
+    }
 
     // Performance - 2024-03-03 - Get the performance ID from the URL
     var urlVars = commonSettings.getUrlVars();
