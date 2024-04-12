@@ -42,6 +42,7 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
     selectedDateTo: null, // Selected date to
     shoppingCartId: null, // The shoppingCart Id
     performanceId: null, // The performance Id
+    fixedPerformanceId: false, // Fixed performance Id by attr
 
     availabilityData: null, // Availability data
     pickupHours: [],  // Available pickup hours
@@ -143,8 +144,9 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
         }
         else {
           var freeAccessId = productModel.getShoppingCartFreeAccessId();
-          if (typeof freeAccessId !== 'undefined' && freeAccessId && freeAccessId !== '') {
-            // If does exists a shopping cart, load it
+          if (productModel.performanceId === null && 
+              typeof freeAccessId !== 'undefined' && freeAccessId && freeAccessId !== '') {
+            // If does exists a shopping cart, load it (does not load for performances because it can be different)
             productModel.loadShoppingCart();
           }
           else {
@@ -497,6 +499,13 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
         contentType : 'application/json; charset=utf-8',
         crossDomain: true,
         success: function(data, textStatus, jqXHR) {
+          // Check min days by time_to date select event
+          const minDays = productModel.productCalendar.model.calculateMinDays(data.shopping_cart.date_from);
+          if (minDays !== null && minDays > data.shopping_cart.days) {
+            // TODO check api response for message and initial time_to 
+            alert(i18next.t('selector.error_min_days', {minDays: minDays}));
+            return;
+          }
           if (self.shoppingCartId == null || self.shoppingCartId != data.shopping_cart.free_access_id) {
             self.shoppingCartId = data.shopping_cart.free_access_id;
             self.putShoppingCartFreeAccessId(self.shoppingCartId);
@@ -1856,9 +1865,18 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
   // Check the product_selector and its data-code attribute
   if ($('#product_selector').length && $('#product_selector').attr('data-code') != 'undefined') {
 
+    // Performance - 2024-03-03 - Get the performance ID from the attribute
+    var performanceIdAttr = $('#product_selector').attr('data-performance-id');
+    if (typeof performanceIdAttr !== 'undefined') {
+      if (performanceIdAttr !== '') {
+        productModel.performanceId = performanceIdAttr;
+        productModel.fixedPerformanceId = true;
+      }
+    }
+
     // Performance - 2024-03-03 - Get the performance ID from the URL
     var urlVars = commonSettings.getUrlVars();
-    if (urlVars['performance_id'] !== '') {
+    if (typeof urlVars['performance_id'] !== 'undefined' && urlVars['performance_id'] !== '') {
       productModel.performanceId = urlVars['performance_id'];
     }
 
