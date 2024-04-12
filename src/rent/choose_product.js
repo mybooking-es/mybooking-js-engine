@@ -1275,9 +1275,14 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
             $('#product_listing').on('click', '.btn-choose-variant', function() {
               controller.selectVariantBtnClick($(this).attr('data-product'));
             });       
-            $('#go_to_complete').bind('click', function() {
-              controller.multipleProductsNextButtonClick();
-            });
+            // Show the next button in multiple product selection
+            if (model.configuration.multipleProductsSelection) {
+              $('#go_to_complete').show();
+              $('#go_to_complete').bind('click', function() {
+                controller.multipleProductsNextButtonClick();
+              });
+            }
+            
             // Bind the event to show detailed product
             $('#product_listing').on('click', '.js-product-info-btn', function(){
               controller.productDetailIconClick($(this).attr('data-product'));
