@@ -837,7 +837,12 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
         $('#variant-product-title').html(myProduct.name);
         $('#variant-product-content').html(variantHtml);
         commonUI.showModal('#modalVariantSelector', 
-                            null, // On show modal 
+                            function(event, modal){ // on Show modal
+                              setTimeout(function(){  
+                                // Call to the mediator
+                                rentEngineMediator.onShowModal(event, modal);
+                              },50);
+                            },
                             function(){
                               // On Hide modal => Refresh variants summary
                               view.refreshVariantsResume(productCode);
@@ -1057,7 +1062,13 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
                   modifyReservationModalSelector = '#modify_reservation_modal'
                 }
                 // Show the modal to change dates
-                commonUI.showModal(modifyReservationModalSelector);
+                commonUI.showModal(modifyReservationModalSelector,
+                  function(event, modal){ // on Show
+                    setTimeout(function(){  
+                      // Call to the mediator
+                      rentEngineMediator.onShowModal(event, modal);
+                    },50);
+                  });
               }
             });
           }
@@ -1205,9 +1216,11 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
         // Show the product in a modal
         commonUI.showModal('#modalProductDetail', function(event, modal){ // on Show
                                                     setTimeout(function(){  
-                                                      if ( $('.mybooking-carousel-inner').length ) {  
+                                                      if ($('.mybooking-carousel-inner').length) {  
                                                         commonUI.showSlider('.mybooking-carousel-inner');
                                                       }
+                                                      // Call to the mediator
+                                                      rentEngineMediator.onShowModal(event, modal);
                                                     },50);
                                                   },
                                                   function(event, modal) { // on Hide

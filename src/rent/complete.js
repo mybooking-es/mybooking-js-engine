@@ -881,7 +881,13 @@ require(['jquery',
             });
             passwordForgottenComponent.view.init();
             // Show the modal
-            commonUI.showModal('#modalExtraDetail');
+            commonUI.showModal('#modalExtraDetail',
+                               function(event, modal){ // on Show
+                                 setTimeout(function(){  
+                                   // Call to the mediator
+                                   rentEngineMediator.onShowModal(event, modal);
+                                 },50);
+                               });
           }
         });
         // Prepare login
@@ -1881,7 +1887,13 @@ require(['jquery',
                   modifyReservationModalSelector = '#modify_reservation_modal'
                 }
                 // Show the modal to change dates
-                commonUI.showModal(modifyReservationModalSelector);
+                commonUI.showModal(modifyReservationModalSelector,
+                  function(event, modal){ // on Show
+                    setTimeout(function(){  
+                      // Call to the mediator
+                      rentEngineMediator.onShowModal(event, modal);
+                    },50);
+                  });
               }
          });
        }
@@ -2057,9 +2069,11 @@ require(['jquery',
         // Show the product in a modal
         commonUI.showModal('#modalExtraDetail', function(event, modal){ // On Show
                                                   setTimeout(function(){ 
-                                                    if ( $('.mybooking-carousel-inner').length ) {  
+                                                    if ($('.mybooking-carousel-inner').length) {  
                                                       commonUI.showSlider('.mybooking-carousel-inner');
                                                     }
+                                                    // Call to the mediator
+                                                    rentEngineMediator.onShowModal(event, modal);
                                                   }, 50);
                                                 },
                                                 function(event, modal) { // On hide

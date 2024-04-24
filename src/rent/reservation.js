@@ -214,7 +214,13 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
             $('#modalSignatureValidation .modal-body').html(html);
           }
           // Show the modal
-          commonUI.showModal('#modalSignatureValidation');
+          commonUI.showModal('#modalSignatureValidation',
+                              function(event, modal){ // on Show
+                                setTimeout(function(){  
+                                  // Call to the mediator
+                                  rentEngineMediator.onShowModal(event, modal);
+                                },50);
+                              });
         }
 
       }
