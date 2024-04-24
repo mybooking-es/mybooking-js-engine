@@ -326,6 +326,7 @@ define("commonTranslations", [], function () {
           select_return_place: "Select return place",
           another_place: "Exact address",
           error_loading_data: "We are sorry. There was an error loading data",
+          error_min_days: "We are sorry, it does not meet the minimum number of days. Please select an extra day or try selecting another return time.",
           validations: {
             pickupPlaceRequired: "Pickup place required",
             dateFromRequired: "Date required",
@@ -865,6 +866,7 @@ define("commonTranslations", [], function () {
           another_place: "Dirección exacta",
           error_loading_data:
             "Lo sentimos. Se ha producido un error cargando los datos",
+          error_min_days: "Lo lamentamos, no cumple el mínimo de días. Por favor, seleccione un día más o pruebe a seleccionar otro horario de devolución.",
           validations: {
             pickupPlaceRequired: "Lugar de entrega obligatorio",
             dateFromRequired: "Fecha obligatoria",
@@ -1427,6 +1429,7 @@ define("commonTranslations", [], function () {
           another_place: "Adreça exacta",
           error_loading_data:
             "Ho sentim. S'ha prodit un error carregant les dades",
+          error_min_days: "Ho lamentem, no compleix el mínim de dies. Si us plau, seleccioneu un dia més o proveu a seleccionar un altre horari de devolució.",
           validations: {
             pickupPlaceRequired: "El lloc de lliurament és obligatori",
             dateFromRequired: "La data és obligatòria",
@@ -1978,6 +1981,7 @@ define("commonTranslations", [], function () {
           another_place: "Exakte Adresse",
           error_loading_data:
             "Es tut uns leid. Beim Laden der Daten ist ein Fehler aufgetreten",
+          error_min_days: "Es tut uns leid, die Mindestanzahl an Tagen wird nicht erreicht. Bitte wählen Sie einen zusätzlichen Tag aus oder versuchen Sie, eine andere Rückgabezeit auszuwählen.",
           validations: {
             pickupPlaceRequired: "Abholort erforderlich",
             dateFromRequired: "Datum erforderlich",
@@ -2533,6 +2537,7 @@ define("commonTranslations", [], function () {
           another_place: "Adresse exacte",
           error_loading_data:
             "Nous sommes désolés. Une erreur s'est produite lors du chargement des données",
+          error_min_days: "Nous sommes désolés, le nombre minimum de jours n'est pas respecté. Veuillez sélectionner un jour supplémentaire ou essayez de sélectionner une autre heure de retour.",
           validations: {
             pickupPlaceRequired: "Champ obligatoire",
             dateFromRequired: "Champ obligatoire",
@@ -3089,6 +3094,7 @@ define("commonTranslations", [], function () {
           another_place: "Indirizzo esatto",
           error_loading_data:
             "Ci dispiace. Si è verificato un errore durante il caricamento dei dati",
+          error_min_days: "Siamo spiacenti, non è stato raggiunto il numero minimo di giorni. Seleziona un giorno in più o prova a selezionare un altro orario di ritorno.",
           validations: {
             pickupPlaceRequired: "Luogo di ritiro richiesto",
             dateFromRequired: "Data richiesta",
@@ -3401,6 +3407,7 @@ define("commonTranslations", [], function () {
           another_place: "Точный адрес",
           error_loading_data:
             "Мы сожалеем. При загрузке данных произошла ошибка",
+          error_min_days: "К сожалению, минимальное количество дней не соответствует. Пожалуйста, выберите дополнительный день или попробуйте выбрать другое время возврата.",
           validations: {
             pickupPlaceRequired: "Требуется место получения",
             dateFromRequired: "Требуется дата",

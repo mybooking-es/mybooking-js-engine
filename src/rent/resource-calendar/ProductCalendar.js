@@ -30,6 +30,8 @@ define('ProductCalendar', ['jquery', 'YSDEventTarget',
     this.availabilityData = null;
     // Check hourly availability
     this.checkHourlyOccupation = false;
+    // Min days
+    this.minDays = null;
 
     // Events Management
     this.events = new YSDEventTarget();
@@ -58,6 +60,14 @@ define('ProductCalendar', ['jquery', 'YSDEventTarget',
      */ 
     this.setProductCalendarView = function(_productCalendarView) {
       this.productCalendarView = _productCalendarView;
+    }
+
+    this.calculateMinDays = function(dateStr) {
+      if (typeof this.availabilityData.min_days[dateStr] !== 'undefined') {
+        return this.availabilityData.min_days[dateStr];
+      }
+
+      return this.minDays;
     }
 
   }
@@ -189,6 +199,7 @@ define('ProductCalendar', ['jquery', 'YSDEventTarget',
       this.productCalendarModel.configuration = configuration;
       this.productCalendarModel.availabilityData = availabilityData;
       this.productCalendarModel.checkHourlyOccupation = checkHourlyOccupation;
+      this.productCalendarModel.minDays = minDays;
       var today = moment().format('YYYY-MM-DD');
 
       var self = this;
@@ -401,10 +412,12 @@ define('ProductCalendar', ['jquery', 'YSDEventTarget',
               var minDays = self.productCalendarModel.availabilityData.min_days[dateStr];
               if (days < minDays) {
                 event.stopPropagation();
-                // Clear the selection
-                $(self.productCalendarModel.dateSelector).data('dateRangePicker').clear();
-                alert(self.productCalendarModel.i18next.t('chooseProduct.min_duration',{duration: minDays}));
-                return;
+                if (!cycleOf24Hours || (cycleOf24Hours && days !== minDays - 1)) {
+                  // Clear the selection
+                  $(self.productCalendarModel.dateSelector).data('dateRangePicker').clear();
+                  alert(self.productCalendarModel.i18next.t('chooseProduct.min_duration',{duration: minDays}));
+                  return;
+                }
               }
             }
           }
