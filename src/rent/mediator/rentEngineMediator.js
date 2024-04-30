@@ -94,6 +94,10 @@ define('rentEngineMediator', ['jquery', 'YSDEventTarget'],
      */
     setupDelegate: function( delegate ) {
 
+      if (typeof delegate.showModal === 'function') {
+        this.showModalDelegate = delegate.showModal;
+      }
+
       // Choose single product
       if (typeof delegate.chooseSingleProduct === 'function') {
         this.chooseSingleProductDelegate = delegate.chooseSingleProduct;
@@ -147,6 +151,14 @@ define('rentEngineMediator', ['jquery', 'YSDEventTarget'],
     },
 
     // ========= Interaction
+
+    // --------- Show Modal
+    onShowModal: function(event, modal) {
+      console.log('rentEngineMediator_showModal', this.showModalDelegate);
+      if (typeof this.showModalDelegate === 'function') {
+        this.showModalDelegate(event, modal);
+      }
+    },
 
     // --------- Choose Single Products
 

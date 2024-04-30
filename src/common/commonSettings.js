@@ -44,6 +44,7 @@ define('commonSettings', ['jquery','commonServices','commonLoader','commonTransl
       useDriverAgeRules: null,
       calendarShowAvailabilityNotSelectable: false,
       chooseProductMultipleRateTypes: false,
+      literalDepositFranchise: 'deposit',
       // - Renting dates
       minDays   : 1,
       timeToFrom: true,
@@ -242,6 +243,9 @@ define('commonSettings', ['jquery','commonServices','commonLoader','commonTransl
              mybookingSettings.data.chooseProductMultipleRateTypes = data.choose_product_multiple_rate_types;
              if (typeof data.choose_product_multiple_rate_types === 'undefined') {
               mybookingSettings.data.chooseProductMultipleRateTypes = false;
+             }
+             if (typeof data.literal_deposit_franchise !== 'undefined') {
+              mybookingSettings.data.literalDepositFranchise = data.literal_deposit_franchise;
              }
              mybookingSettings.data.selectFamily = data.select_family;
              mybookingSettings.data.selectDestination = data.select_destination;

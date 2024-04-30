@@ -372,6 +372,15 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
       if (this.requestLanguage != null) {
         urlParams.push('lang='+this.requestLanguage);
       }
+      if (this.configuration.pickupReturnPlace && $(this.pickup_place_selector).val() != '') {
+        urlParams.push('place='+$(this.pickup_place_selector).val());
+      }
+      if (this.selectorView.applyRentalLocationSelector() && $(this.rental_location_code_selector).val() != '') {
+        urlParams.push('rental_location_code='+$(this.rental_location_code_selector).val());
+      }  
+      else if (this.selectorView.usedFixedRentalLocation() && this.selectorView.fixedRentalLocationValue() != '') {
+        urlParams.push('rental_location_code='+this.selectorView.fixedRentalLocationValue());
+      }          
       if (commonServices.apiKey && commonServices.apiKey != '') {
         urlParams.push('api_key='+commonServices.apiKey);
       }    
