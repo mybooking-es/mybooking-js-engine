@@ -345,25 +345,33 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
       }
       var values = [model.booking.address_country,
                     model.booking.customer_origin_country,
+                    model.customer_nacionality,
                     model.booking.driver_address_country,
                     model.booking.driver_origin_country,
                     model.booking.driver_driving_license_country,
+                    model.booking.driver_nacionality,
                     model.booking.additional_driver_1_origin_country,
                     model.booking.additional_driver_1_driving_license_country,
+                    model.booking.additional_driver_1_nacionality,
                     model.booking.additional_driver_2_origin_country,
-                    model.booking.additional_driver_2_driving_license_country]; 
+                    model.booking.additional_driver_2_driving_license_country,
+                    model.booking.additional_driver_2_nacionality]; 
 
       if (commonServices.jsUseSelect2) {
         // Configure address country
         var selectors = ['select[name=customer_address\\[country\\]]',
                          'select[name=customer_origin_country]',
+                         'select[name=customer_nacionality]',
                          'select[name=driver_address\\[country\\]]',
                          'select[name=driver_origin_country]',
                          'select[name=driver_driving_license_country]',
+                         'select[name=driver_nacionality]',
                          'select[name=additional_driver_1_origin_country]',
                          'select[name=additional_driver_1_driving_license_country]',
+                         'select[name=additional_driver_1_nacionality]',
                          'select[name=additional_driver_2_origin_country]',
-                         'select[name=additional_driver_2_driving_license_country]'];
+                         'select[name=additional_driver_2_driving_license_country]',
+                         'select[name=additional_driver_2_nacionality]'];
         var $countrySelector = null;
         for (var idx=0; idx<selectors.length; idx++) { 
           $countrySelector = $(selectors[idx]);    
@@ -384,13 +392,17 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
         // Setup country selector
         var selectors = ['country', 
                          'customer_origin_country',
+                         'customer_nacionality',
                          'driver_address_country',
                          'driver_origin_country',
                          'driver_driving_license_country', 
+                         'driver_nacionality',
                          'additional_driver_1_origin_country',
                          'additional_driver_1_driving_license_country',
+                         'additional_driver_1_nacionality',
                          'additional_driver_2_origin_country',
-                         'additional_driver_2_driving_license_country'];
+                         'additional_driver_2_driving_license_country',
+                         'additional_driver_2_nacionality'];
         for (var idx=0; idx<selectors.length; idx++) { 
           if (document.getElementById(selectors[idx])) {
             var countriesDataSource = new MemoryDataSource(countriesArray);
@@ -399,6 +411,21 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
                 countriesDataSource, countryModel, true, i18next.t('myReservation.select_country'));
           }
         }        
+      }
+
+      // Configure Telephone with prefix
+      var countryCode = model.configuration.countryCode;
+      if (typeof countryCode === 'undefined' || countryCode == null) {
+        countryCode = commonUI.intlTelInputCountryCode(); 
+      }
+
+      if ($('#customer_phone').length) {
+        $("#customer_phone").intlTelInput({
+          initialCountry: countryCode,
+          separateDialCode: true,        
+          utilsScript: commonServices.phoneUtilsPath,
+          preferredCountries: [countryCode]
+        });
       }
 
       // Configure driver document id date
@@ -579,6 +606,29 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
                 },
                 errorClass: 'text-danger',
                 rules : {
+                    'customer_name': {
+                      required: '#customer_name:visible',
+                    },
+                    'customer_surname' : {
+                      required: '#customer_surname:visible',
+                    },
+                    'customer_document_id': {
+                      required: '#customer_document_id[required]:visible'
+                    },
+                    'customer_company_name': {
+                      required: '#customer_company_name:visible',
+                    },
+                    'customer_company_document_id': {
+                      required: '#customer_company_document_id:visible',
+                    },
+                    'customer_email' : {
+                      required: '#customer_email:visible',
+                      email: '#customer_email:visible'
+                    },
+                    'customer_phone': {
+                      required: '#customer_phone:visible',
+                      minlength: 9
+                    },
                     'payment_method_id': {
                         required: 'input[name=payment_method_id]:visible'
                     },
@@ -587,6 +637,29 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
                     }
                 },
                 messages: {
+                    'customer_name': {
+                      required: i18next.t('complete.reservationForm.validations.customerNameRequired')
+                    },
+                    'customer_surname' : {
+                      required: i18next.t('complete.reservationForm.validations.customerSurnameRequired')
+                    },
+                    'customer_document_id': {
+                      'required': i18next.t('complete.reservationForm.validations.fieldRequired')
+                    },
+                    'customer_company_name': {
+                      required: i18next.t('complete.reservationForm.validations.customerCompanyNameRequired')
+                    },
+                    'customer_company_document_id': {
+                      required: i18next.t('complete.reservationForm.validations.customerCompanyDocumentIdRequired')
+                    },
+                    'customer_email' : {
+                      required: i18next.t('complete.reservationForm.validations.customerEmailRequired'),
+                      email: i18next.t('complete.reservationForm.validations.customerEmailInvalidFormat'),
+                    },
+                    'customer_phone': {
+                      'required': i18next.t('complete.reservationForm.validations.customerPhoneNumberRequired'),
+                      'minlength': i18next.t('complete.reservationForm.validations.customerPhoneNumberMinLength')
+                    },
                     'payment_method_id': i18next.t('myReservation.pay.paymentMethodRequired'),
                     'payment_method_select': i18next.t('myReservation.pay.paymentMethodRequired')
                 },
