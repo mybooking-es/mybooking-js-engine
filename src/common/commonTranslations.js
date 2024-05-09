@@ -421,6 +421,8 @@ define("commonTranslations", [], function () {
         },
         myReservation: {
           select_country: "Select country",
+          select_nationality: "Select nationality",
+          select_type_document: "Select type of document",
           loadReservation: {
             error: "We are sorry. There was an error loading the reservation.",
           },
@@ -974,6 +976,8 @@ define("commonTranslations", [], function () {
         },
         myReservation: {
           select_country: "Seleccionar país",
+          select_nationality: "Seleccionar nacionalidad",
+          select_type_document: "Seleccionar tipo de documento",
           loadReservation: {
             error:
               "Lo sentimos. Se ha producido un error al cargar la reserva.",
@@ -1529,6 +1533,8 @@ define("commonTranslations", [], function () {
         },
         myReservation: {
           select_country: "Escollir país",
+          select_nationality: "Seleccioneu la nacionalitat",
+          select_type_document: "Seleccioneu el tipus de document",
           loadReservation: {
             error: "Ho sentim. S'ha produït un error al carregar l'informació.",
           },
@@ -2085,6 +2091,8 @@ define("commonTranslations", [], function () {
         },
         myReservation: {
           select_country: "Land auswählen",
+          select_nationality: "Nationalität auswählen",
+          select_type_document: "Wählen Sie den Dokumenttyp aus",
           loadReservation: {
             error:
               "Entschuldigung Beim Laden der Reservierung ist ein Fehler aufgetreten.",
@@ -2643,6 +2651,8 @@ define("commonTranslations", [], function () {
         },
         myReservation: {
           select_country: "Choisissez le pays",
+          select_nationality: "Sélectionnez la nationalité",
+          select_type_document: "Sélectionnez le type de document",
           loadReservation: {
             error:
               "Nous sommes désolés. Une erreur s'est produite lors du chargement de la réservation.",
@@ -3211,6 +3221,8 @@ define("commonTranslations", [], function () {
         },
         myReservation: {
           select_country: "Seleziona il paese",
+          select_nationality: "Seleziona la nazionalità",
+          select_type_document: "Seleziona il tipo di documento",
           loadReservation: {
             error:
               "Scusi. Si è verificato un errore durante il caricamento della prenotazione.",
@@ -3503,6 +3515,8 @@ define("commonTranslations", [], function () {
         },
         myReservation: {
           select_country: "Выберите страну",
+          select_nationality: "Выберите национальность",
+          select_type_document: "Выберите тип документа",
           loadReservation: {
             error: "Мы сожалеем. При загрузке бронирования произошла ошибка.",
           },

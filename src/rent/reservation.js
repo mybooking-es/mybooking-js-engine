@@ -137,12 +137,33 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
     update: function() {
         // Build request
         var reservation = $('form[name=booking_information_form]').formParams(false);
-        var booking_line_resources = reservation['booking_line_resources']
+        var booking_line_resources = reservation['booking_line_resources'];
         delete reservation['booking_line_resources'];
         reservation['booking_line_resources'] = [];
         for (var item in booking_line_resources) {
             reservation['booking_line_resources'].push(booking_line_resources[item]);
         }
+
+        // Remove all empty fields
+        for (var prop in reservation) {
+          if (!reservation[prop]) {
+              delete reservation[prop];
+          }
+          // Remove all empty fields in objects
+          if (typeof reservation[prop] === 'object') {
+            for (var subprop in reservation[prop]) {
+              if (!reservation[prop][subprop]) {
+                delete reservation[prop][subprop];
+              }
+            }
+            // Delete objtect if empty
+            if (Object.keys(reservation[prop]).length === 0) {
+              delete reservation[prop];
+            }
+          }
+        } 
+        delete reservation['there_are_additional_drivers']; // Remove the flag because it is not neccesary
+        
         var reservationJSON = encodeURIComponent(JSON.stringify(reservation));
         // Build URL
         var url = commonServices.URL_PREFIX + '/api/booking/frontend/booking/' + this.bookingFreeAccessId;
@@ -223,6 +244,40 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
                               });
         }
 
+      }
+    },
+
+    /**
+     * Toogle panel click
+     * @param {Event} event
+     */ 
+    tooglePanelClick: function(event) {
+      const target = $(event.target);
+      let value = target.is(':checked');
+      const panel = $('#' + target.attr('data-panel'));
+      if (panel.length > 0 && value === true) {
+        
+        if (target.attr('id') === 'driver_is_customer') {
+          // If the target is the driver is customer hide only additional inputs in driver panel
+          $('.driver_is_customer_disabled').hide();
+          const fieldsDriver = $('.driver_is_customer_disabled').find('input, select');
+          fieldsDriver.val(undefined);
+          // If the target is the driver is customer hide additional drivers
+          $('.there_are_additional_drivers_disabled').hide();
+          const fieldsAdditionalDrivers = $('.there_are_additional_drivers_disabled').find('input, select');
+          fieldsAdditionalDrivers.val(undefined);
+        } else {
+          panel.show();
+        }
+      } else {
+        if (target.attr('id') === 'driver_is_customer') {
+          // If the target is the driver is customer show only additional inputs in driver panel
+          $('.driver_is_customer_disabled').show();
+          // If the target is the driver is customer show additional drivers
+          $('.there_are_additional_drivers_disabled').show();
+        } else {
+          panel.hide();
+        }
       }
     }
   };
@@ -331,53 +386,47 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
       }
     },
 
-    setupReservationForm: function() {
+    setSelect: function(selector, value) {
+      // TODO
+    },
 
+    loadCountries: function() {
       // Load countries
-      var countries = i18next.t('common.countries', {returnObjects: true });
+      let countries = i18next.t('common.countries', {returnObjects: true});
+      let countriesArray = [];
       if (countries instanceof Object) {
-        var countryCodes = Object.keys(countries);
-        var countriesArray = countryCodes.map(function(value){ 
+        const countryCodes = Object.keys(countries);
+        countriesArray = countryCodes.map(function(value){ 
                                 return {id: value, text: countries[value], description: countries[value]};
                              });
-      } else {
-        var countriesArray = [];
       }
-      var values = [
+      const values = [
         model.booking.address_country,
         model.booking.customer_origin_country,
-        model.booking.customer_nacionality, // pending
         model.booking.driver_address_country,
         model.booking.driver_origin_country,
         model.booking.driver_driving_license_country,
-        model.booking.driver_nacionality, // pending
         model.booking.additional_driver_1_origin_country,
         model.booking.additional_driver_1_driving_license_country,
-        model.booking.additional_driver_1_nacionality, // pending
         model.booking.additional_driver_2_origin_country,
         model.booking.additional_driver_2_driving_license_country,
-        model.booking.additional_driver_2_nacionality // pending
       ]; 
 
       if (commonServices.jsUseSelect2) {
         // Configure address country
-        var selectors = [
+        const selectors = [
           'select[name=customer_address\\[country\\]]',
           'select[name=customer_origin_country]',
-          'select[name=customer_nacionality]',
           'select[name=driver_address\\[country\\]]',
           'select[name=driver_origin_country]',
           'select[name=driver_driving_license_country]',
-          'select[name=driver_nacionality]',
           'select[name=additional_driver_1_origin_country]',
           'select[name=additional_driver_1_driving_license_country]',
-          'select[name=additional_driver_1_nacionality]',
           'select[name=additional_driver_2_origin_country]',
           'select[name=additional_driver_2_driving_license_country]',
-          'select[name=additional_driver_2_nacionality]'
         ];
-        var $countrySelector = null;
-        for (var idx=0; idx<selectors.length; idx++) { 
+        let $countrySelector = null;
+        for (let idx=0; idx<selectors.length; idx++) { 
           $countrySelector = $(selectors[idx]);    
           if ($countrySelector.length > 0 && typeof values[idx] !== 'undefined') {
             $countrySelector.select2({
@@ -386,38 +435,284 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
               data: countriesArray
             });
             // Assign value
-            var value = (values[idx] !== null && values[idx] !== '' ? values[idx] : '');
             $countrySelector.val(values[idx]);
             $countrySelector.trigger('change');
           }
         }
-      }
-      else {
+      } else {
         // Setup country selector
-        var selectors = [
+        const selectors = [
           'country', 
           'customer_origin_country',
-          'customer_nacionality',
           'driver_address_country',
           'driver_origin_country',
           'driver_driving_license_country', 
-          'driver_nacionality',
           'additional_driver_1_origin_country',
           'additional_driver_1_driving_license_country',
-          'additional_driver_1_nacionality',
           'additional_driver_2_origin_country',
           'additional_driver_2_driving_license_country',
-          'additional_driver_2_nacionality'
         ];
-        for (var idx=0; idx<selectors.length; idx++) { 
+        for (let idx=0; idx<selectors.length; idx++) { 
           if (document.getElementById(selectors[idx])) {
-            var countriesDataSource = new MemoryDataSource(countriesArray);
-            var countryModel = (values[idx] == null ? '' : values[idx]);
-            var selectorModel = new SelectSelector(selectors[idx],
+            const countriesDataSource = new MemoryDataSource(countriesArray);
+            const countryModel = (values[idx] == null ? '' : values[idx]);
+            new SelectSelector(selectors[idx],
                 countriesDataSource, countryModel, true, i18next.t('myReservation.select_country'));
           }
         }        
       }
+    },
+
+    loadNationalities: function() {
+      // Load nationalities
+      // Build the URL
+      let url = commonServices.URL_PREFIX + '/api/booking/frontend/nacionalities';
+      const urlParams = [];
+      if (this.requestLanguage != null) {
+        urlParams.push('lang=' + this.requestLanguage);
+      }
+      if (commonServices.apiKey && commonServices.apiKey != '') {
+        urlParams.push('api_key='+commonServices.apiKey);
+      }           
+      if (urlParams.length > 0) {
+        url += '?';
+        url += urlParams.join('&');
+      }
+      // Request
+      $.ajax({
+          type: 'GET',
+          url : url,
+          dataType : 'json',
+          contentType : 'application/json; charset=utf-8',
+          crossDomain: true,
+          success: function(data, textStatus, jqXHR) {
+            const formatData = [];
+            for (var idx=0; idx<data.length; idx++) {
+              formatData[idx] = {
+                id: data[idx].code,
+                description: data[idx].name
+              };
+            }
+
+            const values = [
+              model.booking.customer_nacionality,
+              model.booking.driver_nacionality,
+              model.booking.additional_driver_1_nacionality,
+              model.booking.additional_driver_2_nacionality,
+            ]; 
+      
+            if (commonServices.jsUseSelect2) {
+              // Configure address country
+              const selectors = [
+                'select[name=customer_nacionality]',
+                'select[name=driver_nacionality]',
+                'select[name=additional_driver_1_nacionality]',
+                'select[name=additional_driver_2_nacionality]'
+              ];
+              let $nationalitySelector = null;
+              for (let idx=0; idx<selectors.length; idx++) { 
+                $nationalitySelector = $(selectors[idx]);    
+                if ($nationalitySelector.length > 0 && typeof values[idx] !== 'undefined') {
+                  $nationalitySelector.select2({
+                    width: '100%',
+                    theme: 'bootstrap4',                  
+                    data: formatData,
+                  });
+                  // Assign value
+                  $nationalitySelector.val(values[idx]);
+                  $nationalitySelector.trigger('change');
+                }
+              }
+            } else {
+              // Setup country selector
+              const selectors = [
+                'customer_nacionality',
+                'driver_nacionality',
+                'additional_driver_1_nacionality',
+                'additional_driver_2_nacionality'
+              ];
+              for (let idx=0; idx<selectors.length; idx++) { 
+                if (document.getElementById(selectors[idx])) {
+                  let nationalitiesDataSource = new MemoryDataSource(formatData);
+                  let nationalityModel = (values[idx] == null ? '' : values[idx]);
+                  new SelectSelector(selectors[idx],
+                    nationalitiesDataSource, nationalityModel, true, i18next.t('myReservation.select_nationality'));
+                }
+              }        
+            }
+          }
+      });
+    },
+
+    loadDocumentTypes: function async() {
+      // Load document types
+      // Build the URL
+      let url = commonServices.URL_PREFIX + '/api/booking/frontend/document-types';
+      const urlParams = [];
+      if (this.requestLanguage != null) {
+        urlParams.push('lang=' + this.requestLanguage);
+      }
+      if (commonServices.apiKey && commonServices.apiKey != '') {
+        urlParams.push('api_key='+commonServices.apiKey);
+      }           
+      if (urlParams.length > 0) {
+        url += '?';
+        url += urlParams.join('&');
+      }
+      // Request
+      $.ajax({
+          type: 'GET',
+          url : url,
+          dataType : 'json',
+          contentType : 'application/json; charset=utf-8',
+          crossDomain: true,
+          success: function(data, textStatus, jqXHR) {
+            const formatData = [];
+            for (var idx=0; idx<data.length; idx++) {
+              formatData[idx] = {
+                id: data[idx].id,
+                description: data[idx].label
+              };
+            }
+
+            const values = [
+              model.booking.customer_document_id_type_id,
+              model.booking.driver_document_id_type_id,
+              model.booking.additional_driver_1_document_id_type_id,
+              model.booking.additional_driver_2_document_id_type_id,
+            ]; 
+      
+            if (commonServices.jsUseSelect2) {
+              // Configure address country
+              const selectors = [
+                'select[name=customer_document_id_type_id]',
+                'select[name=driver_document_id_type_id]',
+                'select[name=additional_driver_1_document_id_type_id]',
+                'select[name=additional_driver_2_document_id_type_id]',
+              ];
+              let $nationalitySelector = null;
+              for (let idx=0; idx<selectors.length; idx++) { 
+                $nationalitySelector = $(selectors[idx]);    
+                if ($nationalitySelector.length > 0 && typeof values[idx] !== 'undefined') {
+                  $nationalitySelector.select2({
+                    width: '100%',
+                    theme: 'bootstrap4',                  
+                    data: formatData,
+                  });
+                  // Assign value
+                  $nationalitySelector.val(values[idx]);
+                  $nationalitySelector.trigger('change');
+                }
+              }
+            } else {
+              // Setup country selector
+              const selectors = [
+                'customer_document_id_type_id',
+                'driver_document_id_type_id',
+                'additional_driver_1_document_id_type_id',
+                'additional_driver_2_document_id_type_id',
+              ];
+              for (let idx=0; idx<selectors.length; idx++) { 
+                if (document.getElementById(selectors[idx])) {
+                  const countriesDataSource = new MemoryDataSource(formatData);
+                  const countryModel = (values[idx] == null ? '' : values[idx]);
+                  new SelectSelector(selectors[idx],
+                      countriesDataSource, countryModel, true, i18next.t('myReservation.select_type_document'));
+                }
+              }        
+            }
+          }
+      });
+    },
+
+    loadLicenseTypes: function async() {
+      // Load document types
+      // Build the URL
+      let url = commonServices.URL_PREFIX + '/api/booking/frontend/license-types';
+      const urlParams = [];
+      if (this.requestLanguage != null) {
+        urlParams.push('lang=' + this.requestLanguage);
+      }
+      if (commonServices.apiKey && commonServices.apiKey != '') {
+        urlParams.push('api_key='+commonServices.apiKey);
+      }           
+      if (urlParams.length > 0) {
+        url += '?';
+        url += urlParams.join('&');
+      }
+      // Request
+      $.ajax({
+          type: 'GET',
+          url : url,
+          dataType : 'json',
+          contentType : 'application/json; charset=utf-8',
+          crossDomain: true,
+          success: function(data, textStatus, jqXHR) {
+            const formatData = [];
+            for (var idx=0; idx<data.length; idx++) {
+              formatData[idx] = {
+                id: data[idx].id,
+                description: data[idx].label
+              };
+            }
+
+            const values = [
+              model.booking.driver_driving_license_type_id,
+              model.booking.additional_driver_1_driving_license_type_id,
+              model.booking.additional_driver_2_driving_license_type_id,
+            ]; 
+      
+            if (commonServices.jsUseSelect2) {
+              // Configure address country
+              const selectors = [
+                'select[name=driver_driving_license_type_id]',
+                'select[name=additional_driver_1_driving_license_type_id]',
+                'select[name=additional_driver_2_driving_license_type_id]',
+              ];
+              let $nationalitySelector = null;
+              for (let idx=0; idx<selectors.length; idx++) { 
+                $nationalitySelector = $(selectors[idx]);    
+                if ($nationalitySelector.length > 0 && typeof values[idx] !== 'undefined') {
+                  $nationalitySelector.select2({
+                    width: '100%',
+                    theme: 'bootstrap4',                  
+                    data: formatData,
+                  });
+                  // Assign value
+                  $nationalitySelector.val(values[idx]);
+                  $nationalitySelector.trigger('change');
+                }
+              }
+            } else {
+              // Setup country selector
+              const selectors = [
+                'driver_driving_license_type_id',
+                'additional_driver_1_driving_license_type_id',
+                'additional_driver_2_driving_license_type_id',
+              ];
+              for (let idx=0; idx<selectors.length; idx++) { 
+                if (document.getElementById(selectors[idx])) {
+                  const countriesDataSource = new MemoryDataSource(formatData);
+                  const countryModel = (values[idx] == null ? '' : values[idx]);
+                  new SelectSelector(selectors[idx],
+                      countriesDataSource, countryModel, true, i18next.t('myReservation.select_type_document'));
+                }
+              }        
+            }
+          }
+      });
+    },
+
+    setupReservationForm: function() {
+
+      // Load countries and set value if exists
+      this.loadCountries();
+      // Load nationalities and set value if exists
+      this.loadNationalities();
+      // Load document types and set value if exists
+      this.loadDocumentTypes();
+      // Load license types and set value if exists
+      this.loadLicenseTypes();
 
       // Configure Telephone with prefix
       var countryCode = model.configuration.countryCode;
@@ -524,7 +819,8 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
                         document.getElementById('additional_driver_1_document_id_expiration_date_month'),
                         document.getElementById('additional_driver_1_document_id_expiration_date_year'),
                         document.getElementById('additional_driver_1_document_id_expiration_date'),
-                        commonSettings.language(model.requestLanguage));
+                        commonSettings.language(model.requestLanguage),
+                                                                        undefined, 'future');
         if (model.booking.additional_driver_1_document_id_expiration_date) {
           dateControl.setDate(model.booking.additional_driver_1_document_id_expiration_date);
         }        
@@ -581,12 +877,12 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
                         document.getElementById('additional_driver_2_document_id_expiration_date_month'),
                         document.getElementById('additional_driver_2_document_id_expiration_date_year'),
                         document.getElementById('additional_driver_2_document_id_expiration_date'),
-                        commonSettings.language(model.requestLanguage));
+                        commonSettings.language(model.requestLanguage),
+                                                                        undefined, 'future');
         if (model.booking.additional_driver_2_document_id_expiration_date) {
           dateControl.setDate(model.booking.additional_driver_2_document_id_expiration_date);
         }        
       }
-
 
       // Configuration additional driver 2 driving license date
       if (document.getElementById('additional_driver_2_driving_license_date_day')) {
@@ -605,7 +901,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
                         document.getElementById('additional_driver_2_driving_license_expiration_date_year'),
                         document.getElementById('additional_driver_2_driving_license_expiration_date'),
                         commonSettings.language(model.requestLanguage),
-                        undefined, 'future');
+                                                                        undefined, 'future');
         if (model.booking.additional_driver_2_driving_license_expiration_date) {
           dateControl.setDate(model.booking.additional_driver_2_driving_license_expiration_date);
         }        
@@ -622,9 +918,59 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
                 alert(i18next.t('myReservation.passenger.validations.invalid'));
               },
               submitHandler: function(form) {
-                  controller.btnUpdateClick();
-                  return false;
-              }
+                controller.btnUpdateClick();
+                return false;
+              },
+              rules : {
+                'customer_name': {
+                  required: '#customer_name:visible',
+                },
+                'customer_surname' : {
+                  required: '#customer_surname:visible',
+                },
+                'customer_document_id': {
+                  required: '#customer_document_id:visible'
+                },
+                'customer_company_name': {
+                  required: '#customer_company_name:visible',
+                },
+                'customer_company_document_id': {
+                  required: '#customer_company_document_id:visible',
+                },
+                'customer_email' : {
+                  required: '#customer_email:visible',
+                  email: '#customer_email:visible'
+                },
+                'customer_phone': {
+                  required: '#customer_phone:visible',
+                  minlength: 9
+                },
+            },
+            messages: {
+                'customer_name': {
+                  required: i18next.t('complete.reservationForm.validations.customerNameRequired')
+                },
+                'customer_surname' : {
+                  required: i18next.t('complete.reservationForm.validations.customerSurnameRequired')
+                },
+                'customer_document_id': {
+                  'required': i18next.t('complete.reservationForm.validations.fieldRequired')
+                },
+                'customer_company_name': {
+                  required: i18next.t('complete.reservationForm.validations.customerCompanyNameRequired')
+                },
+                'customer_company_document_id': {
+                  required: i18next.t('complete.reservationForm.validations.customerCompanyDocumentIdRequired')
+                },
+                'customer_email' : {
+                  required: i18next.t('complete.reservationForm.validations.customerEmailRequired'),
+                  email: i18next.t('complete.reservationForm.validations.customerEmailInvalidFormat'),
+                },
+                'customer_phone': {
+                  'required': i18next.t('complete.reservationForm.validations.customerPhoneNumberRequired'),
+                  'minlength': i18next.t('complete.reservationForm.validations.customerPhoneNumberMinLength')
+                },
+            },
           }
       );
 
@@ -649,6 +995,16 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
         $('#js_mb_electronic_signature_link').on('click', function(){
           controller.electronicSignatureLinkClick();
         });
+      }
+
+      // Additional drivers toogle
+      if ($('#there_are_additional_drivers').length) {
+        $('#there_are_additional_drivers').off('click');
+        $('#there_are_additional_drivers').on('click', controller.tooglePanelClick);
+      }
+      if ($('#driver_is_customer').length) {
+        $('#driver_is_customer').off('click');
+        $('#driver_is_customer').on('click', controller.tooglePanelClick);
       }
     },
 
@@ -776,13 +1132,12 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
 
   };
 
-
   var rentMyReservation = {
     model: model,
     controller: controller,
     view: view
-  }
-  rentEngineMediator.setMyReservation( rentMyReservation );
+  };
+  rentEngineMediator.setMyReservation(rentMyReservation);
 
   // The loader is show on start and hidden after the reservation
   // has been rendered
