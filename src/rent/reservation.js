@@ -162,7 +162,6 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
             }
           }
         } 
-        delete reservation['there_are_additional_drivers']; // Remove the flag because it is not neccesary
         
         var reservationJSON = encodeURIComponent(JSON.stringify(reservation));
         // Build URL
@@ -248,36 +247,43 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
     },
 
     /**
-     * Toogle panel click
+   * Toogle addtional drivers panel click
+   * @param {Event} event
+   */ 
+    toogleAdditionalDriversPanelClick: function(event) {
+      const target = $(event.currentTarget);
+      const icon = target.find('i.fa');
+      const isOpened = target.hasClass('mb-open');
+      const panel = $('#' + target.attr('data-panel'));
+      if (panel.length > 0 && !isOpened) {
+        panel.show();
+        target.addClass('mb-open');
+        icon.removeClass('fa-arrow-circle-down');
+        icon.addClass('fa-arrow-circle-up');
+      } else {
+        panel.hide();
+        target.removeClass('mb-open');
+        icon.removeClass('fa-arrow-circle-up');
+        icon.addClass('fa-arrow-circle-down');
+      }
+    },
+
+    /**
+     * Toogle driver panel click
      * @param {Event} event
      */ 
-    tooglePanelClick: function(event) {
+    toogleDriverPanelClick: function(event) {
       const target = $(event.target);
       let value = target.is(':checked');
       const panel = $('#' + target.attr('data-panel'));
       if (panel.length > 0 && value === true) {
-        
-        if (target.attr('id') === 'driver_is_customer') {
-          // If the target is the driver is customer hide only additional inputs in driver panel
-          $('.driver_is_customer_disabled').hide();
-          const fieldsDriver = $('.driver_is_customer_disabled').find('input, select');
-          fieldsDriver.val(undefined);
-          // If the target is the driver is customer hide additional drivers
-          $('.there_are_additional_drivers_disabled').hide();
-          const fieldsAdditionalDrivers = $('.there_are_additional_drivers_disabled').find('input, select');
-          fieldsAdditionalDrivers.val(undefined);
-        } else {
-          panel.show();
-        }
+        // If the target is the driver is customer hide only additional inputs in driver panel
+        $('.driver_is_customer_disabled').hide();
+        const fieldsDriver = $('.driver_is_customer_disabled').find('input, select');
+        fieldsDriver.val(undefined);
       } else {
-        if (target.attr('id') === 'driver_is_customer') {
-          // If the target is the driver is customer show only additional inputs in driver panel
-          $('.driver_is_customer_disabled').show();
-          // If the target is the driver is customer show additional drivers
-          $('.there_are_additional_drivers_disabled').show();
-        } else {
-          panel.hide();
-        }
+        // If the target is the driver is customer show only additional inputs in driver panel
+        $('.driver_is_customer_disabled').show();
       }
     }
   };
@@ -998,13 +1004,13 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
       }
 
       // Additional drivers toogle
-      if ($('#there_are_additional_drivers').length) {
-        $('#there_are_additional_drivers').off('click');
-        $('#there_are_additional_drivers').on('click', controller.tooglePanelClick);
+      if ($('#additional_drivers_toogle_btn').length) {
+        $('#additional_drivers_toogle_btn').off('click');
+        $('#additional_drivers_toogle_btn').on('click', controller.toogleAdditionalDriversPanelClick);
       }
       if ($('#driver_is_customer').length) {
         $('#driver_is_customer').off('click');
-        $('#driver_is_customer').on('click', controller.tooglePanelClick);
+        $('#driver_is_customer').on('click', controller.toogleDriverPanelClick);
       }
     },
 
