@@ -451,6 +451,7 @@ define("commonTranslations", [], function () {
               error: "Error adding passenger"
             },
             remove: {
+              warning: "Do you want to remove the passenger?",
               success: "Passenger removed successfully",
               error: "Error removing passenger"
             },
@@ -1008,6 +1009,7 @@ define("commonTranslations", [], function () {
               error: "Error al añadir pasajero"
             },
             remove: {
+              warning: "Por favor, confirme que desea eliminar el pasajero",
               success: "Pasajero eliminado con éxito",
               error: "Error al eliminar pasajero"
             },
@@ -1563,6 +1565,7 @@ define("commonTranslations", [], function () {
               error: "S'ha produït un error en afegir un passatger"
             },
             remove: {
+              warning: "Si us plau, confirmeu que voleu eliminar el passatger",
               success: "El passatger s'ha eliminat correctament",
               error: "S'ha produït un error en treure el passatger"
             },
@@ -2123,6 +2126,7 @@ define("commonTranslations", [], function () {
               error: "Fehler beim Hinzufügen des Passagiers"
             },
             remove: {
+              warning: "Bitte bestätigen Sie, dass Sie den Passagier entfernen möchten",
               success: "Passagier erfolgreich entfernt",
               error: "Fehler beim Entfernen des Passagiers"
             },
@@ -2683,6 +2687,7 @@ define("commonTranslations", [], function () {
               error: "Erreur lors de l'ajout du passager"
             },
             remove: {
+              warning: "Veuillez confirmer que vous souhaitez supprimer le passager",
               success: "Passager supprimé avec succès",
               error: "Erreur lors de la suppression du passager"
             },
@@ -3253,6 +3258,7 @@ define("commonTranslations", [], function () {
               error: "Errore durante l'aggiunta del passeggero"
             },
             remove: {
+              warning: "Conferma la rimozione del passeggero",
               success: "Passeggero rimosso con successo",
               error: "Errore durante la rimozione del passeggero"
             },
@@ -3545,6 +3551,7 @@ define("commonTranslations", [], function () {
               error: "Ошибка добавления пассажира"
             },
             remove: {
+              warning: "Подтвердите удаление пассажира",
               success: "Пассажир успешно удален",
               error: "Ошибка удаления пассажира"
             },
