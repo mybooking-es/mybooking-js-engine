@@ -318,7 +318,7 @@ define('passengersComponent', [
 		},
 
     /**
-     * Setup Events
+     * Setup UI Events
      */ 
 		setupEvents: function() {
 			// Add a passenger button event

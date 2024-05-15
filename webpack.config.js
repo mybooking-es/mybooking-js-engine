@@ -1,5 +1,6 @@
-var webpack = require('webpack');
-const path = require("path");
+/* eslint-disable no-undef */
+const webpack = require('webpack');
+const path = require('path');
 
 /**
  * https://github.com/webpack/webpack/blob/master/examples/multi-compiler/webpack.config.js
@@ -17,38 +18,44 @@ const path = require("path");
 module.exports = [
    // Full engine
    {
-      name: "mybooking-js-engine",
-      entry: "./src/app.js",
-      mode: "development",
+      entry: './src/app.js',
+      mode: 'development',
       output: {
-        path: path.resolve(__dirname, "dist/js"),
-        filename: "mybooking-js-engine.js"
+        path: path.resolve(__dirname, 'dist/js'),
       },
       resolve: {
-        modules: ["node_modules", "src/lib", "src/common"]
+        modules: ['node_modules', 'src/lib', 'src/common']
       },
       optimization: {
         // We no not want to minimize our code.
-        minimize: false
+        minimize: false,
+        splitChunks: {
+          cacheGroups: {
+            main: {
+              test: /[\\/]src[\\/]/,
+              name: 'main',
+              filename: 'mybooking-js-engine.js',
+              chunks: 'all',
+            },
+          },
+        },
       },
       devtool: 'inline-source-map',
    },
 
    // WordPress Plugin
    {
-      name: "mybooking-js-engine-bundle",
-      entry: "./src/app-bundle.js",
-      mode: "production",
+      entry: './src/app-bundle.js',
+      mode: 'production',
       output: {
-        path: path.resolve(__dirname, "dist/js"),
-        filename: "mybooking-js-engine-bundle.js",
-        library: "mybookingJsEngine", // export library as mybookingJSEngine
+        path: path.resolve(__dirname, 'dist/js'),
+        library: 'mybookingJsEngine', // export library as mybookingJSEngine
         environment: {
           arrowFunction: false,
         }
       },
       resolve: {
-        modules: ["node_modules", "src/lib", "src/common"]
+        modules: ['node_modules', 'src/lib', 'src/common']
       },
       externals: {
           // External jquery to link the variable jquery to ProvidePlugin 'jQuery'
@@ -66,9 +73,9 @@ module.exports = [
       plugins: [
         // Use jquery without loading it
         new webpack.ProvidePlugin({
-              "$":"jquery",
-              "jQuery":"jquery",
-              "window.jQuery":"jquery"
+              '$':'jquery',
+              'jQuery':'jquery',
+              'window.jQuery':'jquery'
             })
       ],
       module: {
@@ -85,11 +92,19 @@ module.exports = [
             },
           },
         ],
-      },/*,
+      },
       optimization: {
-          // We no not want to minimize our code.
-          minimize: false
-      }
-      */
+        minimize: true,
+        splitChunks: {
+          cacheGroups: {
+            main: {
+              test: /[\\/]src[\\/]/,
+              name: 'main',
+              filename: 'mybooking-js-engine-bundle.js',
+              chunks: 'all',
+            },
+          },
+        },
+      },
    }
 ];

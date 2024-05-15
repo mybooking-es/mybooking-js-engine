@@ -1,14 +1,18 @@
+/* eslint-disable camelcase */
+/* eslint-disable max-len */
 require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelector', 'select2',
          'commonServices', 'commonSettings', 'commonTranslations', 'commonLoader', 'commonUI',  
          './mediator/rentEngineMediator',
          'i18next','ysdtemplate', 'YSDDateControl',
          './passengers/passengersComponent',
+         './payment/paymentComponent',
          'jquery.i18next',   
          'jquery.validate', 'jquery.ui', 'jquery.form'],
     function($, RemoteDataSource, MemoryDataSource, SelectSelector, select2,
              commonServices, commonSettings, commonTranslations, commonLoader, commonUI,
              rentEngineMediator, i18next, tmpl, DateControl, 
-             passengersComponent
+             passengersComponent, 
+             paymentComponent
           ) {
 
   var model = { // THE MODEL
@@ -21,18 +25,21 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
     // -------------- Load settings ----------------------------
 
     // OPTIMIZATION 2024-01-27 START 
-/*          
+    /*
     loadSettings: function() {
       commonSettings.loadSettings(function(data){
         model.configuration = data;
         view.init();
       });
     },  
-*/    
+    */
     // OPTIMIZATION 2024-01-27 END
 
     // ------------ Product information detail ------------------------
 
+    /**
+    * Get the URL variables
+    */ 
     getUrlVars : function() {
       var vars = [], hash;
       var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
@@ -43,16 +50,16 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
       }
       return vars;
     },
-
     extractVariables: function() { // Load variables from the request
-
       var url_vars = this.getUrlVars();
       this.bookingFreeAccessId = decodeURIComponent(url_vars['id']);
-
     },
 
     // ----------------- Reservation ------------------------------
 
+    /**
+    * Get and set booking free access id
+    */ 
     getBookingFreeAccessId: function() { /* Get the booking id */
       return sessionStorage.getItem('booking_free_access_id');
     },
@@ -61,6 +68,9 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
       sessionStorage.setItem('booking_free_access_id', bookingFreeAccessId);
     },
 
+    /**
+    * Load booking
+    */ 
     loadBooking: function() { /** Load the reservation **/
 
        var bookingId = this.bookingFreeAccessId;
@@ -114,26 +124,9 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
           });
     },
 
-    sendPayRequest: function(paymentAmount, paymentMethod) {
-
-      // Booking free access ID
-      var bookingId = this.bookingFreeAccessId;
-      if (bookingId == '') {
-        bookingId = this.getBookingFreeAccessId();
-      }
-      else {
-        this.setBookingFreeAccessId(bookingId);
-      }
-      
-      // Prepare data
-      var data = {id: bookingId,
-                  payment: paymentAmount,
-                  payment_method_id: paymentMethod};
-
-      // Do payment
-      view.payment( commonServices.URL_PREFIX + '/reserva/pagar', data );
-    },
-
+    /**
+    * Update the reservation
+    */ 
     update: function() {
         // Build request
         var reservation = $('form[name=booking_information_form]').formParams(false);
@@ -198,29 +191,29 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
             }
         });
 
-    }    
-
+    },
   };
 
   var controller = { // THE CONTROLLER
+    // ----------------- Reservation ------------------------------
 
     /**
-     * Update click
-     */ 
+    * Update the reservation
+    */ 
     btnUpdateClick: function() {
        model.update();
     },
     
+    // ----------------- Signature ------------------------------
+
     /**
-     * Electronic signature link click
-     */ 
+    * Electronic signature controller
+    */ 
     electronicSignatureLinkClick: function(){
       if (model.booking && typeof model.booking.required_data_completed !== 'undefined') {
-
         if (model.booking.required_data_completed) {
           window.open(model.booking.electronic_signature_url, '_blank');
-        }
-        else {
+        } else {
           var html = tmpl('script_contract_required_data')(
             {contract_errors: model.booking.contract_errors});
 
@@ -233,6 +226,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
             $('#modalSignatureValidation .modal-title').html('');
             $('#modalSignatureValidation .modal-body').html(html);
           }
+
           // Show the modal
           commonUI.showModal('#modalSignatureValidation',
                               function(event, modal){ // on Show
@@ -242,14 +236,28 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
                                 },50);
                               });
         }
-
       }
     },
 
+    // ----------------- Form ------------------------------
+
     /**
-   * Toogle addtional drivers panel click
-   * @param {Event} event
-   */ 
+     * Toogle driver panel click
+     */ 
+    toogleDriverPanelClick: function(event) {
+      const target = $(event.target);
+      let value = target.is(':checked');
+      const panel = $('#' + target.attr('data-panel'));
+      if (panel.length > 0 && value === true) {
+        // If the target is the driver is customer hide only additional inputs in driver panel
+        $('.driver_is_customer_disabled').hide();
+        const fieldsDriver = $('.driver_is_customer_disabled').find('input, select');
+        fieldsDriver.val(undefined);
+      } else {
+        // If the target is the driver is customer show only additional inputs in driver panel
+        $('.driver_is_customer_disabled').show();
+      }
+    },
     toogleAdditionalDriversPanelClick: function(event) {
       const target = $(event.currentTarget);
       const icon = target.find('i.fa');
@@ -267,50 +275,35 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
         icon.addClass('fa-arrow-circle-down');
       }
     },
-
-    /**
-     * Toogle driver panel click
-     * @param {Event} event
-     */ 
-    toogleDriverPanelClick: function(event) {
-      const target = $(event.target);
-      let value = target.is(':checked');
-      const panel = $('#' + target.attr('data-panel'));
-      if (panel.length > 0 && value === true) {
-        // If the target is the driver is customer hide only additional inputs in driver panel
-        $('.driver_is_customer_disabled').hide();
-        const fieldsDriver = $('.driver_is_customer_disabled').find('input, select');
-        fieldsDriver.val(undefined);
-      } else {
-        // If the target is the driver is customer show only additional inputs in driver panel
-        $('.driver_is_customer_disabled').show();
-      }
-    }
   };
 
   var view = { // THE VIEW
-
     init: function() {
-      model.requestLanguage = commonSettings.language(document.documentElement.lang);
       // Initialize i18next for translations
+      model.requestLanguage = commonSettings.language(document.documentElement.lang);
       i18next.init({  
                       lng: model.requestLanguage,
                       resources: commonTranslations
                    }, 
-                   function (error, t) {
+                   function(error, t) {
                       // https://github.com/i18next/jquery-i18next#initialize-the-plugin
                       //jqueryI18next.init(i18next, $);
                       // Localize UI
                       //$('.nav').localize();
-                   });      
+                   });
+
       // Setup UI          
       model.extractVariables();
       model.loadBooking();
     },
 
-    updateBooking: function() { // Updates the reservation
+    // ----------------- Reservation ------------------------------
 
-      this.updateTitle();
+    /**
+    * Update the reservation
+    */ 
+    updateBooking: function() { // Updates the reservation
+      this.updateStatusTitle();
       this.updateBookingSummary();
       this.setupReservationForm();
       this.setupPassengersForm();
@@ -319,11 +312,17 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
 
     },
 
-    updateTitle: function() {
+    /**
+    * Update status title
+    */ 
+    updateStatusTitle: function() {
       $('#reservation_title').html(model.booking.summary_status);
     },
 
-    updateBookingSummary: function() { // Updates the shopping cart summary (total)
+    /**
+    * Updates the shopping cart summary (total)
+    */ 
+    updateBookingSummary: function() {
       var showReservationForm = model.booking.manager_complete_authorized;
       var reservationDetail = tmpl('script_reservation_summary')(
           {
@@ -334,7 +333,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
           });
       $('#reservation_detail').html(reservationDetail);
 
-      if ( model.configuration.multipleProductsSelection && document.getElementById('script_mybooking_summary_product_detail_table')) {
+      if (model.configuration.multipleProductsSelection && document.getElementById('script_mybooking_summary_product_detail_table')) {
         var reservationTableDetail = tmpl('script_mybooking_summary_product_detail_table')({
           bookings: model.booking.booking_lines,
           configuration: model.configuration
@@ -353,46 +352,22 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
         }
         // Micro-template reservation
         else if (document.getElementById('script_reservation_form')) {
-          var reservationForm = tmpl('script_reservation_form')(
+          let reservationForm = tmpl('script_reservation_form')(
               {booking: model.booking,
                 configuration: model.configuration});
           $('#reservation_form_container').html(reservationForm);
           $('#reservation_form_container').show();
         }
-        // Micro-template payment
-        if (document.getElementById('script_payment_detail')) {
-          // If the booking is pending show the payment controls
-          if (model.sales_process.can_pay) {
-            var amount = 0;
-            if (model.sales_process.can_pay_pending) {
-              amount = model.booking.total_pending;
-            }
-            else if (model.sales_process.can_pay_deposit) {
-              amount = model.booking.booking_amount;
-            }
-            else if (model.sales_process.can_pay_total) {
-              amount = model.booking.total_cost;
-            }
-            var paymentInfo = tmpl('script_payment_detail')(
-            {
-              sales_process: model.sales_process,
-              amount: amount,
-              booking: model.booking,
-              configuration: model.configuration,
-              i18next: i18next            
-            });
-            $('#payment_detail').html(paymentInfo);
-            this.setupPaymentFormValidation();
-            $('#payment_detail').show();
-          }
-        }
+
+        paymentComponent.view.init(model, rentEngineMediator);
       }
     },
 
-    setSelect: function(selector, value) {
-      // TODO
-    },
+    // ----------------- Form ------------------------------
 
+    /**
+    * Load selects options
+    */ 
     loadCountries: function() {
       // Load countries
       let countries = i18next.t('common.countries', {returnObjects: true});
@@ -465,7 +440,6 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
         }        
       }
     },
-
     loadNationalities: function() {
       // Load nationalities
       // Build the URL
@@ -546,7 +520,6 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
           }
       });
     },
-
     loadDocumentTypes: function async() {
       // Load document types
       // Build the URL
@@ -627,7 +600,6 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
           }
       });
     },
-
     loadLicenseTypes: function async() {
       // Load document types
       // Build the URL
@@ -706,8 +678,10 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
       });
     },
 
+    /**
+    * Setup reservation form
+    */
     setupReservationForm: function() {
-
       // Load countries and set value if exists
       this.loadCountries();
       // Load nationalities and set value if exists
@@ -724,7 +698,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
       }
 
       if ($('#customer_phone').length) {
-        $("#customer_phone").intlTelInput({
+        $('#customer_phone').intlTelInput({
           initialCountry: countryCode,
           separateDialCode: true,        
           utilsScript: commonServices.phoneUtilsPath,
@@ -734,7 +708,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
 
       // Configure driver document id date
       if (document.getElementById('driver_document_id_date_day')) {
-        var dateControl = new DateControl(document.getElementById('driver_document_id_date_day'),
+        let dateControl = new DateControl(document.getElementById('driver_document_id_date_day'),
                         document.getElementById('driver_document_id_date_month'),
                         document.getElementById('driver_document_id_date_year'),
                         document.getElementById('driver_document_id_date'),
@@ -744,7 +718,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
         }        
       }
       if (document.getElementById('driver_document_id_expiration_date_day')) {
-        var dateControl = new DateControl(document.getElementById('driver_document_id_expiration_date_day'),
+        let dateControl = new DateControl(document.getElementById('driver_document_id_expiration_date_day'),
                         document.getElementById('driver_document_id_expiration_date_month'),
                         document.getElementById('driver_document_id_expiration_date_year'),
                         document.getElementById('driver_document_id_expiration_date'),
@@ -757,7 +731,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
 
       // Configure driver date of birth 
       if (document.getElementById('driver_date_of_birth_day')) {
-        var dateControl = new DateControl(document.getElementById('driver_date_of_birth_day'),
+        let dateControl = new DateControl(document.getElementById('driver_date_of_birth_day'),
                         document.getElementById('driver_date_of_birth_month'),
                         document.getElementById('driver_date_of_birth_year'),
                         document.getElementById('driver_date_of_birth'),
@@ -768,7 +742,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
       }
       // Configure driver driving license date 
       if (document.getElementById('driver_driving_license_date_day')) {
-        var dateControl = new DateControl(document.getElementById('driver_driving_license_date_day'),
+        let dateControl = new DateControl(document.getElementById('driver_driving_license_date_day'),
                         document.getElementById('driver_driving_license_date_month'),
                         document.getElementById('driver_driving_license_date_year'),
                         document.getElementById('driver_driving_license_date'),
@@ -778,7 +752,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
         }
       }
       if (document.getElementById('driver_driving_license_expiration_date_day')) {
-        var dateControl = new DateControl(document.getElementById('driver_driving_license_expiration_date_day'),
+        let dateControl = new DateControl(document.getElementById('driver_driving_license_expiration_date_day'),
                         document.getElementById('driver_driving_license_expiration_date_month'),
                         document.getElementById('driver_driving_license_expiration_date_year'),
                         document.getElementById('driver_driving_license_expiration_date'),
@@ -796,7 +770,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
 
       // Configure additional driver 1 date of birth
       if (document.getElementById('additional_driver_1_date_of_birth_day')) {
-        var dateControl = new DateControl(document.getElementById('additional_driver_1_date_of_birth_day'),
+        let dateControl = new DateControl(document.getElementById('additional_driver_1_date_of_birth_day'),
                         document.getElementById('additional_driver_1_date_of_birth_month'),
                         document.getElementById('additional_driver_1_date_of_birth_year'),
                         document.getElementById('additional_driver_1_date_of_birth'),
@@ -808,7 +782,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
 
       // Configure additional driver 2 document id date
       if (document.getElementById('additional_driver_1_document_id_date_day')) {
-        var dateControl = new DateControl(document.getElementById('additional_driver_1_document_id_date_day'),
+        let dateControl = new DateControl(document.getElementById('additional_driver_1_document_id_date_day'),
                         document.getElementById('additional_driver_1_document_id_date_month'),
                         document.getElementById('additional_driver_1_document_id_date_year'),
                         document.getElementById('additional_driver_1_document_id_date'),
@@ -818,7 +792,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
         }        
       }
       if (document.getElementById('additional_driver_1_document_id_expiration_date_day')) {
-        var dateControl = new DateControl(document.getElementById('additional_driver_1_document_id_expiration_date_day'),
+        let dateControl = new DateControl(document.getElementById('additional_driver_1_document_id_expiration_date_day'),
                         document.getElementById('additional_driver_1_document_id_expiration_date_month'),
                         document.getElementById('additional_driver_1_document_id_expiration_date_year'),
                         document.getElementById('additional_driver_1_document_id_expiration_date'),
@@ -831,7 +805,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
 
       // Configure additional driver 1 driving license date 
       if (document.getElementById('additional_driver_1_driving_license_date_day')) {
-        var dateControl = new DateControl(document.getElementById('additional_driver_1_driving_license_date_day'),
+        let dateControl = new DateControl(document.getElementById('additional_driver_1_driving_license_date_day'),
                         document.getElementById('additional_driver_1_driving_license_date_month'),
                         document.getElementById('additional_driver_1_driving_license_date_year'),
                         document.getElementById('additional_driver_1_driving_license_date'),
@@ -841,7 +815,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
         }        
       }
       if (document.getElementById('additional_driver_1_driving_license_expiration_date_day')) {
-        var dateControl = new DateControl(document.getElementById('additional_driver_1_driving_license_expiration_date_day'),
+        let dateControl = new DateControl(document.getElementById('additional_driver_1_driving_license_expiration_date_day'),
                         document.getElementById('additional_driver_1_driving_license_expiration_date_month'),
                         document.getElementById('additional_driver_1_driving_license_expiration_date_year'),
                         document.getElementById('additional_driver_1_driving_license_expiration_date'),
@@ -854,7 +828,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
 
       // Configure additional driver 2 date of birth
       if (document.getElementById('additional_driver_2_date_of_birth_day')) {
-        var dateControl = new DateControl(document.getElementById('additional_driver_2_date_of_birth_day'),
+        let dateControl = new DateControl(document.getElementById('additional_driver_2_date_of_birth_day'),
                         document.getElementById('additional_driver_2_date_of_birth_month'),
                         document.getElementById('additional_driver_2_date_of_birth_year'),
                         document.getElementById('additional_driver_2_date_of_birth'),
@@ -866,7 +840,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
 
       // Configure additional driver 2 document id date
       if (document.getElementById('additional_driver_2_document_id_date_day')) {
-        var dateControl = new DateControl(document.getElementById('additional_driver_2_document_id_date_day'),
+        let dateControl = new DateControl(document.getElementById('additional_driver_2_document_id_date_day'),
                         document.getElementById('additional_driver_2_document_id_date_month'),
                         document.getElementById('additional_driver_2_document_id_date_year'),
                         document.getElementById('additional_driver_2_document_id_date'),
@@ -876,7 +850,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
         }        
       }
       if (document.getElementById('additional_driver_2_document_id_expiration_date_day')) {
-        var dateControl = new DateControl(document.getElementById('additional_driver_2_document_id_expiration_date_day'),
+        let dateControl = new DateControl(document.getElementById('additional_driver_2_document_id_expiration_date_day'),
                         document.getElementById('additional_driver_2_document_id_expiration_date_month'),
                         document.getElementById('additional_driver_2_document_id_expiration_date_year'),
                         document.getElementById('additional_driver_2_document_id_expiration_date'),
@@ -889,7 +863,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
 
       // Configuration additional driver 2 driving license date
       if (document.getElementById('additional_driver_2_driving_license_date_day')) {
-        var dateControl = new DateControl(document.getElementById('additional_driver_2_driving_license_date_day'),
+        let dateControl = new DateControl(document.getElementById('additional_driver_2_driving_license_date_day'),
                         document.getElementById('additional_driver_2_driving_license_date_month'),
                         document.getElementById('additional_driver_2_driving_license_date_year'),
                         document.getElementById('additional_driver_2_driving_license_date'),
@@ -899,7 +873,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
         }        
       }
       if (document.getElementById('additional_driver_2_driving_license_expiration_date_day')) {
-        var dateControl = new DateControl(document.getElementById('additional_driver_2_driving_license_expiration_date_day'),
+        let dateControl = new DateControl(document.getElementById('additional_driver_2_driving_license_expiration_date_day'),
                         document.getElementById('additional_driver_2_driving_license_expiration_date_month'),
                         document.getElementById('additional_driver_2_driving_license_expiration_date_year'),
                         document.getElementById('additional_driver_2_driving_license_expiration_date'),
@@ -916,8 +890,8 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
 
       $('form[name=booking_information_form]').validate(
           {   
-              ignore: "",
-              invalidHandler : function (form, validator) {
+              ignore: '',
+              invalidHandler : function(form, validator) {
                 alert(i18next.t('myReservation.passenger.validations.invalid'));
               },
               submitHandler: function(form) {
@@ -982,157 +956,40 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
     },
 
     /**
-     * Setup passengers form component
-     */ 
+    * Setup passengers form component
+    */ 
     setupPassengersForm: function() {
       if (model.configuration.guests) {
         // Micro-template passengers is inside component
         // Initialize component passengers
-        passengersComponent.view.init({ booking: model.booking, configuration: model.configuration });
+        passengersComponent.view.init({booking: model.booking, configuration: model.configuration});
       }
     },
 
+    /**
+    * Setup events
+    */ 
     setupEvents: function() {
+      // ----------------- Form ------------------------------
+      // Driver is customer toogle
+      if ($('#driver_is_customer').length) {
+        $('#driver_is_customer').off('click');
+        $('#driver_is_customer').on('click', controller.toogleDriverPanelClick);
+      }
+      // Additional drivers toogle
+      if ($('#additional_drivers_toogle_btn').length) {
+        $('#additional_drivers_toogle_btn').off('click');
+        $('#additional_drivers_toogle_btn').on('click', controller.toogleAdditionalDriversPanelClick);
+      }
+
+      // ----------------- Electronic signature ------------------------------
       // Electronic signature
       if ($('#js_mb_electronic_signature_link').length) {
         $('#js_mb_electronic_signature_link').on('click', function(){
           controller.electronicSignatureLinkClick();
         });
       }
-
-      // Additional drivers toogle
-      if ($('#additional_drivers_toogle_btn').length) {
-        $('#additional_drivers_toogle_btn').off('click');
-        $('#additional_drivers_toogle_btn').on('click', controller.toogleAdditionalDriversPanelClick);
-      }
-      if ($('#driver_is_customer').length) {
-        $('#driver_is_customer').off('click');
-        $('#driver_is_customer').on('click', controller.toogleDriverPanelClick);
-      }
     },
-
-    setupPaymentFormValidation: function() {
-
-        $('form[name=payment_form]').validate(
-            {
-                submitHandler: function(form) {
-
-                    $('#payment_error').hide();
-                    $('#payment_error').html('');
-                    
-                    // Payment amount
-                    var paymentAmount = $('input[name=payment]').val();                        
-                    
-                    // Payment method
-                    var paymentMethod = null;
-                    if ($('input[name=payment_method_id]').length == 1) { // Just 1 payment method
-                      paymentMethod = $('input[name=payment_method_id]').val();
-                    }
-                    else { // Multiple payment methods
-                      paymentMethod = $('input[name=payment_method_select]:checked').val();
-                    }
-
-                    // Do pay
-                    if (paymentMethod && paymentAmount) {
-                      model.sendPayRequest(paymentAmount, paymentMethod);
-                    }
-                    return false;
-
-                },
-                errorClass: 'text-danger',
-                rules : {
-                    'customer_name': {
-                      required: '#customer_name:visible',
-                    },
-                    'customer_surname' : {
-                      required: '#customer_surname:visible',
-                    },
-                    'customer_document_id': {
-                      required: '#customer_document_id[required]:visible'
-                    },
-                    'customer_company_name': {
-                      required: '#customer_company_name:visible',
-                    },
-                    'customer_company_document_id': {
-                      required: '#customer_company_document_id:visible',
-                    },
-                    'customer_email' : {
-                      required: '#customer_email:visible',
-                      email: '#customer_email:visible'
-                    },
-                    'customer_phone': {
-                      required: '#customer_phone:visible',
-                      minlength: 9
-                    },
-                    'payment_method_id': {
-                        required: 'input[name=payment_method_id]:visible'
-                    },
-                    'payment_method_select': {
-                        required: 'input[name=payment_method_select]:visible'
-                    }
-                },
-                messages: {
-                    'customer_name': {
-                      required: i18next.t('complete.reservationForm.validations.customerNameRequired')
-                    },
-                    'customer_surname' : {
-                      required: i18next.t('complete.reservationForm.validations.customerSurnameRequired')
-                    },
-                    'customer_document_id': {
-                      'required': i18next.t('complete.reservationForm.validations.fieldRequired')
-                    },
-                    'customer_company_name': {
-                      required: i18next.t('complete.reservationForm.validations.customerCompanyNameRequired')
-                    },
-                    'customer_company_document_id': {
-                      required: i18next.t('complete.reservationForm.validations.customerCompanyDocumentIdRequired')
-                    },
-                    'customer_email' : {
-                      required: i18next.t('complete.reservationForm.validations.customerEmailRequired'),
-                      email: i18next.t('complete.reservationForm.validations.customerEmailInvalidFormat'),
-                    },
-                    'customer_phone': {
-                      'required': i18next.t('complete.reservationForm.validations.customerPhoneNumberRequired'),
-                      'minlength': i18next.t('complete.reservationForm.validations.customerPhoneNumberMinLength')
-                    },
-                    'payment_method_id': i18next.t('myReservation.pay.paymentMethodRequired'),
-                    'payment_method_select': i18next.t('myReservation.pay.paymentMethodRequired')
-                },
-                errorPlacement : function(error, element) {
-                  if (element.attr('name') == 'payment_method_id')  {
-                     error.insertBefore('#btn_pay');
-                  }
-                  else if (element.attr('name') == 'payment_method_select')  {
-                     error.insertAfter(document.getElementById('payment_method_select_error'));
-                  }
-                  else {
-                     error.insertAfter(element);
-                  }
-                }
-            }
-        );
-
-    },
-
-    /**
-     * Payment
-     */
-    payment: function(url, paymentData) {
-
-      rentEngineMediator.onExistingReservationPayment(url, paymentData);
-
-    },
-    
-    /*
-     * Go to the payment
-     */
-    gotoPayment: function(url, paymentData) {
-
-      $.form(url, paymentData,'POST').submit();
-
-    }
-
-
   };
 
   var rentMyReservation = {
@@ -1151,5 +1008,4 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
   // model.loadSettings();
   view.init();
   // OPTIMIZATION 2024-01-27 END
-
 });
