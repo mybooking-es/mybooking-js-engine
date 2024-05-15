@@ -27,7 +27,7 @@ define('paymentComponent', [
 
       // Prepare data
       var data = {id: bookingId, payment: paymentAmount, payment_method_id: paymentMethod};
-
+      debugger;
       // Do payment
       view.payment(commonServices.URL_PREFIX + '/reserva/pagar', data);
     },
@@ -91,6 +91,7 @@ define('paymentComponent', [
      * Pay
      */
     payment: function(url, paymentData) {
+      debugger;
       model.rentEngineMediator.onExistingReservationPayment(url, paymentData, view.gotoPayment);
     },
 
@@ -98,6 +99,7 @@ define('paymentComponent', [
      * Go to payment gateway
      */
     gotoPayment: function(url, paymentData) {
+      debugger;
       // TODO dont work, need to be fixed
       $.form(url, paymentData, 'POST').submit();
     },
