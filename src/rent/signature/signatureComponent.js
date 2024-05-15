@@ -7,17 +7,28 @@ define('signatureComponent', [
   'commonLoader',
   'ysdtemplate',
   'i18next',
-  '../mediator/rentEngineMediator',
-], function($, commonServices, commonSettings, commonTranslations, commonLoader, tmpl, i18next, rentEngineMediator) {
-  const model = {};
+], function($, commonServices, commonSettings, commonTranslations, commonLoader, tmpl, i18next) {
+  const model = {
+    booking: null,
+    requestLanguage: 'es',
+  };
 
-  const controller = {};
+  const controller = {
+    /**
+    * Electronic signature controller
+    */ 
+    electronicSignatureLinkClick: function(){
+      if (model.booking && typeof model.booking.required_data_completed !== 'undefined') {
+        // TODO
+      }
+    },
+  };
 
   const view = {
     /**
      * Initialize
      */
-    init: function(parentModel) {
+    init: function(booking) {
       // Initialize i18next for translations
       model.requestLanguage = commonSettings.language(document.documentElement.lang);
       i18next.init(
@@ -28,10 +39,11 @@ define('signatureComponent', [
         function() {},
       );
 
-      // this.addTemplates(parentModel);
+      // Set the booking
+      model.booking = booking;
     },
 
-    addTemplates: function(parentModel) {},
+    addTemplates: function() {},
 
     /**
      * Setup UI Controls
@@ -41,7 +53,14 @@ define('signatureComponent', [
     /**
      * Setup UI Events
      */
-    setupEvents: function() {},
+    setupEvents: function() {
+      // Electronic Signature button
+      if ($('#js_mb_electronic_signature_link').length) {
+        $('#js_mb_electronic_signature_link').on('click', function(){
+          controller.electronicSignatureLinkClick();
+        });
+      }
+    },
 
     /**
      * Setup validation

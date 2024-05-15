@@ -6,13 +6,13 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
          'i18next','ysdtemplate', 'YSDDateControl',
          './passengers/passengersComponent',
          './payment/paymentComponent',
+         './signature/signatureComponent',
          'jquery.i18next',   
          'jquery.validate', 'jquery.ui', 'jquery.form'],
     function($, RemoteDataSource, MemoryDataSource, SelectSelector, select2,
              commonServices, commonSettings, commonTranslations, commonLoader, commonUI,
              rentEngineMediator, i18next, tmpl, DateControl, 
-             passengersComponent, 
-             paymentComponent
+             passengersComponent,  paymentComponent, signatureComponent
           ) {
 
   var model = { // THE MODEL
@@ -200,41 +200,6 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
        model.update();
     },
     
-    // ----------------- Signature ------------------------------
-
-    /**
-    * Electronic signature controller
-    */ 
-    electronicSignatureLinkClick: function(){
-      if (model.booking && typeof model.booking.required_data_completed !== 'undefined') {
-        if (model.booking.required_data_completed) {
-          window.open(model.booking.electronic_signature_url, '_blank');
-        } else {
-          var html = tmpl('script_contract_required_data')(
-            {contract_errors: model.booking.contract_errors});
-
-          // Compatibility with bootstrap modal replacement (from 1.0.0)
-          if ($('#modalSignatureValidation_MBM').length) {
-            $('#modalSignatureValidation_MBM .mb-modal_title').html('');
-            $('#modalSignatureValidation_MBM .mb-modal_body').html(html);     
-          }
-          else {
-            $('#modalSignatureValidation .modal-title').html('');
-            $('#modalSignatureValidation .modal-body').html(html);
-          }
-
-          // Show the modal
-          commonUI.showModal('#modalSignatureValidation',
-                              function(event, modal){ // on Show
-                                setTimeout(function(){  
-                                  // Call to the mediator
-                                  rentEngineMediator.onShowModal(event, modal);
-                                },50);
-                              });
-        }
-      }
-    },
-
     // ----------------- Form ------------------------------
 
     /**
@@ -305,7 +270,6 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
       this.setupPassengersForm();
       this.setupEvents();
       commonLoader.hide();
-
     },
 
     /**
@@ -357,7 +321,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
 
         // Initialize payment component
         paymentComponent.view.init(model.bookingFreeAccessId,
-                                   model.sales_process, model.booking, model.configuration);
+                                  model.sales_process, model.booking, model.configuration);
         paymentComponent.model.addListener('payment', function(event){
           if (event.type === 'payment') {
             const url = event.data.url;
@@ -365,6 +329,9 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
             view.payment(url, paymentData);
           }
         });
+
+        // Initialize signature component
+        signatureComponent.view.init(model.booking);
       }
     },
 
@@ -985,14 +952,6 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
       if ($('#additional_drivers_toogle_btn').length) {
         $('#additional_drivers_toogle_btn').off('click');
         $('#additional_drivers_toogle_btn').on('click', controller.toogleAdditionalDriversPanelClick);
-      }
-
-      // ----------------- Electronic signature ------------------------------
-      // Electronic signature
-      if ($('#js_mb_electronic_signature_link').length) {
-        $('#js_mb_electronic_signature_link').on('click', function(){
-          controller.electronicSignatureLinkClick();
-        });
       }
     },
 

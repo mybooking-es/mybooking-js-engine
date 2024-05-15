@@ -10,32 +10,26 @@ define('paymentComponent', [
   'i18next',
 ], function($, commonServices, commonSettings, commonTranslations, commonLoader, tmpl, YSDEventTarget, i18next) {
   const model = {
-
     salesProcess: null,
     booking: null,
     configuration: null,
+    requestLanguage: 'es',
 
     events: new YSDEventTarget(),
-      
     addListener: function(type, listener) { /* addListener */
        this.events.addEventListener(type, listener);  
     },
-      
     removeListener: function(type, listener) { /* removeListener */
        this.events.removeEventListener(type, listener);     
     },
-
     removeListeners: function(type) { /* remove listeners*/
        this.events.removeEventListeners(type);
     },
-
-    requestLanguage: null,
 
     /**
      * Send the payment request
      */
     sendPayRequest: function(paymentAmount, paymentMethod) {
-
       // Prepare data
       var data = {id: model.bookingFreeAccessId,
                   payment: paymentAmount, payment_method_id: paymentMethod};
@@ -55,7 +49,6 @@ define('paymentComponent', [
      * Initialize
      */
     init: function(bookingFreeAccessId, salesProcess, booking, configuration) {
-
       model.bookingFreeAccessId = bookingFreeAccessId;
       model.salesProcess = salesProcess;
       model.booking = booking;
@@ -72,7 +65,6 @@ define('paymentComponent', [
       );
 
       this.addTemplates();
-
     },
 
     addTemplates: function() {
