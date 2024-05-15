@@ -428,27 +428,25 @@ define('rentEngineMediator', ['jquery', 'YSDEventTarget'],
     /**
      * onExisting reservation payment
      */
-    onExistingReservationPayment: function(url, paymentData, callback) {
+    onExistingReservationPayment: function(url, paymentData) {
 
       console.log('rentEngineMediator_checkout');
       if (typeof this.existingReservationPaymentDelegate === 'function') {
         var data = { url: url,
                      paymentData: paymentData};
         this.existingReservationPaymentDelegate(data, this);
-      } else if(callback && typeof callback === 'function') {
-        this.continueExistingReservationPayment(url, paymentData, callback);
-      } else {
-        // TODO error
+      } else  {
+        this.continueExistingReservationPayment(url, paymentData);
       }
     },
 
     /**
      * continue existing reservation payment
      */
-    continueExistingReservationPayment: function(url, paymentData, callback) {
+    continueExistingReservationPayment: function(url, paymentData) {
 
       if (this.myReservation != null) {
-        callback(url, paymentData);
+        this.myReservation.view.gotoPayment(url, paymentData);
       }
 
     },

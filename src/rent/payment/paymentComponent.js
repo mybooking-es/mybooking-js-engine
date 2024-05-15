@@ -6,30 +6,45 @@ define('paymentComponent', [
   'commonTranslations',
   'commonLoader',
   'ysdtemplate',
+  'YSDEventTarget',
   'i18next',
-], function($, commonServices, commonSettings, commonTranslations, commonLoader, tmpl, i18next) {
+], function($, commonServices, commonSettings, commonTranslations, commonLoader, tmpl, YSDEventTarget, i18next) {
   const model = {
-    parentModel: null,
-    rentEngineMediator: null,
+
+    salesProcess: null,
+    booking: null,
+    configuration: null,
+
+    events: new YSDEventTarget(),
+      
+    addListener: function(type, listener) { /* addListener */
+       this.events.addEventListener(type, listener);  
+    },
+      
+    removeListener: function(type, listener) { /* removeListener */
+       this.events.removeEventListener(type, listener);     
+    },
+
+    removeListeners: function(type) { /* remove listeners*/
+       this.events.removeEventListeners(type);
+    },
+
     requestLanguage: null,
 
     /**
      * Send the payment request
      */
     sendPayRequest: function(paymentAmount, paymentMethod) {
-      // Booking free access ID
-      var bookingId = model.parentModel.bookingFreeAccessId;
-      if (bookingId == '') {
-        bookingId = model.parentModel.getBookingFreeAccessId();
-      } else {
-        model.parentModel.setBookingFreeAccessId(bookingId);
-      }
 
       // Prepare data
-      var data = {id: bookingId, payment: paymentAmount, payment_method_id: paymentMethod};
-      debugger;
-      // Do payment
-      view.payment(commonServices.URL_PREFIX + '/reserva/pagar', data);
+      var data = {id: model.bookingFreeAccessId,
+                  payment: paymentAmount, payment_method_id: paymentMethod};
+      // Fire the event
+      this.events.fireEvent({type: 'payment', 
+                             data: {
+                                url: commonServices.URL_PREFIX + '/reserva/pagar',
+                                paymentData: data
+                             }});
     },
   };
 
@@ -39,7 +54,13 @@ define('paymentComponent', [
     /**
      * Initialize
      */
-    init: function(parentModel, rentEngineMediator) {
+    init: function(bookingFreeAccessId, salesProcess, booking, configuration) {
+
+      model.bookingFreeAccessId = bookingFreeAccessId;
+      model.salesProcess = salesProcess;
+      model.booking = booking;
+      model.configuration = configuration;
+
       // Initialize i18next for translations
       model.requestLanguage = commonSettings.language(document.documentElement.lang);
       i18next.init(
@@ -50,34 +71,28 @@ define('paymentComponent', [
         function() {},
       );
 
-      // Set the parent model
-      model.parentModel = parentModel;
-      model.rentEngineMediator = rentEngineMediator;
-      if (model.parentModel && Object.keys(model.parentModel).length > 0) {
-        this.addTemplates();
-      } else {
-        console.log('Error: parent model not found in payment component');  // TODO
-      }
+      this.addTemplates();
+
     },
 
     addTemplates: function() {
       // Micro-template payment
       if (document.getElementById('script_payment_detail')) {
         // If the booking is pending show the payment controls
-        if (model.parentModel.sales_process.can_pay) {
+        if (model.salesProcess.can_pay) {
           var amount = 0;
-          if (model.parentModel.sales_process.can_pay_pending) {
-            amount = model.parentModel.booking.total_pending;
-          } else if (model.parentModel.sales_process.can_pay_deposit) {
-            amount = model.parentModel.booking.booking_amount;
-          } else if (model.parentModel.sales_process.can_pay_total) {
-            amount = model.parentModel.booking.total_cost;
+          if (model.salesProcess.can_pay_pending) {
+            amount = model.booking.total_pending;
+          } else if (model.salesProcess.can_pay_deposit) {
+            amount = model.booking.booking_amount;
+          } else if (model.salesProcess.can_pay_total) {
+            amount = model.booking.total_cost;
           }
           var paymentInfo = tmpl('script_payment_detail')({
-            sales_process: model.parentModel.sales_process,
+            sales_process: model.salesProcess,
             amount: amount,
-            booking: model.parentModel.booking,
-            configuration: model.parentModel.configuration,
+            booking: model.booking,
+            configuration: model.configuration,
             i18next: i18next,
           });
           $('#payment_detail').html(paymentInfo);
@@ -91,16 +106,14 @@ define('paymentComponent', [
      * Pay
      */
     payment: function(url, paymentData) {
-      debugger;
-      model.rentEngineMediator.onExistingReservationPayment(url, paymentData, view.gotoPayment);
+      model.rentEngineMediator.onExistingReservationPayment(url, paymentData);
     },
 
     /*
      * Go to payment gateway
      */
     gotoPayment: function(url, paymentData) {
-      debugger;
-      // TODO dont work, need to be fixed
+      // Submit the form to make the payment
       $.form(url, paymentData, 'POST').submit();
     },
 
@@ -137,38 +150,14 @@ define('paymentComponent', [
             // Multiple payment methods
             paymentMethod = $('input[name=payment_method_select]:checked').val();
           }
-
           // Do pay
           if (paymentMethod && paymentAmount) {
-            model.sendPayRequest(model.parentModel, paymentAmount, paymentMethod);
+            model.sendPayRequest(paymentAmount, paymentMethod);
           }
           return false;
         },
         errorClass: 'text-danger',
         rules: {
-          customer_name: {
-            required: '#customer_name:visible',
-          },
-          customer_surname: {
-            required: '#customer_surname:visible',
-          },
-          customer_document_id: {
-            required: '#customer_document_id[required]:visible',
-          },
-          customer_company_name: {
-            required: '#customer_company_name:visible',
-          },
-          customer_company_document_id: {
-            required: '#customer_company_document_id:visible',
-          },
-          customer_email: {
-            required: '#customer_email:visible',
-            email: '#customer_email:visible',
-          },
-          customer_phone: {
-            required: '#customer_phone:visible',
-            minlength: 9,
-          },
           payment_method_id: {
             required: 'input[name=payment_method_id]:visible',
           },
@@ -177,30 +166,6 @@ define('paymentComponent', [
           },
         },
         messages: {
-          customer_name: {
-            required: i18next.t('complete.reservationForm.validations.customerNameRequired'),
-          },
-          customer_surname: {
-            required: i18next.t('complete.reservationForm.validations.customerSurnameRequired'),
-          },
-          customer_document_id: {
-            required: i18next.t('complete.reservationForm.validations.fieldRequired'),
-          },
-          customer_company_name: {
-            required: i18next.t('complete.reservationForm.validations.customerCompanyNameRequired'),
-          },
-          customer_company_document_id: {
-            // eslint-disable-next-line max-len
-            required: i18next.t('complete.reservationForm.validations.customerCompanyDocumentIdRequired'),
-          },
-          customer_email: {
-            required: i18next.t('complete.reservationForm.validations.customerEmailRequired'),
-            email: i18next.t('complete.reservationForm.validations.customerEmailInvalidFormat'),
-          },
-          customer_phone: {
-            required: i18next.t('complete.reservationForm.validations.customerPhoneNumberRequired'),
-            minlength: i18next.t('complete.reservationForm.validations.customerPhoneNumberMinLength'),
-          },
           payment_method_id: i18next.t('myReservation.pay.paymentMethodRequired'),
           payment_method_select: i18next.t('myReservation.pay.paymentMethodRequired'),
         },

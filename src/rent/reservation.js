@@ -64,10 +64,6 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
       return sessionStorage.getItem('booking_free_access_id');
     },
 
-    setBookingFreeAccessId: function(bookingFreeAccessId) { /* Set the booking id */
-      sessionStorage.setItem('booking_free_access_id', bookingFreeAccessId);
-    },
-
     /**
     * Load booking
     */ 
@@ -359,7 +355,16 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
           $('#reservation_form_container').show();
         }
 
-        paymentComponent.view.init(model, rentEngineMediator);
+        // Initialize payment component
+        paymentComponent.view.init(model.bookingFreeAccessId,
+                                   model.sales_process, model.booking, model.configuration);
+        paymentComponent.model.addListener('payment', function(event){
+          if (event.type === 'payment') {
+            const url = event.data.url;
+            const paymentData = event.data.paymentData;
+            view.payment(url, paymentData);
+          }
+        });
       }
     },
 
@@ -990,6 +995,25 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
         });
       }
     },
+
+    /**
+     * Pay
+     */
+    payment: function(url, paymentData) {
+      // Call to the mediator
+      rentEngineMediator.onExistingReservationPayment(url, paymentData);
+    },
+
+    /*
+     * Go to the payment
+     */
+    gotoPayment: function(url, paymentData) {
+
+      // Use the payment component to make the payment
+      paymentComponent.view.gotoPayment(url, paymentData);
+
+    }
+
   };
 
   var rentMyReservation = {
