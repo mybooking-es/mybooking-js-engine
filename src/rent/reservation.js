@@ -6,13 +6,14 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
          'i18next','ysdtemplate', 'YSDDateControl',
          './passengers/passengersComponent',
          './payment/paymentComponent',
+         './documents/documentsComponent',
          './signature/signatureComponent',
          'jquery.i18next',   
          'jquery.validate', 'jquery.ui', 'jquery.form'],
     function($, RemoteDataSource, MemoryDataSource, SelectSelector, select2,
              commonServices, commonSettings, commonTranslations, commonLoader, commonUI,
              rentEngineMediator, i18next, tmpl, DateControl, 
-             passengersComponent,  paymentComponent, signatureComponent
+             passengersComponent,  paymentComponent, documentsComponent, signatureComponent
           ) {
 
   var model = { // THE MODEL
@@ -315,14 +316,12 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
         var locale = model.requestLanguage;
         var localeReservationFormScript = 'script_reservation_form_'+locale;
         if (locale != null && document.getElementById(localeReservationFormScript)) {
-          debugger;
           var reservationForm = tmpl(localeReservationFormScript)({booking: model.booking,
                                                                     configuration: model.configuration});
           $('form[name=reservation_form]').html(reservationForm);           
         }
         // Micro-template reservation
         else if (document.getElementById('script_reservation_form')) {
-          debugger;
           let reservationForm = tmpl('script_reservation_form')(
               {booking: model.booking,
                 configuration: model.configuration});
@@ -356,6 +355,9 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
           view.payment(url, paymentData);
         }
       });
+
+      // Initialize documents component
+      documentsComponent.view.init(model.booking);
 
       // Initialize signature component
       signatureComponent.view.init(model.booking);
@@ -985,7 +987,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
         event.preventDefault();
 
         // If the step is disabled, do nothing
-        if ($(this).hasClass('mb--disabled')) {
+        if ($(this).parent().hasClass('mb--disabled')) {
           return false;
         }
 
