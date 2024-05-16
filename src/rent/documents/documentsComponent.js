@@ -19,8 +19,8 @@ define('documentsComponent', [
     */ 
     documentsUploadLinkClick: function(){
       // eslint-disable-next-line max-len
-      if (model.booking && typeof model.booking.documentation_url && model.booking.booking.documentation_url !== '') {
-        window.open(model.booking.booking.documentation_url, '_blank');
+      if (model.booking && typeof model.booking.documentation_url && model.booking.documentation_url !== '') {
+        window.open(model.booking.documentation_url, '_blank');
       }
     },
   };
@@ -42,6 +42,12 @@ define('documentsComponent', [
 
       // Set the booking
       model.booking = booking;
+
+      // Setup the controls
+      this.setupControls();
+
+      // Setup the events
+      this.setupEvents();
     },
 
     /**

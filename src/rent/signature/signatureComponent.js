@@ -18,8 +18,8 @@ define('signatureComponent', [
     * Electronic signature controller
     */ 
     electronicSignatureLinkClick: function(){
-      if (model.booking && typeof model.booking.documentation_url && model.booking.booking.documentation_url !== '') {
-        window.open(model.booking.booking.electronic_signature_url, '_blank');
+      if (model.booking && typeof model.booking.documentation_url && model.booking.documentation_url !== '') {
+        window.open(model.booking.electronic_signature_url, '_blank');
       }
     },
   };
@@ -41,6 +41,13 @@ define('signatureComponent', [
 
       // Set the booking
       model.booking = booking;
+
+      // Setup the controls
+      this.setupControls();
+
+      // Setup the events
+      this.setupEvents();
+
     },
 
     /**
