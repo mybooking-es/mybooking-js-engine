@@ -284,6 +284,15 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
     */ 
     updateBookingSummary: function() {
       var showReservationForm = model.booking.manager_complete_authorized;
+
+      // Include reservation steps
+      var reservationSteps = tmpl('script_reservation_steps')(
+        {
+          booking: model.booking,
+        });
+      $('#mybooking_reservation_steps').html(reservationSteps);
+
+      // Include reservation summary
       var reservationDetail = tmpl('script_reservation_summary')(
           {
             booking: model.booking,
@@ -306,12 +315,14 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
         var locale = model.requestLanguage;
         var localeReservationFormScript = 'script_reservation_form_'+locale;
         if (locale != null && document.getElementById(localeReservationFormScript)) {
+          debugger;
           var reservationForm = tmpl(localeReservationFormScript)({booking: model.booking,
                                                                     configuration: model.configuration});
           $('form[name=reservation_form]').html(reservationForm);           
         }
         // Micro-template reservation
         else if (document.getElementById('script_reservation_form')) {
+          debugger;
           let reservationForm = tmpl('script_reservation_form')(
               {booking: model.booking,
                 configuration: model.configuration});
@@ -319,20 +330,35 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
           $('#reservation_form_container').show();
         }
 
-        // Initialize payment component
-        paymentComponent.view.init(model.bookingFreeAccessId,
-                                  model.sales_process, model.booking, model.configuration);
-        paymentComponent.model.addListener('payment', function(event){
-          if (event.type === 'payment') {
-            const url = event.data.url;
-            const paymentData = event.data.paymentData;
-            view.payment(url, paymentData);
-          }
-        });
+        // Add documentation upload view
+        if ($('#documents_upload_container').length) {
+          let documentsUpload = tmpl('script_documents_upload')(
+              {booking: model.booking,
+                configuration: model.configuration});
+          $('#documents_upload_container').html(documentsUpload);
+        }
 
-        // Initialize signature component
-        signatureComponent.view.init(model.booking);
+        // Add signature view
+        if ($('#contract_signature_container').length) {
+          let contractSignature = tmpl('script_contract_signature')(
+              {booking: model.booking,
+                configuration: model.configuration});
+          $('#contract_signature_container').html(contractSignature);
+        }
       }
+
+      // Initialize payment component
+      paymentComponent.view.init(model.bookingFreeAccessId, model.sales_process, model.booking, model.configuration);
+      paymentComponent.model.addListener('payment', function(event){
+        if (event.type === 'payment') {
+          const url = event.data.url;
+          const paymentData = event.data.paymentData;
+          view.payment(url, paymentData);
+        }
+      });
+
+      // Initialize signature component
+      signatureComponent.view.init(model.booking);
     },
 
     // ----------------- Form ------------------------------
@@ -953,6 +979,23 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
         $('#additional_drivers_toogle_btn').off('click');
         $('#additional_drivers_toogle_btn').on('click', controller.toogleAdditionalDriversPanelClick);
       }
+
+      // Steps events
+      $('.mb--steps-wrapper').on('click', '.mb--step a', function(event) {
+        event.preventDefault();
+
+        // If the step is disabled, do nothing
+        if ($(this).hasClass('mb--disabled')) {
+          return false;
+        }
+
+        // Hide all steps
+        $('.mb--steps-container-wrapper .mb--step-container').hide();
+
+        // Show the step
+        const id = $(this).attr('href');
+        $(id).show();
+      });
     },
 
     /**

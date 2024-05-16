@@ -95,7 +95,7 @@ define('paymentComponent', [
     },
 
     /**
-     * Pay
+     * Payment
      */
     payment: function(url, paymentData) {
       model.rentEngineMediator.onExistingReservationPayment(url, paymentData);

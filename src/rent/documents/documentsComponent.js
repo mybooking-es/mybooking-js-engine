@@ -1,5 +1,5 @@
 // eslint-disable-next-line no-undef
-define('signatureComponent', [
+define('documentsComponent', [
   'jquery',
   'commonServices',
   'commonSettings',
@@ -15,11 +15,12 @@ define('signatureComponent', [
 
   const controller = {
     /**
-    * Electronic signature controller
+    * Electronic documents controller
     */ 
-    electronicSignatureLinkClick: function(){
+    documentsUploadLinkClick: function(){
+      // eslint-disable-next-line max-len
       if (model.booking && typeof model.booking.documentation_url && model.booking.booking.documentation_url !== '') {
-        window.open(model.booking.booking.electronic_signature_url, '_blank');
+        window.open(model.booking.booking.documentation_url, '_blank');
       }
     },
   };
@@ -52,10 +53,10 @@ define('signatureComponent', [
      * Setup UI Events
      */
     setupEvents: function() {
-      // Electronic Signature button
-      if ($('#js_mb_electronic_signature_link').length) {
-        $('#js_mb_electronic_signature_link').on('click', function(){
-          controller.electronicSignatureLinkClick();
+      // Electronic documents button
+      if ($('#js_mb_upload_documentation_link').length) {
+        $('#js_mb_upload_documentation_link').on('click', function(){
+          controller.documentsUploadLinkClick();
         });
       }
     },
@@ -66,11 +67,11 @@ define('signatureComponent', [
     setupValidate: function() {},
   };
 
-  const signatureComponent = {
+  const documentsComponent = {
     model,
     controller,
     view,
   };
 
-  return signatureComponent;
+  return documentsComponent;
 });
