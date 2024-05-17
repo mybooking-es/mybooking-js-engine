@@ -18,7 +18,8 @@ define('signatureComponent', [
     * Electronic signature controller
     */ 
     electronicSignatureLinkClick: function(){
-      if (model.booking && typeof model.booking.documentation_url && model.booking.documentation_url !== '') {
+      // eslint-disable-next-line max-len
+      if (model.booking && typeof model.booking.electronic_signature_url && model.booking.electronic_signature_url !== '') {
         window.open(model.booking.electronic_signature_url, '_blank');
       }
     },

@@ -222,19 +222,19 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
     },
     toogleAdditionalDriversPanelClick: function(event) {
       const target = $(event.currentTarget);
-      const icon = target.find('i.fa');
+      const icon = target.find('.dashicons');
       const isOpened = target.hasClass('mb-open');
       const panel = $('#' + target.attr('data-panel'));
       if (panel.length > 0 && !isOpened) {
         panel.show();
         target.addClass('mb-open');
-        icon.removeClass('fa-arrow-circle-down');
-        icon.addClass('fa-arrow-circle-up');
+        icon.removeClass('dashicons-arrow-down-alt2');
+        icon.addClass('dashicons-arrow-up-alt2');
       } else {
         panel.hide();
         target.removeClass('mb-open');
-        icon.removeClass('fa-arrow-circle-up');
-        icon.addClass('fa-arrow-circle-down');
+        icon.removeClass('dashicons-arrow-up-alt2');
+        icon.addClass('dashicons-arrow-down-alt2');
       }
     },
   };

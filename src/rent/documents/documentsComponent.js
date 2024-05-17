@@ -43,8 +43,6 @@ define('documentsComponent', [
       // Set the booking
       model.booking = booking;
 
-      debugger;
-
       // Setup the controls
       this.setupControls();
 
