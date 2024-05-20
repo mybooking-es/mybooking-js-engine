@@ -21,23 +21,23 @@ define(['YSDListSelectorModel','YSDSelectSelectorController', 'YSDSelectSelector
 
     this.model = new ListSelectorModel(dataSource, value);
     this.controller = new SelectSelectorController();
+    // eslint-disable-next-line max-len
     this.view = new SelectSelectorView(this.model, this.controller, selectControlId, nullOption, nullOptionText, callback);
 
     this.setValue = function(newValue) {
       this.model.setValue(newValue);
-    }
+    };
 
     this.stop = function() {
       this.model.removeEventListener();
-    }
-    
+    };
 
     this.controller.setView(this.view);
     this.model.setView(this.view);
 
     this.model.retrieveData(); /* Retrieve model data */
 
-  }
+  };
 
   return YSDSelectSelector;
 
