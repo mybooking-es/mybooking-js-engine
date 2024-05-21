@@ -855,6 +855,16 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
         const id = $(this).attr('href');
         $(id).show();
       });
+
+      // Button pay event
+      $('#btn_payment_detail').off('click');
+      $('#btn_payment_detail').on('click', function(event) {
+        event.preventDefault();
+        // Hide all steps
+        $('.mb--steps-container-wrapper .mb--step-container').hide();
+        // Show the payment view
+        $('#payment_view').show();
+      });
     },
 
     /**
