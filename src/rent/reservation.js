@@ -293,6 +293,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
       var reservationSteps = tmpl('script_reservation_steps')(
         {
           booking: model.booking,
+          sales_process: model.sales_process,
         });
       $('#mybooking_reservation_steps').html(reservationSteps);
 
