@@ -220,7 +220,38 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
         panel.show();
         $('.js-driver-is-customer-on').hide();
         $('.js-driver-is-customer-on').find('input, select').val(undefined);
-        $('.js-driver-is-customer-off').show();
+        const controls = $('.js-driver-is-customer-off');
+        controls.show();
+        controls.each((index, control) => {
+          if ($(control).is('input') || $(control).is('select')) {
+            const row = $(control).closest('.mb-form-row');
+            const visibleColumns = row.find('[class]').filter(function() {
+              return this.className.match(/\bmb-col-\S+/);
+            }).filter(':visible');
+            // TODO
+            const columnCount = visibleColumns.length;
+            visibleColumns.each((index, element) => {
+              $(element).removeClass(function(index, className) {
+                return (className.match(/(^|\s)mb-col-\S+/g) || []).join(' ');
+              });
+            
+              switch (columnCount) {
+                case 2:
+                  $(element).addClass('mb-col-md-6');
+                  break;
+                case 3:
+                  $(element).addClass('mb-col-md-4');
+                  break;
+                case 4:
+                  $(element).addClass('mb-col-md-3');
+                  break;
+                default:
+                  $(element).addClass('mb-col-md-12');
+                  break;
+              }
+            });
+          }
+        });
       }
     },
     toogleAdditionalDriversPanelClick: function(event) {
