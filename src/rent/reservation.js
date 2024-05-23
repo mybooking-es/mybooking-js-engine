@@ -21,6 +21,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
     configuration: null,        
     bookingFreeAccessId : null,
     booking: null,
+    required_fields: null,
     sales_process: null,
 
     // -------------- Load settings ----------------------------
@@ -105,6 +106,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
                  // OPTIMIZATION 2024-01-27 END
 
                  model.booking = data.booking;
+                 model.required_fields = data.required_fields;
                  model.bookingFreeAccessId = data.booking.free_access_id;
                  model.sales_process = data.sales_process;
                  view.updateBooking();
@@ -152,7 +154,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
             }
           }
         } 
-        
+        console.log(reservation);
         var reservationJSON = encodeURIComponent(JSON.stringify(reservation));
         // Build URL
         var url = commonServices.URL_PREFIX + '/api/booking/frontend/booking/' + this.bookingFreeAccessId;
@@ -361,6 +363,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
         var localeReservationFormScript = 'script_reservation_form_'+locale;
         if (locale != null && document.getElementById(localeReservationFormScript)) {
           var reservationForm = tmpl(localeReservationFormScript)({booking: model.booking,
+                                                                    required_fields: model.required_fields,
                                                                     configuration: model.configuration});
           $('form[name=reservation_form]').html(reservationForm);           
         }
@@ -368,6 +371,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
         else if (document.getElementById('script_reservation_form')) {
           let reservationForm = tmpl('script_reservation_form')(
               {booking: model.booking,
+                required_fields: model.required_fields,
                 configuration: model.configuration});
           $('#reservation_form_container').html(reservationForm);
           $('#reservation_form_container').show();
@@ -475,7 +479,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
           const elements = document.getElementsByName(selectors[idx]);
           if (elements.length > 0) {
             const countriesDataSource = new MemoryDataSource(countriesArray);
-            const countryModel = (values[idx] == null ? '' : values[idx]);
+            const countryModel = (values[idx] == null ? '': values[idx]);
             for (let j=0; j<elements.length; j++) {
               new SelectSelector(selectors[idx],
                   countriesDataSource, countryModel, true, i18next.t('myReservation.select_country'));
@@ -556,7 +560,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
                 const elements = document.getElementsByName(selectors[idx]);
                 if (elements.length > 0) {
                   const nationalitiesDataSource = new MemoryDataSource(formatData);
-                  const nationalityModel = (values[idx] == null ? '' : values[idx]);
+                  const nationalityModel = (values[idx] == null ? '': values[idx]);
                   for (let j=0; j<elements.length; j++) {
                     new SelectSelector(selectors[idx],
                       nationalitiesDataSource, nationalityModel, true, i18next.t('myReservation.select_nationality'));
@@ -639,7 +643,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
                 const elements = document.getElementsByName(selectors[idx]);
                 if (elements.length > 0) {
                   const countriesDataSource = new MemoryDataSource(formatData);
-                  const countryModel = (values[idx] == null ? '' : values[idx]);
+                  const countryModel = (values[idx] == null ? '': values[idx]);
                   for (let j=0; j<elements.length; j++) {
                     new SelectSelector(selectors[idx],
                       countriesDataSource, countryModel, true, i18next.t('myReservation.select_type_document'));
@@ -719,7 +723,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
                 const elements = document.getElementsByName(selectors[idx]);
                 if (elements.length > 0) {
                   const countriesDataSource = new MemoryDataSource(formatData);
-                  const countryModel = (values[idx] == null ? '' : values[idx]);
+                  const countryModel = (values[idx] == null ? '': values[idx]);
                   for (let j=0; j<elements.length; j++) {
                     new SelectSelector(selectors[idx],
                       countriesDataSource, countryModel, true, i18next.t('myReservation.select_type_document'));
@@ -789,63 +793,237 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
 
       $('form[name=booking_information_form]').validate(
           {   
-              ignore: '',
-              invalidHandler : function(form, validator) {
-                alert(i18next.t('myReservation.passenger.validations.invalid'));
+            ignore: '',
+            invalidHandler : function(form, validator) {
+              alert(i18next.t('myReservation.passenger.validations.invalid'));
+            },
+            submitHandler: function(form) {
+              controller.btnUpdateClick();
+              return false;
+            },
+            rules : {
+              'customer_company_name': {
+                required: () => $('[name="customer_company_name"]').is(':visible') && $('[name="customer_company_name"]').prop('required'),
               },
-              submitHandler: function(form) {
-                controller.btnUpdateClick();
-                return false;
+              'customer_company_document_id': {
+                required: () => $('[name="customer_company_document_id"]').is(':visible') && $('[name="customer_company_document_id"]').prop('required'),
               },
-              rules : {
-                'customer_name': {
-                  required: () => $('[name="customer_name"]').is(':visible'),
+              'customer_name': {
+                required: () => $('[name="customer_name"]').is(':visible') && $('[name="customer_name"]').prop('required'),
+              },
+              'customer_surname': {
+                required: () => $('[name="customer_surname"]').is(':visible') && $('[name="customer_surname"]').prop('required'),
+              },
+              'customer_email': {
+                required: () => $('[name="customer_email"]').is(':visible') && $('[name="customer_email"]').prop('required'),
+                email: () => $('[name="customer_email"]').is(':visible') && $('[name="customer_email"]').prop('required'),
+              },
+              'customer_phone': {
+                required: () => $('[name="customer_phone"]').is(':visible') && $('[name="customer_phone"]').prop('required'),
+                minlength: 9
+              },
+              'driver_date_of_birth': {
+                required: () => $('[name="driver_date_of_birth"]').is(':visible') && $('[name="driver_date_of_birth"]').prop('required'),
+              },
+              'customer_nacionality': {
+                required: () => $('[name="customer_nacionality"]').is(':visible') && $('[name="customer_nacionality"]').prop('required'),
+              },
+              'driver_nacionality': {
+                required: () => $('[name="driver_nacionality"]').is(':visible') && $('[name="driver_nacionality"]').prop('required'),
+              },
+              'customer_document_id_type_id': {
+                required: () => $('[name="customer_document_id_type_id"]').is(':visible') && $('[name="customer_document_id_type_id"]').prop('required'),
+              },
+              'driver_document_id_type_id': {
+                required: () => $('[name="driver_document_id_type_id"]').is(':visible') && $('[name="driver_document_id_type_id"]').prop('required'),
+              },
+              'customer_document_id': {
+                required: () => $('[name="customer_document_id"]').is(':visible') && $('[name="customer_document_id"]').prop('required'),
+              },
+              'driver_document_id': {
+                required: () => {
+                  debugger;
+                  return $('[name="driver_document_id"]').is(':visible') && $('[name="driver_document_id"]').prop('required');
                 },
-                'customer_surname' : {
-                  required: () => $('[name="customer_surname"]').is(':visible'),
+              },
+              'driver_origin_country': {
+                required: () => $('[name="driver_origin_country"]').is(':visible') && $('[name="driver_origin_country"]').prop('required'),
+              },
+              'driver_document_id_date': {
+                required: () => $('[name="driver_document_id_date"]').is(':visible') && $('[name="driver_document_id_date"]').prop('required'),
+              },
+              'driver_document_id_expiration_date': {
+                required: () => $('[name="driver_document_id_expiration_date"]').is(':visible') && $('[name="driver_document_id_expiration_date"]').prop('required'),
+              },
+              'driver_driving_license_type_id': {
+                required: () => $('[name="driver_driving_license_type_id"]').is(':visible') && $('[name="driver_driving_license_type_id"]').prop('required'),
+              },
+              'driver_driving_license_number': {
+                required: () => $('[name="driver_driving_license_number"]').is(':visible') && $('[name="driver_driving_license_number"]').prop('required'),
+              },
+              'driver_driving_license_country': {
+                required: () => $('[name="driver_driving_license_country"]').is(':visible') && $('[name="driver_driving_license_country"]').prop('required'),
+              },
+              'driver_driving_license_date': {
+                required: () => $('[name="driver_driving_license_date"]').is(':visible') && $('[name="driver_driving_license_date"]').prop('required'),
+              },
+              'driver_driving_license_expiration_date': {
+                required: () => $('[name="driver_driving_license_expiration_date"]').is(':visible') && $('[name="driver_driving_license_expiration_date"]').prop('required'),
+              },
+              'customer_address\\[street\\]': {
+                required: () => $('[name="customer_address\\[street\\]"]').is(':visible') && $('[name="customer_address\\[street\\]"]').prop('required'),
+              },
+              'customer_address\\[number\\]': {
+                required: () => $('[name="customer_address\\[number\\]"]').is(':visible') && $('[name="customer_address\\[number\\]"]').prop('required'),
+              },
+              'customer_address\\[complement\\]': {
+                required: () => $('[name="customer_address\\[complement\\]"]').is(':visible') && $('[name="customer_address\\[complement\\]"]').prop('required'),
+              },
+              'customer_address\\[city\\]': {
+                required: () => $('[name="customer_address\\[city\\]"]').is(':visible') && $('[name="customer_address\\[city\\]"]').prop('required'),
+              },
+              'customer_address\\[state\\]': {
+                required: () => $('[name="customer_address\\[state\\]"]').is(':visible') && $('[name="customer_address\\[state\\]"]').prop('required'),
+              },
+              'customer_address\\[country\\]': {
+                required: () => $('[name="customer_address\\[country\\]"]').is(':visible') && $('[name="customer_address\\[country\\]"]').prop('required'),
+              },
+              'customer_address\\[zip\\]': {
+                required: () => $('[name="customer_address\\[zip\\]"]').is(':visible') && $('[name="customer_address\\[zip\\]"]').prop('required'),
+              },
+              'driver_address\\[street\\]': {
+                required: () => {
+                  debugger;
+                  return $('[name="driver_address\\[street\\]"]').is(':visible') && $('[name="driver_address\\[street\\]"]').prop('required');
                 },
-                'customer_document_id': {
-                  required: () => $('[name="customer_document_id"]').is(':visible')
-                },
-                'customer_company_name': {
-                  required: () => $('[name="customer_company_name"]').is(':visible'),
-                },
-                'customer_company_document_id': {
-                  required: () => $('[name="customer_company_document_id"]').is(':visible'),
-                },
-                'customer_email' : {
-                  required: () => $('[name="customer_email"]').is(':visible'),
-                  email: () => $('[name="customer_email"]').is(':visible')
-                },
-                'customer_phone': {
-                  required: () => $('[name="customer_phone"]').is(':visible'),
-                  minlength: 9
-                },
+              },
+              'driver_address\\[number\\]': {
+                required: () => $('[name="driver_address\\[number\\]"]').is(':visible') && $('[name="driver_address\\[number\\]"]').prop('required'),
+              },
+              'driver_address\\[complement\\]': {
+                required: () => $('[name="driver_address\\[complement\\]"]').is(':visible') && $('[name="driver_address\\[complement\\]"]').prop('required'),
+              },
+              'driver_address\\[city\\]': {
+                required: () => $('[name="driver_address\\[city\\]"]').is(':visible') && $('[name="driver_address\\[city\\]"]').prop('required'),
+              },
+              'driver_address\\[state\\]': {
+                required: () => $('[name="driver_address\\[state\\]"]').is(':visible') && $('[name="driver_address\\[state\\]"]').prop('required'),
+              },
+              'driver_address\\[country\\]': {
+                required: () => $('[name="driver_address\\[country\\]"]').is(':visible') && $('[name="driver_address\\[country\\]"]').prop('required'),
+              },
+              'driver_address\\[zip\\]': {
+                required: () => $('[name="driver_address\\[zip\\]"]').is(':visible') && $('[name="driver_address\\[zip\\]"]').prop('required'),
+              },
             },
             messages: {
-                'customer_name': {
-                  required: i18next.t('complete.reservationForm.validations.customerNameRequired')
-                },
-                'customer_surname' : {
-                  required: i18next.t('complete.reservationForm.validations.customerSurnameRequired')
-                },
-                'customer_document_id': {
-                  'required': i18next.t('complete.reservationForm.validations.fieldRequired')
-                },
-                'customer_company_name': {
-                  required: i18next.t('complete.reservationForm.validations.customerCompanyNameRequired')
-                },
-                'customer_company_document_id': {
-                  required: i18next.t('complete.reservationForm.validations.customerCompanyDocumentIdRequired')
-                },
-                'customer_email' : {
-                  required: i18next.t('complete.reservationForm.validations.customerEmailRequired'),
-                  email: i18next.t('complete.reservationForm.validations.customerEmailInvalidFormat'),
-                },
-                'customer_phone': {
-                  'required': i18next.t('complete.reservationForm.validations.customerPhoneNumberRequired'),
-                  'minlength': i18next.t('complete.reservationForm.validations.customerPhoneNumberMinLength')
-                },
+              'customer_company_name': {
+                required: i18next.t('complete.reservationForm.validations.customerCompanyNameRequired')
+              },
+              'customer_company_document_id': {
+                required: i18next.t('complete.reservationForm.validations.customerCompanyDocumentIdRequired')
+              },
+              'customer_name': {
+                required: i18next.t('complete.reservationForm.validations.customerNameRequired')
+              },
+              'customer_surname': {
+                required: i18next.t('complete.reservationForm.validations.customerSurnameRequired')
+              },
+              'customer_email': {
+                required: i18next.t('complete.reservationForm.validations.customerEmailRequired'),
+                email: i18next.t('complete.reservationForm.validations.customerEmailInvalidFormat'),
+              },
+              'customer_phone': {
+                required: i18next.t('complete.reservationForm.validations.customerPhoneNumberRequired'),
+                minlength: i18next.t('complete.reservationForm.validations.customerPhoneNumberMinLength')
+              },
+              'driver_date_of_birth': {
+                required: i18next.t('complete.reservationForm.validations.fieldRequired')
+              },
+              'customer_nacionality': {
+                required: i18next.t('complete.reservationForm.validations.fieldRequired')
+              },
+              'driver_nacionality': {
+                required: i18next.t('complete.reservationForm.validations.fieldRequired')
+              },
+              'customer_document_id_type_id': {
+                required: i18next.t('complete.reservationForm.validations.fieldRequired')
+              },
+              'driver_document_id_type_id': {
+                required: i18next.t('complete.reservationForm.validations.fieldRequired')
+              },
+              'customer_document_id': {
+                required: i18next.t('complete.reservationForm.validations.fieldRequired')
+              },
+              'driver_document_id': {
+                required: i18next.t('complete.reservationForm.validations.fieldRequired')
+              },
+              'driver_origin_country': {
+                required: i18next.t('complete.reservationForm.validations.fieldRequired')
+              },
+              'driver_document_id_date': {
+                required: i18next.t('complete.reservationForm.validations.fieldRequired')
+              },
+              'driver_document_id_expiration_date': {
+                required: i18next.t('complete.reservationForm.validations.fieldRequired')
+              },
+              'driver_driving_license_type_id': {
+                required: i18next.t('complete.reservationForm.validations.fieldRequired')
+              },
+              'driver_driving_license_number': {
+                required: i18next.t('complete.reservationForm.validations.fieldRequired')
+              },
+              'driver_driving_license_country': {
+                required: i18next.t('complete.reservationForm.validations.fieldRequired')
+              },
+              'driver_driving_license_date': {
+                required: i18next.t('complete.reservationForm.validations.fieldRequired')
+              },
+              'driver_driving_license_expiration_date': {
+                required: i18next.t('complete.reservationForm.validations.fieldRequired')
+              },
+              'customer_address\\[street\\]': {
+                required: i18next.t('complete.reservationForm.validations.fieldRequired')
+              },
+              'customer_address\\[number\\]': {
+                required: i18next.t('complete.reservationForm.validations.fieldRequired')
+              },
+              'customer_address\\[complement\\]': {
+                required: i18next.t('complete.reservationForm.validations.fieldRequired')
+              },
+              'customer_address\\[city\\]': {
+                required: i18next.t('complete.reservationForm.validations.fieldRequired')
+              },
+              'customer_address\\[state\\]': {
+                required: i18next.t('complete.reservationForm.validations.fieldRequired')
+              },
+              'customer_address\\[country\\]': {
+                required: i18next.t('complete.reservationForm.validations.fieldRequired')
+              },
+              'customer_address\\[zip\\]': {
+                required: i18next.t('complete.reservationForm.validations.fieldRequired')
+              },
+              'driver_address\\[street\\]': {
+                required: i18next.t('complete.reservationForm.validations.fieldRequired')
+              },
+              'driver_address\\[number\\]': {
+                required: i18next.t('complete.reservationForm.validations.fieldRequired')
+              },
+              'driver_address\\[complement\\]': {
+                required: i18next.t('complete.reservationForm.validations.fieldRequired')
+              },
+              'driver_address\\[city\\]': {
+                required: i18next.t('complete.reservationForm.validations.fieldRequired')
+              },
+              'driver_address\\[state\\]': {
+                required: i18next.t('complete.reservationForm.validations.fieldRequired')
+              },
+              'driver_address\\[country\\]': {
+                required: i18next.t('complete.reservationForm.validations.fieldRequired')
+              },
+              'driver_address\\[zip\\]': {
+                required: i18next.t('complete.reservationForm.validations.fieldRequired')
+              },
             },
           }
       );
