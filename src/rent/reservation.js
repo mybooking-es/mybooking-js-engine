@@ -203,6 +203,38 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
     
     // ----------------- Form ------------------------------
 
+    /*
+    * Reset width in visible columns
+    */
+    resetVisibleColumns: function(control) {
+      if ($(control).is('input') || $(control).is('select')) {
+        const row = $(control).closest('.mb-form-row');
+        const visibleColumns = row.find('[class]').filter(function() {
+          return this.className.match(/\bmb-col-\S+/);
+        }).filter(':visible');
+        const columnCount = visibleColumns.length;
+        visibleColumns.each((index, element) => {
+          $(element).removeClass(function(index, className) {
+            return (className.match(/(^|\s)mb-col-\S+/g) || []).join(' ');
+          });
+          switch (columnCount) {
+            case 2:
+              $(element).addClass('mb-col-md-6');
+              break;
+            case 3:
+              $(element).addClass('mb-col-md-4');
+              break;
+            case 4:
+              $(element).addClass('mb-col-md-3');
+              break;
+            default:
+              $(element).addClass('mb-col-md-12');
+              break;
+          }
+        });
+      }
+    },
+
     /**
      * Toogle driver panel click
      */ 
@@ -210,47 +242,24 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
       const target = $(event.target);
       let value = target.is(':checked');
       const panel = $('#' + target.attr('data-panel'));
+      const controlsOff = $('.js-driver-is-customer-off');
+      const controlsOn = $('.js-driver-is-customer-on');
       if (panel.length > 0 && value === true) {
         panel.hide();
         panel.find('input, select').val(undefined);
-        $('.js-driver-is-customer-off').hide();
-        $('.js-driver-is-customer-off').find('input, select').val(undefined);
-        $('.js-driver-is-customer-on').show();
+        controlsOff.hide();
+        controlsOn.show();
+        controlsOff.find('input, select').val(undefined);
+        controlsOff.each((index, control) => {
+          controller.resetVisibleColumns(control);
+        });
       } else {
         panel.show();
-        $('.js-driver-is-customer-on').hide();
-        $('.js-driver-is-customer-on').find('input, select').val(undefined);
-        const controls = $('.js-driver-is-customer-off');
-        controls.show();
-        controls.each((index, control) => {
-          if ($(control).is('input') || $(control).is('select')) {
-            const row = $(control).closest('.mb-form-row');
-            const visibleColumns = row.find('[class]').filter(function() {
-              return this.className.match(/\bmb-col-\S+/);
-            }).filter(':visible');
-            // TODO
-            const columnCount = visibleColumns.length;
-            visibleColumns.each((index, element) => {
-              $(element).removeClass(function(index, className) {
-                return (className.match(/(^|\s)mb-col-\S+/g) || []).join(' ');
-              });
-            
-              switch (columnCount) {
-                case 2:
-                  $(element).addClass('mb-col-md-6');
-                  break;
-                case 3:
-                  $(element).addClass('mb-col-md-4');
-                  break;
-                case 4:
-                  $(element).addClass('mb-col-md-3');
-                  break;
-                default:
-                  $(element).addClass('mb-col-md-12');
-                  break;
-              }
-            });
-          }
+        controlsOn.hide();
+        controlsOn.find('input, select').val(undefined);
+        controlsOff.show();
+        controlsOff.each((index, control) => {
+          controller.resetVisibleColumns(control);
         });
       }
     },
