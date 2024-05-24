@@ -401,6 +401,8 @@ define("commonTranslations", [], function () {
                 "Customer email confirmation must be equal to customer email",
               customerPhoneNumberRequired: "Customer phone number is required",
               customerPhoneNumberMinLength: "Customer phone number min length",
+              documentIdInvalidFormat: "Invalid document ID number",
+              drivingLicenseNumberInvalidFormat: "Invalid driving license number",
               driverDateOfBirthRequired: "Driver date of birth is required",
               numberOfAdultsRequired: "Number in party required",
               conditionsReadRequired:
@@ -954,6 +956,8 @@ define("commonTranslations", [], function () {
               customerPhoneNumberRequired: "Teléfono del cliente obligatorio",
               customerPhoneNumberMinLength:
                 "Longitud mínima del teléfono del cliente",
+              documentIdInvalidFormat: "Número de documento inválido",
+              drivingLicenseNumberInvalidFormat: "Número de carnet de conducir inválido",
               driverDateOfBirthRequired:
                 "Fecha de nacimiento del conductor obligatoria",
               numberOfAdultsRequired: "Número de personas obligatorio",
@@ -1516,6 +1520,8 @@ define("commonTranslations", [], function () {
                 "El telèfon del client és obligatori",
               customerPhoneNumberMinLength:
                 "El tamany mínim del telèfon és de 9 digits",
+              documentIdInvalidFormat: "Número de document invàlid",
+              drivingLicenseNumberInvalidFormat: "Número de carnet de conduir invàlid",
               driverDateOfBirthRequired:
                 "La data de naixement del conductor és obligatòria",
               numberOfAdultsRequired: "El nombre de persones és obligatori",
@@ -2072,6 +2078,8 @@ define("commonTranslations", [], function () {
                 "Bestätigung muss gleich E-Mail sein",
               customerPhoneNumberRequired: "Obligatorisches Kundentelefon",
               customerPhoneNumberMinLength: "Mindestlänge des Kundentelefons",
+              documentIdInvalidFormat: "Ungültige Dokumentnummer",
+              drivingLicenseNumberInvalidFormat: "Ungültige Führerscheinnummer",
               driverDateOfBirthRequired: "Geburtsdatum des Pflichtfahrers",
               numberOfAdultsRequired: "Anzahl der Personen ist obligatorisch",
               conditionsReadRequired:
@@ -2633,6 +2641,8 @@ define("commonTranslations", [], function () {
               customerPhoneNumberRequired: "Champ obligatoire",
               customerPhoneNumberMinLength:
                 "Saisissez un numéro de téléphone valide",
+              documentIdInvalidFormat: "Numéro de document invalide",
+              drivingLicenseNumberInvalidFormat: "Numéro de permis de conduire invalide",
               driverDateOfBirthRequired: "Champ obligatoire",
               numberOfAdultsRequired: "Champ obligatoire",
               conditionsReadRequired:
@@ -3192,6 +3202,8 @@ define("commonTranslations", [], function () {
               customerPhoneNumberRequired: "Telefono cliente obbligatorio",
               customerPhoneNumberMinLength:
                 "Lunghezza minima del telefono del cliente",
+              documentIdInvalidFormat: "Numero di documento non valido",
+              drivingLicenseNumberInvalidFormat: "Numero di patente non valido",
               driverDocumentIdRequired: "ID / Licenza obbligatoria",
               driverDateOfBirthRequired:
                 "Data di nascita del conducente obbligatorio",
@@ -3500,6 +3512,8 @@ define("commonTranslations", [], function () {
               customerPhoneNumberRequired: "Требуется номер телефона клиента",
               customerPhoneNumberMinLength:
                 "Минимальная длина номера телефона клиента",
+              documentIdInvalidFormat: "Неверный номер документа",
+              drivingLicenseNumberInvalidFormat: "Неверный номер водительского удостоверения",
               driverDateOfBirthRequired:
                 "Требуется указать дату рождения водителя.",
               numberOfAdultsRequired: "Требуется номер в группе",

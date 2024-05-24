@@ -848,6 +848,16 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
         required: i18next.t('complete.reservationForm.validations.fieldRequired')
       });
 
+      $.validator.addMethod('pattern', function(value, element, param) {
+        if (this.optional(element)) {
+            return true;
+        }
+        if (typeof param === 'string') {
+            param = new RegExp('^(?:' + param + ')$');
+        }
+        return param.test(value);
+      }, 'Invalid format.');
+
       $('form[name=booking_information_form]').validate(
           {   
             ignore: '',
@@ -896,9 +906,56 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
               },
               'customer_document_id': {
                 required: () => $('[name="customer_document_id"]').is(':visible') && $('[name="customer_document_id"]').prop('required'),
+                pattern: () => {
+                  const typeDocument = $('[name="customer_document_id_type_id"]').val();
+                  let regex = null;
+
+                  switch (typeDocument) {
+                    case '1':
+                      // NIF regex
+                      regex = '[0-9]{8}[A-Z]';
+                      break;
+                    case '2':
+                      // NIE regex
+                      regex =  '[XYZ][0-9]{7}[A-Z]';
+                      break;
+                  
+                    default:
+                      regex = '.*';
+                      break;
+                  }
+
+                  return regex;
+                },
               },
               'driver_document_id': {
                 required: () => $('[name="driver_document_id"]').is(':visible') && $('[name="driver_document_id"]').prop('required'),
+                pattern: () => {
+                  const typeDocument = $('[name="driver_document_id_type_id"]').val();
+                  let regex = null;
+
+                  switch (typeDocument) {
+                    case '1':
+                      if (model.booking.customer_type == 'legal_entity') {
+                        // CIF regex
+                        regex = '[ABCDEFGHJNPQRSUVW][0-9]{7}[0-9A-J]';
+                      } else {
+                        // NIF regex
+                        regex = '[0-9]{8}[A-Z]';
+                      }
+                      break;
+                    case '2':
+                      // NIE regex
+                      regex =  '[XYZ][0-9]{7}[A-Z]';
+                      break;
+                  
+                    default:
+                      regex = '.*';
+                      break;
+                  }
+
+                  return regex;
+                },
               },
               'driver_origin_country': {
                 required: () => $('[name="driver_origin_country"]').is(':visible') && $('[name="driver_origin_country"]').prop('required'),
@@ -914,6 +971,17 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
               },
               'driver_driving_license_number': {
                 required: () => $('[name="driver_driving_license_number"]').is(':visible') && $('[name="driver_driving_license_number"]').prop('required'),
+                pattern: () => {
+                  const typeDocument = $('[name="driver_driving_license_type_id"]').val();
+                  let regex = '.*';
+
+                  if (typeDocument != '19' || typeDocument != '20') {
+                    // Driving license regex
+                    regex = '[A-Z][0-9]{7}';
+                  }
+
+                  return regex;
+                },
               },
               'driver_driving_license_country': {
                 required: () => $('[name="driver_driving_license_country"]').is(':visible') && $('[name="driver_driving_license_country"]').prop('required'),
@@ -1004,10 +1072,12 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
                 required: i18next.t('complete.reservationForm.validations.fieldRequired')
               },
               'customer_document_id': {
-                required: i18next.t('complete.reservationForm.validations.fieldRequired')
+                required: i18next.t('complete.reservationForm.validations.fieldRequired'),
+                pattern: i18next.t('complete.reservationForm.validations.documentIdInvalidFormat')
               },
               'driver_document_id': {
-                required: i18next.t('complete.reservationForm.validations.fieldRequired')
+                required: i18next.t('complete.reservationForm.validations.fieldRequired'),
+                pattern: i18next.t('complete.reservationForm.validations.documentIdInvalidFormat')
               },
               'driver_origin_country': {
                 required: i18next.t('complete.reservationForm.validations.fieldRequired')
@@ -1022,7 +1092,8 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
                 required: i18next.t('complete.reservationForm.validations.fieldRequired')
               },
               'driver_driving_license_number': {
-                required: i18next.t('complete.reservationForm.validations.fieldRequired')
+                required: i18next.t('complete.reservationForm.validations.fieldRequired'),
+                pattern: i18next.t('complete.reservationForm.validations.drivingLicenseNumberInvalidFormat')
               },
               'driver_driving_license_country': {
                 required: i18next.t('complete.reservationForm.validations.fieldRequired')
