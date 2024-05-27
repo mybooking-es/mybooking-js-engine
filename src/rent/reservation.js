@@ -16,16 +16,18 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
              passengersComponent,  paymentComponent, documentsComponent, signatureComponent
           ) {
 
-  var model = { // THE MODEL
+  const model = { // THE MODEL
     requestLanguage: null,
     configuration: null,        
     bookingFreeAccessId : null,
+    /* Booking */
     booking: null,
-    required_fields: null,
     sales_process: null,
+    /* Form */
     nationalities: null,
     documentTypes: null,
     licenseTypes: null,
+    required_fields: null,
 
     // -------------- Load settings ----------------------------
 
@@ -46,9 +48,9 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
     * Get the URL variables
     */ 
     getUrlVars : function() {
-      var vars = [], hash;
-      var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
-      for(var i = 0; i < hashes.length; i++) {
+      let vars = [], hash;
+      const hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+      for(let i = 0; i < hashes.length; i++) {
         hash = hashes[i].split('=');
         vars.push(hash[0]);
         vars[hash[0]] = hash[1];
@@ -56,7 +58,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
       return vars;
     },
     extractVariables: function() { // Load variables from the request
-      var url_vars = this.getUrlVars();
+      const url_vars = this.getUrlVars();
       this.bookingFreeAccessId = decodeURIComponent(url_vars['id']);
     },
 
@@ -73,16 +75,15 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
     * Load booking
     */ 
     loadBooking: function() { /** Load the reservation **/
-
-       var bookingId = this.bookingFreeAccessId;
+       let bookingId = this.bookingFreeAccessId;
        if (bookingId == '') {
          bookingId = this.getBookingFreeAccessId();
        }
 
        // Build the URL
-       var url = commonServices.URL_PREFIX + '/api/booking/frontend/booking/' +
+       let url = commonServices.URL_PREFIX + '/api/booking/frontend/booking/' +
                  bookingId;
-       var urlParams = [];
+       const urlParams = [];
        if (this.requestLanguage != null) {
          urlParams.push('lang=' + this.requestLanguage);
        }
@@ -93,6 +94,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
          url += '?';
          url += urlParams.join('&');
        }
+
        // Request
        $.ajax({
                type: 'GET',
@@ -112,12 +114,12 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
                  model.required_fields = data.required_fields;
                  model.bookingFreeAccessId = data.booking.free_access_id;
                  model.sales_process = data.sales_process;
+
                  view.updateBooking();
                },
                error: function(data, textStatus, jqXHR) {
                  commonLoader.hide(); 
                  alert(i18next.t('myReservation.loadReservation.error'));
-
                },
                complete: function(jqXHR, textStatus) {
                  $('#content').show();
@@ -131,11 +133,12 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
     */ 
     update: function() {
         // Build request
-        var reservation = $('form[name=booking_information_form]').formParams(false);
-        var booking_line_resources = reservation['booking_line_resources'];
+        const reservation = $('form[name=booking_information_form]').formParams(false);
+
+        const booking_line_resources = reservation['booking_line_resources'];
         delete reservation['booking_line_resources'];
         reservation['booking_line_resources'] = [];
-        for (var item in booking_line_resources) {
+        for (let item in booking_line_resources) {
             reservation['booking_line_resources'].push(booking_line_resources[item]);
         }
 
@@ -144,18 +147,19 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
        reservation['driver_is_customer'] = driver_is_customer;
 
         // Remove all empty fields
-        for (var prop in reservation) {
+        for (let prop in reservation) {
           if (reservation[prop] === undefined || reservation[prop] === '') {  
               delete reservation[prop];
           }
 
           // Remove all empty fields in objects
           if (typeof reservation[prop] === 'object') {
-            for (var subprop in reservation[prop]) {
+            for (let subprop in reservation[prop]) {
               if (reservation[prop][subprop] === undefined || reservation[prop][subprop] === '') {
                 delete reservation[prop][subprop];
               }
             }
+
             // Delete objtect if empty
             if (Object.keys(reservation[prop]).length === 0) {
               delete reservation[prop];
@@ -164,6 +168,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
         } 
 
         const reservationJSON = encodeURIComponent(JSON.stringify(reservation));
+
         // Build URL
         let url = commonServices.URL_PREFIX + '/api/booking/frontend/booking/' + this.bookingFreeAccessId;
         const urlParams = [];
@@ -177,8 +182,6 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
           url += '?';
           url += urlParams.join('&');
         }
-
-        console.log(reservation);
 
         // Request
         $.ajax({
@@ -194,31 +197,168 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
                   model.booking = data.booking;
                   view.updateBooking();
                 }
+
                 alert(i18next.t('myReservation.updateReservation.success'));
             },
             error: function(data, textStatus, jqXHR) {
                 alert(i18next.t('myReservation.updateReservation.error'));
             }
         });
+    },
 
+    // ----------------- Load forms data ------------------------------
+
+    /*
+    * Load nationalities
+    */
+    loadNationalities: function() {
+      // Load nationalities
+      // Build the URL
+      let url = commonServices.URL_PREFIX + '/api/booking/frontend/nacionalities';
+      const urlParams = [];
+      if (this.requestLanguage != null) {
+        urlParams.push('lang=' + this.requestLanguage);
+      }
+      if (commonServices.apiKey && commonServices.apiKey != '') {
+        urlParams.push('api_key='+commonServices.apiKey);
+      }           
+      if (urlParams.length > 0) {
+        url += '?';
+        url += urlParams.join('&');
+      }
+
+      // Request
+      $.ajax({
+          type: 'GET',
+          url : url,
+          dataType : 'json',
+          contentType : 'application/json; charset=utf-8',
+          crossDomain: true,
+          success: function(data, textStatus, jqXHR) {
+            model.nationalities = data;
+            view.formatNationalities(data);
+          }
+      });
+    },
+
+    /*
+    * Load document types
+    */
+   loadDocumentTypes: function async() {
+      // Load document types
+      // Build the URL
+      let url = commonServices.URL_PREFIX + '/api/booking/frontend/document-types';
+      const urlParams = [];
+      if (this.requestLanguage != null) {
+        urlParams.push('lang=' + this.requestLanguage);
+      }
+      if (commonServices.apiKey && commonServices.apiKey != '') {
+        urlParams.push('api_key='+commonServices.apiKey);
+      }           
+      if (urlParams.length > 0) {
+        url += '?';
+        url += urlParams.join('&');
+      }
+
+      // Request
+      $.ajax({
+          type: 'GET',
+          url : url,
+          dataType : 'json',
+          contentType : 'application/json; charset=utf-8',
+          crossDomain: true,
+          success: function(data, textStatus, jqXHR) {
+            model.documentTypes = data;
+            view.formatDocumentTypes(data);
+          }
+      });
+    },
+
+    /*
+    * Load license types
+    */
+    loadLicenseTypes: function async() {
+      // Load document types
+      // Build the URL
+      let url = commonServices.URL_PREFIX + '/api/booking/frontend/license-types';
+      const urlParams = [];
+      if (this.requestLanguage != null) {
+        urlParams.push('lang=' + this.requestLanguage);
+      }
+      if (commonServices.apiKey && commonServices.apiKey != '') {
+        urlParams.push('api_key='+commonServices.apiKey);
+      }           
+      if (urlParams.length > 0) {
+        url += '?';
+        url += urlParams.join('&');
+      }
+
+      // Request
+      $.ajax({
+          type: 'GET',
+          url : url,
+          dataType : 'json',
+          contentType : 'application/json; charset=utf-8',
+          crossDomain: true,
+          success: function(data, textStatus, jqXHR) {
+            model.licenseTypes = data;
+            view.formatLicenseTypes(data);
+          }
+      });
     },
   };
 
-  var controller = { // THE CONTROLLER
+  const controller = { // THE CONTROLLER
     // ----------------- Reservation ------------------------------
 
     /**
     * Update the reservation
     */ 
     btnUpdateClick: function() {
-       model.update();
+      model.update();
     },
     
     // ----------------- Form ------------------------------
 
     /**
+    * Load nationalities
+    */ 
+    loadNationalities: function() {
+      if (this.nationalities && this.nationalities.length > 0) {
+        view.formatNationalities(this.nationalities);
+        return;
+      }
+
+      model.loadNationalities();
+    },
+
+    /**
+    * Load document types
+    */ 
+    loadDocumentTypes: function() {
+      if (this.documentTypes && this.documentTypes.length > 0) {
+        view.formatDocumentTypes(this.documentTypes);
+        return;
+      }
+
+      model.loadDocumentTypes();
+    },
+
+    /**
+    * Load license types
+    */ 
+    loadLicenseTypes: function() {
+      if (this.licenseTypes && this.licenseTypes.length > 0) {
+        view.formatLicenseTypes(this.licenseTypes);
+        return;
+      }
+
+      model.loadLicenseTypes();
+    },
+
+    /**
      * Toogle driver panel click
-     */ 
+     */
     toogleDriverPanelClick: function(event) {
       const target = $(event.target);
       const value = target.is(':checked');
@@ -226,6 +366,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
       if (value) {
         // Driver panel
         $('#driver_panel_container').html('');
+
         // Customer panel
         // Include customer driver form
         const reservationFormCustomerDriver = tmpl('script_reservation_form_customer_driver')(
@@ -236,11 +377,12 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
       } else {
         // Driver panel
         // Include reservation drivers form
-        const reservationFormDrivers = tmpl('script_reservation_form_drivers')(
+        const reservationFormDriver = tmpl('script_reservation_form_driver')(
           {booking: model.booking,
             required_fields: model.required_fields,
             configuration: model.configuration});
-        $('#driver_panel_container').html(reservationFormDrivers);
+        $('#driver_panel_container').html(reservationFormDriver);
+
         // Customer panel
         // Include customer form
         const reservationFormCustomer = tmpl('script_reservation_form_customer')(
@@ -252,14 +394,20 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
 
       // Setup select controls
       view.setupSelectControls();
-      // Seupt date controls
+
+      // Setup date controls
       view.setupDateControls();
     },
+
+     /**
+     * Toogle additional driver panel click
+     */ 
     toogleAdditionalDriversPanelClick: function(event) {
       const target = $(event.currentTarget);
       const icon = target.find('.dashicons');
       const isOpened = target.hasClass('mb-open');
       const panel = $('#' + target.attr('data-panel'));
+
       if (panel.length > 0 && !isOpened) {
         panel.show();
         target.addClass('mb-open');
@@ -274,7 +422,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
     },
   };
 
-  var view = { // THE VIEW
+  const view = { // THE VIEW
     init: function() {
       // Initialize i18next for translations
       model.requestLanguage = commonSettings.language(document.documentElement.lang);
@@ -291,6 +439,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
 
       // Setup UI          
       model.extractVariables();
+      // Load booking
       model.loadBooking();
     },
 
@@ -300,11 +449,20 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
     * Update the reservation
     */ 
     updateBooking: function() { // Updates the reservation
+      // Update status
       this.updateStatusTitle();
+
+      // Update booking summary
       this.updateBookingSummary();
+
+      // Setup forms
       this.setupReservationForm();
       this.setupPassengersForm();
+
+      // Setup events
       this.setupEvents();
+
+      // Hide loader
       commonLoader.hide();
     },
 
@@ -319,10 +477,11 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
     * Updates the shopping cart summary (total)
     */ 
     updateBookingSummary: function() {
-      var showReservationForm = model.booking.manager_complete_authorized;
+      // Autorization to complete the reservation
+      const showReservationForm = model.booking.manager_complete_authorized;
 
       // Include reservation steps
-      var reservationSteps = tmpl('script_reservation_steps')(
+      const reservationSteps = tmpl('script_reservation_steps')(
         {
           booking: model.booking,
           sales_process: model.sales_process,
@@ -330,36 +489,40 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
       $('#mybooking_reservation_steps').html(reservationSteps);
 
       // Include reservation summary
-      var reservationDetail = tmpl('script_reservation_summary')(
+      const reservationDetail = tmpl('script_reservation_summary')(
           {
             booking: model.booking,
             sales_process: model.sales_process,
             configuration: model.configuration,
-            showReservationForm: showReservationForm
+            showReservationForm,
           });
       $('#reservation_detail').html(reservationDetail);
 
+      // Include multiple items table
       if (model.configuration.multipleProductsSelection && document.getElementById('script_mybooking_summary_product_detail_table')) {
-        var reservationTableDetail = tmpl('script_mybooking_summary_product_detail_table')({
+        const reservationTableDetail = tmpl('script_mybooking_summary_product_detail_table')({
           bookings: model.booking.booking_lines,
           configuration: model.configuration
         });
         $('#mybooking_summary_product_detail_table').html(reservationTableDetail);
       }
 
-      if (model.booking.manager_complete_authorized) {
+      // Include forms
+      if (showReservationForm) {
         // The reservation form fields are defined in a micro-template
-        var locale = model.requestLanguage;
-        var localeReservationFormScript = 'script_reservation_form_'+locale;
+        const locale = model.requestLanguage;
+        const localeReservationFormScript = 'script_reservation_form_' + locale;
+
         if (locale != null && document.getElementById(localeReservationFormScript)) {
-          var reservationForm = tmpl(localeReservationFormScript)({booking: model.booking,
+          const reservationForm = tmpl(localeReservationFormScript)({booking: model.booking,
                                                                     required_fields: model.required_fields,
                                                                     configuration: model.configuration});
           $('form[name=reservation_form]').html(reservationForm);           
         }
         // Micro-template reservation
         else if (document.getElementById('script_reservation_form')) {
-          let reservationForm = tmpl('script_reservation_form')(
+          // Include reservation form)
+          const reservationForm = tmpl('script_reservation_form')(
               {booking: model.booking,
                 required_fields: model.required_fields,
                 configuration: model.configuration});
@@ -367,8 +530,8 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
           $('#reservation_form_container').show();
         }
 
-        // Include reservation customer form
-        if (model.booking.driver_is_customer) {
+        // Include reservation 'customer' form
+        if (model.booking.driver_type == 'driver' && model.booking.driver_is_customer) {
           const reservationFormCustomerDriver = tmpl('script_reservation_form_customer_driver')(
             {booking: model.booking,
               required_fields: model.required_fields,
@@ -382,30 +545,30 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
           $('#customer_panel_container').html(reservationFormCustomer);
         }
 
-        if (model.configuration.rentingFormFillDataDriverDetail && !model.booking.has_optional_external_driver && !model.booking.driver_is_customer) {
-          // Include reservation drivers form
-          const reservationFormDrivers = tmpl('script_reservation_form_drivers')(
+        // Include reservation 'driver' form
+        if (model.configuration.rentingFormFillDataDriverDetail && !model.booking.has_optional_external_driver && (!model.booking.driver_is_customer || model.booking.driver_type != 'driver')) {
+          const reservationFormDriver = tmpl('script_reservation_form_driver')(
                 {booking: model.booking,
                   required_fields: model.required_fields,
                   configuration: model.configuration});
-          $('#driver_panel_container').html(reservationFormDrivers);
+          $('#driver_panel_container').html(reservationFormDriver);
         }
+      }
 
-        // Add documentation upload view
-        if ($('#documents_upload_container').length) {
-          let documentsUpload = tmpl('script_documents_upload')(
-              {booking: model.booking,
-                configuration: model.configuration});
-          $('#documents_upload_container').html(documentsUpload);
-        }
+      // Add documentation upload view
+      if ($('#documents_upload_container').length) {
+        const documentsUpload = tmpl('script_documents_upload')(
+            {booking: model.booking,
+              configuration: model.configuration});
+        $('#documents_upload_container').html(documentsUpload);
+      }
 
-        // Add signature view
-        if ($('#contract_signature_container').length) {
-          let contractSignature = tmpl('script_contract_signature')(
-              {booking: model.booking,
-                configuration: model.configuration});
-          $('#contract_signature_container').html(contractSignature);
-        }
+      // Include signature view
+      if ($('#contract_signature_container').length) {
+        const contractSignature = tmpl('script_contract_signature')(
+            {booking: model.booking,
+              configuration: model.configuration});
+        $('#contract_signature_container').html(contractSignature);
       }
 
       // Initialize payment component
@@ -430,7 +593,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
     /**
     * Load selects options
     */ 
-    loadCountries: function() {
+    formatCountries: function() {
       // Load countries
       let countries = i18next.t('common.countries', {returnObjects: true});
       let countriesArray = [];
@@ -506,108 +669,73 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
     /*
     * Format nationalities for select
     */
-   formatNationalities: function(data) {
-    const formatData = [];
-    for (var idx=0; idx<data.length; idx++) {
-      formatData[idx] = {
-        id: data[idx].code,
-        description: data[idx].name
-      };
-    }
-
-    const values = [
-      model.booking.customer_nacionality,
-      model.booking.driver_nacionality,
-      model.booking.additional_driver_1_nacionality,
-      model.booking.additional_driver_2_nacionality,
-    ]; 
-
-    if (commonServices.jsUseSelect2) {
-      // Configure address country
-      const selectors = [
-        'select[name=customer_nacionality]',
-        'select[name=driver_nacionality]',
-        'select[name=additional_driver_1_nacionality]',
-        'select[name=additional_driver_2_nacionality]'
-      ];
-      let $nationalitySelector = null;
-      for (let idx=0; idx<selectors.length; idx++) { 
-        $nationalitySelector = $(selectors[idx]);    
-        if ($nationalitySelector.length > 0 && typeof values[idx] !== 'undefined') {
-          $nationalitySelector.select2({
-            width: '100%',
-            theme: 'bootstrap4',                  
-            data: formatData,
-          });
-          // Assign value
-          $nationalitySelector.val(values[idx]);
-          $nationalitySelector.trigger('change');
-        }
+    formatNationalities: function(data) {
+      const formatData = [];
+      for (let idx=0; idx<data.length; idx++) {
+        formatData[idx] = {
+          id: data[idx].code,
+          description: data[idx].name
+        };
       }
-    } else {
-      // Setup country selector
-      const selectors = [
-        'customer_nacionality',
-        'driver_nacionality',
-        'additional_driver_1_nacionality',
-        'additional_driver_2_nacionality'
-      ];
-      for (let idx=0; idx<selectors.length; idx++) {
-        const elements = document.getElementsByName(selectors[idx]);
-        if (elements.length > 0) {
-          const nationalitiesDataSource = new MemoryDataSource(formatData);
-          const nationalityModel = (values[idx] == null ? '': values[idx]);
-          for (let j=0; j<elements.length; j++) {
-            new SelectSelector(selectors[idx],
-              nationalitiesDataSource, nationalityModel, true, i18next.t('myReservation.select_nationality'));
+
+      const values = [
+        model.booking.customer_nacionality,
+        model.booking.driver_nacionality,
+        model.booking.additional_driver_1_nacionality,
+        model.booking.additional_driver_2_nacionality,
+      ]; 
+
+      if (commonServices.jsUseSelect2) {
+        // Configure address country
+        const selectors = [
+          'select[name=customer_nacionality]',
+          'select[name=driver_nacionality]',
+          'select[name=additional_driver_1_nacionality]',
+          'select[name=additional_driver_2_nacionality]'
+        ];
+        let $nationalitySelector = null;
+        for (let idx=0; idx<selectors.length; idx++) { 
+          $nationalitySelector = $(selectors[idx]);    
+          if ($nationalitySelector.length > 0 && typeof values[idx] !== 'undefined') {
+            $nationalitySelector.select2({
+              width: '100%',
+              theme: 'bootstrap4',                  
+              data: formatData,
+            });
+            // Assign value
+            $nationalitySelector.val(values[idx]);
+            $nationalitySelector.trigger('change');
+          }
+        }
+      } else {
+        // Setup country selector
+        const selectors = [
+          'customer_nacionality',
+          'driver_nacionality',
+          'additional_driver_1_nacionality',
+          'additional_driver_2_nacionality'
+        ];
+        for (let idx=0; idx<selectors.length; idx++) {
+          const elements = document.getElementsByName(selectors[idx]);
+          if (elements.length > 0) {
+            const nationalitiesDataSource = new MemoryDataSource(formatData);
+            const nationalityModel = (values[idx] == null ? '': values[idx]);
+            for (let j=0; j<elements.length; j++) {
+              new SelectSelector(selectors[idx],
+                nationalitiesDataSource, nationalityModel, true, i18next.t('myReservation.select_nationality'));
+            }
           }
         }
       }
-    }
-   },
-
-    /*
-    * Load nationalities
-    */
-    loadNationalities: function() {
-      if (model.nationalities && model.nationalities.length > 0) {
-        view.formatNationalities(model.nationalities);
-        return;
-      }
-
-      // Load nationalities
-      // Build the URL
-      let url = commonServices.URL_PREFIX + '/api/booking/frontend/nacionalities';
-      const urlParams = [];
-      if (this.requestLanguage != null) {
-        urlParams.push('lang=' + this.requestLanguage);
-      }
-      if (commonServices.apiKey && commonServices.apiKey != '') {
-        urlParams.push('api_key='+commonServices.apiKey);
-      }           
-      if (urlParams.length > 0) {
-        url += '?';
-        url += urlParams.join('&');
-      }
-      // Request
-      $.ajax({
-          type: 'GET',
-          url : url,
-          dataType : 'json',
-          contentType : 'application/json; charset=utf-8',
-          crossDomain: true,
-          success: function(data, textStatus, jqXHR) {
-            model.nationalities = data;
-            view.formatNationalities(data);
-          }
-      });
     },
+
+    
     /*
     * Format document types for select
     */
     formatDocumentTypes: function(data) {
       const formatData = [];
-      for (var idx=0; idx<data.length; idx++) {
+      for (let idx=0; idx<data.length; idx++) {
         formatData[idx] = {
           id: data[idx].id,
           description: data[idx].label
@@ -666,139 +794,68 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
     },
 
     /*
-    * Load document types
-    */
-    loadDocumentTypes: function async() {
-      if (model.documentTypes && model.documentTypes.length > 0) {
-        view.formatDocumentTypes(model.documentTypes);
-        return;
-      }
-
-      // Load document types
-      // Build the URL
-      let url = commonServices.URL_PREFIX + '/api/booking/frontend/document-types';
-      const urlParams = [];
-      if (this.requestLanguage != null) {
-        urlParams.push('lang=' + this.requestLanguage);
-      }
-      if (commonServices.apiKey && commonServices.apiKey != '') {
-        urlParams.push('api_key='+commonServices.apiKey);
-      }           
-      if (urlParams.length > 0) {
-        url += '?';
-        url += urlParams.join('&');
-      }
-      // Request
-      $.ajax({
-          type: 'GET',
-          url : url,
-          dataType : 'json',
-          contentType : 'application/json; charset=utf-8',
-          crossDomain: true,
-          success: function(data, textStatus, jqXHR) {
-            model.documentTypes = data;
-            view.formatDocumentTypes(data);
-          }
-      });
-    },
-
-    /*
     * Format license types for select
     */
-   formatLicenseTypes: function(data) {
-      const formatData = [];
-      for (var idx=0; idx<data.length; idx++) {
-        formatData[idx] = {
-          id: data[idx].id,
-          description: data[idx].label
-        };
-      }
-
-      const values = [
-        model.booking.driver_driving_license_type_id,
-        model.booking.additional_driver_1_driving_license_type_id,
-        model.booking.additional_driver_2_driving_license_type_id,
-      ]; 
-
-      if (commonServices.jsUseSelect2) {
-        // Configure address country
-        const selectors = [
-          'select[name=driver_driving_license_type_id]',
-          'select[name=additional_driver_1_driving_license_type_id]',
-          'select[name=additional_driver_2_driving_license_type_id]',
-        ];
-        let $nationalitySelector = null;
-        for (let idx=0; idx<selectors.length; idx++) { 
-          $nationalitySelector = $(selectors[idx]);    
-          if ($nationalitySelector.length > 0 && typeof values[idx] !== 'undefined') {
-            $nationalitySelector.select2({
-              width: '100%',
-              theme: 'bootstrap4',                  
-              data: formatData,
-            });
-            // Assign value
-            $nationalitySelector.val(values[idx]);
-            $nationalitySelector.trigger('change');
-          }
+    formatLicenseTypes: function(data) {
+        const formatData = [];
+        for (let idx=0; idx<data.length; idx++) {
+          formatData[idx] = {
+            id: data[idx].id,
+            description: data[idx].label
+          };
         }
-      } else {
-        // Setup country selector
-        const selectors = [
-          'driver_driving_license_type_id',
-          'additional_driver_1_driving_license_type_id',
-          'additional_driver_2_driving_license_type_id',
-        ];
-        for (let idx=0; idx<selectors.length; idx++) {
-          const elements = document.getElementsByName(selectors[idx]);
-          if (elements.length > 0) {
-            const countriesDataSource = new MemoryDataSource(formatData);
-            const countryModel = (values[idx] == null ? '': values[idx]);
-            for (let j=0; j<elements.length; j++) {
-              new SelectSelector(selectors[idx],
-                countriesDataSource, countryModel, true, i18next.t('myReservation.select_type_document'));
+
+        const values = [
+          model.booking.driver_driving_license_type_id,
+          model.booking.additional_driver_1_driving_license_type_id,
+          model.booking.additional_driver_2_driving_license_type_id,
+        ]; 
+
+        if (commonServices.jsUseSelect2) {
+          // Configure address country
+          const selectors = [
+            'select[name=driver_driving_license_type_id]',
+            'select[name=additional_driver_1_driving_license_type_id]',
+            'select[name=additional_driver_2_driving_license_type_id]',
+          ];
+          let $nationalitySelector = null;
+          for (let idx=0; idx<selectors.length; idx++) { 
+            $nationalitySelector = $(selectors[idx]);    
+            if ($nationalitySelector.length > 0 && typeof values[idx] !== 'undefined') {
+              $nationalitySelector.select2({
+                width: '100%',
+                theme: 'bootstrap4',                  
+                data: formatData,
+              });
+              // Assign value
+              $nationalitySelector.val(values[idx]);
+              $nationalitySelector.trigger('change');
+            }
+          }
+        } else {
+          // Setup country selector
+          const selectors = [
+            'driver_driving_license_type_id',
+            'additional_driver_1_driving_license_type_id',
+            'additional_driver_2_driving_license_type_id',
+          ];
+          for (let idx=0; idx<selectors.length; idx++) {
+            const elements = document.getElementsByName(selectors[idx]);
+            if (elements.length > 0) {
+              const countriesDataSource = new MemoryDataSource(formatData);
+              const countryModel = (values[idx] == null ? '': values[idx]);
+              for (let j=0; j<elements.length; j++) {
+                new SelectSelector(selectors[idx],
+                  countriesDataSource, countryModel, true, i18next.t('myReservation.select_type_document'));
+              }
             }
           }
         }
-      }
-   },
-
-    /*
-    * Load license types
-    */
-    loadLicenseTypes: function async() {
-      if (model.licenseTypes && model.licenseTypes.length > 0) {
-        view.formatLicenseTypes(model.licenseTypes);
-        return;
-      }
-
-      // Load document types
-      // Build the URL
-      let url = commonServices.URL_PREFIX + '/api/booking/frontend/license-types';
-      const urlParams = [];
-      if (this.requestLanguage != null) {
-        urlParams.push('lang=' + this.requestLanguage);
-      }
-      if (commonServices.apiKey && commonServices.apiKey != '') {
-        urlParams.push('api_key='+commonServices.apiKey);
-      }           
-      if (urlParams.length > 0) {
-        url += '?';
-        url += urlParams.join('&');
-      }
-      // Request
-      $.ajax({
-          type: 'GET',
-          url : url,
-          dataType : 'json',
-          contentType : 'application/json; charset=utf-8',
-          crossDomain: true,
-          success: function(data, textStatus, jqXHR) {
-            model.licenseTypes = data;
-            view.formatLicenseTypes(data);
-          }
-      });
     },
 
+    /*
+    * Setup date controls in form
+    */
     setupDateControls: function() {
       const controls = $('.js-date-select-control');
 
@@ -836,15 +893,18 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
       }
     },
 
+    /*
+    * Setup selects controls in form
+    */
     setupSelectControls: function() {
       // Load countries and set value if exists
-      this.loadCountries();
+      this.formatCountries();
       // Load nationalities and set value if exists
-      this.loadNationalities();
+      model.loadNationalities();
       // Load document types and set value if exists
-      this.loadDocumentTypes();
+      model.loadDocumentTypes();
       // Load license types and set value if exists
-      this.loadLicenseTypes();
+      model.loadLicenseTypes();
     },
 
     /**
@@ -864,6 +924,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
         required: i18next.t('complete.reservationForm.validations.fieldRequired')
       });
 
+      // Validate form
       $.validator.addMethod('pattern', function(value, element, param) {
         if (this.optional(element)) {
             return true;
@@ -1170,7 +1231,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
     },
 
     /**
-    * Setup passengers form component
+    * Setup passengers form
     */ 
     setupPassengersForm: function() {
       if (model.configuration.guests) {
@@ -1184,18 +1245,6 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
     * Setup events
     */ 
     setupEvents: function() {
-      // ----------------- Form ------------------------------
-      // Driver is customer toogle
-      if ($('#driver_is_customer').length) {
-        $('#driver_is_customer').off('click');
-        $('#driver_is_customer').on('click', controller.toogleDriverPanelClick);
-      }
-      // Additional drivers toogle
-      if ($('#additional_drivers_toogle_btn').length) {
-        $('#additional_drivers_toogle_btn').off('click');
-        $('#additional_drivers_toogle_btn').on('click', controller.toogleAdditionalDriversPanelClick);
-      }
-
       // Steps events
       $('.mb--steps-wrapper').on('click', '.mb--step a', function(event) {
         event.preventDefault();
@@ -1222,7 +1271,23 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
         // Show the payment view
         $('#payment_view').show();
       });
+
+       // ----------------- Form ------------------------------
+      
+      // Driver is customer toogle
+      if ($('#driver_is_customer').length) {
+        $('#driver_is_customer').off('click');
+        $('#driver_is_customer').on('click', controller.toogleDriverPanelClick);
+      }
+
+      // Additional drivers toogle
+      if ($('#additional_drivers_toogle_btn').length) {
+        $('#additional_drivers_toogle_btn').off('click');
+        $('#additional_drivers_toogle_btn').on('click', controller.toogleAdditionalDriversPanelClick);
+      }
     },
+
+     // ----------------- Payment mediator ------------------------------
 
     /**
      * Pay
@@ -1236,19 +1301,17 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
      * Go to the payment
      */
     gotoPayment: function(url, paymentData) {
-
       // Use the payment component to make the payment
       paymentComponent.view.gotoPayment(url, paymentData);
-
-    }
-
+    },
   };
 
-  var rentMyReservation = {
+  const rentMyReservation = {
     model: model,
     controller: controller,
     view: view
   };
+
   rentEngineMediator.setMyReservation(rentMyReservation);
 
   // The loader is show on start and hidden after the reservation
