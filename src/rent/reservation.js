@@ -139,15 +139,20 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
             reservation['booking_line_resources'].push(booking_line_resources[item]);
         }
 
+        // Set driver si customer to boolean
+       const driver_is_customer = reservation['driver_is_customer'] === 'on';
+       reservation['driver_is_customer'] = driver_is_customer;
+
         // Remove all empty fields
         for (var prop in reservation) {
-          if (!reservation[prop]) {
+          if (reservation[prop] === undefined || reservation[prop] === '') {  
               delete reservation[prop];
           }
+
           // Remove all empty fields in objects
           if (typeof reservation[prop] === 'object') {
             for (var subprop in reservation[prop]) {
-              if (!reservation[prop][subprop]) {
+              if (reservation[prop][subprop] === undefined || reservation[prop][subprop] === '') {
                 delete reservation[prop][subprop];
               }
             }
@@ -157,11 +162,11 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
             }
           }
         } 
-        console.log(reservation);
-        var reservationJSON = encodeURIComponent(JSON.stringify(reservation));
+
+        const reservationJSON = encodeURIComponent(JSON.stringify(reservation));
         // Build URL
-        var url = commonServices.URL_PREFIX + '/api/booking/frontend/booking/' + this.bookingFreeAccessId;
-        var urlParams = [];
+        let url = commonServices.URL_PREFIX + '/api/booking/frontend/booking/' + this.bookingFreeAccessId;
+        const urlParams = [];
         if (this.requestLanguage != null) {
           urlParams.push('lang=' + this.requestLanguage);
         }
@@ -172,6 +177,9 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
           url += '?';
           url += urlParams.join('&');
         }
+
+        console.log(reservation);
+
         // Request
         $.ajax({
             type: 'PUT',
