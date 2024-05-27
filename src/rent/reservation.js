@@ -368,11 +368,19 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
         }
 
         // Include reservation customer form
-        const reservationFormCustomer = tmpl('script_reservation_form_customer')(
-              {booking: model.booking,
-                required_fields: model.required_fields,
-                configuration: model.configuration});
-        $('#customer_panel_container').html(reservationFormCustomer);
+        if (model.booking.driver_is_customer) {
+          const reservationFormCustomerDriver = tmpl('script_reservation_form_customer_driver')(
+            {booking: model.booking,
+              required_fields: model.required_fields,
+              configuration: model.configuration});
+          $('#customer_panel_container').html(reservationFormCustomerDriver);
+        } else {
+          const reservationFormCustomer = tmpl('script_reservation_form_customer')(
+                {booking: model.booking,
+                  required_fields: model.required_fields,
+                  configuration: model.configuration});
+          $('#customer_panel_container').html(reservationFormCustomer);
+        }
 
         if (model.configuration.rentingFormFillDataDriverDetail && !model.booking.has_optional_external_driver && !model.booking.driver_is_customer) {
           // Include reservation drivers form
