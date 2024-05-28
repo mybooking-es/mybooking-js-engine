@@ -864,11 +864,14 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
         const month = $(element).find('[name$="_month"]');
         const year = $(element).find('[name$="_year"]');
         const hiddenControl = $(element).find('[type="hidden"]');
+    
         const direction = $(element).attr('data-date-select-control-direction');
-        // If date is in the past
-        const dateControl = new DateControl(day[0], month[0], year[0], hiddenControl, commonSettings.language(model.requestLanguage), undefined, direction);
-        if (model.booking[hiddenControl.attr('name')]) {
-          dateControl.setDate(model.booking[hiddenControl.attr('name')]);
+        // If date is in the past revert
+        const dateControl = new DateControl(day[0], month[0], year[0], hiddenControl[0], commonSettings.language(model.requestLanguage), undefined, direction);
+        // Set date
+        const value = model.booking[hiddenControl.attr('name')];
+        if (value) {
+          dateControl.setDate(value);
         }
       });
     },
