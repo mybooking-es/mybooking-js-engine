@@ -369,27 +369,33 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
 
         // Customer panel
         // Include customer driver form
-        const reservationFormCustomerDriver = tmpl('script_reservation_form_customer_driver')(
-          {booking: model.booking,
-            required_fields: model.required_fields,
-            configuration: model.configuration});
-        $('#customer_panel_container').html(reservationFormCustomerDriver);
+        if (document.getElementById('script_reservation_form_customer_driver')) {
+          const reservationFormCustomerDriver = tmpl('script_reservation_form_customer_driver')(
+            {booking: model.booking,
+              required_fields: model.required_fields,
+              configuration: model.configuration});
+          $('#customer_panel_container').html(reservationFormCustomerDriver);
+        }
       } else {
         // Driver panel
         // Include reservation drivers form
-        const reservationFormDriver = tmpl('script_reservation_form_driver')(
-          {booking: model.booking,
-            required_fields: model.required_fields,
-            configuration: model.configuration});
-        $('#driver_panel_container').html(reservationFormDriver);
+        if (document.getElementById('script_reservation_form_driver')) {
+          const reservationFormDriver = tmpl('script_reservation_form_driver')(
+            {booking: model.booking,
+              required_fields: model.required_fields,
+              configuration: model.configuration});
+          $('#driver_panel_container').html(reservationFormDriver);
+        }
 
         // Customer panel
         // Include customer form
-        const reservationFormCustomer = tmpl('script_reservation_form_customer')(
-          {booking: model.booking,
-            required_fields: model.required_fields,
-            configuration: model.configuration});
-        $('#customer_panel_container').html(reservationFormCustomer);
+        if (document.getElementById('script_reservation_form_customer')) {
+          const reservationFormCustomer = tmpl('script_reservation_form_customer')(
+            {booking: model.booking,
+              required_fields: model.required_fields,
+              configuration: model.configuration});
+          $('#customer_panel_container').html(reservationFormCustomer);
+        }
       }
 
       // Setup select controls
@@ -481,22 +487,26 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
       const showReservationForm = model.booking.manager_complete_authorized;
 
       // Include reservation steps
-      const reservationSteps = tmpl('script_reservation_steps')(
-        {
-          booking: model.booking,
-          sales_process: model.sales_process,
-        });
-      $('#mybooking_reservation_steps').html(reservationSteps);
-
-      // Include reservation summary
-      const reservationDetail = tmpl('script_reservation_summary')(
+      if (document.getElementById('script_reservation_steps')) {
+        const reservationSteps = tmpl('script_reservation_steps')(
           {
             booking: model.booking,
             sales_process: model.sales_process,
-            configuration: model.configuration,
-            showReservationForm,
           });
-      $('#reservation_detail').html(reservationDetail);
+        $('#mybooking_reservation_steps').html(reservationSteps);
+      }
+
+      // Include reservation summary
+      if (document.getElementById('script_reservation_summary')) {
+        const reservationDetail = tmpl('script_reservation_summary')(
+            {
+              booking: model.booking,
+              sales_process: model.sales_process,
+              configuration: model.configuration,
+              showReservationForm,
+            });
+        $('#reservation_detail').html(reservationDetail);
+      }
 
       // Include multiple items table
       if (model.configuration.multipleProductsSelection && document.getElementById('script_mybooking_summary_product_detail_table')) {
@@ -532,21 +542,25 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
 
         // Include reservation 'customer' form
         if (model.booking.driver_type == 'driver' && model.booking.driver_is_customer) {
-          const reservationFormCustomerDriver = tmpl('script_reservation_form_customer_driver')(
-            {booking: model.booking,
-              required_fields: model.required_fields,
-              configuration: model.configuration});
-          $('#customer_panel_container').html(reservationFormCustomerDriver);
+          if (document.getElementById('script_reservation_form_customer_driver')) {
+            const reservationFormCustomerDriver = tmpl('script_reservation_form_customer_driver')(
+              {booking: model.booking,
+                required_fields: model.required_fields,
+                configuration: model.configuration});
+            $('#customer_panel_container').html(reservationFormCustomerDriver);
+          }
         } else {
-          const reservationFormCustomer = tmpl('script_reservation_form_customer')(
-                {booking: model.booking,
-                  required_fields: model.required_fields,
-                  configuration: model.configuration});
-          $('#customer_panel_container').html(reservationFormCustomer);
+          if (document.getElementById('script_reservation_form_customer')) {
+            const reservationFormCustomer = tmpl('script_reservation_form_customer')(
+                  {booking: model.booking,
+                    required_fields: model.required_fields,
+                    configuration: model.configuration});
+            $('#customer_panel_container').html(reservationFormCustomer);
+          }
         }
 
         // Include reservation 'driver' form
-        if (model.configuration.rentingFormFillDataDriverDetail && !model.booking.has_optional_external_driver && (!model.booking.driver_is_customer || model.booking.driver_type != 'driver')) {
+        if (model.configuration.rentingFormFillDataDriverDetail && !model.booking.has_optional_external_driver && (!model.booking.driver_is_customer || model.booking.driver_type != 'driver') && document.getElementById('script_reservation_form_driver')) {
           const reservationFormDriver = tmpl('script_reservation_form_driver')(
                 {booking: model.booking,
                   required_fields: model.required_fields,
@@ -556,7 +570,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
       }
 
       // Add documentation upload view
-      if ($('#documents_upload_container').length) {
+      if (document.getElementById('script_documents_upload')) {
         const documentsUpload = tmpl('script_documents_upload')(
             {booking: model.booking,
               configuration: model.configuration});
@@ -564,7 +578,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
       }
 
       // Include signature view
-      if ($('#contract_signature_container').length) {
+      if (document.getElementById('script_contract_signature')) {
         const contractSignature = tmpl('script_contract_signature')(
             {booking: model.booking,
               configuration: model.configuration});
@@ -854,10 +868,123 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
     },
 
     /*
+    * Setup old date controls
+    * Retrocompatibility nedded code
+    */
+    setupOldDateControls: function() {
+      // Configure driver document id date
+      if (document.getElementById('driver_document_id_date_day')) {
+        const dateControl = new DateControl(document.getElementById('driver_document_id_date_day'),
+                        document.getElementById('driver_document_id_date_month'),
+                        document.getElementById('driver_document_id_date_year'),
+                        document.getElementById('driver_document_id_date'),
+                        commonSettings.language(model.requestLanguage));
+        if (model.booking.driver_document_id_date) {
+          dateControl.setDate(model.booking.driver_document_id_date);
+        }        
+      }
+      if (document.getElementById('driver_document_id_expiration_date_day')) {
+        const dateControl = new DateControl(document.getElementById('driver_document_id_expiration_date_day'),
+                        document.getElementById('driver_document_id_expiration_date_month'),
+                        document.getElementById('driver_document_id_expiration_date_year'),
+                        document.getElementById('driver_document_id_expiration_date'),
+                        commonSettings.language(model.requestLanguage),
+                        undefined, 'future');
+        if (model.booking.driver_document_id_expiration_date) {
+          dateControl.setDate(model.booking.driver_document_id_expiration_date);
+        }        
+      }
+
+      // Configure driver date of birth 
+      if (document.getElementById('driver_date_of_birth_day')) {
+        const dateControl = new DateControl(document.getElementById('driver_date_of_birth_day'),
+                        document.getElementById('driver_date_of_birth_month'),
+                        document.getElementById('driver_date_of_birth_year'),
+                        document.getElementById('driver_date_of_birth'),
+                        commonSettings.language(model.requestLanguage));
+        if (model.booking.driver_date_of_birth) {
+          dateControl.setDate(model.booking.driver_date_of_birth);
+        }
+      }
+      // Configure driver driving license date 
+      if (document.getElementById('driver_driving_license_date_day')) {
+        const dateControl = new DateControl(document.getElementById('driver_driving_license_date_day'),
+                        document.getElementById('driver_driving_license_date_month'),
+                        document.getElementById('driver_driving_license_date_year'),
+                        document.getElementById('driver_driving_license_date'),
+                        commonSettings.language(model.requestLanguage));
+        if (model.booking.driver_driving_license_date) {
+          dateControl.setDate(model.booking.driver_driving_license_date);
+        }
+      }
+      if (document.getElementById('driver_driving_license_expiration_date_day')) {
+        const dateControl = new DateControl(document.getElementById('driver_driving_license_expiration_date_day'),
+                        document.getElementById('driver_driving_license_expiration_date_month'),
+                        document.getElementById('driver_driving_license_expiration_date_year'),
+                        document.getElementById('driver_driving_license_expiration_date'),
+                        commonSettings.language(model.requestLanguage),
+                        undefined, 'future');
+        if (model.booking.driver_driving_license_expiration_date) {
+          dateControl.setDate(model.booking.driver_driving_license_expiration_date);
+        }
+      }
+      // Configure additional driver 1 driving license date 
+      if (document.getElementById('additional_driver_1_driving_license_date_day')) {
+        const dateControl = new DateControl(document.getElementById('additional_driver_1_driving_license_date_day'),
+                        document.getElementById('additional_driver_1_driving_license_date_month'),
+                        document.getElementById('additional_driver_1_driving_license_date_year'),
+                        document.getElementById('additional_driver_1_driving_license_date'),
+                        commonSettings.language(model.requestLanguage));
+        if (model.booking.additional_driver_1_driving_license_date) {
+          dateControl.setDate(model.booking.additional_driver_1_driving_license_date);
+        }
+      }
+      if (document.getElementById('additional_driver_1_driving_license_expiration_date_day')) {
+        const dateControl = new DateControl(document.getElementById('additional_driver_1_driving_license_expiration_date_day'),
+                        document.getElementById('additional_driver_1_driving_license_expiration_date_month'),
+                        document.getElementById('additional_driver_1_driving_license_expiration_date_year'),
+                        document.getElementById('additional_driver_1_driving_license_expiration_date'),
+                        commonSettings.language(model.requestLanguage),
+                        undefined, 'future');
+        if (model.booking.additional_driver_1_driving_license_expiration_date) {
+          dateControl.setDate(model.booking.additional_driver_1_driving_license_expiration_date);
+        }        
+      }
+      // Configuration additional driver 2 driving license date
+      if (document.getElementById('additional_driver_2_driving_license_date_day')) {
+        const dateControl = new DateControl(document.getElementById('additional_driver_2_driving_license_date_day'),
+                        document.getElementById('additional_driver_2_driving_license_date_month'),
+                        document.getElementById('additional_driver_2_driving_license_date_year'),
+                        document.getElementById('additional_driver_2_driving_license_date'),
+                        commonSettings.language(model.requestLanguage));
+        if (model.booking.additional_driver_2_driving_license_date) {
+          dateControl.setDate(model.booking.additional_driver_2_driving_license_date);
+        }        
+      }
+      if (document.getElementById('additional_driver_2_driving_license_expiration_date_day')) {
+        const dateControl = new DateControl(document.getElementById('additional_driver_2_driving_license_expiration_date_day'),
+                        document.getElementById('additional_driver_2_driving_license_expiration_date_month'),
+                        document.getElementById('additional_driver_2_driving_license_expiration_date_year'),
+                        document.getElementById('additional_driver_2_driving_license_expiration_date'),
+                        commonSettings.language(model.requestLanguage),
+                        undefined, 'future');
+        if (model.booking.additional_driver_2_driving_license_expiration_date) {
+          dateControl.setDate(model.booking.additional_driver_2_driving_license_expiration_date);
+        }        
+      }
+    },
+
+    /*
     * Setup date controls in form
     */
     setupDateControls: function() {
       const controls = $('.js-date-select-control');
+
+      // setupOldDateControls
+      if (controls.length == 0) {
+        this.setupOldDateControls();
+        return;
+      }
 
       controls.each((index, element) => {
         const day = $(element).find('[name$="_day"]');
@@ -917,6 +1044,10 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
       // Setup select controls
       this.setupSelectControls();
 
+      // Setup date old date controls 
+      // Retrocompatibility nedded code
+      this.setupOldDateControls();
+
       // Setup date controls
       this.setupDateControls();
 
@@ -967,7 +1098,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
       };
       // Date patter
       $.validator.addMethod('date_pattern', function(value, element) {
-        var regex = new RegExp('^\\d{4}-\\d{2}-\\d{2}$');
+        const regex = new RegExp('^\\d{4}-\\d{2}-\\d{2}$');
         return regex.test(value);
       }, 'Date format is YYYY-MM-DD.');
 
