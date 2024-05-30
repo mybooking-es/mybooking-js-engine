@@ -410,6 +410,7 @@ define("commonTranslations", [], function () {
               privacyPolicyRequired:
                 "Please, check that you have read the privacy policy",
               selectPaymentMethod: "Please, select the payment method",
+              datePatternInvalid: "Invalid date format",
             },
           },
           createReservation: {
@@ -966,6 +967,7 @@ define("commonTranslations", [], function () {
               privacyPolicyRequired:
                 "No ha marcado que ha leído la política de privacidad",
               selectPaymentMethod: "Por favor, seleccione la forma de pago",
+              datePatternInvalid: "Formato de fecha inválido",
             },
           },
           createReservation: {
@@ -1452,6 +1454,7 @@ define("commonTranslations", [], function () {
             acceptAge: "Si us plau, confirmi que és més gran de {{years}} anys",
             promotionCodeInvalid: "El codi de promoció no és vàlid",
             selectPaymentMethod: "Si us plau, escollir la forma de pagament",
+            datePatternInvalid: "Format de data invàlid",
           },
         },
         chooseProduct: {
@@ -2087,6 +2090,7 @@ define("commonTranslations", [], function () {
               privacyPolicyRequired:
                 "Bitte überprüfen Sie, ob Sie die Datenschutzbestimmungen gelesen haben",
               selectPaymentMethod: "Bitte wählen Sie die Zahlungsart",
+              datePatternInvalid: "Ungültiges Datumsformat",
             },
           },
           createReservation: {
@@ -2650,6 +2654,7 @@ define("commonTranslations", [], function () {
               privacyPolicyRequired:
                 "Veuillez vérifier que vous avez lu la politique de confidentialité",
               selectPaymentMethod: "Veuillez sélectionner le mode de paiement",
+              datePatternInvalid: "Format de date invalide",
             },
           },
           createReservation: {
@@ -3223,6 +3228,7 @@ define("commonTranslations", [], function () {
                 "Non ha segnato di avere più di 1 anno di esperienza nella guida di motocicli",
               selectPaymentMethod:
                 "Per favore, seleziona il metodo di pagamento",
+              datePatternInvalid: "Formato data non valido",
             },
           },
           createReservation: {
@@ -3522,6 +3528,7 @@ define("commonTranslations", [], function () {
               privacyPolicyRequired:
                 "Пожалуйста, подтвердите, что вы прочитали политику конфиденциальности",
               selectPaymentMethod: "Пожалуйста, выберите способ оплаты",
+              datePatternInvalid: "Неверный формат даты",
             },
           },
           createReservation: {

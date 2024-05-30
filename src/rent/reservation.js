@@ -928,15 +928,48 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
       });
 
       // Validate form
-      $.validator.addMethod('pattern', function(value, element, param) {
-        if (this.optional(element)) {
-            return true;
+      // $.validator.addMethod('pattern', function(value, element, param) {
+      //   if (this.optional(element)) {
+      //       return true;
+      //   }
+      //   if (typeof param === 'string') {
+      //       param = new RegExp('^(?:' + param + ')$');
+      //   }
+      //   return param.test(value);
+      // }, 'Invalid format.');
+
+      // Date is required function
+      const date_is_required = function(element) {
+        // Get the field name
+        const fieldName = $(element).attr('name');
+        console.log('NAME', fieldName);
+
+        console.log('IS REQUIRED', $(element).prop('required'));
+        // Check if the date is required, if not return true because do not need validate the value
+        if (!$(element).prop('required')) {
+          return false;
         }
-        if (typeof param === 'string') {
-            param = new RegExp('^(?:' + param + ')$');
+
+        // Get the others fields
+        const dayField = $('[name="'+fieldName+'_day"]');
+        const monthField = $('[name="'+fieldName+'_month"]');
+        const yearField = $('[name="'+fieldName+'_year"]');
+
+        // Check if any field is visible
+        const anyFieldsIsVisible =  dayField.is(':visible') || monthField.is(':visible') || yearField.is(':visible');
+        // If no field is visible, return true because do not need validate the value
+        console.log('IS VISIBLE', anyFieldsIsVisible, dayField, monthField, yearField);
+        if (!anyFieldsIsVisible) {
+          return false;
         }
-        return param.test(value);
-      }, 'Invalid format.');
+
+        return true;
+      };
+      // Date patter
+      $.validator.addMethod('date_pattern', function(value, element) {
+        var regex = new RegExp('^\\d{4}-\\d{2}-\\d{2}$');
+        return regex.test(value);
+      }, 'Date format is YYYY-MM-DD.');
 
       $('form[name=booking_information_form]').validate(
           {   
@@ -970,7 +1003,8 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
                 minlength: 9
               },
               'driver_date_of_birth': {
-                required: () => $('[name="driver_date_of_birth"]').is(':visible') && $('[name="driver_date_of_birth"]').prop('required'),
+                required: (element) => date_is_required(element),
+                date_pattern: true,
               },
               'customer_nacionality': {
                 required: () => $('[name="customer_nacionality"]').is(':visible') && $('[name="customer_nacionality"]').prop('required'),
@@ -986,91 +1020,95 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
               },
               'customer_document_id': {
                 required: () => $('[name="customer_document_id"]').is(':visible') && $('[name="customer_document_id"]').prop('required'),
-                pattern: () => {
-                  const typeDocument = $('[name="customer_document_id_type_id"]').val();
-                  let regex = null;
+                // pattern: () => {
+                //   const typeDocument = $('[name="customer_document_id_type_id"]').val();
+                //   let regex = null;
 
-                  switch (typeDocument) {
-                    case '1':
-                      // NIF regex
-                      regex = '[0-9]{8}[A-Z]';
-                      break;
-                    case '2':
-                      // NIE regex
-                      regex =  '[XYZ][0-9]{7}[A-Z]';
-                      break;
+                //   switch (typeDocument) {
+                //     case '1':
+                //       // NIF regex
+                //       regex = '[0-9]{8}[A-Z]';
+                //       break;
+                //     case '2':
+                //       // NIE regex
+                //       regex =  '[XYZ][0-9]{7}[A-Z]';
+                //       break;
                   
-                    default:
-                      regex = '.*';
-                      break;
-                  }
+                //     default:
+                //       regex = '.*';
+                //       break;
+                //   }
 
-                  return regex;
-                },
+                //   return regex;
+                // },
               },
               'driver_document_id': {
                 required: () => $('[name="driver_document_id"]').is(':visible') && $('[name="driver_document_id"]').prop('required'),
-                pattern: () => {
-                  const typeDocument = $('[name="driver_document_id_type_id"]').val();
-                  let regex = null;
+                // pattern: () => {
+                //   const typeDocument = $('[name="driver_document_id_type_id"]').val();
+                //   let regex = null;
 
-                  switch (typeDocument) {
-                    case '1':
-                      if (model.booking.customer_type == 'legal_entity') {
-                        // CIF regex
-                        regex = '[ABCDEFGHJNPQRSUVW][0-9]{7}[0-9A-J]';
-                      } else {
-                        // NIF regex
-                        regex = '[0-9]{8}[A-Z]';
-                      }
-                      break;
-                    case '2':
-                      // NIE regex
-                      regex =  '[XYZ][0-9]{7}[A-Z]';
-                      break;
+                //   switch (typeDocument) {
+                //     case '1':
+                //       if (model.booking.customer_type == 'legal_entity') {
+                //         // CIF regex
+                //         regex = '[ABCDEFGHJNPQRSUVW][0-9]{7}[0-9A-J]';
+                //       } else {
+                //         // NIF regex
+                //         regex = '[0-9]{8}[A-Z]';
+                //       }
+                //       break;
+                //     case '2':
+                //       // NIE regex
+                //       regex =  '[XYZ][0-9]{7}[A-Z]';
+                //       break;
                   
-                    default:
-                      regex = '.*';
-                      break;
-                  }
+                //     default:
+                //       regex = '.*';
+                //       break;
+                //   }
 
-                  return regex;
-                },
+                //   return regex;
+                // },
               },
               'driver_origin_country': {
                 required: () => $('[name="driver_origin_country"]').is(':visible') && $('[name="driver_origin_country"]').prop('required'),
               },
               'driver_document_id_date': {
-                required: () => $('[name="driver_document_id_date"]').is(':visible') && $('[name="driver_document_id_date"]').prop('required'),
+                required: (element) => date_is_required(element),
+                date_pattern: true,
               },
               'driver_document_id_expiration_date': {
-                required: () => $('[name="driver_document_id_expiration_date"]').is(':visible') && $('[name="driver_document_id_expiration_date"]').prop('required'),
+                required: (element) => date_is_required(element),
+                date_pattern: true,
               },
               'driver_driving_license_type_id': {
                 required: () => $('[name="driver_driving_license_type_id"]').is(':visible') && $('[name="driver_driving_license_type_id"]').prop('required'),
               },
               'driver_driving_license_number': {
                 required: () => $('[name="driver_driving_license_number"]').is(':visible') && $('[name="driver_driving_license_number"]').prop('required'),
-                pattern: () => {
-                  const typeDocument = $('[name="driver_driving_license_type_id"]').val();
-                  let regex = '.*';
+                // pattern: () => {
+                //   const typeDocument = $('[name="driver_driving_license_type_id"]').val();
+                //   let regex = '.*';
 
-                  if (typeDocument != '19' || typeDocument != '20') {
-                    // Driving license regex
-                    regex = '[A-Z][0-9]{7}';
-                  }
+                //   if (typeDocument != '19' || typeDocument != '20') {
+                //     // Driving license regex
+                //     regex = '[A-Z][0-9]{7}';
+                //   }
 
-                  return regex;
-                },
+                //   return regex;
+                // },
               },
               'driver_driving_license_country': {
                 required: () => $('[name="driver_driving_license_country"]').is(':visible') && $('[name="driver_driving_license_country"]').prop('required'),
               },
               'driver_driving_license_date': {
-                required: () => $('[name="driver_driving_license_date"]').is(':visible') && $('[name="driver_driving_license_date"]').prop('required'),
+                required: (element) => date_is_required(element),
+                date_pattern: true,
               },
               'driver_driving_license_expiration_date': {
-                required: () => $('[name="driver_driving_license_expiration_date"]').is(':visible') && $('[name="driver_driving_license_expiration_date"]').prop('required'),
+                required: (element) => date_is_required(element),
+                date_pattern: true,
               },
               'customer_address\\[street\\]': {
                 required: () => $('[name="customer_address\\[street\\]"]').is(':visible') && $('[name="customer_address\\[street\\]"]').prop('required'),
@@ -1137,7 +1175,8 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
                 minlength: i18next.t('complete.reservationForm.validations.customerPhoneNumberMinLength')
               },
               'driver_date_of_birth': {
-                required: i18next.t('complete.reservationForm.validations.fieldRequired')
+                required: i18next.t('complete.reservationForm.validations.fieldRequired'),
+                date_pattern: i18next.t('complete.reservationForm.validations.datePatternInvalid'),
               },
               'customer_nacionality': {
                 required: i18next.t('complete.reservationForm.validations.fieldRequired')
@@ -1153,36 +1192,40 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
               },
               'customer_document_id': {
                 required: i18next.t('complete.reservationForm.validations.fieldRequired'),
-                pattern: i18next.t('complete.reservationForm.validations.documentIdInvalidFormat')
+                // pattern: i18next.t('complete.reservationForm.validations.documentIdInvalidFormat')
               },
               'driver_document_id': {
                 required: i18next.t('complete.reservationForm.validations.fieldRequired'),
-                pattern: i18next.t('complete.reservationForm.validations.documentIdInvalidFormat')
+                // pattern: i18next.t('complete.reservationForm.validations.documentIdInvalidFormat')
               },
               'driver_origin_country': {
                 required: i18next.t('complete.reservationForm.validations.fieldRequired')
               },
               'driver_document_id_date': {
-                required: i18next.t('complete.reservationForm.validations.fieldRequired')
+                required: i18next.t('complete.reservationForm.validations.fieldRequired'),
+                date_pattern: i18next.t('complete.reservationForm.validations.datePatternInvalid'),
               },
               'driver_document_id_expiration_date': {
-                required: i18next.t('complete.reservationForm.validations.fieldRequired')
+                rrequired: i18next.t('complete.reservationForm.validations.fieldRequired'),
+                date_pattern: i18next.t('complete.reservationForm.validations.datePatternInvalid'),
               },
               'driver_driving_license_type_id': {
                 required: i18next.t('complete.reservationForm.validations.fieldRequired')
               },
               'driver_driving_license_number': {
                 required: i18next.t('complete.reservationForm.validations.fieldRequired'),
-                pattern: i18next.t('complete.reservationForm.validations.drivingLicenseNumberInvalidFormat')
+                // pattern: i18next.t('complete.reservationForm.validations.drivingLicenseNumberInvalidFormat')
               },
               'driver_driving_license_country': {
                 required: i18next.t('complete.reservationForm.validations.fieldRequired')
               },
               'driver_driving_license_date': {
-                required: i18next.t('complete.reservationForm.validations.fieldRequired')
+                required: i18next.t('complete.reservationForm.validations.fieldRequired'),
+                date_pattern: i18next.t('complete.reservationForm.validations.datePatternInvalid'),
               },
               'driver_driving_license_expiration_date': {
-                required: i18next.t('complete.reservationForm.validations.fieldRequired')
+                required: i18next.t('complete.reservationForm.validations.fieldRequired'),
+                date_pattern: i18next.t('complete.reservationForm.validations.datePatternInvalid'),
               },
               'customer_address\\[street\\]': {
                 required: i18next.t('complete.reservationForm.validations.fieldRequired')
