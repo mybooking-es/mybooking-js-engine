@@ -160,8 +160,11 @@ $(document).ready(function () {
 // Page reservation JS
 $(document).ready(function () {
     if ($('body').hasClass('reservation')) {
-        require('./rent/mediator/rentEngineMediator.js'); 
-        require('./rent/passengers/passengersComponent.js');                
+        require('./rent/mediator/rentEngineMediator.js');
+        require('./rent/passengers/passengersComponent.js');
+        require('./rent/payment/paymentComponent.js');
+        require('./rent/documents/documentsComponent.js');
+        require('./rent/signature/signatureComponent.js');
         require('./rent/reservation.js');
     }
 });

@@ -22,6 +22,10 @@ module.exports = [
       mode: 'development',
       output: {
         path: path.resolve(__dirname, 'dist/js'),
+        library: 'mybookingJsEngine', // export library as mybookingJSEngine
+        environment: {
+          arrowFunction: false,
+        }
       },
       resolve: {
         modules: ['node_modules', 'src/lib', 'src/common']
@@ -32,7 +36,7 @@ module.exports = [
         splitChunks: {
           cacheGroups: {
             main: {
-              test: /[\\/]src[\\/]/,
+              test:  path.resolve(__dirname, 'src'),
               name: 'main',
               filename: 'mybooking-js-engine.js',
               chunks: 'all',
@@ -98,7 +102,7 @@ module.exports = [
         splitChunks: {
           cacheGroups: {
             main: {
-              test: /[\\/]src[\\/]/,
+              test:  path.resolve(__dirname, 'src'),
               name: 'main',
               filename: 'mybooking-js-engine-bundle.js',
               chunks: 'all',

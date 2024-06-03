@@ -83,14 +83,14 @@ $(document).ready(function() {
 // == Renting module
 
 $(document).ready(function() {
-    if ( $('body').hasClass('mybooking-custom-selector') &&
+    if ($('body').hasClass('mybooking-custom-selector') &&
          $('form[name=custom_search_form]').length) {
         require('./rent/selector/custom_selector.js');        
     }
 });
 
 // Page with selector widget JS
-$(document).ready(function () {
+$(document).ready(function() {
     if ($('body').hasClass('mybooking-selector-widget') &&
         $('form[name=widget_search_form]').length) {
         require('./rent/selector/widget.js');
@@ -98,7 +98,7 @@ $(document).ready(function () {
 });
 
 // Page with selector wizard JS
-$(document).ready(function () {
+$(document).ready(function() {
     if ($('body').hasClass('mybooking-selector-wizard') &&
         $('form[name=wizard_search_form]').length) {
         require('./rent/selector-wizard/selector_wizard_select_place.js');
@@ -110,7 +110,7 @@ $(document).ready(function () {
 });
 
 // Page choose_product JS
-$(document).ready(function () {
+$(document).ready(function() {
     if ($('body').hasClass('choose_product')) {
         require('./rent/selector/modify_reservation_selector.js');  
         require('./rent/mediator/rentEngineMediator.js');        
@@ -119,7 +119,7 @@ $(document).ready(function () {
 });
 
 // Page choose_extras JS
-$(document).ready(function () {
+$(document).ready(function() {
     if ($('body').hasClass('choose_extras')) {
         require('./rent/selector/modify_reservation_selector.js');      
         require('./rent/mediator/rentEngineMediator.js');           
@@ -129,7 +129,7 @@ $(document).ready(function () {
 });
 
 // Page complete JS
-$(document).ready(function () {
+$(document).ready(function() {
     if ($('body').hasClass('complete')) {
         require('./rent/selector/modify_reservation_selector.js');  
         require('./rent/mediator/rentEngineMediator.js');                
@@ -139,7 +139,7 @@ $(document).ready(function () {
 });
 
 // Page complete JS
-$(document).ready(function () {
+$(document).ready(function() {
     if ($('body').hasClass('summary')) {
         require('./rent/mediator/rentEngineMediator.js');          
         require('./rent/summary.js');
@@ -149,7 +149,11 @@ $(document).ready(function () {
 // Page reservation JS
 $(document).ready(function() {
     if ($('body').hasClass('reservation')) {
-        require('./rent/mediator/rentEngineMediator.js');  
+        require('./rent/mediator/rentEngineMediator.js');
+        require('./rent/passengers/passengersComponent.js');
+        require('./rent/payment/paymentComponent.js');
+        require('./rent/documents/documentsComponent.js');
+        require('./rent/signature/signatureComponent.js');
         require('./rent/reservation.js');
     }
 });
@@ -164,7 +168,7 @@ $(document).ready(function() {
 });
 
 // Page with product selector widget
-$(document).ready(function () {
+$(document).ready(function() {
     if ($('body').hasClass('mybooking-product') &&
         $('form[name=search_form]').length) {
         require('./lib/jquery.daterangepicker.js');    
@@ -174,14 +178,14 @@ $(document).ready(function () {
 });
 
 // Rent planning
-$(document).ready(function () {
+$(document).ready(function() {
     if ($('body').hasClass('mybooking-rent-planning')) {
         require('./rent/planning/planningActionBar.js');
         require('./rent/planning/planning.js');
     }
 });
 // Rent week planning
-$(document).ready(function () {
+$(document).ready(function() {
     if ($('body').hasClass('mybooking-rent-product-planning-week')) {
         require('./rent/planning/productPlanningWeekActionBar.js');           
         require('./rent/planning/productPlanningWeek.js');
@@ -189,7 +193,7 @@ $(document).ready(function () {
 });
 
 // Rent shift picker
-$(document).ready(function () {
+$(document).ready(function() {
     if ($('body').hasClass('mybooking-rent-shift-picker')) {
         require('./rent/shiftPicker/shiftPicker.js');           
     }
@@ -205,7 +209,7 @@ $(document).ready(function() {
 });
 
 // Activity Page  JS
-$(document).ready(function () {
+$(document).ready(function() {
     if ($('body').hasClass('mybooking-activity')) {
         require('./activities/support/ActivityOneTime.js');
         require('./activities/support/ActivityMultipleDates.js');
@@ -215,21 +219,21 @@ $(document).ready(function () {
 });
 
 // Activities Shopping Cart Page  JS
-$(document).ready(function () {
+$(document).ready(function() {
     if ($('body').hasClass('mybooking-activity-shopping-cart')) {
         require('./activities/ShoppingCart.js');
     }
 });
 
 // Activities Summary Page  JS
-$(document).ready(function () {
+$(document).ready(function() {
     if ($('body').hasClass('mybooking-activity-summary')) {
         require('./activities/Order.js');
     }
 });
 
 // Activities Order Page  JS
-$(document).ready(function () {
+$(document).ready(function() {
     if ($('body').hasClass('mybooking-activity-order')) {
         require('./activities/Order.js');
     }
@@ -237,14 +241,14 @@ $(document).ready(function () {
 
 // == Transfer module
 $(document).ready(function() {
-    if ( $('body').hasClass('mybooking-transfer-selector') &&
+    if ($('body').hasClass('mybooking-transfer-selector') &&
          $('form[name=mybooking_transfer_search_form]').length) {
         require('./transfer/selector/widget.js');
     }
 });
 
 // Transfer Page choose_product JS
-$(document).ready(function () {
+$(document).ready(function() {
     if ($('body').hasClass('mybooking-transfer-choose-product')) {
         require('./transfer/selector/modify_reservation_selector.js');  
         require('./transfer/mediator/transferEngineMediator.js');        
@@ -253,7 +257,7 @@ $(document).ready(function () {
 });
 
 // Transfer Page complete JS
-$(document).ready(function () {
+$(document).ready(function() {
     if ($('body').hasClass('mybooking-transfer-complete')) {
         require('./transfer/selector/modify_reservation_selector.js');  
         require('./transfer/mediator/transferEngineMediator.js');                
@@ -263,7 +267,7 @@ $(document).ready(function () {
 });
 
 // Transfer Page summary JS
-$(document).ready(function () {
+$(document).ready(function() {
     if ($('body').hasClass('mybooking-transfer-summary')) {
         require('./transfer/mediator/transferEngineMediator.js');                
         require('./transfer/summary.js');
@@ -271,7 +275,7 @@ $(document).ready(function () {
 });
 
 // Transfer Page Reservation JS
-$(document).ready(function () {
+$(document).ready(function() {
     if ($('body').hasClass('mybooking-transfer-reservation')) {
         require('./transfer/mediator/transferEngineMediator.js');                
         require('./transfer/reservation.js');
