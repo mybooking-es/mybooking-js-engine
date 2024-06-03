@@ -342,19 +342,22 @@ define('rentEngineMediator', ['jquery', 'YSDEventTarget'],
      * @coverages:: The coverage options
      * @extras:: The extra options
      * @shoppingCart:: The shopping cart
+     * @reservationForm:: The reservation form
      *
      */
     onCheckout: function( coverages, 
                           extras, 
-                          shoppingCart ) {
+                          shoppingCart,
+                          reservationForm ) {
 
       console.log('rentEngineMediator_checkout');
       if (typeof this.checkoutDelegate === 'function') {
         var data = {  
                       coverages: coverages,
                       extras: extras,  
-                      shoppingCart: shoppingCart
-                   }
+                      shoppingCart: shoppingCart,
+                      reservationForm: reservationForm
+                   };
         // Find current selected coverage
         if (shoppingCart.extras != null && shoppingCart.extras instanceof Array) {
           var coverageCode = null;
@@ -376,6 +379,17 @@ define('rentEngineMediator', ['jquery', 'YSDEventTarget'],
       }
       else {
         this.continueCheckout();
+      }
+
+    },
+
+    /**
+     * Stop checkout and allow to check the form before submitting
+     */
+    stopCheckout: function() {
+
+      if (this.complete != null) {
+        this.complete.view.activateCheckout();
       }
 
     },

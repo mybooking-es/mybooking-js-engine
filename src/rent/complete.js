@@ -725,9 +725,13 @@ require(['jquery',
 
       sendReservationButtonClick: function() {
 
+          // Form data
+          const reservationForm = $('form[name=reservation_form]').formParams(false);
+
           rentEngineMediator.onCheckout( model.coverages, 
                                          model.extras,
-                                         model.shopping_cart );
+                                         model.shopping_cart,
+                                         reservationForm);
       
       },
 
@@ -2152,6 +2156,24 @@ require(['jquery',
       }
 
     },
+
+    // -------------------- Mediator interaction
+
+    /**
+     * Activate the checkout
+     * 
+     * This is a connection point with extensions using the mediator. In case of a custom
+     * validation, the extension can call this method to activate the checkout and allow the
+     * user to submit the reservation form again. This necessary because when the user submits
+     * the form, the submit button is disabled to avoid double click.
+     * 
+     * It is not used directly in the standard flow. Just for extensions with the mediator
+     */
+    activateCheckout: function() {
+      // Enable submit => remove disabled
+      $('form[name=reservation_form] button[type=submit]').removeAttr('disabled');
+      model.reservationFormSubmitted = false;
+    }
 
   };
 
