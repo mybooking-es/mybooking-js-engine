@@ -541,7 +541,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
         }
 
         // Include reservation 'customer' form
-        if (model.booking.driver_type == 'driver' && model.booking.driver_is_customer) {
+        if ((model.booking.driver_type == 'driver' || model.booking.driver_type == 'skipper') && model.booking.driver_is_customer) {
           if (document.getElementById('script_reservation_form_customer_driver')) {
             const reservationFormCustomerDriver = tmpl('script_reservation_form_customer_driver')(
               {booking: model.booking,
@@ -560,7 +560,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
         }
 
         // Include reservation 'driver' form
-        if (model.configuration.rentingFormFillDataDriverDetail && !model.booking.has_optional_external_driver && (!model.booking.driver_is_customer || model.booking.driver_type != 'driver') && document.getElementById('script_reservation_form_driver')) {
+        if (model.configuration.rentingFormFillDataDriverDetail && !model.booking.has_optional_external_driver && !model.booking.driver_is_customer && document.getElementById('script_reservation_form_driver')) {
           const reservationFormDriver = tmpl('script_reservation_form_driver')(
                 {booking: model.booking,
                   required_fields: model.required_fields,
