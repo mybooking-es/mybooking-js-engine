@@ -1439,16 +1439,6 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
         $(id).show();
       });
 
-      // Button pay event
-      $('#btn_payment_detail').off('click');
-      $('#btn_payment_detail').on('click', function(event) {
-        event.preventDefault();
-        // Hide all steps
-        $('.mb--steps-container-wrapper .mb--step-container').hide();
-        // Show the payment view
-        $('#payment_view').show();
-      });
-
        // ----------------- Form ------------------------------
       
       // Driver is customer toogle
