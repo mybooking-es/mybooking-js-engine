@@ -539,6 +539,7 @@ define("commonTranslations", [], function () {
           no_data_found: "No data found",
           generic_error: "Sorry, an error has occurred.",
           turn_not_available: "That turn is not available.",
+          min_max_units_error: "The minimum number of units exceeds the maximum."
         }
       },
     },
@@ -1100,6 +1101,7 @@ define("commonTranslations", [], function () {
           no_data_found: "No se han encontrado datos",
           generic_error: "Lo lamentamos, se ha producido un error.",
           turn_not_available: "Ese turno no esta disponible",
+          min_max_units_error: "El número mínimo de unidades supera al máximo."
         }
       },
     },
@@ -1650,6 +1652,7 @@ define("commonTranslations", [], function () {
           no_data_found: "No s'han trobat dades",
           generic_error: "Ho lamentem, s'ha produït un error.",
           turn_not_available: "Aquest torn no està disponible.",
+          min_max_units_error: "El nombre mínim d'unitats supera el màxim."
         }
       },
     },
@@ -2208,6 +2211,7 @@ define("commonTranslations", [], function () {
           no_data_found: "Keine Daten gefunden",
           generic_error: "Leider ist ein Fehler aufgetreten.",
           turn_not_available: "Dieser Zug ist nicht verfügbar.",
+          min_max_units_error: "Die Mindestanzahl an Einheiten überschreitet das Maximum."
         }
       },
     },
@@ -2765,6 +2769,7 @@ define("commonTranslations", [], function () {
           no_resources_found: "Aucune ressource trouvée",
           no_data_found: "Aucune donnée trouvée",
           turn_not_available: "Ce tour n'est pas disponible.",
+          min_max_units_error: "Le nombre minimum d'unités dépasse le maximum."
         }
       },
     },
@@ -3335,6 +3340,7 @@ define("commonTranslations", [], function () {
           no_data_found: "Nessun dato trovato",
           generic_error: "Spiacenti, si è verificato un errore.",
           turn_not_available: "Quel turno non è disponibile.",
+          min_max_units_error: "Il numero minimo di unità supera il massimo."
         }
       },
     },
@@ -3623,6 +3629,7 @@ define("commonTranslations", [], function () {
           no_data_found: "Данные не найдены",
           generic_error: "Извините, произошла ошибка.",
           turn_not_available: "Этот ход недоступен.",
+          min_max_units_error: "Минимальное количество единиц превышает максимальное."
         }
       },
     },

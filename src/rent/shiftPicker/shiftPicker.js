@@ -37,11 +37,13 @@ require([
    */
   function ShiftPicker({
 		containerHTML,
+		form,
 		category_code,
 		rental_location_code,
 		sales_channel_code,
 		units,
 		min_units,
+		errorMessage,
   }) {
 
     /**
@@ -49,12 +51,13 @@ require([
      */
     this.model = {
 			containerHTML, // All html container instance
+			form, // Form instance
 			requestLanguage: 'es', // Request language
 			category_code, // Product code
 			rental_location_code, // Rental location code
 			sales_channel_code, // Sales channel code
 			api_date_format: 'YYYY-MM-DD', // Api date format for requests
-			maxUnits: 1, // Max units in selector
+			max_units: 1, // Max units in selector
 			min_units, // Min units in selector
 			units, // Selected units
 			availableDates: [], // All available dates
@@ -69,6 +72,7 @@ require([
 			shoppingCartId: undefined, // Shopping cart ID
 			product: undefined, // Product
 			product_available: undefined, // Product available
+			errorMessage, // Error message container
     };
   }
 
@@ -486,12 +490,19 @@ require([
 			} = this.model;
 
 			// Get max units for select field
-			this.model.maxUnits =  await this.getMaxUnits();
+			this.model.max_units =  await this.getMaxUnits();
+
+			if (this.model.min_units > this.model.max_units) {
+				this.model.form.hide();
+				this.model.errorMessage.show();
+				return false;
+			}
+
 			// Add options in select field
 			const field = containerHTML.find('select[name=shiftpicker-units]');
 			field.html('');
 			let index = this.model.min_units;
-			for (index; index <= this.model.maxUnits; index++) {
+			for (index; index <= this.model.max_units; index++) {
 				// Refresh template html 
 				const HTML = tmpl('script_shiftpicker_units_option')({
 					model: {
@@ -509,6 +520,8 @@ require([
 
 				this.onUnitsChanged(value);
 			});
+
+			return true;
     },
 
 		/**
@@ -585,7 +598,7 @@ require([
 
 				const newDate = inputDate.datepicker('getDate');
 				if (!newDate || newDate === '') {
-					return; // TODO validate format date
+					return;
 				}
 				const value =  YSDFormatter.formatDate(newDate, api_date_format);
 
@@ -723,6 +736,7 @@ require([
 				// Info not data found
 				turnsSelector.append(`<li>${i18next.t('shiftPicker.no_data_found')}</li>`);
 			}
+			commonLoader.hide();
 		},
 
 		refreshInfoPanel: function() {
@@ -914,8 +928,6 @@ require([
 			// Load settings
 			commonLoader.show();
 			commonSettings.loadSettings((data) => {
-				commonLoader.hide();
-		
 				// Extend the model
 				this.model = {
 					...this.model,
@@ -932,9 +944,13 @@ require([
 		/**
      * Set Controls
      */
-    setupControls: function() {
-			this.initializeUnitsSelector();
-			this.initializeScrollCalendar();
+    setupControls: async function() {
+			const isAvailable = await this.initializeUnitsSelector();
+			if (isAvailable) {
+				this.initializeScrollCalendar();
+			} else {
+				commonLoader.hide();
+			}
     },
 
 		/**
@@ -942,8 +958,7 @@ require([
      */
 		setupValidations: function() {
 			const self = this;
-
-			$('form[name=mybooking-rent-shift-picker-form]').validate({
+			this.model.form.validate({
 				submitHandler: function(form, event) {
           event.preventDefault();
 
@@ -988,20 +1003,24 @@ require([
           // Unique id for instance
           const id = $(item).attr('id');
           const containerHTML = $('#' + id);
+					const form = containerHTML.find('form');
 					const categoryCode = containerHTML.attr('data-category-code');
 					const rentalLocationCode = containerHTML.attr('data-rental-location-code');
 					const salesChannelCode = containerHTML.attr('data-sales-channel-code');
 					const minUnitsValue = containerHTML.attr('data-min-units');
 					const minUnits = minUnitsValue !== '' ? Number(minUnitsValue, 10) : 1;
+					const errorMessage = containerHTML.find('.mybooking-rent-shift-picker-error');
 
           // Default settings for instance
 					const settings = {
 						containerHTML,
+						form,
 						category_code: categoryCode,
 						rental_location_code: rentalLocationCode || undefined,
 						sales_channel_code: salesChannelCode || undefined,
 						min_units: minUnits,
 						units: minUnits,
+						errorMessage,
 					};
 
           // Create a ShiftPicker instance
