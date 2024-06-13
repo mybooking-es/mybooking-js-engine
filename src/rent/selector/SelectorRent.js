@@ -165,9 +165,21 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
       console.log('loadRentalLocations');
       var self = this;
       var url = commonServices.URL_PREFIX + '/api/booking/frontend/rental-locations';
+      // Parameters
+      var urlParams = [];
       if (commonServices.apiKey && commonServices.apiKey != '') {
-        url += '?api_key='+commonServices.apiKey;
+        urlParams.push('api_key='+commonServices.apiKey);
       }  
+      if (this.requestLanguage != null) {
+        urlParams.push('lang='+this.requestLanguage);
+      }
+      // Join the parameters
+      if (urlParams.length > 0) {
+        url += '?';
+        url += urlParams.join('&');
+      }
+
+
       // Request
       $.ajax({
         type: 'GET',
@@ -194,9 +206,20 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
       console.log('loadAgeRules');
       var self = this;
       var url = commonServices.URL_PREFIX + '/api/booking/frontend/driver-age-rules';
+      // Parameters
+      var urlParams = [];
       if (commonServices.apiKey && commonServices.apiKey != '') {
-        url += '?api_key='+commonServices.apiKey;
+        urlParams.push('api_key='+commonServices.apiKey);
       }  
+      if (this.requestLanguage != null) {
+        urlParams.push('lang='+this.requestLanguage);
+      }
+      // Join the parameters
+      if (urlParams.length > 0) {
+        url += '?';
+        url += urlParams.join('&');
+      }
+
       // Request
       $.ajax({
         type: 'GET',
