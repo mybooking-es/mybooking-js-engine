@@ -499,12 +499,20 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
         contentType : 'application/json; charset=utf-8',
         crossDomain: true,
         success: function(data, textStatus, jqXHR) {
-          // Check min days by time_to date select event
-          const minDays = productModel.productCalendar.model.calculateMinDays(data.shopping_cart.date_from);
-          if (minDays !== null && minDays > data.shopping_cart.days) {
-            // TODO check api response for message and initial time_to 
-            alert(i18next.t('selector.error_min_days', {minDays: minDays}));
-            return;
+          if (data.shopping_cart.days > 0 && 
+              productModel.configuration.cycleOf24Hours && 
+              productModel.configuration.timeToFrom) {
+            // Check min days
+            const minDays = productModel.productCalendar.model.calculateMinDays(data.shopping_cart.date_from);
+            if (minDays !== null && minDays > data.shopping_cart.days) {
+              if (typeof data.warning_min_days !== 'undefined' && data.warning_min_days) {
+                alert(data.warning_min_days);
+              }
+              else {
+                alert(i18next.t('selector.error_min_days', {minDays: minDays}));
+              }
+              return;
+            }
           }
           if (self.shoppingCartId == null || self.shoppingCartId != data.shopping_cart.free_access_id) {
             self.shoppingCartId = data.shopping_cart.free_access_id;

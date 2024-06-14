@@ -433,29 +433,33 @@ require([
     /**
      * Get ocupation range in calendar type and put in list data
      */
-    getOcupationCalendarRange: function ({ from, to }) {
+    getOcupationCalendarRange: function({from, to}) {
+      // If from or to are not defined return empty array
       if (!from || !to) {
         return [];
       }
 
+      // If to is before server date return empty array
       const serverDate = moment(this.model.date.server);
       if (moment(to).isBefore(serverDate)) {
         return [];
       }
 
+      // If from and to date is the same return only this day
       const range = [];
       if (from === to) {
         range.push(from);
         return range;
       }
 
+      // Return all days from from to to
       let init = false;
       let finish = false;
-      this.model.calendar.forEach(function (item) {
+      this.model.calendar.forEach(function(item) {
+        // If from is before or same of item init is true
         if (
-          moment(from).isBefore(serverDate) ||
-          moment(from).isSame(serverDate) ||
-          item === from
+          moment(from).isBefore(item) ||
+          moment(from).isSame(item)
         ) {
           init = true;
         }

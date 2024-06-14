@@ -94,6 +94,10 @@ define('rentEngineMediator', ['jquery', 'YSDEventTarget'],
      */
     setupDelegate: function( delegate ) {
 
+      if (typeof delegate.showModal === 'function') {
+        this.showModalDelegate = delegate.showModal;
+      }
+
       // Choose single product
       if (typeof delegate.chooseSingleProduct === 'function') {
         this.chooseSingleProductDelegate = delegate.chooseSingleProduct;
@@ -147,6 +151,14 @@ define('rentEngineMediator', ['jquery', 'YSDEventTarget'],
     },
 
     // ========= Interaction
+
+    // --------- Show Modal
+    onShowModal: function(event, modal) {
+      console.log('rentEngineMediator_showModal', this.showModalDelegate);
+      if (typeof this.showModalDelegate === 'function') {
+        this.showModalDelegate(event, modal);
+      }
+    },
 
     // --------- Choose Single Products
 
@@ -330,19 +342,22 @@ define('rentEngineMediator', ['jquery', 'YSDEventTarget'],
      * @coverages:: The coverage options
      * @extras:: The extra options
      * @shoppingCart:: The shopping cart
+     * @reservationForm:: The reservation form
      *
      */
     onCheckout: function( coverages, 
                           extras, 
-                          shoppingCart ) {
+                          shoppingCart,
+                          reservationForm ) {
 
       console.log('rentEngineMediator_checkout');
       if (typeof this.checkoutDelegate === 'function') {
         var data = {  
                       coverages: coverages,
                       extras: extras,  
-                      shoppingCart: shoppingCart
-                   }
+                      shoppingCart: shoppingCart,
+                      reservationForm: reservationForm
+                   };
         // Find current selected coverage
         if (shoppingCart.extras != null && shoppingCart.extras instanceof Array) {
           var coverageCode = null;
@@ -364,6 +379,17 @@ define('rentEngineMediator', ['jquery', 'YSDEventTarget'],
       }
       else {
         this.continueCheckout();
+      }
+
+    },
+
+    /**
+     * Stop checkout and allow to check the form before submitting
+     */
+    stopCheckout: function() {
+
+      if (this.complete != null) {
+        this.complete.view.activateCheckout();
       }
 
     },

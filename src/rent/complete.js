@@ -725,9 +725,13 @@ require(['jquery',
 
       sendReservationButtonClick: function() {
 
+          // Form data
+          const reservationForm = $('form[name=reservation_form]').formParams(false);
+
           rentEngineMediator.onCheckout( model.coverages, 
                                          model.extras,
-                                         model.shopping_cart );
+                                         model.shopping_cart,
+                                         reservationForm);
       
       },
 
@@ -881,7 +885,13 @@ require(['jquery',
             });
             passwordForgottenComponent.view.init();
             // Show the modal
-            commonUI.showModal('#modalExtraDetail');
+            commonUI.showModal('#modalExtraDetail',
+                               function(event, modal){ // on Show
+                                 setTimeout(function(){  
+                                   // Call to the mediator
+                                   rentEngineMediator.onShowModal(event, modal);
+                                 },50);
+                               });
           }
         });
         // Prepare login
@@ -1851,6 +1861,7 @@ require(['jquery',
       if ( model.configuration.multipleProductsSelection && document.getElementById('script_mybooking_summary_product_detail_table')) {
         var reservationTableDetail = tmpl('script_mybooking_summary_product_detail_table')({
           bookings: model.shopping_cart.items,
+          booking: model.shopping_cart,
           configuration: model.configuration
         });
         $('#mybooking_summary_product_detail_table').html(reservationTableDetail);
@@ -1881,7 +1892,13 @@ require(['jquery',
                   modifyReservationModalSelector = '#modify_reservation_modal'
                 }
                 // Show the modal to change dates
-                commonUI.showModal(modifyReservationModalSelector);
+                commonUI.showModal(modifyReservationModalSelector,
+                  function(event, modal){ // on Show
+                    setTimeout(function(){  
+                      // Call to the mediator
+                      rentEngineMediator.onShowModal(event, modal);
+                    },50);
+                  });
               }
          });
        }
@@ -2057,9 +2074,11 @@ require(['jquery',
         // Show the product in a modal
         commonUI.showModal('#modalExtraDetail', function(event, modal){ // On Show
                                                   setTimeout(function(){ 
-                                                    if ( $('.mybooking-carousel-inner').length ) {  
+                                                    if ($('.mybooking-carousel-inner').length) {  
                                                       commonUI.showSlider('.mybooking-carousel-inner');
                                                     }
+                                                    // Call to the mediator
+                                                    rentEngineMediator.onShowModal(event, modal);
                                                   }, 50);
                                                 },
                                                 function(event, modal) { // On hide
@@ -2138,6 +2157,24 @@ require(['jquery',
       }
 
     },
+
+    // -------------------- Mediator interaction
+
+    /**
+     * Activate the checkout
+     * 
+     * This is a connection point with extensions using the mediator. In case of a custom
+     * validation, the extension can call this method to activate the checkout and allow the
+     * user to submit the reservation form again. This necessary because when the user submits
+     * the form, the submit button is disabled to avoid double click.
+     * 
+     * It is not used directly in the standard flow. Just for extensions with the mediator
+     */
+    activateCheckout: function() {
+      // Enable submit => remove disabled
+      $('form[name=reservation_form] button[type=submit]').removeAttr('disabled');
+      model.reservationFormSubmitted = false;
+    }
 
   };
 
