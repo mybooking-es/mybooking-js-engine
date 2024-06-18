@@ -1071,34 +1071,14 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
       // }, 'Invalid format.');
 
       // Date is required function
-      const date_is_required = function(element) {
-        // Get the field name
-        const fieldName = $(element).attr('name');
-        console.log('NAME', fieldName);
+      
 
-        console.log('IS REQUIRED', $(element).prop('required'));
-        // Check if the date is required, if not return true because do not need validate the value
-        if (!$(element).prop('required')) {
-          return false;
-        }
-
-        // Get the others fields
-        const dayField = $('[name="'+fieldName+'_day"]');
-        const monthField = $('[name="'+fieldName+'_month"]');
-        const yearField = $('[name="'+fieldName+'_year"]');
-
-        // Check if any field is visible
-        const anyFieldsIsVisible =  dayField.is(':visible') || monthField.is(':visible') || yearField.is(':visible');
-        // If no field is visible, return true because do not need validate the value
-        console.log('IS VISIBLE', anyFieldsIsVisible, dayField, monthField, yearField);
-        if (!anyFieldsIsVisible) {
-          return false;
-        }
-
-        return true;
-      };
       // Date patter
       $.validator.addMethod('date_pattern', function(value, element) {
+        // Check the regular expression only if it is not empty
+        if (value === '') {
+          return true;
+        }
         const regex = new RegExp('^\\d{4}-\\d{2}-\\d{2}$');
         return regex.test(value);
       }, 'Date format is YYYY-MM-DD.');
@@ -1135,7 +1115,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
                 minlength: 9
               },
               'driver_date_of_birth': {
-                required: (element) => date_is_required(element),
+                required: (element) => view.validateDateIsRequired(element),
                 date_pattern: true,
               },
               'customer_nacionality': {
@@ -1152,66 +1132,19 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
               },
               'customer_document_id': {
                 required: () => $('[name="customer_document_id"]').is(':visible') && $('[name="customer_document_id"]').prop('required'),
-                // pattern: () => {
-                //   const typeDocument = $('[name="customer_document_id_type_id"]').val();
-                //   let regex = null;
-
-                //   switch (typeDocument) {
-                //     case '1':
-                //       // NIF regex
-                //       regex = '[0-9]{8}[A-Z]';
-                //       break;
-                //     case '2':
-                //       // NIE regex
-                //       regex =  '[XYZ][0-9]{7}[A-Z]';
-                //       break;
-                  
-                //     default:
-                //       regex = '.*';
-                //       break;
-                //   }
-
-                //   return regex;
-                // },
               },
               'driver_document_id': {
                 required: () => $('[name="driver_document_id"]').is(':visible') && $('[name="driver_document_id"]').prop('required'),
-                // pattern: () => {
-                //   const typeDocument = $('[name="driver_document_id_type_id"]').val();
-                //   let regex = null;
-
-                //   switch (typeDocument) {
-                //     case '1':
-                //       if (model.booking.customer_type == 'legal_entity') {
-                //         // CIF regex
-                //         regex = '[ABCDEFGHJNPQRSUVW][0-9]{7}[0-9A-J]';
-                //       } else {
-                //         // NIF regex
-                //         regex = '[0-9]{8}[A-Z]';
-                //       }
-                //       break;
-                //     case '2':
-                //       // NIE regex
-                //       regex =  '[XYZ][0-9]{7}[A-Z]';
-                //       break;
-                  
-                //     default:
-                //       regex = '.*';
-                //       break;
-                //   }
-
-                //   return regex;
-                // },
               },
               'driver_origin_country': {
                 required: () => $('[name="driver_origin_country"]').is(':visible') && $('[name="driver_origin_country"]').prop('required'),
               },
               'driver_document_id_date': {
-                required: (element) => date_is_required(element),
+                required: (element) => view.validateDateIsRequired(element),
                 date_pattern: true,
               },
               'driver_document_id_expiration_date': {
-                required: (element) => date_is_required(element),
+                required: (element) => view.validateDateIsRequired(element),
                 date_pattern: true,
               },
               'driver_driving_license_type_id': {
@@ -1219,27 +1152,16 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
               },
               'driver_driving_license_number': {
                 required: () => $('[name="driver_driving_license_number"]').is(':visible') && $('[name="driver_driving_license_number"]').prop('required'),
-                // pattern: () => {
-                //   const typeDocument = $('[name="driver_driving_license_type_id"]').val();
-                //   let regex = '.*';
-
-                //   if (typeDocument != '19' || typeDocument != '20') {
-                //     // Driving license regex
-                //     regex = '[A-Z][0-9]{7}';
-                //   }
-
-                //   return regex;
-                // },
               },
               'driver_driving_license_country': {
                 required: () => $('[name="driver_driving_license_country"]').is(':visible') && $('[name="driver_driving_license_country"]').prop('required'),
               },
               'driver_driving_license_date': {
-                required: (element) => date_is_required(element),
+                required: (element) => view.validateDateIsRequired(element),
                 date_pattern: true,
               },
               'driver_driving_license_expiration_date': {
-                required: (element) => date_is_required(element),
+                required: (element) => view.validateDateIsRequired(element),
                 date_pattern: true,
               },
               'customer_address\\[street\\]': {
@@ -1406,6 +1328,35 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
       );
 
       rentEngineMediator.onMyReservationSetupReservationForm();
+    },
+
+    /**
+     * Validate that a date is required
+     * @param {*} element 
+     * @returns 
+     */
+    validateDateIsRequired: function(element) {
+      // Get the field name
+      const fieldName = $(element).attr('name');
+
+      // Check if the date is required, if not return true because do not need validate the value
+      if (!$(element).prop('required')) {
+        return false;
+      }
+
+      // Get the others fields
+      const dayField = $('[name="'+fieldName+'_day"]');
+      const monthField = $('[name="'+fieldName+'_month"]');
+      const yearField = $('[name="'+fieldName+'_year"]');
+
+      // Check if any field is visible
+      const anyFieldsIsVisible =  dayField.is(':visible') || monthField.is(':visible') || yearField.is(':visible');
+      // If no field is visible, return true because do not need validate the value
+      if (!anyFieldsIsVisible) {
+        return false;
+      }
+
+      return true;
     },
 
     /**
