@@ -22,6 +22,8 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
     bookingFreeAccessId : null,
     /* Booking */
     booking: null,
+    originalCustomerAndDriver: null,
+    originalBookingDriver: null,
     sales_process: null,
     /* Form */
     nationalities: null,
@@ -111,6 +113,8 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
                  // OPTIMIZATION 2024-01-27 END
 
                  model.booking = data.booking;
+                 model.originalCustomerAndDriver = !data.booking.driver_is_customer;
+                 model.originalBookingDriver = null;
                  model.required_fields = data.required_fields;
                  model.bookingFreeAccessId = data.booking.free_access_id;
                  model.sales_process = data.sales_process;
@@ -195,6 +199,9 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
                 // Update reservation
                 if (typeof data.booking !== 'undefined') {
                   model.booking = data.booking;
+                  // Refresh original values
+                  model.originalCustomerAndDriver = !data.booking.driver_is_customer;
+                  model.originalBookingDriver = null;
                   view.updateBooking();
                 }
 
@@ -359,31 +366,64 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
     /**
      * Toogle driver panel click
      */
-    toogleDriverPanelClick: function(event) {
-      const target = $(event.target);
-      const value = target.is(':checked');
+    toogleDriverPanelClick: function() {
 
-      if (value) {
-        // Driver panel
-        $('#driver_panel_container').html('');
+      const driverIsCustomer = $('input[name=driver_is_customer]').is(':checked');
+
+      if (driverIsCustomer) {
+        // Customer/Driver panel
+        $('#driver_panel_container').empty();
+
+        // Only if originally customer & driver are different
+        if (model.originalCustomerAndDriver) {
+          // When toggle hold the original driver details
+          if (model.originalBookingDriver === null) {
+            model.originalBookingDriver = {};
+            model.originalBookingDriver.driver_name = model.booking.driver_name;
+            model.originalBookingDriver.driver_surname = model.booking.driver_surname;
+            model.originalBookingDriver.driver_nacionality = model.booking.driver_nacionality;
+            model.originalBookingDriver.driver_document_id_type_id = model.booking.driver_document_id_type_id;
+            model.originalBookingDriver.driver_document_id = model.booking.driver_document_id;          
+          }
+          // When toggle assign customer details to driver (both are the same person)
+          model.booking.driver_name = model.booking.customer_name;
+          model.booking.driver_surname = model.booking.customer_surname;
+          model.booking.driver_nacionality = model.booking.customer_nacionality;
+          model.booking.driver_document_id_type_id = model.booking.customer_document_id_type_id;
+          model.booking.driver_document_id = model.booking.customer_document_id;
+        }
 
         // Customer panel
         // Include customer driver form
         if (document.getElementById('script_reservation_form_customer_driver')) {
           const reservationFormCustomerDriver = tmpl('script_reservation_form_customer_driver')(
             {booking: model.booking,
-              required_fields: model.required_fields,
-              configuration: model.configuration});
+             required_fields: model.required_fields,
+             configuration: model.configuration});
           $('#customer_panel_container').html(reservationFormCustomerDriver);
         }
+
       } else {
+
+        // Only if originally customer & driver are different
+        if (model.originalCustomerAndDriver) {
+          // When toggle restore original driver details
+          if (model.originalBookingDriver !== null) {
+            model.booking.driver_name = model.originalBookingDriver.driver_name;
+            model.booking.driver_surname = model.originalBookingDriver.driver_surname;
+            model.booking.driver_nacionality = model.originalBookingDriver.driver_nacionality;
+            model.booking.driver_document_id_type_id = model.originalBookingDriver.driver_document_id_type_id;
+            model.booking.driver_document_id = model.originalBookingDriver.driver_document_id;          
+          }
+        }
+
         // Driver panel
         // Include reservation drivers form
         if (document.getElementById('script_reservation_form_driver')) {
           const reservationFormDriver = tmpl('script_reservation_form_driver')(
             {booking: model.booking,
-              required_fields: model.required_fields,
-              configuration: model.configuration});
+             required_fields: model.required_fields,
+             configuration: model.configuration});
           $('#driver_panel_container').html(reservationFormDriver);
         }
 
@@ -392,8 +432,8 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
         if (document.getElementById('script_reservation_form_customer')) {
           const reservationFormCustomer = tmpl('script_reservation_form_customer')(
             {booking: model.booking,
-              required_fields: model.required_fields,
-              configuration: model.configuration});
+             required_fields: model.required_fields,
+             configuration: model.configuration});
           $('#customer_panel_container').html(reservationFormCustomer);
         }
       }
