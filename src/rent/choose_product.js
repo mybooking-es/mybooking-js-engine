@@ -1300,6 +1300,17 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
               $('#go_to_complete').bind('click', function() {
                 controller.multipleProductsNextButtonClick();
               });
+
+              // Situe margin in next button with multiple selection and listing bottom margin
+              if ($('.mybooking-product_listing').length > 0) {
+                // Set the margin right in button
+                const marginRight =  (window.innerWidth - $('.mybooking-product_listing').width()) / 2;
+                if (typeof marginRight === 'number' && marginRight > 0){
+                  $('.mybooking-process_choose #go_to_complete').css('right', marginRight);
+                }
+                // Add bottom margin in list
+                $('.mybooking-product_listing').addClass('mybooking-multiple_choose-margin');
+              }
             }
             
             // Bind the event to show detailed product
