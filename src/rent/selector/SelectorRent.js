@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDSelectSelector',
          'commonServices','commonSettings', 'commonTranslations', 'commonLoader',
          'i18next', 'moment','ysdtemplate', 'customCookie', 'jquery.i18next',
@@ -909,7 +910,6 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
         this.loadPickupPlaces(); // The other fields are automatically assigned after pickup_place assignation
       }
       else {
-
         // Load rental locations
         if (!this.selectorModel.configuration.simpleLocation && 
             this.applyRentalLocationSelector()) {
@@ -926,11 +926,14 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
         if (this.selectorModel.configuration.timeToFrom) {
           this.loadPickupHours();
           this.loadReturnHours();
+        } else if (this.selectorModel.configuration.rentDateSelector === 'date_from_duration') {
+          // Load durations in base date_from
+          this.loadDurations(); 
         }
       }
 
       // Load age rules
-      if ( this.selectorModel.configuration.useDriverAgeRules) {
+      if (this.selectorModel.configuration.useDriverAgeRules) {
         this.loadAgeRules();
       }
 
@@ -2139,7 +2142,20 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
           break;
         case 'durations':
           var dataSource = new MemoryDataSource(this.selectorModel.durations, {'id': 'value', 'description': 'text'});
-          var renting_duration = this.selectorModel.shopping_cart ? this.selectorModel.shopping_cart.renting_duration : null;
+
+          var renting_duration = null;
+          if (this.selectorModel.shopping_cart && this.selectorModel.shopping_cart.renting_duration) {
+            renting_duration = this.selectorModel.shopping_cart.renting_duration;
+          } else {
+            if (this.selectorModel.configuration.prefillSelector) {
+              // Setup the first available duration
+              renting_duration = this.selectorModel.durations[1] ? this.selectorModel.durations[1].value : null;
+            }
+            else {
+              renting_duration = null;
+            }
+          }
+
           console.log('renting_duration');
           console.log(this.selectorModel.shopping_cart);
           console.log(renting_duration);
