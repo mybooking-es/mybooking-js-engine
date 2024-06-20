@@ -204,7 +204,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
       }
 */      
       this.pickup_place = decodeURIComponent(urlVars['pickup_place']).replace(/\+/g, " ");
-      this.pickup_place_other = decodeURIComponent(urlVars['pickup_place_other']).replace(/\+/g, " ");
+      this.pickup_place_other = decodeURIComponent(urlVars['pickup_place_other']).replace(/\+/g, ' ');
       this.custom_pickup_place = decodeURIComponent(urlVars['custom_pickup_place']);
       this.return_place = decodeURIComponent(urlVars['return_place']).replace(/\+/g, " ");
       this.return_place_other = decodeURIComponent(urlVars['return_place_other']).replace(/\+/g, " ");
@@ -304,11 +304,13 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
         data.renting_duration = this.renting_duration;
       }
 
+      // eslint-disable-next-line max-len
       if (this.rental_location_code != 'undefined' && this.rental_location_code != null && this.rental_location_code != '') {
         data.rental_location_code = this.rental_location_code;
         data.engine_fixed_rental_location = this.engine_fixed_rental_location;
       }
 
+      // eslint-disable-next-line max-len
       if (this.simple_location_id !== 'undefined' && this.simple_location_id !== null && this.simple_location_id !== '') {
         data.simple_location_id = this.simple_location_id;
       }
@@ -501,7 +503,9 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
          url += '&api_key=' + commonServices.apiKey;
        }
        // Add a initial limit
-       url += '&limit=' + model.lazy_loading_limit;
+       if ($('#product_listing').attr('data-lazy-loading') === 'true') {
+        url += '&limit=' + model.lazy_loading_limit;
+       }
        // Request
        if (this.isShoppingCartData()) { // create or update shopping cart
          $.ajax({
@@ -1034,7 +1038,9 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
       model.loadShoppingCart();
 
       // Setup the lazy loading
-      this.setupLazyLoading();
+      if ($('#product_listing').attr('data-lazy-loading') === 'true') {
+        this.setupLazyLoading();
+      }
     },
 
     showRemainProducts: function(products) {
@@ -1046,6 +1052,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
         }
       }
       // Get template: detailed product or detailed product multiple rates
+      // eslint-disable-next-line max-len
       const nameTmpl = model.configuration.chooseProductMultipleRateTypes ? 'script_detailed_product_multiple_rates' : 'script_detailed_product';
 
       if (document.getElementById(nameTmpl)) {
@@ -1086,6 +1093,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
               // Set the lazy loading flag
               model.is_lazy_loading = true;
               // Show the loading message
+              // eslint-disable-next-line max-len
               const loadingHtml = '<div id="product_listing_loading" style="padding: 1rem; text-align: center; background-color: rgba(0,0,0,0,6);">Loading ...</div>';
               $('.mybooking-page-container').append(loadingHtml);
               // Load the next step remaining products
@@ -1309,8 +1317,10 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
           }  
         }
 
-        // Verify first lazy loading products charge
-        this.verifyFirstLazyLoading();
+        if ($('#product_listing').attr('data-lazy-loading') === 'true') {
+          // Verify first lazy loading products charge
+          this.verifyFirstLazyLoading();
+        }
     },
 
     /***
