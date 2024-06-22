@@ -423,6 +423,7 @@ define("commonTranslations", [], function () {
           },
         },
         myReservation: {
+          confirmDriverIsCustomer: "Are you sure you want to make the change? Review the form once confirmed. This change may affect the values ​​of some information.",
           select_country: "Select country",
           select_nationality: "Select nationality",
           select_type_document: "Select type of document",
@@ -982,6 +983,7 @@ define("commonTranslations", [], function () {
           },
         },
         myReservation: {
+          confirmDriverIsCustomer: "¿Está seguro que desea realizar el cambio? Revise el formulario una vez confirmado. Este cambio puede afectar los valores de alguna información.",
           select_country: "Seleccionar país",
           select_nationality: "Seleccionar nacionalidad",
           select_type_document: "Seleccionar tipo de documento",
@@ -1543,6 +1545,7 @@ define("commonTranslations", [], function () {
           },
         },
         myReservation: {
+          confirmDriverIsCustomer: "Estàs segur que voleu fer el canvi? Reviseu el formulari una vegada confirmat. Aquest canvi pot afectar els paràmetres d'alguna informació.",
           select_country: "Escollir país",
           select_nationality: "Seleccioneu la nacionalitat",
           select_type_document: "Seleccioneu el tipus de document",
@@ -2105,6 +2108,7 @@ define("commonTranslations", [], function () {
           },
         },
         myReservation: {
+          confirmDriverIsCustomer: "Sind Sie sicher, dass Sie die Änderung vornehmen möchten? Überprüfen Sie das Formular nach der Bestätigung. Diese Änderung kann sich auf die Werte einiger Informationen auswirken.",
           select_country: "Land auswählen",
           select_nationality: "Nationalität auswählen",
           select_type_document: "Wählen Sie den Dokumenttyp aus",
@@ -2669,6 +2673,7 @@ define("commonTranslations", [], function () {
           },
         },
         myReservation: {
+          confirmDriverIsCustomer: "Êtes-vous sûr de vouloir effectuer le changement ? Examinez le formulaire une fois confirmé. Ce changement peut affecter les valeurs de certaines informations.",
           select_country: "Choisissez le pays",
           select_nationality: "Sélectionnez la nationalité",
           select_type_document: "Sélectionnez le type de document",
@@ -3243,6 +3248,7 @@ define("commonTranslations", [], function () {
           },
         },
         myReservation: {
+          confirmDriverIsCustomer: "Sei sicuro di voler apportare la modifica? Rivedere il modulo una volta confermato. Questa modifica potrebbe influenzare i valori di alcune informazioni.",
           select_country: "Seleziona il paese",
           select_nationality: "Seleziona la nazionalità",
           select_type_document: "Seleziona il tipo di documento",
@@ -3541,6 +3547,7 @@ define("commonTranslations", [], function () {
           },
         },
         myReservation: {
+          confirmDriverIsCustomer: "Вы уверены, что хотите внести изменения? Просмотрите форму после подтверждения. Это изменение может повлиять на значения некоторой информации.",
           select_country: "Выберите страну",
           select_nationality: "Выберите национальность",
           select_type_document: "Выберите тип документа",

@@ -22,8 +22,10 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
     bookingFreeAccessId : null,
     /* Booking */
     booking: null,
-    originalCustomerAndDriver: null,
-    originalBookingDriver: null,
+    /* Driver is customer management and fields */
+    firstTimeDriverIsCustomerToggle: false,
+    holdedBookingDriver: null,
+    /* Sales process */
     sales_process: null,
     /* Form */
     nationalities: null,
@@ -113,8 +115,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
                  // OPTIMIZATION 2024-01-27 END
 
                  model.booking = data.booking;
-                 model.originalCustomerAndDriver = !data.booking.driver_is_customer;
-                 model.originalBookingDriver = null;
+                 model.storeOriginalDriverCustomer(model.booking);
                  model.required_fields = data.required_fields;
                  model.bookingFreeAccessId = data.booking.free_access_id;
                  model.sales_process = data.sales_process;
@@ -200,8 +201,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
                 if (typeof data.booking !== 'undefined') {
                   model.booking = data.booking;
                   // Refresh original values
-                  model.originalCustomerAndDriver = !data.booking.driver_is_customer;
-                  model.originalBookingDriver = null;
+                  model.storeOriginalDriverCustomer(model.booking);              
                   view.updateBooking();
                 }
 
@@ -211,6 +211,41 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
                 alert(i18next.t('myReservation.updateReservation.error'));
             }
         });
+    },
+
+    /**
+     * Store the original driver information
+     * @param {*} booking 
+     */
+    storeOriginalDriverCustomer: function(booking) {
+
+      model.firstTimeDriverIsCustomerToggle = false;
+      // Hold the original values from the API
+      model.holdedBookingDriver = {};
+      // Customer
+      model.holdedBookingDriver.customer_name = booking.customer_name;
+      model.holdedBookingDriver.customer_surname = booking.customer_surname;
+      model.holdedBookingDriver.customer_nacionality = booking.customer_nacionality;
+      model.holdedBookingDriver.customer_document_id_type_id = booking.customer_document_id_type_id;
+      model.holdedBookingDriver.customer_document_id = booking.customer_document_id;
+      if (model.configuration.rentingFormFillDataAddress) {
+        model.holdedBookingDriver.customer_address_street = booking.address_street;
+        model.holdedBookingDriver.customer_address_number = booking.address_number;
+        model.holdedBookingDriver.customer_address_complement = booking.address_complement;
+        model.holdedBookingDriver.customer_address_city = booking.address_city;
+        model.holdedBookingDriver.customer_address_state = booking.address_state;
+        model.holdedBookingDriver.customer_address_country_code = booking.address_country_code;
+        model.holdedBookingDriver.customer_address_zip = booking.address_zip;
+      }
+      // Driver
+      model.holdedBookingDriver.driver_name = booking.driver_name;
+      model.holdedBookingDriver.driver_surname = booking.driver_surname;
+      model.holdedBookingDriver.driver_nacionality = booking.driver_nacionality;
+      model.holdedBookingDriver.driver_document_id_type_id = booking.driver_document_id_type_id;
+      model.holdedBookingDriver.driver_document_id = booking.driver_document_id;      
+      model.holdedBookingDriver.driver_driving_license_type_id = booking.driver_driving_license_type_id;      
+      model.holdedBookingDriver.driver_driving_license_type = booking.driver_driving_license_type;
+      model.holdedBookingDriver.driver_driving_license_number = booking.driver_driving_license_number;         
     },
 
     // ----------------- Load forms data ------------------------------
@@ -364,33 +399,78 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
     },
 
     /**
-     * Toogle driver panel click
+     * toggle driver panel click
      */
-    toogleDriverPanelClick: function() {
+    toggleDriverPanelClick: function() {
 
       const driverIsCustomer = $('input[name=driver_is_customer]').is(':checked');
 
       if (driverIsCustomer) {
-        // Customer/Driver panel
+        
+        // => From driver and customer to driver is customer
+
+        // Get the current values from the form (in case of toggle again) to improve user experience
+        model.holdedBookingDriver.customer_name = $('input[name=customer_name]').val();
+        model.holdedBookingDriver.customer_surname = $('input[name=customer_surname]').val();
+        model.holdedBookingDriver.customer_nacionality = $('select[name=customer_nacionality]').val();
+        model.holdedBookingDriver.customer_document_id_type_id = $('select[name=customer_document_id_type_id]').val();
+        model.holdedBookingDriver.customer_document_id = $('input[name=customer_document_id]').val();
+        if (model.configuration.rentingFormFillDataAddress) {
+          model.holdedBookingDriver.customer_address_street = $('input[name=customer_address\\[street\\]]').val();
+          model.holdedBookingDriver.customer_address_number = $('input[name=customer_address\\[number\\]]').val();
+          model.holdedBookingDriver.customer_address_complement = $('input[name=customer_address\\[complement\\]]').val();
+          model.holdedBookingDriver.customer_address_city = $('input[name=customer_address\\[city\\]]').val();
+          model.holdedBookingDriver.customer_address_state = $('input[name=customer_address\\[state\\]]').val();
+          model.holdedBookingDriver.customer_address_country_code = $('select[name=customer_address\\[country_code\\]]').val();
+          model.holdedBookingDriver.customer_address_zip = $('input[name=customer_address\\[zip\\]]').val();
+        }
+        model.holdedBookingDriver.driver_name = $('input[name=driver_name]').val();
+        model.holdedBookingDriver.driver_surname = $('input[name=driver_surname]').val();
+        model.holdedBookingDriver.driver_nacionality = $('select[name=driver_nacionality]').val();
+        model.holdedBookingDriver.driver_document_id_type = $('select[name=driver_document_id_type]').val();
+        model.holdedBookingDriver.driver_document_id_type_id = $('select[name=driver_document_id_type_id]').val();
+        model.holdedBookingDriver.driver_document_id = $('input[name=driver_document_id]').val();
+        model.holdedBookingDriver.driver_driving_license_type = $('input[name=driver_driving_license_type]').val();
+        model.holdedBookingDriver.driver_driving_license_type_id = $('select[name=driver_driving_license_type_id]').val();
+        model.holdedBookingDriver.driver_driving_license_number = $('input[name=driver_driving_license_number]').val();
+
+        // Clear Driver panel
         $('#driver_panel_container').empty();
 
-        // Only if originally customer & driver are different
-        if (model.originalCustomerAndDriver) {
-          // When toggle hold the original driver details
-          if (model.originalBookingDriver === null) {
-            model.originalBookingDriver = {};
-            model.originalBookingDriver.driver_name = model.booking.driver_name;
-            model.originalBookingDriver.driver_surname = model.booking.driver_surname;
-            model.originalBookingDriver.driver_nacionality = model.booking.driver_nacionality;
-            model.originalBookingDriver.driver_document_id_type_id = model.booking.driver_document_id_type_id;
-            model.originalBookingDriver.driver_document_id = model.booking.driver_document_id;          
-          }
+        // To improve user experience when toggle
+        if (!model.firstTimeDriverIsCustomerToggle) {
           // When toggle assign customer details to driver (both are the same person)
           model.booking.driver_name = model.booking.customer_name;
           model.booking.driver_surname = model.booking.customer_surname;
           model.booking.driver_nacionality = model.booking.customer_nacionality;
           model.booking.driver_document_id_type_id = model.booking.customer_document_id_type_id;
           model.booking.driver_document_id = model.booking.customer_document_id;
+          if (model.configuration.rentingFormFillDataAddress) {
+            model.booking.driver_address_street = model.booking.address_street;
+            model.booking.driver_address_number = model.booking.address_number;
+            model.booking.driver_address_complement = model.booking.address_complement;
+            model.booking.driver_address_city = model.booking.address_city;
+            model.booking.driver_address_state = model.booking.address_state;
+            model.booking.driver_address_country_code = model.booking.address_country_code;
+            model.booking.driver_address_zip = model.booking.address_zip;
+          }
+          // check to avoid done in each click
+          model.firstTimeDriverIsCustomerToggle = true; 
+        } else {
+          model.booking.driver_name = model.holdedBookingDriver.customer_name;
+          model.booking.driver_surname = model.holdedBookingDriver.customer_surname;
+          model.booking.driver_nacionality = model.holdedBookingDriver.customer_nacionality;
+          model.booking.driver_document_id_type_id = model.holdedBookingDriver.customer_document_id_type_id;
+          model.booking.driver_document_id = model.holdedBookingDriver.customer_document_id;
+          if (model.configuration.rentingFormFillDataAddress) {
+            model.booking.driver_address_street = model.holdedBookingDriver.customer_address_street;
+            model.booking.driver_address_number = model.holdedBookingDriver.customer_address_number;
+            model.booking.driver_address_complement = model.holdedBookingDriver.customer_address_complement;
+            model.booking.driver_address_city = model.holdedBookingDriver.customer_address_city;
+            model.booking.driver_address_state = model.holdedBookingDriver.customer_address_state;
+            model.booking.driver_address_country_code = model.holdedBookingDriver.customer_address_country_code;
+            model.booking.driver_address_zip = model.holdedBookingDriver.customer_address_zip;    
+          }      
         }
 
         // Customer panel
@@ -405,16 +485,23 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
 
       } else {
 
-        // Only if originally customer & driver are different
-        if (model.originalCustomerAndDriver) {
-          // When toggle restore original driver details
-          if (model.originalBookingDriver !== null) {
-            model.booking.driver_name = model.originalBookingDriver.driver_name;
-            model.booking.driver_surname = model.originalBookingDriver.driver_surname;
-            model.booking.driver_nacionality = model.originalBookingDriver.driver_nacionality;
-            model.booking.driver_document_id_type_id = model.originalBookingDriver.driver_document_id_type_id;
-            model.booking.driver_document_id = model.originalBookingDriver.driver_document_id;          
-          }
+        // => From driver is customer to customer and driver
+
+        // To improve user experience when toggle
+        if (model.holdedBookingDriver !== null) {
+          model.booking.customer_name = model.holdedBookingDriver.customer_name;
+          model.booking.customer_surname = model.holdedBookingDriver.customer_surname;
+          model.booking.customer_nacionality = model.holdedBookingDriver.customer_nacionality;
+          model.booking.customer_document_id_type_id = model.holdedBookingDriver.customer_document_id_type_id;
+          model.booking.customer_document_id = model.holdedBookingDriver.customer_document_id;
+          model.booking.driver_name = model.holdedBookingDriver.driver_name;
+          model.booking.driver_surname = model.holdedBookingDriver.driver_surname;
+          model.booking.driver_nacionality = model.holdedBookingDriver.driver_nacionality;
+          model.booking.driver_document_id_type_id = model.holdedBookingDriver.driver_document_id_type_id;
+          model.booking.driver_document_id = model.holdedBookingDriver.driver_document_id; 
+          model.booking.driver_driving_license_type = model.holdedBookingDriver.driver_driving_license_type;
+          model.booking.driver_driving_license_type_id = model.holdedBookingDriver.driver_driving_license_type_id;
+          model.booking.driver_driving_license_number = model.holdedBookingDriver.driver_driving_license_number;            
         }
 
         // Driver panel
@@ -446,9 +533,9 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
     },
 
      /**
-     * Toogle additional driver panel click
+     * toggle additional driver panel click
      */ 
-    toogleAdditionalDriversPanelClick: function(event) {
+    toggleAdditionalDriversPanelClick: function(event) {
       const target = $(event.currentTarget);
       const icon = target.find('.dashicons');
       const isOpened = target.hasClass('mb-open');
@@ -1433,16 +1520,27 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
 
        // ----------------- Form ------------------------------
       
-      // Driver is customer toogle
+      // Driver is customer toggle
       if ($('#driver_is_customer').length) {
-        $('#driver_is_customer').off('click');
-        $('#driver_is_customer').on('click', controller.toogleDriverPanelClick);
+        $('#driver_is_customer').off('change');
+        $('#driver_is_customer').on('change', function(event) {
+          if (confirm(i18next.t('myReservation.confirmDriverIsCustomer'))) {
+            controller.toggleDriverPanelClick();
+          }
+          else {
+            // Undo the change
+            event.preventDefault();
+            $(this).prop('checked', !$(this).prop('checked')); 
+          }
+        });
       }
 
-      // Additional drivers toogle
-      if ($('#additional_drivers_toogle_btn').length) {
-        $('#additional_drivers_toogle_btn').off('click');
-        $('#additional_drivers_toogle_btn').on('click', controller.toogleAdditionalDriversPanelClick);
+      // Additional drivers toggle
+      if ($('#additional_drivers_toggle_btn').length) {
+        $('#additional_drivers_toggle_btn').off('click');
+        $('#additional_drivers_toggle_btn').on('click', function(event){
+          controller.toggleAdditionalDriversPanelClick(event);
+        });
       }
     },
 
