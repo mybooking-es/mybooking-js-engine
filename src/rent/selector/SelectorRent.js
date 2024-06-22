@@ -2144,15 +2144,16 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
           var dataSource = new MemoryDataSource(this.selectorModel.durations, {'id': 'value', 'description': 'text'});
 
           var renting_duration = null;
+
           if (this.selectorModel.shopping_cart && this.selectorModel.shopping_cart.renting_duration) {
             renting_duration = this.selectorModel.shopping_cart.renting_duration;
-          } else {
+          } 
+          else {
             if (this.selectorModel.configuration.prefillSelector) {
-              // Setup the first available duration
-              renting_duration = this.selectorModel.durations[1] ? this.selectorModel.durations[1].value : null;
-            }
-            else {
-              renting_duration = null;
+              if (this.selectorModel.durations && this.selectorModel.durations.length > 0) {
+                // Setup the first available duration
+                renting_duration = this.selectorModel.durations[1].value;
+              }
             }
           }
 
