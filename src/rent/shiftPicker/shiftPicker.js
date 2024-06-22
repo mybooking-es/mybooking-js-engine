@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 /******
  *
  * Renting Module ShiftPicker (applied only for turns not flexible calendar)
@@ -5,6 +6,7 @@
  * data-category-code: Category code (REQUIRED)
  * data-rental-location-code: Rental location code (OPTIONAL)
  * data-sales-channel-code: Sales channel code (OPTIONAL)
+ * data-min-units: Min unit value (OPTIONAL)
  */
 require([
   'jquery',
@@ -18,7 +20,7 @@ require([
 	'ysdtemplate',
 	'customCookie',
 	'jquery.i18next',
-], function (
+], function(
   $,
   i18next,
   commonSettings,
@@ -35,10 +37,13 @@ require([
    */
   function ShiftPicker({
 		containerHTML,
+		form,
 		category_code,
 		rental_location_code,
 		sales_channel_code,
 		units,
+		min_units,
+		errorMessage,
   }) {
 
     /**
@@ -46,12 +51,14 @@ require([
      */
     this.model = {
 			containerHTML, // All html container instance
+			form, // Form instance
 			requestLanguage: 'es', // Request language
 			category_code, // Product code
 			rental_location_code, // Rental location code
 			sales_channel_code, // Sales channel code
 			api_date_format: 'YYYY-MM-DD', // Api date format for requests
-			maxUnits: 1, // Max units in selector
+			max_units: 1, // Max units in selector
+			min_units, // Min units in selector
 			units, // Selected units
 			availableDates: [], // All available dates
 			disabledDates: [], // Disabled dates
@@ -65,6 +72,7 @@ require([
 			shoppingCartId: undefined, // Shopping cart ID
 			product: undefined, // Product
 			product_available: undefined, // Product available
+			errorMessage, // Error message container
     };
   }
 
@@ -119,10 +127,10 @@ require([
         $.ajax({
           url: url,
         })
-          .done(function (result) {
+          .done(function(result) {
             resolve(result.units);
           })
-          .fail(function (error) {
+          .fail(function(error) {
             console.error('Error', error);
             
 						alert(i18next.t('shiftPicker.generic_error'));
@@ -161,7 +169,7 @@ require([
 				}
 			});
 
-			return [ availableDates, disabledDates, fullDates ];
+			return [availableDates, disabledDates, fullDates];
 		},
 
 		/**
@@ -221,7 +229,7 @@ require([
 
             resolve(dates);
           })
-          .fail(function (error) {
+          .fail(function(error) {
             console.error('Error', error);
             
 						alert(i18next.t('shiftPicker.generic_error'));
@@ -292,10 +300,10 @@ require([
         $.ajax({
           url: url,
         })
-          .done(function (result) {
+          .done(function(result) {
             resolve(result);
           })
-          .fail(function (error) {
+          .fail(function(error) {
             console.error('Error', error);
             
 						alert(i18next.t('shiftPicker.generic_error'));
@@ -445,6 +453,7 @@ require([
 
       if (rental_location_code != null) {
         data.rental_location_code = rental_location_code;
+        // eslint-disable-next-line max-len
         data.engine_fixed_rental_location = ($(this.form_selector).find('input[type=hidden][name=rental_location_code]').length == 0);
       }
 
@@ -481,11 +490,19 @@ require([
 			} = this.model;
 
 			// Get max units for select field
-			this.model.maxUnits =  await this.getMaxUnits();
+			this.model.max_units =  await this.getMaxUnits();
+
+			if (this.model.min_units > this.model.max_units) {
+				this.model.form.hide();
+				this.model.errorMessage.show();
+				return false;
+			}
+
 			// Add options in select field
 			const field = containerHTML.find('select[name=shiftpicker-units]');
 			field.html('');
-			for (let index = 1; index <= this.model.maxUnits; index++) {
+			let index = this.model.min_units;
+			for (index; index <= this.model.max_units; index++) {
 				// Refresh template html 
 				const HTML = tmpl('script_shiftpicker_units_option')({
 					model: {
@@ -503,6 +520,8 @@ require([
 
 				this.onUnitsChanged(value);
 			});
+
+			return true;
     },
 
 		/**
@@ -535,12 +554,12 @@ require([
 			const isEnabled = this.model.disabledDates.indexOf(formatDate) === -1;
 			const isAvailable = this.model.fullDates.indexOf(formatDate) === -1;
 			
-			let result =  [ true, 'shiftpicker-date-enabled' ];
+			let result =  [true, 'shiftpicker-date-enabled'];
 			if (!isEnabled) {
-				result = [ false, 'shiftpicker-date-disabled' ];
+				result = [false, 'shiftpicker-date-disabled'];
 			} 
 			if (!isAvailable) {
-				result = [ false, 'shiftpicker-date-full' ];
+				result = [false, 'shiftpicker-date-full'];
 			}
 
 			return result;
@@ -556,7 +575,7 @@ require([
 				date,
 			} = this.model;
 
-			$.datepicker.setDefaults( $.datepicker.regional[requestLanguage] );
+			$.datepicker.setDefaults($.datepicker.regional[requestLanguage]);
 			
 			const inputDate = containerHTML.find('input[name=shiftpicker-date]');
 			const instanceDate = new Date(date);
@@ -579,7 +598,7 @@ require([
 
 				const newDate = inputDate.datepicker('getDate');
 				if (!newDate || newDate === '') {
-					return; // TODO validate format date
+					return;
 				}
 				const value =  YSDFormatter.formatDate(newDate, api_date_format);
 
@@ -601,6 +620,7 @@ require([
 					const initialDate = this.model.availableDates.pop();
 
 					// Get next dates function with next date callback function
+					// eslint-disable-next-line max-len
 					this.addScrollDates(initialDate, YSDFormatter.formatDate(moment(value).add(this.model.datesTo, 'days'), api_date_format), () => {
 						// Set date
 						this.onDateChanged(value);
@@ -629,7 +649,7 @@ require([
 		 *Gest next moth in calendar
 		*/
 		addScrollDates: async function(from, to, callback) {
-			const [ newAvailableDates, newDisabledDates, newFullDates ] = await this.getDates(from, to);
+			const [newAvailableDates, newDisabledDates, newFullDates] = await this.getDates(from, to);
 
 			this.model.availableDates =  [
 				...this.model.availableDates,
@@ -716,6 +736,7 @@ require([
 				// Info not data found
 				turnsSelector.append(`<li>${i18next.t('shiftPicker.no_data_found')}</li>`);
 			}
+			commonLoader.hide();
 		},
 
 		refreshInfoPanel: function() {
@@ -786,6 +807,7 @@ require([
 							const initialDate = this.model.availableDates.pop();
 
 							// Get next dates function with next date callback function
+							// eslint-disable-next-line max-len
 							this.addScrollDates(initialDate, YSDFormatter.formatDate(moment(initialDate).add(this.model.datesTo, 'days'), api_date_format), () => {
 								// Move one position in next
 								this.model.date = this.model.availableDates[index + 1];
@@ -830,7 +852,8 @@ require([
 			} = this.model;
 
 			// Get dates
-			const [ availableDates, disabledDates, fullDates ] =  await this.getDates(date, YSDFormatter.formatDate(moment(date).add(this.model.datesTo, 'days'), api_date_format));
+			// eslint-disable-next-line max-len
+			const [availableDates, disabledDates, fullDates] =  await this.getDates(date, YSDFormatter.formatDate(moment(date).add(this.model.datesTo, 'days'), api_date_format));
 			
 			if (availableDates.length > 0) {
 				this.model.availableDates = availableDates;
@@ -879,7 +902,7 @@ require([
     /**
      * Initizialize
      */
-    init: function () {
+    init: function() {
 			// Get request language
 			const requestLanguage = commonSettings.language(
 				document.documentElement.lang || 'es'
@@ -891,7 +914,7 @@ require([
 					lng: requestLanguage,
 					resources: commonTranslations,
 				},
-				function () {
+				function() {
 					// https://github.com/i18next/jquery-i18next#initialize-the-plugin
 					//jqueryI18next.init(i18next, $);
 					// Localize UI
@@ -905,8 +928,6 @@ require([
 			// Load settings
 			commonLoader.show();
 			commonSettings.loadSettings((data) => {
-				commonLoader.hide();
-		
 				// Extend the model
 				this.model = {
 					...this.model,
@@ -923,9 +944,13 @@ require([
 		/**
      * Set Controls
      */
-    setupControls: function () {
-			this.initializeUnitsSelector();
-			this.initializeScrollCalendar();
+    setupControls: async function() {
+			const isAvailable = await this.initializeUnitsSelector();
+			if (isAvailable) {
+				this.initializeScrollCalendar();
+			} else {
+				commonLoader.hide();
+			}
     },
 
 		/**
@@ -933,9 +958,8 @@ require([
      */
 		setupValidations: function() {
 			const self = this;
-
-			$('form[name=mybooking-rent-shift-picker-form]').validate({
-				submitHandler: function (form, event) {
+			this.model.form.validate({
+				submitHandler: function(form, event) {
           event.preventDefault();
 
           self.gotoNextStep();
@@ -944,7 +968,7 @@ require([
         },
         rules: {},
         messages: {},
-        errorPlacement: function (error, element) {
+        errorPlacement: function(error, element) {
           error.insertAfter(element.parent());
         },
         errorClass: 'form-reservation-error',
@@ -973,23 +997,30 @@ require([
     /**
      * Initizialize
      */
-    init: function () {
+    init: function() {
 			$('.mybooking-rent-shift-picker .mybooking-rent-shift-picker-content').each(
         (index, item) => {
           // Unique id for instance
           const id = $(item).attr('id');
           const containerHTML = $('#' + id);
+					const form = containerHTML.find('form');
 					const categoryCode = containerHTML.attr('data-category-code');
 					const rentalLocationCode = containerHTML.attr('data-rental-location-code');
 					const salesChannelCode = containerHTML.attr('data-sales-channel-code');
+					const minUnitsValue = containerHTML.attr('data-min-units');
+					const minUnits = minUnitsValue !== '' ? Number(minUnitsValue, 10) : 1;
+					const errorMessage = containerHTML.find('.mybooking-rent-shift-picker-error');
 
           // Default settings for instance
 					const settings = {
 						containerHTML,
+						form,
 						category_code: categoryCode,
 						rental_location_code: rentalLocationCode || undefined,
 						sales_channel_code: salesChannelCode || undefined,
-						units: 1,
+						min_units: minUnits,
+						units: minUnits,
+						errorMessage,
 					};
 
           // Create a ShiftPicker instance
@@ -1001,7 +1032,7 @@ require([
     /**
      * Factory to create ShiftPicker instances
      */
-    factory: function (settings) {
+    factory: function(settings) {
       // The proptotype => Clones the model, controller and view
       ShiftPicker.prototype = {
         ...model, // Appends the model (cloning)
