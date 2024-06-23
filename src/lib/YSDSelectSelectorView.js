@@ -43,99 +43,105 @@ define(function() {
           break;
       }
 
-    }
+    };
 
-    this.createNullOption = function() {
-      var selectControl = document.getElementById(selectControlId);
+    this.createNullOption = function(element) {
       var  option = document.createElement('option');
       option.setAttribute('value', '');
       option.text = option.innerText = this.nullOptionText;
-      selectControl.appendChild(option);
-    }
+      $(element).append(option);
+    };
 
     this.createOptions = function() { /* Create the options */
 
       var data_options = this.model.data;
       var option = null;
       var selectControl = document.getElementById(selectControlId);
-
-      if (selectControl != null) {
-        // Remove the options
-        if (selectControl.options.length > 0)
-        {
-           while (selectControl.hasChildNodes())
-           {
-             selectControl.removeChild(selectControl.firstChild);
-           }
-        }
-
-        if (nullOption) {
-          this.createNullOption();
-        }
-
-        for (var idx in data_options) {
-          option = document.createElement('option');
-          option.setAttribute('value', data_options[idx].id);
-          option.text = option.innerText = data_options[idx].description;
-
-          // Age allowed and message option
-          if (data_options[idx].allowed !== undefined) {
-            option.setAttribute('allowed', data_options[idx].allowed);
-          }
-          if (data_options[idx].message_not_allowed !== undefined && data_options[idx].message_not_allowed !== '') {
-            option.setAttribute('message_not_allowed', data_options[idx].message_not_allowed);
+      if (!selectControl) {
+        selectControl = document.getElementsByName(selectControlId);
+      } else {
+        selectControl = [selectControl];
+      }
+      var that = this;
+      if (selectControl && selectControl.length > 0) {
+        selectControl.forEach(function(element) {
+          // Remove the options
+          if (element.options.length > 0){
+            while (element.hasChildNodes())
+            {
+              element.removeChild(element.firstChild);
+            }
           }
 
-          selectControl.appendChild(option);
+          // Create the null option
+          if (nullOption) {
+            that.createNullOption(element);
+          }
 
-        }
+          for (var idx in data_options) {
+            option = document.createElement('option');
+            option.setAttribute('value', data_options[idx].id);
+            option.text = option.innerText = data_options[idx].description;
+
+            // Age allowed and message option
+            if (data_options[idx].allowed !== undefined) {
+              option.setAttribute('allowed', data_options[idx].allowed);
+            }
+            if (data_options[idx].message_not_allowed !== undefined && data_options[idx].message_not_allowed !== '') {
+              option.setAttribute('message_not_allowed', data_options[idx].message_not_allowed);
+            }
+
+            $(element).append(option);
+          }
+        });
       }
 
       if (this.callback) {
         this.callback();
       }
-
-    }
+    };
 
     this.selectValues = function() { /* Select the values */
-
       var the_value = this.model.value;
       var selectControl = document.getElementById(selectControlId);
-
-      if (selectControl != null) {
-        var option = selectControl.firstElementChild;
-        while (option) {
-
-          if (the_value instanceof Array) {
-            for (var idx in the_value) {
-              if (the_value[idx] instanceof Object && option.getAttribute('value') == the_value[idx].id) {
-                option.selected = true;
-              }
-              else if (option.getAttribute('value') == the_value[idx]) {
-                option.selected = true;
-              }
-            }
-          }
-          else
-          {
-            if (the_value instanceof Object && option.getAttribute('value') == the_value.id) {
-              option.selected = true;
-              break;
-            }
-            else if (option.getAttribute('value') == the_value) {
-              option.selected = true;
-              break;
-            }
-          }
-
-          option = option.nextElementSibling;
-        }
+      if (!selectControl) {
+        selectControl = document.getElementsByName(selectControlId);
+      } else {
+        selectControl = [selectControl];
       }
-    }
 
+      if (selectControl && selectControl.length > 0) {
+        selectControl.forEach(function(element) {
+          var option = element.firstElementChild;
+          while (option) {
+            if (the_value instanceof Array) {
+              for (var idx in the_value) {
+                if (the_value[idx] instanceof Object && option.getAttribute('value') == the_value[idx].id) {
+                  option.selected = true;
+                }
+                else if (option.getAttribute('value') == the_value[idx]) {
+                  option.selected = true;
+                }
+              }
+            }
+            else
+            {
+              if (the_value instanceof Object && option.getAttribute('value') == the_value.id) {
+                option.selected = true;
+                break;
+              }
+              else if (option.getAttribute('value') == the_value) {
+                option.selected = true;
+                break;
+              }
+            }
 
-  }
+            option = option.nextElementSibling;
+          }
+        });
+      }
+    };
+  };
 
   return YSDSelectSelectorView;
-
 });

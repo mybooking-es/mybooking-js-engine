@@ -401,6 +401,8 @@ define("commonTranslations", [], function () {
                 "Customer email confirmation must be equal to customer email",
               customerPhoneNumberRequired: "Customer phone number is required",
               customerPhoneNumberMinLength: "Customer phone number min length",
+              documentIdInvalidFormat: "Invalid document ID number",
+              drivingLicenseNumberInvalidFormat: "Invalid driving license number",
               driverDateOfBirthRequired: "Driver date of birth is required",
               numberOfAdultsRequired: "Number in party required",
               conditionsReadRequired:
@@ -408,6 +410,7 @@ define("commonTranslations", [], function () {
               privacyPolicyRequired:
                 "Please, check that you have read the privacy policy",
               selectPaymentMethod: "Please, select the payment method",
+              datePatternInvalid: "Invalid date format",
             },
           },
           createReservation: {
@@ -420,7 +423,10 @@ define("commonTranslations", [], function () {
           },
         },
         myReservation: {
+          confirmDriverIsCustomer: "Are you sure you want to make the change? Review the form once confirmed. This change may affect the values ​​of some information.",
           select_country: "Select country",
+          select_nationality: "Select nationality",
+          select_type_document: "Select type of document",
           loadReservation: {
             error: "We are sorry. There was an error loading the reservation.",
           },
@@ -449,6 +455,7 @@ define("commonTranslations", [], function () {
               error: "Error adding passenger"
             },
             remove: {
+              warning: "Do you want to remove the passenger?",
               success: "Passenger removed successfully",
               error: "Error removing passenger"
             },
@@ -952,6 +959,8 @@ define("commonTranslations", [], function () {
               customerPhoneNumberRequired: "Teléfono del cliente obligatorio",
               customerPhoneNumberMinLength:
                 "Longitud mínima del teléfono del cliente",
+              documentIdInvalidFormat: "Número de documento inválido",
+              drivingLicenseNumberInvalidFormat: "Número de carnet de conducir inválido",
               driverDateOfBirthRequired:
                 "Fecha de nacimiento del conductor obligatoria",
               numberOfAdultsRequired: "Número de personas obligatorio",
@@ -960,6 +969,7 @@ define("commonTranslations", [], function () {
               privacyPolicyRequired:
                 "No ha marcado que ha leído la política de privacidad",
               selectPaymentMethod: "Por favor, seleccione la forma de pago",
+              datePatternInvalid: "Formato de fecha inválido",
             },
           },
           createReservation: {
@@ -974,7 +984,10 @@ define("commonTranslations", [], function () {
           },
         },
         myReservation: {
+          confirmDriverIsCustomer: "¿Está seguro que desea realizar el cambio? Revise el formulario una vez confirmado. Este cambio puede afectar los valores de alguna información.",
           select_country: "Seleccionar país",
+          select_nationality: "Seleccionar nacionalidad",
+          select_type_document: "Seleccionar tipo de documento",
           loadReservation: {
             error:
               "Lo sentimos. Se ha producido un error al cargar la reserva.",
@@ -1005,6 +1018,7 @@ define("commonTranslations", [], function () {
               error: "Error al añadir pasajero"
             },
             remove: {
+              warning: "Por favor, confirme que desea eliminar el pasajero",
               success: "Pasajero eliminado con éxito",
               error: "Error al eliminar pasajero"
             },
@@ -1444,6 +1458,7 @@ define("commonTranslations", [], function () {
             acceptAge: "Si us plau, confirmi que és més gran de {{years}} anys",
             promotionCodeInvalid: "El codi de promoció no és vàlid",
             selectPaymentMethod: "Si us plau, escollir la forma de pagament",
+            datePatternInvalid: "Format de data invàlid",
           },
         },
         chooseProduct: {
@@ -1512,6 +1527,8 @@ define("commonTranslations", [], function () {
                 "El telèfon del client és obligatori",
               customerPhoneNumberMinLength:
                 "El tamany mínim del telèfon és de 9 digits",
+              documentIdInvalidFormat: "Número de document invàlid",
+              drivingLicenseNumberInvalidFormat: "Número de carnet de conduir invàlid",
               driverDateOfBirthRequired:
                 "La data de naixement del conductor és obligatòria",
               numberOfAdultsRequired: "El nombre de persones és obligatori",
@@ -1530,7 +1547,10 @@ define("commonTranslations", [], function () {
           },
         },
         myReservation: {
+          confirmDriverIsCustomer: "Estàs segur que voleu fer el canvi? Reviseu el formulari una vegada confirmat. Aquest canvi pot afectar els paràmetres d'alguna informació.",
           select_country: "Escollir país",
+          select_nationality: "Seleccioneu la nacionalitat",
+          select_type_document: "Seleccioneu el tipus de document",
           loadReservation: {
             error: "Ho sentim. S'ha produït un error al carregar l'informació.",
           },
@@ -1559,6 +1579,7 @@ define("commonTranslations", [], function () {
               error: "S'ha produït un error en afegir un passatger"
             },
             remove: {
+              warning: "Si us plau, confirmeu que voleu eliminar el passatger",
               success: "El passatger s'ha eliminat correctament",
               error: "S'ha produït un error en treure el passatger"
             },
@@ -2066,6 +2087,8 @@ define("commonTranslations", [], function () {
                 "Bestätigung muss gleich E-Mail sein",
               customerPhoneNumberRequired: "Obligatorisches Kundentelefon",
               customerPhoneNumberMinLength: "Mindestlänge des Kundentelefons",
+              documentIdInvalidFormat: "Ungültige Dokumentnummer",
+              drivingLicenseNumberInvalidFormat: "Ungültige Führerscheinnummer",
               driverDateOfBirthRequired: "Geburtsdatum des Pflichtfahrers",
               numberOfAdultsRequired: "Anzahl der Personen ist obligatorisch",
               conditionsReadRequired:
@@ -2073,6 +2096,7 @@ define("commonTranslations", [], function () {
               privacyPolicyRequired:
                 "Bitte überprüfen Sie, ob Sie die Datenschutzbestimmungen gelesen haben",
               selectPaymentMethod: "Bitte wählen Sie die Zahlungsart",
+              datePatternInvalid: "Ungültiges Datumsformat",
             },
           },
           createReservation: {
@@ -2087,7 +2111,10 @@ define("commonTranslations", [], function () {
           },
         },
         myReservation: {
+          confirmDriverIsCustomer: "Sind Sie sicher, dass Sie die Änderung vornehmen möchten? Überprüfen Sie das Formular nach der Bestätigung. Diese Änderung kann sich auf die Werte einiger Informationen auswirken.",
           select_country: "Land auswählen",
+          select_nationality: "Nationalität auswählen",
+          select_type_document: "Wählen Sie den Dokumenttyp aus",
           loadReservation: {
             error:
               "Entschuldigung Beim Laden der Reservierung ist ein Fehler aufgetreten.",
@@ -2118,6 +2145,7 @@ define("commonTranslations", [], function () {
               error: "Fehler beim Hinzufügen des Passagiers"
             },
             remove: {
+              warning: "Bitte bestätigen Sie, dass Sie den Passagier entfernen möchten",
               success: "Passagier erfolgreich entfernt",
               error: "Fehler beim Entfernen des Passagiers"
             },
@@ -2625,6 +2653,8 @@ define("commonTranslations", [], function () {
               customerPhoneNumberRequired: "Champ obligatoire",
               customerPhoneNumberMinLength:
                 "Saisissez un numéro de téléphone valide",
+              documentIdInvalidFormat: "Numéro de document invalide",
+              drivingLicenseNumberInvalidFormat: "Numéro de permis de conduire invalide",
               driverDateOfBirthRequired: "Champ obligatoire",
               numberOfAdultsRequired: "Champ obligatoire",
               conditionsReadRequired:
@@ -2632,6 +2662,7 @@ define("commonTranslations", [], function () {
               privacyPolicyRequired:
                 "Veuillez vérifier que vous avez lu la politique de confidentialité",
               selectPaymentMethod: "Veuillez sélectionner le mode de paiement",
+              datePatternInvalid: "Format de date invalide",
             },
           },
           createReservation: {
@@ -2646,7 +2677,10 @@ define("commonTranslations", [], function () {
           },
         },
         myReservation: {
+          confirmDriverIsCustomer: "Êtes-vous sûr de vouloir effectuer le changement ? Examinez le formulaire une fois confirmé. Ce changement peut affecter les valeurs de certaines informations.",
           select_country: "Choisissez le pays",
+          select_nationality: "Sélectionnez la nationalité",
+          select_type_document: "Sélectionnez le type de document",
           loadReservation: {
             error:
               "Nous sommes désolés. Une erreur s'est produite lors du chargement de la réservation.",
@@ -2677,6 +2711,7 @@ define("commonTranslations", [], function () {
               error: "Erreur lors de l'ajout du passager"
             },
             remove: {
+              warning: "Veuillez confirmer que vous souhaitez supprimer le passager",
               success: "Passager supprimé avec succès",
               error: "Erreur lors de la suppression du passager"
             },
@@ -3182,6 +3217,8 @@ define("commonTranslations", [], function () {
               customerPhoneNumberRequired: "Telefono cliente obbligatorio",
               customerPhoneNumberMinLength:
                 "Lunghezza minima del telefono del cliente",
+              documentIdInvalidFormat: "Numero di documento non valido",
+              drivingLicenseNumberInvalidFormat: "Numero di patente non valido",
               driverDocumentIdRequired: "ID / Licenza obbligatoria",
               driverDateOfBirthRequired:
                 "Data di nascita del conducente obbligatorio",
@@ -3201,6 +3238,7 @@ define("commonTranslations", [], function () {
                 "Non ha segnato di avere più di 1 anno di esperienza nella guida di motocicli",
               selectPaymentMethod:
                 "Per favore, seleziona il metodo di pagamento",
+              datePatternInvalid: "Formato data non valido",
             },
           },
           createReservation: {
@@ -3215,7 +3253,10 @@ define("commonTranslations", [], function () {
           },
         },
         myReservation: {
+          confirmDriverIsCustomer: "Sei sicuro di voler apportare la modifica? Rivedere il modulo una volta confermato. Questa modifica potrebbe influenzare i valori di alcune informazioni.",
           select_country: "Seleziona il paese",
+          select_nationality: "Seleziona la nazionalità",
+          select_type_document: "Seleziona il tipo di documento",
           loadReservation: {
             error:
               "Scusi. Si è verificato un errore durante il caricamento della prenotazione.",
@@ -3246,6 +3287,7 @@ define("commonTranslations", [], function () {
               error: "Errore durante l'aggiunta del passeggero"
             },
             remove: {
+              warning: "Conferma la rimozione del passeggero",
               success: "Passeggero rimosso con successo",
               error: "Errore durante la rimozione del passeggero"
             },
@@ -3488,6 +3530,8 @@ define("commonTranslations", [], function () {
               customerPhoneNumberRequired: "Требуется номер телефона клиента",
               customerPhoneNumberMinLength:
                 "Минимальная длина номера телефона клиента",
+              documentIdInvalidFormat: "Неверный номер документа",
+              drivingLicenseNumberInvalidFormat: "Неверный номер водительского удостоверения",
               driverDateOfBirthRequired:
                 "Требуется указать дату рождения водителя.",
               numberOfAdultsRequired: "Требуется номер в группе",
@@ -3496,6 +3540,7 @@ define("commonTranslations", [], function () {
               privacyPolicyRequired:
                 "Пожалуйста, подтвердите, что вы прочитали политику конфиденциальности",
               selectPaymentMethod: "Пожалуйста, выберите способ оплаты",
+              datePatternInvalid: "Неверный формат даты",
             },
           },
           createReservation: {
@@ -3508,7 +3553,10 @@ define("commonTranslations", [], function () {
           },
         },
         myReservation: {
+          confirmDriverIsCustomer: "Вы уверены, что хотите внести изменения? Просмотрите форму после подтверждения. Это изменение может повлиять на значения некоторой информации.",
           select_country: "Выберите страну",
+          select_nationality: "Выберите национальность",
+          select_type_document: "Выберите тип документа",
           loadReservation: {
             error: "Мы сожалеем. При загрузке бронирования произошла ошибка.",
           },
@@ -3537,6 +3585,7 @@ define("commonTranslations", [], function () {
               error: "Ошибка добавления пассажира"
             },
             remove: {
+              warning: "Подтвердите удаление пассажира",
               success: "Пассажир успешно удален",
               error: "Ошибка удаления пассажира"
             },

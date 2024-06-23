@@ -449,11 +449,9 @@ define('rentEngineMediator', ['jquery', 'YSDEventTarget'],
         var data = { url: url,
                      paymentData: paymentData};
         this.existingReservationPaymentDelegate(data, this);
-      }
-      else {
+      } else  {
         this.continueExistingReservationPayment(url, paymentData);
-      }  
-
+      }
     },
 
     /**
