@@ -737,7 +737,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
     */ 
     formatCountries: function() {
       // Load countries
-      let countries = i18next.t('common.countries', {returnObjects: true});
+      let countries = i18next.t('common.countries', {returnObjects: true});    
       let countriesArray = [];
       if (countries instanceof Object) {
         const countryCodes = Object.keys(countries);
@@ -1373,11 +1373,9 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
               },
               'customer_document_id': {
                 required: i18next.t('complete.reservationForm.validations.fieldRequired'),
-                // pattern: i18next.t('complete.reservationForm.validations.documentIdInvalidFormat')
               },
               'driver_document_id': {
                 required: i18next.t('complete.reservationForm.validations.fieldRequired'),
-                // pattern: i18next.t('complete.reservationForm.validations.documentIdInvalidFormat')
               },
               'driver_origin_country': {
                 required: i18next.t('complete.reservationForm.validations.fieldRequired')
@@ -1395,7 +1393,6 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
               },
               'driver_driving_license_number': {
                 required: i18next.t('complete.reservationForm.validations.fieldRequired'),
-                // pattern: i18next.t('complete.reservationForm.validations.drivingLicenseNumberInvalidFormat')
               },
               'driver_driving_license_country': {
                 required: i18next.t('complete.reservationForm.validations.fieldRequired')
