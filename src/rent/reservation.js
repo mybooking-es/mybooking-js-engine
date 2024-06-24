@@ -592,6 +592,14 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
       this.setupReservationForm();
       this.setupPassengersForm();
 
+      // Make sure the first step is active (old reservations)
+      if ($('#contract_signature_container').length > 0 && model.booking.contract_signed) {
+        $('#contract_signature_container').addClass('mb--active');
+      }      
+      else if ($('.mb--step-container.mb--active').length == 0) {
+        $('.mb--step-container').first().addClass('mb--active');
+      }
+
       // Setup events
       this.setupEvents();
 
@@ -737,7 +745,8 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
     */ 
     formatCountries: function() {
       // Load countries
-      let countries = i18next.t('common.countries', {returnObjects: true});    
+      let countries = i18next.t('common.countries', {returnObjects: true});
+    
       let countriesArray = [];
       if (countries instanceof Object) {
         const countryCodes = Object.keys(countries);
@@ -1186,20 +1195,8 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
         required: i18next.t('complete.reservationForm.validations.fieldRequired')
       });
 
-      // Validate form
-      // $.validator.addMethod('pattern', function(value, element, param) {
-      //   if (this.optional(element)) {
-      //       return true;
-      //   }
-      //   if (typeof param === 'string') {
-      //       param = new RegExp('^(?:' + param + ')$');
-      //   }
-      //   return param.test(value);
-      // }, 'Invalid format.');
-
       // Date is required function
       
-
       // Date patter
       $.validator.addMethod('date_pattern', function(value, element) {
         // Check the regular expression only if it is not empty
@@ -1501,7 +1498,6 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
       // Steps events
       $('.mb--steps-wrapper').on('click', '.mb--step a', function(event) {
         event.preventDefault();
-
         // If the step is disabled, do nothing
         if ($(this).parent().hasClass('mb--disabled')) {
           return false;
