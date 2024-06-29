@@ -592,6 +592,9 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
       this.setupReservationForm();
       this.setupPassengersForm();
 
+      // Setup events
+      this.setupEvents();
+
       // Make sure the first step is active (old reservations)
       if ($('#contract_signature_container').length > 0 && model.booking.contract_signed) {
         $('#contract_signature_container').addClass('mb--active');
@@ -599,9 +602,6 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
       else if ($('.mb--step-container.mb--active').length == 0) {
         $('.mb--step-container').first().addClass('mb--active');
       }
-
-      // Setup events
-      this.setupEvents();
 
       // Hide loader
       commonLoader.hide();
@@ -621,14 +621,16 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
       // Autorization to complete the reservation
       const showReservationForm = model.booking.manager_complete_authorized;
 
-      // Include reservation steps
-      if (document.getElementById('script_reservation_steps')) {
-        const reservationSteps = tmpl('script_reservation_steps')(
-          {
-            booking: model.booking,
-            sales_process: model.sales_process,
-          });
-        $('#mybooking_reservation_steps').html(reservationSteps);
+      // Include reservation steps (only if the reservation form is shown)
+      if (showReservationForm) {
+        if (document.getElementById('script_reservation_steps')) {
+          const reservationSteps = tmpl('script_reservation_steps')(
+            {
+              booking: model.booking,
+              sales_process: model.sales_process,
+            });
+          $('#mybooking_reservation_steps').html(reservationSteps);
+        }
       }
 
       // Include reservation summary
@@ -643,8 +645,9 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
         $('#reservation_detail').html(reservationDetail);
       }
 
-      // Include multiple items table
-      if (model.configuration.multipleProductsSelection && document.getElementById('script_mybooking_summary_product_detail_table')) {
+      // Include summary table (if multiple items)
+      if (model.configuration.multipleProductsSelection && 
+          document.getElementById('script_mybooking_summary_product_detail_table')) {
         const reservationTableDetail = tmpl('script_mybooking_summary_product_detail_table')({
           bookings: model.booking.booking_lines,
           configuration: model.configuration
@@ -652,7 +655,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
         $('#mybooking_summary_product_detail_table').html(reservationTableDetail);
       }
 
-      // Include forms
+      // Include reservation form
       if (showReservationForm) {
         // The reservation form fields are defined in a micro-template
         const locale = model.requestLanguage;
@@ -676,7 +679,6 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
         }
 
         // Include reservation 'customer' form
-        
         if (model.configuration.rentingFormFillDataDriverDetail && !model.booking.has_optional_external_driver && (model.booking.driver_type == 'driver' || model.booking.driver_type == 'skipper') && model.booking.driver_is_customer) {
           if (document.getElementById('script_reservation_form_customer_driver')) {
             const reservationFormCustomerDriver = tmpl('script_reservation_form_customer_driver')(
@@ -685,7 +687,8 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
                 configuration: model.configuration});
             $('#customer_panel_container').html(reservationFormCustomerDriver);
           }
-        } else {
+        } 
+        else {
           if (document.getElementById('script_reservation_form_customer')) {
             const reservationFormCustomer = tmpl('script_reservation_form_customer')(
                   {booking: model.booking,
@@ -705,24 +708,9 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
         }
       }
 
-      // Add documentation upload view
-      if (document.getElementById('script_documents_upload')) {
-        const documentsUpload = tmpl('script_documents_upload')(
-            {booking: model.booking,
-              configuration: model.configuration});
-        $('#documents_upload_container').html(documentsUpload);
-      }
-
-      // Include signature view
-      if (document.getElementById('script_contract_signature')) {
-        const contractSignature = tmpl('script_contract_signature')(
-            {booking: model.booking,
-              configuration: model.configuration});
-        $('#contract_signature_container').html(contractSignature);
-      }
-
       // Initialize payment component
-      paymentComponent.view.init(model.bookingFreeAccessId, model.sales_process, model.booking, model.configuration);
+      paymentComponent.view.init(model.bookingFreeAccessId, model.sales_process, 
+                                 model.booking, model.configuration);
       paymentComponent.model.addListener('payment', function(event){
         if (event.type === 'payment') {
           const url = event.data.url;
@@ -731,11 +719,29 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
         }
       });
 
-      // Initialize documents component
-      documentsComponent.view.init(model.booking);
+      // Include documents upload and contract signature
+      if (showReservationForm) {
+        if (document.getElementById('script_documents_upload')) {
+          const documentsUpload = tmpl('script_documents_upload')(
+              {booking: model.booking,
+                configuration: model.configuration});
+          $('#documents_upload_container').html(documentsUpload);
+        }
 
-      // Initialize signature component
-      signatureComponent.view.init(model.booking);
+        // Include signature view
+        if (document.getElementById('script_contract_signature')) {
+          const contractSignature = tmpl('script_contract_signature')(
+              {booking: model.booking,
+                configuration: model.configuration});
+          $('#contract_signature_container').html(contractSignature);
+        }
+        // Initialize documents component
+        documentsComponent.view.init(model.booking);
+
+        // Initialize signature component
+        signatureComponent.view.init(model.booking);
+      }
+
     },
 
     // ----------------- Form ------------------------------

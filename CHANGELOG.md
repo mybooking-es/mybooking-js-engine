@@ -1,5 +1,27 @@
 # Changelog
 
+## [2.3.0] - 2024.06.26
+
+### Improve
+
+- Rent My reservation : Validation of fields + upload documents and sign contract integration
+
+### Fixed
+
+- Rent selector : Modify dates preload durations
+- Planning : Reservations that start before the first date
+- Checkout mediator - Improve behaviour allowing an extra validation on the checkout process or allow to
+  offer extras or coverages.
+- Selector with rental location and duration - rental_location_code param was not used
+- Product calendar min days check on select dates
+- Product calendar min days warning message
+- Product calendar performance_id shortcode parameter
+- Product calendar when not performances
+- Renting optimization : Improve speed by avoiding one call to settings 
+- Rent Selector - Date and duration. Duration was not activated on select date
+- Fixed simple_location_id in modify reservation
+- Fixed duration errors in modify selector
+
 ## [2.1.0] - 2024.02.13
 
 ### New
