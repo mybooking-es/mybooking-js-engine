@@ -1163,6 +1163,15 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
           utilsScript: commonServices.phoneUtilsPath,
           preferredCountries: [countryCode],
         });
+        if (model.booking.customer_phone_prefix &&
+            model.booking.customer_phone_prefix !== '') {
+          let phoneNumber = model.booking.customer_phone;
+          if (phoneNumber === null) {
+            phoneNumber = '';
+          }
+          const fullNumber = '+'+model.booking.customer_phone_prefix+phoneNumber;
+          input.intlTelInput('setNumber', fullNumber);
+        }
       }
     },
 
