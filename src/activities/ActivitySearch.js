@@ -77,10 +77,21 @@ require(['jquery', 'i18next', 'ysdtemplate',
     setupControls: function() {
 
     	// Family selector	
-    	$selectorFamilyId = $('form[name=search_activities_form]').find('select[name=family_id]');
+    	let $selectorFamilyId = $('form[name=search_activities_form]').find('select[name=family_id]');
 
     	if ($selectorFamilyId.length) {
     		var url = commonServices.URL_PREFIX + '/api/booking-activities/frontend/categories';
+        var urlParams = [];
+        if (this.requestLanguage != null) {
+          urlParams.push('lang='+this.requestLanguage);
+        }
+        if (commonServices.apiKey && commonServices.apiKey != '') {
+          urlParams.push('api_key='+commonServices.apiKey);
+        }
+        if (urlParams.length > 0) {
+          url += '?';
+          url += urlParams.join('&');
+        }
 				var familyValue = $selectorFamilyId.attr('data-value');
 	      var familySelect = $selectorFamilyId.select2({	
 	      													  width: '100%',
@@ -122,10 +133,21 @@ require(['jquery', 'i18next', 'ysdtemplate',
     	}
 
     	// Destination selector
-			$selectorDestinationId = $('form[name=search_activities_form]').find('select[name=destination_id]');
+			let $selectorDestinationId = $('form[name=search_activities_form]').find('select[name=destination_id]');
 
     	if ($selectorDestinationId.length) {
     		var url = commonServices.URL_PREFIX + '/api/booking-activities/frontend/destinations';
+        var urlParams = [];
+        if (this.requestLanguage != null) {
+          urlParams.push('lang='+this.requestLanguage);
+        }
+        if (commonServices.apiKey && commonServices.apiKey != '') {
+          urlParams.push('api_key='+commonServices.apiKey);
+        }
+        if (urlParams.length > 0) {
+          url += '?';
+          url += urlParams.join('&');
+        }
 				var destinationValue = $selectorDestinationId.attr('data-value');
 	      var destinationSelect = $selectorDestinationId.select2({	
 	      													  width: '100%',
