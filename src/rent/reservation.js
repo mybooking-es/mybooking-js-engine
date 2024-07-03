@@ -151,6 +151,14 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
        const driver_is_customer = reservation['driver_is_customer'] === 'on';
        reservation['driver_is_customer'] = driver_is_customer;
 
+       // Prefix
+       if ($('input[name=customer_phone]').length && $('input[name=customer_phone]').is(':enabled')){
+         var countryData = $('input[name=customer_phone]').intlTelInput('getSelectedCountryData');
+         if (countryData != null) {
+           reservation.customer_phone_prefix = countryData.dialCode;
+         }
+       }
+
         // Remove all empty fields
         for (let prop in reservation) {
           if (reservation[prop] === undefined || reservation[prop] === '') {  
