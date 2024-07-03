@@ -839,6 +839,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
       for (let idx=0; idx<data.length; idx++) {
         formatData[idx] = {
           id: data[idx].code,
+          text: data[idx].name,
           description: data[idx].name
         };
       }
@@ -903,6 +904,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
       for (let idx=0; idx<data.length; idx++) {
         formatData[idx] = {
           id: data[idx].id,
+          text: data[idx].label,
           description: data[idx].label
         };
       }
@@ -966,6 +968,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
         for (let idx=0; idx<data.length; idx++) {
           formatData[idx] = {
             id: data[idx].id,
+            text: data[idx].label,
             description: data[idx].label
           };
         }
