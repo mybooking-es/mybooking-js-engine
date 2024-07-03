@@ -3,14 +3,15 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
          'commonServices', 'commonSettings', 'commonTranslations', 'commonLoader', 'commonUI',
          'i18next', 'ysdtemplate', 
          './selector/modify_reservation_selector', './selector-wizard/selector_wizard',
-         './mediator/rentEngineMediator', 
+         './mediator/rentEngineMediator',
+         './choose_product_filter/choose_product_filter',
          'jquery.i18next',         
          'jquery.validate', 'jquery.ui', 'jquery.ui.datepicker-es',
          'jquery.ui.datepicker-en', 'jquery.ui.datepicker-ca', 'jquery.ui.datepicker-it',
          'jquery.ui.datepicker.validation'],
        function($, RemoteDataSource, SelectSelector, 
                 commonServices, commonSettings, commonTranslations, commonLoader, commonUI,
-                i18next, tmpl, selector, selectorWizard, rentEngineMediator) {
+                i18next, tmpl, selector, selectorWizard, rentEngineMediator, filterComponent) {
 
   var model = {
 
@@ -975,6 +976,11 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
 
       // Extract the query parameters from the query string
       model.extractVariables();
+
+      // Load filter if exists
+      if ($('#mybooking_choose_product_filter').length) {
+        filterComponent.view.init(model);
+      }
 
       // Load shopping cart
       model.loadShoppingCart();
