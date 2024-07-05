@@ -54,7 +54,6 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
     agent_id: null,
     optional_external_driver: null, 
     driving_license_type_id: null,
-    simple_location_id: null, 
     characteristic_length: null,
     characteristic_width: null,
     characteristic_height: null,
@@ -67,6 +66,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
     key_characteristic_4: null,
     key_characteristic_5: null,
     key_characteristic_6: null,
+    key_characteristic_7: null, // Motorcycles caracteristic
 
     // -------------- Load settings ----------------------------
 
@@ -171,7 +171,8 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
      * - key_characteristic_3,
      * - key_characteristic_4,
      * - key_characteristic_5,
-     * - key_characteristic_6
+     * - key_characteristic_6,
+     * - key_characteristic_7, // Motorcycles caracteristic
      */
     extractVariables: function() { // Load variables from the request
 
@@ -242,7 +243,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
       this.key_characteristic_4 = decodeURIComponent(urlVars['key_characteristic_4']);
       this.key_characteristic_5 = decodeURIComponent(urlVars['key_characteristic_5']);
       this.key_characteristic_6 = decodeURIComponent(urlVars['key_characteristic_6']);
-
+      this.key_characteristic_7 = decodeURIComponent(urlVars['key_characteristic_7']);
     },
 
     // -------------- Shopping cart ----------------------------
@@ -417,7 +418,10 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
       }                                    
       if (this.key_characteristic_6 != 'undefined' && this.key_characteristic_6 != '') {
         data.key_characteristic_6 = this.key_characteristic_6;
-      }  
+      }
+      if (this.key_characteristic_7 != 'undefined' && this.key_characteristic_7 != '') {
+        data.key_characteristic_7 = this.key_characteristic_7;
+      }
       
       // Append the referrer and the search (to manage conversions)
       if (typeof sessionStorage !== 'undefined') {
@@ -977,14 +981,42 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
       // Extract the query parameters from the query string
       model.extractVariables();
 
-      // Load filter if exists
-      if ($('#mybooking_choose_product_filter').length) {
-        filterComponent.view.init(model);
-      }
-
       // Load shopping cart
       model.loadShoppingCart();
 
+      // Load filter if exists
+      if ($('#mybooking_choose_product_filter').length) {
+        // Filter necessary data
+        const {
+          family_id,
+          characteristic_length,
+          characteristic_width,
+          characteristic_height,
+          characteristic_weight,
+          key_characteristic_1,
+          key_characteristic_2,
+          key_characteristic_3,
+          key_characteristic_4,
+          key_characteristic_5,
+          key_characteristic_6,
+          key_characteristic_7, // Motorcycles caracteristic
+        } = model;
+
+        filterComponent.view.init({
+          family_id,
+          characteristic_length,
+          characteristic_width,
+          characteristic_height,
+          characteristic_weight,
+          key_characteristic_1,
+          key_characteristic_2,
+          key_characteristic_3,
+          key_characteristic_4,
+          key_characteristic_5,
+          key_characteristic_6,
+          key_characteristic_7, // Motorcycles caracteristic
+        });
+      }
     },
 
     refreshVariantsResume: function(productCode) {

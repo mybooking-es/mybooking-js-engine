@@ -32,6 +32,7 @@ require('./lib/i18next.js');
 require('./lib/loaderSpinner.js');
 require('./lib/select2.js');
 require('./lib/customCookie.js');
+require('./lib/ion.rangeSlider.js');
 
 // Yurak Sisa Dream Libraries
 require('./lib/YSDEventTarget.js');
@@ -115,6 +116,7 @@ $(document).ready(function() {
         require('./rent/selector/modify_reservation_selector.js');  
         require('./rent/mediator/rentEngineMediator.js');        
         require('./rent/choose_product_filter/choose_product_filter.js');
+        require('./rent/choose_product_filter/choose_product_filter_section.js');
         require('./rent/choose_product.js');
     }
 });
