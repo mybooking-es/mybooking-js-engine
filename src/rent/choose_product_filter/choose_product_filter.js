@@ -7,6 +7,7 @@ define('filterComponent', [
   'ysdtemplate',
   'i18next',
   './choose_product_filter_section',
+  'YSDEventTarget',
 ], function(
   $,
   commonServices,
@@ -16,6 +17,7 @@ define('filterComponent', [
   tmpl,
   i18next,
   filterSection,
+  YSDEventTarget,
 ) {
   const model = {
     requestLanguage: null,
@@ -24,11 +26,13 @@ define('filterComponent', [
       families: null,
       otherFilters: null,
     },
-    numberItemsContainer: 'choose_product_filter_number_items',
+    // UI Zones
+    filterContainer: '#mybooking-chose-product-filter',
     templateContainer: 'script_choose_product_filter',
     targetContainer: '#mybooking_choose_product_filter',
-    formContainer: '#mybooking_choose_product_filter #mybooking_choose_product_filter_form',
-
+    formContainer: 'form[name=mybooking_choose_product_filter_form]',
+    eraserBtn: '#mybooking-chose-product-filter-item_eraser',
+    advancedBtn: '#mybooking-chose-product-filter-item_advanced',
     /**
     * Format Families
     **/
@@ -143,9 +147,25 @@ define('filterComponent', [
         });
       });
     },
+
+    // Add events listeners
+    events: new YSDEventTarget(),
 	};
 
   const controller = {
+    /**
+     * Eraser button click
+     */
+    eraserBtnClick: function(event) {
+      // Prevent form submission
+      event.preventDefault();
+
+      // Reset the form
+      $(this).closest('form').trigger('reset');
+
+      // Refresh the sections panels
+      filterSection.view.refresh();
+    }
 	};
 
   const view = {
@@ -185,8 +205,6 @@ define('filterComponent', [
           otherFilters,
         };
 
-        console.log('model.filters', model.filters);
-
         // Refresh the view
         this.refresh();
       } catch (error) {
@@ -208,8 +226,14 @@ define('filterComponent', [
 
       $(model.targetContainer).html(filter);
 
-      // Initialize the section
+      // Initialize the sections panels
       filterSection.view.init();
+
+      // Setup Events
+      this.setupEvents();
+
+      // Setup Validate
+      this.setupValidate();
 		},
 
     /**
@@ -222,12 +246,36 @@ define('filterComponent', [
      * Setup UI Events
      */ 
 		setupEvents: function() {
+       // Remove old button event
+       $(model.filterContainer).find(model.eraserBtn).off('click');
+
+       // Eraser button event
+       $(model.filterContainer).find(model.eraserBtn).on('click', controller.eraserBtnClick);
 		},
 
     setupValidate: function() {
-      $(model.formContainer).validate({
+      $(model.filterContainer).find(model.formContainer).validate({
         submitHandler: function(form, event) {
           event.preventDefault();
+
+          // Get values incluide unchecked checkboxes
+          const formData = new FormData(form);
+          const formValues = [];
+          for (let [key, value] of formData.entries()) {
+            let object = {
+              key,
+              value: '',
+            };
+
+            if (value) {
+              object['value'] = value;
+            }
+
+            formValues.push(object);
+          }
+
+          model.settings.events.fireEvent({type: 'choose_product_filter', formValues});
+
           return false;
         },
         errorClass: 'text-danger',

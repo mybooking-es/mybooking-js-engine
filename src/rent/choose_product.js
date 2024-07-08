@@ -5,13 +5,14 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
          './selector/modify_reservation_selector', './selector-wizard/selector_wizard',
          './mediator/rentEngineMediator',
          './choose_product_filter/choose_product_filter',
+         'YSDEventTarget',
          'jquery.i18next',         
          'jquery.validate', 'jquery.ui', 'jquery.ui.datepicker-es',
          'jquery.ui.datepicker-en', 'jquery.ui.datepicker-ca', 'jquery.ui.datepicker-it',
          'jquery.ui.datepicker.validation'],
        function($, RemoteDataSource, SelectSelector, 
                 commonServices, commonSettings, commonTranslations, commonLoader, commonUI,
-                i18next, tmpl, selector, selectorWizard, rentEngineMediator, filterComponent) {
+                i18next, tmpl, selector, selectorWizard, rentEngineMediator, filterComponent, YSDEventTarget) {
 
   var model = {
 
@@ -67,6 +68,17 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
     key_characteristic_5: null,
     key_characteristic_6: null,
     key_characteristic_7: null, // Motorcycles caracteristic
+
+    events: new YSDEventTarget(),
+    addListener: function(type, listener) { /* addListener */
+      this.events.addEventListener(type, listener);  
+    },
+    removeListener: function(type, listener) { /* removeListener */
+        this.events.removeEventListener(type, listener);     
+    },
+    removeListeners: function(type) { /* remove listeners*/
+        this.events.removeEventListeners(type);
+    },
 
     // -------------- Load settings ----------------------------
 
@@ -941,8 +953,67 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
           productVideoBtn.hide();
           break;
       }
-    }
+    },
 
+    /*
+    * Format form data to API
+    */
+    formatFilterData: function(data) {
+      // Get current search params
+      const searchParams = new URLSearchParams(window.location.search);
+
+      // Iterate over data
+      data.forEach(item => {
+        let value = item.value;
+
+        // If value is empty, remove param
+        if (!value) {
+          searchParams.delete(item.name);
+        } else {
+          // Check if value include ;
+          if (value.includes(';')) {
+            const parts = value.split(';');
+            if (parts[0] === parts[1]) {
+              // If both values are the same, set only one
+              value = parts[0];
+            } else {
+              // Replace ; with -
+              value = value.replace(';', '-');
+            }
+          }
+
+          // Set new param
+          searchParams.set(item.name, value);
+        }
+      });
+
+      // Return new search params
+      return searchParams.toString();
+    },
+
+    /**
+     * Filter products
+     */
+    filter: function(data) {
+      // Format search data with old and new
+      const searchParams = this.formatFilterData(data.formValues);
+      
+      // Create new url with all search params
+      const newUrl = window.location.pathname + '?' + searchParams + window.location.hash;
+      
+      // Refresh the page
+      window.history.pushState({path:newUrl}, '', newUrl);
+      window.location.reload();
+    },
+
+    /**
+     * Setup event listeners
+     */
+    setupEventListeners: function() {
+      // Products filters
+      model.removeListeners('choose_product_filter');
+      model.addListener('choose_product_filter', (data) => this.filter(data));
+    },
   };
 
   var view = {
@@ -1015,7 +1086,11 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
           key_characteristic_5,
           key_characteristic_6,
           key_characteristic_7, // Motorcycles caracteristic
+          events: model.events,
         });
+
+        // Setup event listener
+        controller.setupEventListeners();
       }
     },
 
