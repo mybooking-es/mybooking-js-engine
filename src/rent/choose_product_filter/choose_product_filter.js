@@ -160,11 +160,11 @@ define('filterComponent', [
       // Prevent form submission
       event.preventDefault();
 
-      // Reset the form
-      $(this).closest('form').trigger('reset');
-
-      // Refresh the sections panels
-      filterSection.view.refresh();
+      // Reset the form (input checkbox, radio and select fields)
+      const form = $(this).closest('form');
+      form.find('input[type="checkbox"], input[type="radio"]').prop('checked', false);
+      form.find('select').prop('selectedIndex', 0);
+      form.submit();
     }
 	};
 
@@ -259,19 +259,42 @@ define('filterComponent', [
           event.preventDefault();
 
           // Get values incluide unchecked checkboxes
-          const formData = new FormData(form);
           const formValues = [];
-          for (let [key, value] of formData.entries()) {
-            let object = {
-              key,
-              value: '',
-            };
+          for (var i = 0; i < form.elements.length; i++) {
+            let element = form.elements[i];
+            
+            if (element.name) {
+              let object = {
+                key: element.name,
+                value: null,
+              };
 
-            if (value) {
-              object['value'] = value;
+              switch (element.type) {
+                case 'checkbox':
+                  if (element.checked) {
+                    const fieldGroup = formValues.find(item => item.key === element.name);
+                    if (fieldGroup) {
+                      fieldGroup.value += ',' + element.value;
+                    } else {
+                      object.value = element.value;
+                    }
+                  }
+                  break;
+                case 'radio':
+                  if (element.checked) {
+                    object.value = element.value;
+                  }
+                  break;
+              
+                default:
+                  object.value = element.value;
+                  break;
+              }
+  
+              if (object.value !== null || !formValues.find(item => item.key === element.name)) {
+                formValues.push(object);
+              }
             }
-
-            formValues.push(object);
           }
 
           model.settings.events.fireEvent({type: 'choose_product_filter', formValues});

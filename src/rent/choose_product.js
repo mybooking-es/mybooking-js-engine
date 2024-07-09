@@ -452,7 +452,8 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
     },
 
     loadShoppingCart: function() {
-
+      commonLoader.show(); 
+      
        // Build the URL
        var url = commonServices.URL_PREFIX + '/api/booking/frontend/shopping-cart';
        var freeAccessId = this.getShoppingCartFreeAccessId();
@@ -967,23 +968,11 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
         let value = item.value;
 
         // If value is empty, remove param
-        if (!value) {
-          searchParams.delete(item.name);
+        if (value === null) {
+          searchParams.delete(item.key);
         } else {
-          // Check if value include ;
-          if (value.includes(';')) {
-            const parts = value.split(';');
-            if (parts[0] === parts[1]) {
-              // If both values are the same, set only one
-              value = parts[0];
-            } else {
-              // Replace ; with -
-              value = value.replace(';', '-');
-            }
-          }
-
           // Set new param
-          searchParams.set(item.name, value);
+          searchParams.set(item.key, value);
         }
       });
 

@@ -52,9 +52,9 @@ define('filterSection', [
       
       // If the family checkbox is checked, check all children
       if (familyChecked) {
-        $(this).parent().find('input[name="family"]').prop('checked', true);
+        $(this).closest('li').find('input[name="family_id"]').prop('checked', true);
       } else {
-        $(this).parent().find('input[name="family"]').prop('checked', false);
+        $(this).closest('li').find('input[name="family_id"]').prop('checked', false);
       }
     },
 	};
@@ -96,64 +96,26 @@ define('filterSection', [
       const queryParams = new URLSearchParams(window.location.search);
 
       /*
-      * Initialize range sliders
-      */
-      const rangeSliders = $(model.sectionContainer).find('.js-rangeslider');
-    
-      // Check if the slider is already initialized
-      if (rangeSliders.data('ionRangeSlider')) {
-        // Destroy the current instance
-        rangeSliders.ionRangeSlider('destroy');
-      }
-    
-      // Optionally reset UI elements or data here
-      // For example, resetting input values to defaults
-      rangeSliders.each(function() {
-        // Get this url value
-        const urlValue = queryParams.get($(this).attr('name'));
-
-        // Is not a range
-        let urlMin = urlValue;
-        let urlMax = urlValue;
-        // Is a range
-        if (urlValue && urlValue.includes('-')) {
-          // Get the min and max values
-          [urlMin, urlMax] = urlValue.split('-');
-        } 
-
-        // eslint-disable-next-line max-len
-        // Set the min and max values from the URL query parameters or the default values
-        const min =  $(this).attr('data-min') || 0;
-        const max = $(this).attr('data-max') || 100;
-
-        // Initialize ionRangeSlider with default or specific settings
-        $(this).ionRangeSlider({
-          min,
-          max,
-          from: urlMin || min, // Set the starting point
-          to: urlMax || max // Set the ending point
-        });
-      });
-    
-      // Re-initialize ionRangeSlider
-      if ($.fn.ionRangeSlider) {
-        rangeSliders.ionRangeSlider();
-      }
-
-      /*
       * Initialize other controls with the URL query parameters
       */
        // Get all fields
       const fields = $(model.sectionContainer).find('input');
+
       fields.each(function(index, field) {
         // Get this url value
         const urlValue = queryParams.get($(field).attr('name'));
-        // eslint-disable-next-line max-len
-        // If the URL query parameter value is the same as the field value, check the field
-        if (typeof urlValue === 'string' && urlValue === $(field).val()) {
-          $(field).attr('checked', true);
-        } else {
-          $(field).attr('checked', false);
+
+        if (urlValue) {
+          const urlArray = urlValue.split(',');
+          urlArray.forEach((urlValue) => {
+            // eslint-disable-next-line max-len
+            // If the URL query parameter value is the same as the field value, check the field
+            if (typeof urlValue === 'string' && urlValue === $(field).val()) {
+              $(field).attr('checked', true);
+            } else {
+              $(field).attr('checked', false);
+            }
+          });
         }
       });
     },
@@ -170,7 +132,7 @@ define('filterSection', [
 
       // Families toogle event
       // eslint-disable-next-line max-len
-      $(model.sectionContainer).on('click', '[data-filter="family_id"] > input[name="family_id"]', controller.toogleFamilyChildrenClick);
+      $(model.sectionContainer).on('change', '[data-filter="family_id"] > label > input[name="family_id"]', controller.toogleFamilyChildrenClick);
 		},
 
     /**
