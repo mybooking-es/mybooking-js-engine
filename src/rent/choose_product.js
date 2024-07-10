@@ -956,43 +956,15 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
       }
     },
 
-    /*
-    * Format form data to API
-    */
-    formatFilterData: function(data) {
-      // Get current search params
-      const searchParams = new URLSearchParams(window.location.search);
-
-      // Iterate over data
-      data.forEach(item => {
-        let value = item.value;
-
-        // If value is empty, remove param
-        if (value === null) {
-          searchParams.delete(item.key);
+    setupFilterValues: function(data) {
+      data.forEach((item, index) => {
+        if (item.key === 'family_id') {
+          model.family_id = item.value;
         } else {
-          // Set new param
-          searchParams.set(item.key, value);
+          // Set the key characteristic; Expect array order is the same in form order
+          model[`key_characteristic_${index}`] = item.value;
         }
       });
-
-      // Return new search params
-      return searchParams.toString();
-    },
-
-    /**
-     * Filter products
-     */
-    filter: function(data) {
-      // Format search data with old and new
-      const searchParams = this.formatFilterData(data.formValues);
-      
-      // Create new url with all search params
-      const newUrl = window.location.pathname + '?' + searchParams + window.location.hash;
-      
-      // Refresh the page
-      window.history.pushState({path:newUrl}, '', newUrl);
-      window.location.reload();
     },
 
     /**
@@ -1001,7 +973,10 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
     setupEventListeners: function() {
       // Products filters
       model.removeListeners('choose_product_filter');
-      model.addListener('choose_product_filter', (data) => this.filter(data));
+      model.addListener('choose_product_filter', (data) => {
+        this.setupFilterValues(data.formValues);
+        model.loadShoppingCart();
+      });
     },
   };
 
