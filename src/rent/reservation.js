@@ -161,8 +161,10 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
 
         // Remove all empty fields
         for (let prop in reservation) {
-          if (reservation[prop] === undefined || reservation[prop] === '') {  
+          
+          if (reservation[prop] === undefined || reservation[prop] === '' || reservation[prop] === null) {  
               delete reservation[prop];
+              continue;
           }
 
           // Remove all empty fields in objects
