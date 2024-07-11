@@ -8,6 +8,7 @@ define('filterComponent', [
   'i18next',
   './choose_product_filter_section',
   'YSDEventTarget',
+  'commonUI',
 ], function(
   $,
   commonServices,
@@ -18,6 +19,7 @@ define('filterComponent', [
   i18next,
   filterSection,
   YSDEventTarget,
+  commonUI,
 ) {
   const model = {
     requestLanguage: null,
@@ -32,7 +34,10 @@ define('filterComponent', [
     targetContainer: '#mybooking_choose_product_filter',
     formContainer: 'form[name=mybooking_choose_product_filter_form]',
     eraserBtn: '#mybooking-chose-product-filter-item_eraser',
-    advancedBtn: '#mybooking-chose-product-filter-item_advanced',
+    advancedBtn: '#mybooking-choose-product-filter-btn_advanced',
+    advancedModalContainer: '#choose_product_filter_modal',
+    advancedModalContent: 'script_choose_product_filter_modal_content',
+    advancedModalContentContainer: '#choose_product_filter_modal_content',
     // SectionUI Zones
     sectionContainer: '.mybooking-chose-product-filter-item_section',
     sectionToggleBtn: '.mybooking-chose-product-filter-item_section-btn',
@@ -167,8 +172,27 @@ define('filterComponent', [
       const form = $(this).closest('form');
       form.find('input[type="checkbox"], input[type="radio"]').prop('checked', false);
       form.find('select').prop('selectedIndex', 0);
-      form.submit();
-    }
+      // form.submit();
+    },
+
+    /**
+     * Advanced button click
+     */
+    advancedBtnClick: function(event) {
+      // Prevent form submission
+      event.preventDefault();
+
+      // Load the advanced modal content
+      const advancedModalContent = tmpl(model.advancedModalContent)({
+        filters: model.filters,
+        i18next: i18next
+      });
+
+      $(model.advancedModalContentContainer).html(advancedModalContent);
+
+      // Show the advanced modal
+      commonUI.showModal(model.advancedModalContainer);
+    },
 	};
 
   const view = {
@@ -254,6 +278,9 @@ define('filterComponent', [
 
        // Eraser button event
        $(model.filterContainer).find(model.eraserBtn).on('click', controller.eraserBtnClick);
+
+       // Advanced button event
+       $(model.filterContainer).find(model.advancedBtn).on('click', controller.advancedBtnClick);
 		},
 
     setupValidate: function() {
