@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 define('filterSection', [
   'jquery',
   'commonServices',
@@ -49,13 +50,28 @@ define('filterSection', [
      */
     toogleFamilyChildrenClick: function() {
       const familyChecked = $(this).is(':checked');
-      
+        
       // If the family checkbox is checked, check all children
       if (familyChecked) {
         $(this).closest('li').find('input[name="family_id"]').prop('checked', true);
       } else {
         $(this).closest('li').find('input[name="family_id"]').prop('checked', false);
       }
+    },
+
+    /**
+     * Toogle item (on/off)
+     */ 
+    toogleItemClick: function(event) {
+      const input = $(this).find('input');
+      
+      // Family id is a especial filter with two levels and it's not necessary to check the input with this handler. It have its own handler
+      if (input.attr('name') === 'family_id') {
+        return;
+      }
+
+      // When click in same item, toggle the check
+      input.prop('checked', !input.is(':checked'));
     },
 	};
 
@@ -108,7 +124,6 @@ define('filterSection', [
         if (urlValue) {
           const urlArray = urlValue.split(',');
           urlArray.forEach((urlValue) => {
-            // eslint-disable-next-line max-len
             // If the URL query parameter value is the same as the field value, check the field
             if (typeof urlValue === 'string' && urlValue === $(field).val()) {
               $(field).attr('checked', true);
@@ -131,8 +146,21 @@ define('filterSection', [
       $(model.sectionContainer).on('click', model.sectionToggleBtn, controller.toogleSectionVisibilityClick);
 
       // Families toogle event
-      // eslint-disable-next-line max-len
       $(model.sectionContainer).on('change', '[data-filter="family_id"] > label > input[name="family_id"]', controller.toogleFamilyChildrenClick);
+
+      // Item toogle event: The event mouse down is called before click event and check or radio change events
+      $(model.sectionContainer).on('mousedown touchstart', 'li[data-filter] label', controller.toogleItemClick);
+      
+      // Checkbox and radio event click is prevented default because the action is in label event and it's not necessary to check the input
+      $(model.sectionContainer).on('click', 'input[type="checkbox"], input[type="radio"]', (event) => { 
+        const target = $(event.currentTarget);
+        
+        // Family id is a especial filter with two levels and it's not necessary to check the input with this handler. It have its own handler
+        if (target.attr('name') === 'family_id') {
+          return;
+        }
+        event.preventDefault();
+      });
 		},
 
     /**

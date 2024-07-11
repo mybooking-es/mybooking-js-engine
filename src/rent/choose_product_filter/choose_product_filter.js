@@ -33,6 +33,9 @@ define('filterComponent', [
     formContainer: 'form[name=mybooking_choose_product_filter_form]',
     eraserBtn: '#mybooking-chose-product-filter-item_eraser',
     advancedBtn: '#mybooking-chose-product-filter-item_advanced',
+    // SectionUI Zones
+    sectionContainer: '.mybooking-chose-product-filter-item_section',
+    sectionToggleBtn: '.mybooking-chose-product-filter-item_section-btn',
     /**
     * Format Families
     **/
@@ -254,7 +257,24 @@ define('filterComponent', [
 		},
 
     setupValidate: function() {
-      $(model.filterContainer).find(model.formContainer).validate({
+      const form = $(model.filterContainer).find(model.formContainer);
+
+      // eslint-disable-next-line max-len
+      // If sections exists when button click event is called close all sections before submit or reset or open float window
+      const sections = $(model.sectionContainer);
+      if (sections.length > 0) {
+        form.find('button').on('click', function(event) {
+          sections.each(function() {
+            // If arrow is up the section is open
+            if ($(this).find('.fa-angle-up').length > 0) {
+              // Trigger click to close the section
+              $(this).find(model.sectionToggleBtn).trigger('click');
+            }
+          });
+        });
+      }
+
+      form.validate({
         submitHandler: function(form, event) {
           event.preventDefault();
 
