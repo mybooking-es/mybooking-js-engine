@@ -1037,21 +1037,25 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
           key_characteristic_7, // Motorcycles caracteristic
         } = model;
 
-        filterComponent.view.init({
-          family_id,
-          characteristic_length,
-          characteristic_width,
-          characteristic_height,
-          characteristic_weight,
-          key_characteristic_1,
-          key_characteristic_2,
-          key_characteristic_3,
-          key_characteristic_4,
-          key_characteristic_5,
-          key_characteristic_6,
-          key_characteristic_7, // Motorcycles caracteristic
+        const filterSettings = {
+          settings: {
+            family_id,
+            characteristic_length,
+            characteristic_width,
+            characteristic_height,
+            characteristic_weight,
+            key_characteristic_1,
+            key_characteristic_2,
+            key_characteristic_3,
+            key_characteristic_4,
+            key_characteristic_5,
+            key_characteristic_6,
+            key_characteristic_7,
+          },
           events: model.events,
-        });
+        };
+
+        filterComponent.view.init(filterSettings);
 
         // Setup event listener
         controller.setupEventListeners();

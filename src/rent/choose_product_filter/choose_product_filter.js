@@ -28,6 +28,8 @@ define('filterComponent', [
       families: null,
       otherFilters: null,
     },
+    events: null,
+
     // UI Zones
     filterContainer: '#mybooking-chose-product-filter',
     templateContainer: 'script_choose_product_filter',
@@ -155,9 +157,6 @@ define('filterComponent', [
         });
       });
     },
-
-    // Add events listeners
-    events: new YSDEventTarget(),
 	};
 
   const controller = {
@@ -199,7 +198,7 @@ define('filterComponent', [
     /**
      * Initialize
      */ 
-		init: function(settings) {
+		init: function({settings, events}) {
       // Initialize i18next for translations
       model.requestLanguage = commonSettings.language(document.documentElement.lang);
       i18next.init({  
@@ -211,6 +210,7 @@ define('filterComponent', [
 
       // Set the configuration
       model.settings = settings;
+      model.events = events;
 
       // Load data and refresh
       this.loadDataAndRefresh();
@@ -279,12 +279,18 @@ define('filterComponent', [
        // Eraser button event
        $(model.filterContainer).find(model.eraserBtn).on('click', controller.eraserBtnClick);
 
+       // Remove old button event
+       $(model.filterContainer).find(model.advancedBtn).off('click');
+
        // Advanced button event
        $(model.filterContainer).find(model.advancedBtn).on('click', controller.advancedBtnClick);
 		},
 
     setupValidate: function() {
       const form = $(model.filterContainer).find(model.formContainer);
+
+      // Remove old button event
+      form.find('button').off('click');
 
       // eslint-disable-next-line max-len
       // If sections exists when button click event is called close all sections before submit or reset or open float window
@@ -344,7 +350,7 @@ define('filterComponent', [
             }
           }
 
-          model.settings.events.fireEvent({type: 'choose_product_filter', formValues});
+          model.events.fireEvent({type: 'choose_product_filter', formValues});
 
           return false;
         },
