@@ -39,7 +39,6 @@ define('filterComponent', [
     advancedBtn: '#mybooking-choose-product-filter-btn_advanced',
     advancedModalContainer: '#choose_product_filter_modal',
     advancedModalContent: 'script_choose_product_filter_modal_content',
-    advancedModalContentContainer: '#choose_product_filter_modal_content',
     // SectionUI Zones
     sectionContainer: '.mybooking-chose-product-filter-item_section',
     sectionToggleBtn: '.mybooking-chose-product-filter-item_section-btn',
@@ -187,9 +186,13 @@ define('filterComponent', [
         i18next: i18next
       });
 
-      $(model.advancedModalContentContainer).html(advancedModalContent);
-
       // Show the advanced modal
+      // Compatibility with bootstrap modal replacement (from 1.0.0)
+      if ($(`${model.advancedModalContainer}_MBM`).length) {
+        $(`${model.advancedModalContainer}_MBM .modal-product-detail-content`).html(advancedModalContent);     
+      } else {
+        $(`${model.advancedModalContainer} .modal-product-detail-content`).html(advancedModalContent);
+      }
       commonUI.showModal(model.advancedModalContainer);
     },
 	};
@@ -256,11 +259,11 @@ define('filterComponent', [
       // Initialize the sections panels
       filterSection.view.init();
 
+      // Setup Validate (IMPORTANT: this must be done before setupEvents)
+      this.setupValidate();
+
       // Setup Events
       this.setupEvents();
-
-      // Setup Validate
-      this.setupValidate();
 		},
 
     /**
@@ -274,7 +277,7 @@ define('filterComponent', [
      */ 
 		setupEvents: function() {
        // Remove old button event
-       $(model.filterContainer).find(model.eraserBtn).off('click');
+       $(model.filterContainer).find(model.eraserBtn).off('click'); 
 
        // Eraser button event
        $(model.filterContainer).find(model.eraserBtn).on('click', controller.eraserBtnClick);
@@ -289,17 +292,17 @@ define('filterComponent', [
     setupValidate: function() {
       const form = $(model.filterContainer).find(model.formContainer);
 
-      // Remove old button event
-      form.find('button').off('click');
-
       // eslint-disable-next-line max-len
       // If sections exists when button click event is called close all sections before submit or reset or open float window
       const sections = $(model.sectionContainer);
       if (sections.length > 0) {
+        // Remove old button event
+        form.find('button').off('click');
+      
         form.find('button').on('click', function(event) {
           sections.each(function() {
             // If arrow is up the section is open
-            if ($(this).find('.fa-angle-up').length > 0) {
+            if ($(this).find('.dashicons-arrow-up').length > 0) {
               // Trigger click to close the section
               $(this).find(model.sectionToggleBtn).trigger('click');
             }

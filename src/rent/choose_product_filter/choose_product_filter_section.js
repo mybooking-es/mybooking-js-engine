@@ -30,18 +30,18 @@ define('filterSection', [
      */ 
     toogleSectionVisibilityClick: function() {
       const currentTarget = $(this).parent().find(model.sectionPanelContainer);
-      const arrows = $(model.sectionToggleBtn).find('i.fa');
-      const currentArrow = $(this).find('i.fa');
+      const arrows = $(model.sectionToggleBtn).find('i.dashicons');
+      const currentArrow = $(this).find('i.dashicons');
       // Hide all panels except the current one and change arrow directions
       $(model.sectionContainer).find(model.sectionPanelContainer).not(currentTarget).hide();
-      arrows.removeClass('fa-angle-up').addClass('fa-angle-down');
+      arrows.removeClass('dashicons-arrow-up').addClass('dashicons-arrow-down');
       // Toggle the visibility of current panel and change arrow direction
       if (currentTarget.is(':visible')) {
         currentTarget.hide();
-        currentArrow.removeClass('fa-angle-up').addClass('fa-angle-down');
+        currentArrow.removeClass('dashicons-arrow-up').addClass('dashicons-arrow-down');
       } else {
         currentTarget.show();
-        currentArrow.removeClass('fa-angle-down').addClass('fa-angle-up');
+        currentArrow.removeClass('dashicons-arrow-down').addClass('dashicons-arrow-up');
       }
     },
 
@@ -52,10 +52,11 @@ define('filterSection', [
       const familyChecked = $(this).is(':checked');
         
       // If the family checkbox is checked, check all children
+      const children = $(this).closest('li').find('input[name="family_id"]');
       if (familyChecked) {
-        $(this).closest('li').find('input[name="family_id"]').prop('checked', true);
+        children.prop('checked', true);
       } else {
-        $(this).closest('li').find('input[name="family_id"]').prop('checked', false);
+        children.prop('checked', false);
       }
     },
 
