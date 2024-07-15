@@ -956,6 +956,9 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
       }
     },
 
+   /**
+     * Set up filter values
+     */
     setupFilterValues: function(data) {
       data.forEach((item, index) => {
         if (item.key === 'family_id') {
@@ -965,19 +968,10 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
           model[`key_characteristic_${index}`] = item.value;
         }
       });
+
+      console.log('Model updated ===> ', model);
     },
 
-    /**
-     * Setup event listeners
-     */
-    setupEventListeners: function() {
-      // Products filters
-      model.removeListeners('choose_product_filter');
-      model.addListener('choose_product_filter', (data) => {
-        this.setupFilterValues(data.formValues);
-        model.loadShoppingCart();
-      });
-    },
   };
 
   var view = {
@@ -1058,7 +1052,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
         filterComponent.view.init(filterSettings);
 
         // Setup event listener
-        controller.setupEventListeners();
+        this.setupEventListeners();
       }
     },
 
@@ -1373,8 +1367,23 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
         window.location.href= commonServices.completeUrl;
       }
 
-    }
+    },
 
+    /**
+     * Setup event listeners
+     */
+    setupEventListeners: function() {
+      // Product filter update
+      model.removeListeners('choose_product_filter_update');
+      model.addListener('choose_product_filter_update', (formData) => controller.setupFilterValues(formData.data));
+
+      // Product filter and send to the shopping cart
+      model.removeListeners('choose_product_filter_update_send');
+      model.addListener('choose_product_filter_update_send', (formData) => {
+        controller.setupFilterValues(formData.data);
+        model.loadShoppingCart();
+      });
+    },
   };
 
   // Configure the delegate

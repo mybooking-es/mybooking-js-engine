@@ -22,6 +22,9 @@ define('filterSection', [
     sectionContainer: '.mybooking-chose-product-filter-item_section',
     sectionToggleBtn: '.mybooking-chose-product-filter-item_section-btn',
     sectionPanelContainer: '.mybooking-chose-product-filter-item_panel',
+
+    // Events
+    parentEvents: null,
 	};
 
   const controller = {
@@ -58,21 +61,26 @@ define('filterSection', [
       } else {
         children.prop('checked', false);
       }
+
+      model.parentEvents.fireEvent({type: 'choose_product_filter_section_update'});
     },
 
     /**
      * Toogle item (on/off)
      */ 
     toogleItemClick: function(event) {
-      const input = $(this).find('input');
-      
-      // Family id is a especial filter with two levels and it's not necessary to check the input with this handler. It have its own handler
-      if (input.attr('name') === 'family_id') {
-        return;
-      }
-
+      // Get first level input
+      const input = $(this).find('> input');
+    
       // When click in same item, toggle the check
       input.prop('checked', !input.is(':checked'));
+
+      // If the item is a family, check or uncheck all children
+      if (input.attr('name') === 'family_id' &&  $(this).attr('data-tree-parent') === 'true'){
+        controller.toogleFamilyChildrenClick.bind(input)();
+      }
+
+      model.parentEvents.fireEvent({type: 'choose_product_filter_section_update'});
     },
 	};
 
@@ -80,7 +88,7 @@ define('filterSection', [
     /**
      * Initialize
      */ 
-		init: function() {
+		init: function(events) {
       // Initialize i18next for translations
       model.requestLanguage = commonSettings.language(document.documentElement.lang);
       i18next.init({  
@@ -89,6 +97,9 @@ define('filterSection', [
       }, 
       function() {
       });
+
+      // Set events
+      model.parentEvents = events;
 
       // Setup UI Controls
       this.setupControls();
@@ -118,22 +129,32 @@ define('filterSection', [
        // Get all fields
       const fields = $(model.sectionContainer).find('input');
 
-      fields.each(function(index, field) {
-        // Get this url value
-        const urlValue = queryParams.get($(field).attr('name'));
+      if (fields.length > 0) {
+        fields.each(function(index, field) {
+          // Get this url value
+          const urlValue = queryParams.get($(field).attr('name'));
 
-        if (urlValue) {
-          const urlArray = urlValue.split(',');
-          urlArray.forEach((urlValue) => {
-            // If the URL query parameter value is the same as the field value, check the field
-            if (typeof urlValue === 'string' && urlValue === $(field).val()) {
-              $(field).attr('checked', true);
-            } else {
-              $(field).attr('checked', false);
+          if (urlValue && urlValue !=='') {
+            // Get values
+            const urlArray = urlValue.split(',');
+
+            if (urlArray.length > 0) {
+              // Set each value
+              urlArray.forEach((urlValue) => {
+                const isTheSameValue = typeof urlValue === 'string' && urlValue === $(field).val();
+                // If the URL query parameter value is the same as the field value, check the field
+                if (isTheSameValue) {
+                  $(field).prop('checked', true);
+                } else {
+                  $(field).prop('checked', false);
+                }
+              });
             }
-          });
-        }
-      });
+          }
+        });
+      }
+
+      model.parentEvents.fireEvent({type: 'choose_product_filter_section_update'});
     },
 
     /**
@@ -142,24 +163,17 @@ define('filterSection', [
 		setupEvents: function() {
       // Remove old events
       $(model.sectionContainer).off('click');
+      $(model.sectionContainer).off('change');
+      $(model.sectionContainer).off('mousedown touchstart');
 
       // Section toggle event
       $(model.sectionContainer).on('click', model.sectionToggleBtn, controller.toogleSectionVisibilityClick);
 
-      // Families toogle event
-      $(model.sectionContainer).on('change', '[data-filter="family_id"] > label > input[name="family_id"]', controller.toogleFamilyChildrenClick);
-
       // Item toogle event: The event mouse down is called before click event and check or radio change events
-      $(model.sectionContainer).on('mousedown touchstart', 'li[data-filter] label', controller.toogleItemClick);
-      
+      $(model.sectionContainer).on('mousedown touchstart', '.mybooking-chose-product-filter-item_label', controller.toogleItemClick);
+
       // Checkbox and radio event click is prevented default because the action is in label event and it's not necessary to check the input
       $(model.sectionContainer).on('click', 'input[type="checkbox"], input[type="radio"]', (event) => { 
-        const target = $(event.currentTarget);
-        
-        // Family id is a especial filter with two levels and it's not necessary to check the input with this handler. It have its own handler
-        if (target.attr('name') === 'family_id') {
-          return;
-        }
         event.preventDefault();
       });
 		},

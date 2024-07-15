@@ -28,13 +28,26 @@ define('filterComponent', [
       families: null,
       otherFilters: null,
     },
-    events: null,
+
+    // Events
+    parentEvents: null,
+    events: new YSDEventTarget(),
+    addListener: function(type, listener) { /* addListener */
+      this.events.addEventListener(type, listener);  
+    },
+    removeListener: function(type, listener) { /* removeListener */
+        this.events.removeEventListener(type, listener);     
+    },
+    removeListeners: function(type) { /* remove listeners*/
+        this.events.removeEventListeners(type);
+    },
 
     // UI Zones
     filterContainer: '#mybooking-chose-product-filter',
     templateContainer: 'script_choose_product_filter',
     targetContainer: '#mybooking_choose_product_filter',
     formContainer: 'form[name=mybooking_choose_product_filter_form]',
+    submitBtn: '#mybooking-chose-product-filter-item_send',
     eraserBtn: '#mybooking-chose-product-filter-item_eraser',
     advancedBtn: '#mybooking-choose-product-filter-btn_advanced',
     advancedModalContainer: '#choose_product_filter_modal',
@@ -160,6 +173,14 @@ define('filterComponent', [
 
   const controller = {
     /**
+     * Submit button click
+     */
+    submitBtnClick: function(event) {
+      // Prevent form submission
+      event.preventDefault();
+    },
+
+    /**
      * Eraser button click
      */
     eraserBtnClick: function(event) {
@@ -170,7 +191,9 @@ define('filterComponent', [
       const form = $(this).closest('form');
       form.find('input[type="checkbox"], input[type="radio"]').prop('checked', false);
       form.find('select').prop('selectedIndex', 0);
-      // form.submit();
+      // Fire event
+      const data = view.getFormData();
+      model.parentEvents.fireEvent({type: 'choose_product_filter_update', data});
     },
 
     /**
@@ -213,7 +236,10 @@ define('filterComponent', [
 
       // Set the configuration
       model.settings = settings;
-      model.events = events;
+      model.parentEvents = events;
+
+      // Setup event listener
+      this.setupEventListeners();
 
       // Load data and refresh
       this.loadDataAndRefresh();
@@ -257,7 +283,7 @@ define('filterComponent', [
       $(model.targetContainer).html(filter);
 
       // Initialize the sections panels
-      filterSection.view.init();
+      filterSection.view.init(model.events);
 
       // Setup Validate (IMPORTANT: this must be done before setupEvents)
       this.setupValidate();
@@ -276,6 +302,24 @@ define('filterComponent', [
      * Setup UI Events
      */ 
 		setupEvents: function() {
+      // eslint-disable-next-line max-len
+      // If sections exists when button click event is called close all sections before submit or reset or open float window
+      const form = $(model.filterContainer).find(model.formContainer);
+      const sections = $(model.sectionContainer);
+      if (sections.length > 0) {
+        // Remove old button event
+        form.find('button').off('click');
+        form.find('button').on('click', function(event) {
+          sections.each(function() {
+            // If arrow is up the section is open
+            if ($(this).find('.dashicons-arrow-up').length > 0) {
+              // Trigger click to close the section
+              $(this).find(model.sectionToggleBtn).trigger('click');
+            }
+          });
+        });
+      }
+
        // Remove old button event
        $(model.filterContainer).find(model.eraserBtn).off('click'); 
 
@@ -289,71 +333,81 @@ define('filterComponent', [
        $(model.filterContainer).find(model.advancedBtn).on('click', controller.advancedBtnClick);
 		},
 
-    setupValidate: function() {
+    /**
+     * Get form data
+     */ 
+    getFormData: function() {
       const form = $(model.filterContainer).find(model.formContainer);
 
-      // eslint-disable-next-line max-len
-      // If sections exists when button click event is called close all sections before submit or reset or open float window
-      const sections = $(model.sectionContainer);
-      if (sections.length > 0) {
-        // Remove old button event
-        form.find('button').off('click');
-      
-        form.find('button').on('click', function(event) {
-          sections.each(function() {
-            // If arrow is up the section is open
-            if ($(this).find('.dashicons-arrow-up').length > 0) {
-              // Trigger click to close the section
-              $(this).find(model.sectionToggleBtn).trigger('click');
+      // Get values incluide unchecked checkboxes
+      const formValues = [];
+
+      // Get all fields from the one , not zero because is the send field that is not a filter
+      for (var i = 1; i < form[0].elements.length; i++) {
+        let element = form[0].elements[i];
+        
+        if (element.name) {
+          let object = {
+            key: element.name,
+            value: 'undefined',
+          };
+
+          switch (element.type) {
+            case 'checkbox':
+              if (element.checked) {
+                const fieldGroup = formValues.find(item => item.key === element.name);
+
+                // If the field is already in the array, append the value in existed field
+                if (fieldGroup && fieldGroup.value !== 'undefined') {
+                  fieldGroup.value += ',' + element.value;
+                } else {
+                  object.value = element.value;
+                }
+              }
+              break;
+            case 'radio':
+              if (element.checked) {
+                object.value = element.value;
+              }
+              break;
+          
+            default:
+              if (element.value !== '') {
+                object.value = element.value;
+              }
+              break;
+          }
+
+          const elementExists =formValues.find(item => item.key === element.name);
+          
+          if (!elementExists) {
+            formValues.push(object);
+          } else {
+            if (object.value !== 'undefined') {
+              elementExists.value = object.value;
             }
-          });
-        });
+          }
+        }
       }
+
+      console.log('Form values:', formValues);
+
+      return formValues;
+    },
+
+    /**
+     * Setup Validate
+     */ 
+    setupValidate: function() {
+      const form = $(model.filterContainer).find(model.formContainer);
 
       form.validate({
         submitHandler: function(form, event) {
           event.preventDefault();
 
-          // Get values incluide unchecked checkboxes
-          const formValues = [];
-          for (var i = 0; i < form.elements.length; i++) {
-            let element = form.elements[i];
-            
-            if (element.name) {
-              let object = {
-                key: element.name,
-                value: null,
-              };
-
-              switch (element.type) {
-                case 'checkbox':
-                  if (element.checked) {
-                    const fieldGroup = formValues.find(item => item.key === element.name);
-                    if (fieldGroup) {
-                      fieldGroup.value += ',' + element.value;
-                    } else {
-                      object.value = element.value;
-                    }
-                  }
-                  break;
-                case 'radio':
-                  if (element.checked) {
-                    object.value = element.value;
-                  }
-                  break;
-              
-                default:
-                  object.value = element.value;
-                  break;
-              }
-  
-              if (object.value !== null || !formValues.find(item => item.key === element.name)) {
-                formValues.push(object);
-              }
-            }
-          }
-
-          model.events.fireEvent({type: 'choose_product_filter', formValues});
+          // Fire event
+          const data = view.getFormData();
+          model.parentEvents.fireEvent({type: 'choose_product_filter_update_send', data});
 
           return false;
         },
@@ -365,6 +419,19 @@ define('filterComponent', [
         errorPlacement: function(error, element) {
           error.insertAfter(element);
         },
+      });
+    },
+
+    /**
+     * Setup event listeners
+     */
+    setupEventListeners: function() {
+      // Product filter update
+      model.removeListeners('choose_product_filter_section_update');
+      model.addListener('choose_product_filter_section_update', function() {
+        // Fire parent event
+        const data = view.getFormData();
+        model.parentEvents.fireEvent({type: 'choose_product_filter_update', data});
       });
     },
 	};
