@@ -7,6 +7,7 @@ define('filterComponent', [
   'ysdtemplate',
   'i18next',
   './choose_product_filter_section',
+  './choose_product_filter_modal',
   'YSDEventTarget',
   'commonUI',
 ], function(
@@ -18,12 +19,13 @@ define('filterComponent', [
   tmpl,
   i18next,
   filterSection,
+  filterModal,
   YSDEventTarget,
   commonUI,
 ) {
   const model = {
     requestLanguage: null,
-    settings: null,
+    getFilterSettings: null,
     filters: {
       families: null,
       otherFilters: null,
@@ -53,7 +55,7 @@ define('filterComponent', [
     advancedModalContainer: '#choose_product_filter_modal',
     advancedModalContent: 'script_choose_product_filter_modal_content',
     // SectionUI Zones
-    sectionContainer: '.mybooking-chose-product-filter-item_section',
+    sectionContainer: '.mybooking-chose-product-filter-item_section_toogle',
     sectionToggleBtn: '.mybooking-chose-product-filter-item_section-btn',
     /**
     * Format Families
@@ -126,9 +128,11 @@ define('filterComponent', [
     processKeyCharacteristicsData: function(data) {
       const result = Object.values(data);
 
-      result.forEach(item => {
+      result.forEach((item, index) => {
+        item.key = index + 1;
         item.values = Object.values(item.values);
       });
+
       return result;
     },
 
@@ -205,6 +209,7 @@ define('filterComponent', [
 
       // Load the advanced modal content
       const advancedModalContent = tmpl(model.advancedModalContent)({
+        model: model.getFilterSettings(),
         filters: model.filters,
         i18next: i18next
       });
@@ -216,7 +221,14 @@ define('filterComponent', [
       } else {
         $(`${model.advancedModalContainer} .modal-product-detail-content`).html(advancedModalContent);
       }
+
       commonUI.showModal(model.advancedModalContainer);
+
+      // Initialize the filter modal
+      filterModal.view.init(model.parentEvents);
+
+      // Initialize the sections panels in advanced modal
+      filterSection.view.init(model.events);
     },
 	};
 
@@ -224,7 +236,7 @@ define('filterComponent', [
     /**
      * Initialize
      */ 
-		init: function({settings, events}) {
+		init: function({getFilterSettings, events}) {
       // Initialize i18next for translations
       model.requestLanguage = commonSettings.language(document.documentElement.lang);
       i18next.init({  
@@ -235,7 +247,7 @@ define('filterComponent', [
       });
 
       // Set the configuration
-      model.settings = settings;
+      model.getFilterSettings = getFilterSettings;
       model.parentEvents = events;
 
       // Setup event listener
@@ -276,13 +288,14 @@ define('filterComponent', [
 		refresh:  function() {
       // Render the template when data is refreshed
       var filter = tmpl(model.templateContainer)({
+        model: model.getFilterSettings(),
         filters: model.filters,
         i18next: i18next
       });
 
       $(model.targetContainer).html(filter);
 
-      // Initialize the sections panels
+      // Initialize the sections panels in filter base
       filterSection.view.init(model.events);
 
       // Setup Validate (IMPORTANT: this must be done before setupEvents)
@@ -320,14 +333,8 @@ define('filterComponent', [
         });
       }
 
-       // Remove old button event
-       $(model.filterContainer).find(model.eraserBtn).off('click'); 
-
        // Eraser button event
        $(model.filterContainer).find(model.eraserBtn).on('click', controller.eraserBtnClick);
-
-       // Remove old button event
-       $(model.filterContainer).find(model.advancedBtn).off('click');
 
        // Advanced button event
        $(model.filterContainer).find(model.advancedBtn).on('click', controller.advancedBtnClick);
@@ -342,8 +349,8 @@ define('filterComponent', [
       // Get values incluide unchecked checkboxes
       const formValues = [];
 
-      // Get all fields from the one , not zero because is the send field that is not a filter
-      for (var i = 1; i < form[0].elements.length; i++) {
+      // Get all fields
+      for (var i = 0; i < form[0].elements.length; i++) {
         let element = form[0].elements[i];
         
         if (element.name) {
@@ -356,7 +363,7 @@ define('filterComponent', [
             case 'checkbox':
               if (element.checked) {
                 const fieldGroup = formValues.find(item => item.key === element.name);
-
+                
                 // If the field is already in the array, append the value in existed field
                 if (fieldGroup && fieldGroup.value !== 'undefined') {
                   fieldGroup.value += ',' + element.value;
@@ -390,7 +397,7 @@ define('filterComponent', [
         }
       }
 
-      console.log('Form values:', formValues);
+      console.log('Form values ===> ', formValues);
 
       return formValues;
     },
@@ -428,9 +435,11 @@ define('filterComponent', [
     setupEventListeners: function() {
       // Product filter update
       model.removeListeners('choose_product_filter_section_update');
-      model.addListener('choose_product_filter_section_update', function() {
-        // Fire parent event
+      model.addListener('choose_product_filter_section_update', function(event) {
+        // If data is not passed because called by not form event
         const data = view.getFormData();
+
+        // Fire parent event
         model.parentEvents.fireEvent({type: 'choose_product_filter_update', data});
       });
     },

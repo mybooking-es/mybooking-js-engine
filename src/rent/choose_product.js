@@ -80,6 +80,40 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
         this.events.removeEventListeners(type);
     },
 
+    // -------------- Filter get settings ----------------------------
+    getFilterSettings: function() {
+      // Only filter necessary data
+      const {
+        family_id,
+        characteristic_length,
+        characteristic_width,
+        characteristic_height,
+        characteristic_weight,
+        key_characteristic_1,
+        key_characteristic_2,
+        key_characteristic_3,
+        key_characteristic_4,
+        key_characteristic_5,
+        key_characteristic_6,
+        key_characteristic_7, // Motorcycles caracteristic
+      } = model;
+
+      return {
+        family_id,
+        characteristic_length,
+        characteristic_width,
+        characteristic_height,
+        characteristic_weight,
+        key_characteristic_1,
+        key_characteristic_2,
+        key_characteristic_3,
+        key_characteristic_4,
+        key_characteristic_5,
+        key_characteristic_6,
+        key_characteristic_7,
+      };
+    },
+
     // -------------- Load settings ----------------------------
 
     // OPTIMIZATION 2024-01-27 START
@@ -444,6 +478,8 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
           data.web_search = sessionStorage.getItem('mybookingSearch');
         }
       }
+
+      console.log('Data to send to the server ===> ', data);
 
       var jsonData = encodeURIComponent(JSON.stringify(data));
 
@@ -959,13 +995,13 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
    /**
      * Set up filter values
      */
-    setupFilterValues: function(data) {
+    formatFilterValues: function(data) {
       data.forEach((item, index) => {
         if (item.key === 'family_id') {
           model.family_id = item.value;
         } else {
           // Set the key characteristic; Expect array order is the same in form order
-          model[`key_characteristic_${index}`] = item.value;
+          model[`key_characteristic_${item.key}`] = item.value;
         }
       });
 
@@ -1015,44 +1051,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
 
       // Load filter if exists
       if ($('#mybooking_choose_product_filter').length) {
-        // Filter necessary data
-        const {
-          family_id,
-          characteristic_length,
-          characteristic_width,
-          characteristic_height,
-          characteristic_weight,
-          key_characteristic_1,
-          key_characteristic_2,
-          key_characteristic_3,
-          key_characteristic_4,
-          key_characteristic_5,
-          key_characteristic_6,
-          key_characteristic_7, // Motorcycles caracteristic
-        } = model;
-
-        const filterSettings = {
-          settings: {
-            family_id,
-            characteristic_length,
-            characteristic_width,
-            characteristic_height,
-            characteristic_weight,
-            key_characteristic_1,
-            key_characteristic_2,
-            key_characteristic_3,
-            key_characteristic_4,
-            key_characteristic_5,
-            key_characteristic_6,
-            key_characteristic_7,
-          },
-          events: model.events,
-        };
-
-        filterComponent.view.init(filterSettings);
-
-        // Setup event listener
-        this.setupEventListeners();
+        this.initializeFilter();
       }
     },
 
@@ -1370,18 +1369,32 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
     },
 
     /**
-     * Setup event listeners
+     * Initialize the filter
      */
-    setupEventListeners: function() {
+    initializeFilter: function() {
+      filterComponent.view.init({getFilterSettings: model.getFilterSettings, events: model.events});
+
+      // Setup event listener for filter
+      this.setupFilterEventListeners();
+    },
+
+    /**
+     * Setup filter event listeners
+     */
+    setupFilterEventListeners: function() {
       // Product filter update
       model.removeListeners('choose_product_filter_update');
-      model.addListener('choose_product_filter_update', (formData) => controller.setupFilterValues(formData.data));
+      model.addListener('choose_product_filter_update', (formData) => controller.formatFilterValues(formData.data));
 
       // Product filter and send to the shopping cart
       model.removeListeners('choose_product_filter_update_send');
       model.addListener('choose_product_filter_update_send', (formData) => {
-        controller.setupFilterValues(formData.data);
+        // Fomat the filter values
+        controller.formatFilterValues(formData.data);
+        // Load the shopping cart
         model.loadShoppingCart();
+        // Refresh the filter
+        this.initializeFilter();
       });
     },
   };

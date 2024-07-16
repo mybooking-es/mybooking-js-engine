@@ -18,6 +18,7 @@ define('filterSection', [
 ) {
   const model = {
     requestLanguage: null,
+
     // UI Zones
     sectionContainer: '.mybooking-chose-product-filter-item_section',
     sectionToggleBtn: '.mybooking-chose-product-filter-item_section-btn',
@@ -101,61 +102,9 @@ define('filterSection', [
       // Set events
       model.parentEvents = events;
 
-      // Setup UI Controls
-      this.setupControls();
-
       // Setup events
       this.setupEvents();
 		},
-
-		/**
-	 * Refresh
-	 */ 
-		refresh: function() {
-      // Reset controls
-      this.setupControls();
-		},
-
-    /**
-     * Setup UI Controls
-     */ 
-		setupControls: function() {
-      // Get the URL query parameters value
-      const queryParams = new URLSearchParams(window.location.search);
-
-      /*
-      * Initialize other controls with the URL query parameters
-      */
-       // Get all fields
-      const fields = $(model.sectionContainer).find('input');
-
-      if (fields.length > 0) {
-        fields.each(function(index, field) {
-          // Get this url value
-          const urlValue = queryParams.get($(field).attr('name'));
-
-          if (urlValue && urlValue !=='') {
-            // Get values
-            const urlArray = urlValue.split(',');
-
-            if (urlArray.length > 0) {
-              // Set each value
-              urlArray.forEach((urlValue) => {
-                const isTheSameValue = typeof urlValue === 'string' && urlValue === $(field).val();
-                // If the URL query parameter value is the same as the field value, check the field
-                if (isTheSameValue) {
-                  $(field).prop('checked', true);
-                } else {
-                  $(field).prop('checked', false);
-                }
-              });
-            }
-          }
-        });
-      }
-
-      model.parentEvents.fireEvent({type: 'choose_product_filter_section_update'});
-    },
 
     /**
      * Setup UI Events
