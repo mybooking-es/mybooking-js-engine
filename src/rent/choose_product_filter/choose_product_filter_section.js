@@ -113,13 +113,13 @@ define('filterSection', [
       // Remove old events
       $(model.sectionContainer).off('click');
       $(model.sectionContainer).off('change');
-      $(model.sectionContainer).off('mousedown touchstart');
+      $(model.sectionContainer).off('mousedown');
 
       // Section toggle event
       $(model.sectionContainer).on('click', model.sectionToggleBtn, controller.toogleSectionVisibilityClick);
 
       // Item toogle event: The event mouse down is called before click event and check or radio change events
-      $(model.sectionContainer).on('mousedown touchstart', '.mybooking-chose-product-filter-item_label', controller.toogleItemClick);
+      $(model.sectionContainer).on('mousedown', '.mybooking-chose-product-filter-item_label', controller.toogleItemClick);
 
       // Checkbox and radio event click is prevented default because the action is in label event and it's not necessary to check the input
       $(model.sectionContainer).on('click', 'input[type="checkbox"], input[type="radio"]', (event) => { 
