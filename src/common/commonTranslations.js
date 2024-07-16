@@ -999,7 +999,7 @@ define("commonTranslations", [], function () {
             booking_amount:
               "Para confirmar su reserva ha de realizarse un pago de <strong>{{amount}}</strong>.",
             pending_amount:
-              "Puede realizar el pago del importe pendiente de la reserva, <strong>{{amount}}</strong>",
+              "Puede realizar, por adelantado, el pago del importe pendiente de la reserva, <strong>{{amount}}</strong>",
           },
           updateReservation: {
             success: "La reserva se ha actualizado.",
@@ -1561,7 +1561,7 @@ define("commonTranslations", [], function () {
             booking_amount:
               "Per confirmar la reserva s'ha de realitzar un pagament de <strong>{{amount}}</strong>.",
             pending_amount:
-              "Pot realitzar el pagament de l'import pendent de la seva reserva, <strong>{{amount}}</strong>",
+              "Pot realitzar el pagament, per avançat, de l'import pendent de la seva reserva, <strong>{{amount}}</strong>",
           },
           updateReservation: {
             success: "Reserva actualitzada",
