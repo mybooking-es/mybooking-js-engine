@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 define('filterComponent', [
   'jquery',
   'commonServices',
@@ -104,19 +105,24 @@ define('filterComponent', [
           url += urlParams.join('&');
         }
 
-
         $.ajax({
           type: 'GET',
           url,
           dataType: 'json',
           success: function(data) {
+            if (!data || data.length === 0) {
+              // Reject promise
+              reject('No elements found in families');
+              return;
+            }
+
             const processData = that.processFamiliesData(data);
             // Resolve promise
             resolve(processData);
           },
-          error: function() {
-            console.log('Error');
-            reject();
+          error: function(xhr, status, error) {
+            // Reject promise
+            reject(error);
           },
         });
       });
@@ -161,14 +167,20 @@ define('filterComponent', [
           dataType: 'json',
           success: function(data) {
             const {key_characteristics} = data;
-            // Resolve promise
-            resolve({
-              key_characteristics: that.processKeyCharacteristicsData(key_characteristics),
-            });
+
+            if (key_characteristics && Object.keys(key_characteristics).length > 0) {
+              // Resolve promise
+              resolve({
+                key_characteristics: that.processKeyCharacteristicsData(key_characteristics),
+              });
+            } else {
+              // Reject promise
+              reject('No elements found in key_characteristics');
+            }
           },
-          error: function() {
-            console.log('Error');
-            reject();
+          error: function(xhr, status, error) {
+            // Reject promise
+            reject(error);
           },
         });
       });
@@ -264,22 +276,35 @@ define('filterComponent', [
       commonLoader.show();
       
       try {
-        const [families, otherFilters] = await Promise.all([model.getFamilies(), model.getKeyCharacteristics()]);
+        const [families, otherFilters] = await Promise.allSettled([model.getFamilies(), model.getKeyCharacteristics()]);
 
-        // Actualize model
-        model.filters = {
-          ...model.filters,
-          families,
-          otherFilters,
-        };
+        if (families.status === 'fulfilled') {
+          // Actualize model
+          model.filters = {
+            ...model.filters,
+            families: families.value,
+          };
+        } else {
+          console.warn('Error loading families:', families.reason);
+        }
+
+        if (otherFilters.status === 'fulfilled') {
+          // Actualize model
+          model.filters = {
+            ...model.filters,
+            otherFilters: otherFilters.value,
+          };
+        } else {
+          console.warn('Error loading other filters:', otherFilters.reason);
+        }
 
         // Refresh the view
         this.refresh();
       } catch (error) {
-        console.error('Loading error:', error); // TODO
+        // The messages are already shown in the console
+      } finally {
+        commonLoader.hide();
       }
-      
-      commonLoader.hide();
     },
 
 		/**
