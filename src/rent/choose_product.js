@@ -67,7 +67,9 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
     key_characteristic_4: null,
     key_characteristic_5: null,
     key_characteristic_6: null,
-    key_characteristic_7: null, // Motorcycles caracteristic
+    key_characteristic_7: null,
+    key_characteristic_8: null,
+    key_characteristic_9: null,
 
     events: new YSDEventTarget(),
     addListener: function(type, listener) { /* addListener */
@@ -95,7 +97,9 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
         key_characteristic_4,
         key_characteristic_5,
         key_characteristic_6,
-        key_characteristic_7, // Motorcycles caracteristic
+        key_characteristic_7,
+        key_characteristic_8,
+        key_characteristic_9,
       } = model;
 
       return {
@@ -111,6 +115,8 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
         key_characteristic_5,
         key_characteristic_6,
         key_characteristic_7,
+        key_characteristic_8,
+        key_characteristic_9,
       };
     },
 
@@ -218,7 +224,9 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
      * - key_characteristic_4,
      * - key_characteristic_5,
      * - key_characteristic_6,
-     * - key_characteristic_7, // Motorcycles caracteristic
+     * - key_characteristic_7,
+     * - key_characteristic_8,
+     * - key_characteristic_9,
      */
     extractVariables: function() { // Load variables from the request
 
@@ -290,6 +298,8 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
       this.key_characteristic_5 = decodeURIComponent(urlVars['key_characteristic_5']);
       this.key_characteristic_6 = decodeURIComponent(urlVars['key_characteristic_6']);
       this.key_characteristic_7 = decodeURIComponent(urlVars['key_characteristic_7']);
+      this.key_characteristic_8 = decodeURIComponent(urlVars['key_characteristic_8']);
+      this.key_characteristic_9 = decodeURIComponent(urlVars['key_characteristic_9']);
     },
 
     // -------------- Shopping cart ----------------------------
@@ -467,6 +477,12 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
       }
       if (this.key_characteristic_7 != 'undefined' && this.key_characteristic_7 != '') {
         data.key_characteristic_7 = this.key_characteristic_7;
+      }
+      if (this.key_characteristic_8 != 'undefined' && this.key_characteristic_8 != '') {
+        data.key_characteristic_8 = this.key_characteristic_8;
+      }
+      if (this.key_characteristic_9 != 'undefined' && this.key_characteristic_9 != '') {
+        data.key_characteristic_9 = this.key_characteristic_9;
       }
       
       // Append the referrer and the search (to manage conversions)
@@ -1378,6 +1394,16 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
       this.setupFilterEventListeners();
     },
 
+     /**
+     * Initialize the filter
+     */
+     refreshFilter: function() {
+      filterComponent.view.refresh();
+
+      // Setup event listener for filter
+      this.setupFilterEventListeners();
+    },
+
     /**
      * Setup filter event listeners
      */
@@ -1393,8 +1419,10 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
         controller.formatFilterValues(formData.data);
         // Load the shopping cart
         model.loadShoppingCart();
-        // Refresh the filter
-        this.initializeFilter();
+        // Refresh the filter if it is a modal event send
+        if (formData.target === 'modal') {
+          this.refreshFilter();
+        }
       });
     },
   };
@@ -1404,8 +1432,8 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
     model: model,
     controller: controller,
     view: view
-  }
-  rentEngineMediator.setChooseProduct( rentChooseProduct );
+  };
+  rentEngineMediator.setChooseProduct(rentChooseProduct);
 
   // The loader is show on start and hidden after the result of
   // the search has been rendered (in model.loadShoppingCart)

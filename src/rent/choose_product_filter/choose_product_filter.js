@@ -410,7 +410,7 @@ define('filterComponent', [
               break;
           }
 
-          const elementExists =formValues.find(item => item.key === element.name);
+          const elementExists = formValues.find(item => item.key === element.name);
           
           if (!elementExists) {
             formValues.push(object);
@@ -439,7 +439,7 @@ define('filterComponent', [
 
           // Fire event
           const data = view.getFormData();
-          model.parentEvents.fireEvent({type: 'choose_product_filter_update_send', data});
+          model.parentEvents.fireEvent({type: 'choose_product_filter_update_send', data, target: 'main'});
 
           return false;
         },

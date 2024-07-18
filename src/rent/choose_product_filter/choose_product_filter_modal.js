@@ -155,7 +155,7 @@ define('filterModal', [
 
           // Fire event
           const data = view.getFormData(form);
-          model.parentEvents.fireEvent({type: 'choose_product_filter_update_send', data});
+          model.parentEvents.fireEvent({type: 'choose_product_filter_update_send', data, target: 'modal'});
 
           // Close modal
           commonUI.hideModal(model.advancedModalContainer);
