@@ -495,8 +495,6 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
         }
       }
 
-      console.log('Data to send to the server ===> ', data);
-
       var jsonData = encodeURIComponent(JSON.stringify(data));
 
       return jsonData;
@@ -1020,8 +1018,6 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
           model[`key_characteristic_${item.key}`] = item.value;
         }
       });
-
-      console.log('Model updated ===> ', model);
     },
 
   };

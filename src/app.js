@@ -32,7 +32,6 @@ require('./lib/i18next.js');
 require('./lib/loaderSpinner.js');
 require('./lib/select2.js');
 require('./lib/customCookie.js');
-require('./lib/ion.rangeSlider.js');
 
 // Yurak Sisa Dream Libraries
 require('./lib/YSDEventTarget.js');
