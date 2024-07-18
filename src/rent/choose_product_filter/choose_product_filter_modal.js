@@ -19,15 +19,17 @@ define('filterModal', [
   i18next,
 ) {
   const model = {
+    // Model ------------------------------------------------------------------
     requestLanguage: null,
 
+    // DOM ids ------------------------------------------------------------------
     // UI Zones
     advancedModalContainer: '#choose_product_filter_modal',
 		filterContainer: '#mybooking-chose-product-filter_modal',
     formContainer: 'form[name=mybooking_choose_product_filter_modal_form]',
     eraserBtn: '#mybooking-chose-product-filter-item_eraser',
 
-    // Events
+    // Events ------------------------------------------------------------------
     parentEvents: null,
 	};
 

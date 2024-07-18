@@ -25,15 +25,38 @@ define('filterComponent', [
   commonUI,
 ) {
   const model = {
+    // Model ------------------------------------------------------------------
+    // Request language
     requestLanguage: null,
+
+    // Function that get settings from choose_product.js
     getFilterSettings: null,
+
+    // Filters model
     filters: {
       families: null,
       otherFilters: null,
     },
 
-    // Events
-    parentEvents: null,
+    // DOM ids ------------------------------------------------------------------
+    // UI Zones
+    filterContainer: '#mybooking-chose-product-filter',
+    templateContainer: 'script_choose_product_filter',
+    targetContainer: '#mybooking_choose_product_filter',
+    formContainer: 'form[name=mybooking_choose_product_filter_form]',
+    submitBtn: '#mybooking-chose-product-filter-item_send',
+    eraserBtn: '#mybooking-chose-product-filter-item_eraser',
+    advancedBtn: '#mybooking-choose-product-filter-btn_advanced',
+    advancedModalContainer: '#choose_product_filter_modal',
+    advancedModalContent: 'script_choose_product_filter_modal_content',
+    
+    // SectionUI Zones
+    sectionContainer: '.mybooking-chose-product-filter-item_section_toogle',
+    sectionToggleBtn: '.mybooking-chose-product-filter-item_section-btn',
+
+    // Events ------------------------------------------------------------------
+    parentEvents: null, // Events from choose_product.js
+
     events: new YSDEventTarget(),
     addListener: function(type, listener) { /* addListener */
       this.events.addEventListener(type, listener);  
@@ -45,21 +68,20 @@ define('filterComponent', [
         this.events.removeEventListeners(type);
     },
 
-    // UI Zones
-    filterContainer: '#mybooking-chose-product-filter',
-    templateContainer: 'script_choose_product_filter',
-    targetContainer: '#mybooking_choose_product_filter',
-    formContainer: 'form[name=mybooking_choose_product_filter_form]',
-    submitBtn: '#mybooking-chose-product-filter-item_send',
-    eraserBtn: '#mybooking-chose-product-filter-item_eraser',
-    advancedBtn: '#mybooking-choose-product-filter-btn_advanced',
-    advancedModalContainer: '#choose_product_filter_modal',
-    advancedModalContent: 'script_choose_product_filter_modal_content',
-    // SectionUI Zones
-    sectionContainer: '.mybooking-chose-product-filter-item_section_toogle',
-    sectionToggleBtn: '.mybooking-chose-product-filter-item_section-btn',
+    // Methods ------------------------------------------------------------------
     /**
-    * Format Families
+    * Update model in choose_product.js
+    **/
+    update: function() {
+      // Get data from this form
+      const data = view.getFormData();
+
+      // Fire parent event
+      model.parentEvents.fireEvent({type: 'choose_product_filter_update', data});
+    },
+
+    /**
+    * Format Families to getFamilies
     **/
     processFamiliesData: function(data) {
       const result = [];
@@ -129,7 +151,7 @@ define('filterComponent', [
     },
 
     /**
-    * Format Families
+    * Format key characteristics to getKeyCharacteristics
     **/
     processKeyCharacteristicsData: function(data) {
       const result = Object.values(data);
@@ -189,6 +211,16 @@ define('filterComponent', [
 
   const controller = {
     /**
+     * From buttons button click (close all sections)
+     */
+    btnClick: function() {
+      if ($(this).find('.dashicons-arrow-up').length > 0) {
+        // Trigger click to close the section
+        $(this).find(model.sectionToggleBtn).trigger('click');
+      }
+    },
+
+    /**
      * Submit button click
      */
     submitBtnClick: function(event) {
@@ -207,6 +239,7 @@ define('filterComponent', [
       const form = $(this).closest('form');
       form.find('input[type="checkbox"], input[type="radio"]').prop('checked', false);
       form.find('select').prop('selectedIndex', 0);
+
       // Fire event
       const data = view.getFormData();
       model.parentEvents.fireEvent({type: 'choose_product_filter_update', data});
@@ -233,13 +266,12 @@ define('filterComponent', [
       } else {
         $(`${model.advancedModalContainer} .modal-product-detail-content`).html(advancedModalContent);
       }
-
       commonUI.showModal(model.advancedModalContainer);
 
       // Initialize the filter modal
       filterModal.view.init(model.parentEvents);
 
-      // Initialize the sections panels in advanced modal
+      // Initialize the sections panels in advanced modal (TODO - Refactor)
       filterSection.view.init(model.events);
     },
 	};
@@ -262,7 +294,7 @@ define('filterComponent', [
       model.getFilterSettings = getFilterSettings;
       model.parentEvents = events;
 
-      // Setup event listener
+      // Set event listener
       this.setupEventListeners();
 
       // Load data and refresh
@@ -318,44 +350,40 @@ define('filterComponent', [
         i18next: i18next
       });
 
+      // Render the template
       $(model.targetContainer).html(filter);
 
       // Initialize the sections panels in filter base
       filterSection.view.init(model.events);
 
-      // Setup Validate (IMPORTANT: this must be done before setupEvents)
-      this.setupValidate();
-
       // Setup Events
       this.setupEvents();
+
+      // Setup Validate
+      this.setupValidate();
 		},
 
     /**
-     * Setup UI Controls
-     */ 
-		setupControls: function() {
-		},
+     * Setup event listeners
+     */
+    setupEventListeners: function() {
+      // Product filter update
+      model.removeListeners('choose_product_filter_section_update');
+      model.addListener('choose_product_filter_section_update', model.update);
+    },
 
     /**
      * Setup UI Events
      */ 
 		setupEvents: function() {
       // eslint-disable-next-line max-len
-      // If sections exists when button click event is called close all sections before submit or reset or open float window
+      // If sections exists when button click event is called close all sections before submit or reset or open modal
       const form = $(model.filterContainer).find(model.formContainer);
       const sections = $(model.sectionContainer);
       if (sections.length > 0) {
         // Remove old button event
         form.find('button').off('click');
-        form.find('button').on('click', function(event) {
-          sections.each(function() {
-            // If arrow is up the section is open
-            if ($(this).find('.dashicons-arrow-up').length > 0) {
-              // Trigger click to close the section
-              $(this).find(model.sectionToggleBtn).trigger('click');
-            }
-          });
-        });
+        form.find('button').on('click', controller.btnClick);
       }
 
        // Eraser button event
@@ -422,8 +450,6 @@ define('filterComponent', [
         }
       }
 
-      console.log('Form values ===> ', formValues);
-
       return formValues;
     },
 
@@ -435,9 +461,10 @@ define('filterComponent', [
 
       form.validate({
         submitHandler: function(form, event) {
+          // Event prevent default from form
           event.preventDefault();
 
-          // Fire event
+          // Get data and fire event in choose_product.js
           const data = view.getFormData();
           model.parentEvents.fireEvent({type: 'choose_product_filter_update_send', data, target: 'main'});
 
@@ -451,21 +478,6 @@ define('filterComponent', [
         errorPlacement: function(error, element) {
           error.insertAfter(element);
         },
-      });
-    },
-
-    /**
-     * Setup event listeners
-     */
-    setupEventListeners: function() {
-      // Product filter update
-      model.removeListeners('choose_product_filter_section_update');
-      model.addListener('choose_product_filter_section_update', function(event) {
-        // If data is not passed because called by not form event
-        const data = view.getFormData();
-
-        // Fire parent event
-        model.parentEvents.fireEvent({type: 'choose_product_filter_update', data});
       });
     },
 	};

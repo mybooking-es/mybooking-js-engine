@@ -17,14 +17,16 @@ define('filterSection', [
   i18next,
 ) {
   const model = {
+    // Model ------------------------------------------------------------------
     requestLanguage: null,
 
+    // DOM ids ------------------------------------------------------------------
     // UI Zones
     sectionContainer: '.mybooking-chose-product-filter-item_section',
     sectionToggleBtn: '.mybooking-chose-product-filter-item_section-btn',
     sectionPanelContainer: '.mybooking-chose-product-filter-item_panel',
 
-    // Events
+    // Events ------------------------------------------------------------------
     parentEvents: null,
 	};
 
@@ -83,6 +85,14 @@ define('filterSection', [
 
       model.parentEvents.fireEvent({type: 'choose_product_filter_section_update'});
     },
+
+    /**
+     * Input click
+     */ 
+    inputClick: function(event) {
+      // Prevent default action from input click
+      event.preventDefault();
+    }
 	};
 
   const view = {
@@ -122,16 +132,8 @@ define('filterSection', [
       $(model.sectionContainer).on('mousedown', '.mybooking-chose-product-filter-item_label', controller.toogleItemClick);
 
       // Checkbox and radio event click is prevented default because the action is in label event and it's not necessary to check the input
-      $(model.sectionContainer).on('click', 'input[type="checkbox"], input[type="radio"]', (event) => { 
-        event.preventDefault();
-      });
+      $(model.sectionContainer).on('click', 'input[type="checkbox"], input[type="radio"]', controller.inputClick);
 		},
-
-    /**
-     * Setup validate
-     */
-    setupValidate: function() {
-    },
 	};
 
   const filterSection = {
