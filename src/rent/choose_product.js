@@ -1060,11 +1060,6 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
 
       // Load shopping cart
       model.loadShoppingCart();
-
-      // Load filter if exists
-      if ($('#mybooking_choose_product_filter').length) {
-        this.initializeFilter();
-      }
     },
 
     refreshVariantsResume: function(productCode) {
@@ -1258,7 +1253,11 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
             this.setupCoverage();        
           }  
         }
-
+        
+        // Load filter if exists
+        if ($('#mybooking_choose_product_filter').length && model.configuration.chooseProductSearchShowFilter) {
+          this.initializeFilter();
+        }
     },
 
     /***

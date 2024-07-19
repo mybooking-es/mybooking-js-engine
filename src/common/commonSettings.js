@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 define('commonSettings', ['jquery','commonServices','commonLoader','commonTranslations','YSDFormatter','i18next'],
       function($, commonServices, commonLoader, commonTranslations, formatter,i18next) {
 
@@ -44,6 +45,7 @@ define('commonSettings', ['jquery','commonServices','commonLoader','commonTransl
       useDriverAgeRules: null,
       calendarShowAvailabilityNotSelectable: false,
       chooseProductMultipleRateTypes: false,
+      chooseProductSearchShowFilter: false,
       literalDepositFranchise: 'deposit',
       // - Renting dates
       minDays   : 1,
@@ -243,6 +245,10 @@ define('commonSettings', ['jquery','commonServices','commonLoader','commonTransl
              mybookingSettings.data.chooseProductMultipleRateTypes = data.choose_product_multiple_rate_types;
              if (typeof data.choose_product_multiple_rate_types === 'undefined') {
               mybookingSettings.data.chooseProductMultipleRateTypes = false;
+             }
+             mybookingSettings.data.chooseProductSearchShowFilter = data.choose_product_search_show_filter;
+             if (typeof data.choose_product_search_show_filter === 'undefined') {
+              mybookingSettings.data.chooseProductSearchShowFilter = false;
              }
              if (typeof data.literal_deposit_franchise !== 'undefined') {
               mybookingSettings.data.literalDepositFranchise = data.literal_deposit_franchise;
