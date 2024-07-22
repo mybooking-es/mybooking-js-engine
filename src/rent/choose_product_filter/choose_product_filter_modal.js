@@ -19,15 +19,12 @@ define('filterModal', [
   i18next,
 ) {
   const model = {
-    // Model ------------------------------------------------------------------
-    requestLanguage: null,
-
     // DOM ids ------------------------------------------------------------------
     // UI Zones
-    advancedModalContainer: '#choose_product_filter_modal',
-		filterContainer: '#mybooking-chose-product-filter_modal',
-    formContainer: 'form[name=mybooking_choose_product_filter_modal_form]',
-    eraserBtn: '#mybooking-chose-product-filter-item_eraser',
+    filterModalContainer: '#mybooking_choose_product_filter_modal', // Modal container
+    formFilterModalContainer: 'form[name=mybooking_choose_product_filter_modal_form]', // Form container
+    submitFilterModalBtn: '#mybooking_choose_product_filter_modal__send', // Submit button
+    eraserFilterModalBtn: '#mybooking_choose_product_filter_modal__eraser', // Eraser button
 
     // Events ------------------------------------------------------------------
     parentEvents: null,
@@ -37,7 +34,7 @@ define('filterModal', [
     /**
      * Eraser button click
      */
-    eraserBtnClick: function(event) {
+    eraserFilterModalBtnClick: function(event) {
       // Prevent form submission
       event.preventDefault();
 
@@ -56,15 +53,6 @@ define('filterModal', [
      * Initialize
      */ 
 		init: function(events) {
-      // Initialize i18next for translations
-      model.requestLanguage = commonSettings.language(document.documentElement.lang);
-      i18next.init({  
-        lng: model.requestLanguage,
-        resources: commonTranslations
-      }, 
-      function() {
-      });
-
       // Set events
       model.parentEvents = events;
 
@@ -80,14 +68,14 @@ define('filterModal', [
      */ 
 		setupEvents: function() {
       // Eraser button event
-      $(model.formContainer).find(model.eraserBtn).on('click', controller.eraserBtnClick);
+      $(model.filterModalContainer).find(model.eraserFilterModalBtn).on('click', controller.eraserFilterModalBtnClick);
 		},
 
 		/**
      * Get form data
      */ 
     getFormData: function() {
-      const form = $(model.filterContainer).find(model.formContainer);
+      const form = $(model.filterModalContainer).find(model.formFilterModalContainer);
 
       // Get values incluide unchecked checkboxes
       const formValues = [];
@@ -140,8 +128,6 @@ define('filterModal', [
         }
       }
 
-      console.log('Form values ===> ', formValues);
-
       return formValues;
     },
 
@@ -149,7 +135,7 @@ define('filterModal', [
      * Setup validate
      */
     setupValidate: function() {
-			const form = $(model.filterContainer).find(model.formContainer);
+			const form = $(model.filterModalContainer).find(model.formFilterModalContainer);
 
       form.validate({
         submitHandler: function(form, event) {
@@ -160,7 +146,7 @@ define('filterModal', [
           model.parentEvents.fireEvent({type: 'choose_product_filter_update_send', data, target: 'modal'});
 
           // Close modal
-          commonUI.hideModal(model.advancedModalContainer);
+          commonUI.hideModal(model.filterModalContainer);
 
           return false;
         },

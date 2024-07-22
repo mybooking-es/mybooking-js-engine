@@ -516,7 +516,8 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
        }
        if (commonServices.apiKey && commonServices.apiKey != '') {
          url += '&api_key=' + commonServices.apiKey;
-       }  
+       }
+
        // Request
        if (this.isShoppingCartData()) { // create or update shopping cart
          $.ajax({

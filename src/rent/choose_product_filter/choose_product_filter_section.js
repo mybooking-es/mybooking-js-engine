@@ -22,9 +22,9 @@ define('filterSection', [
 
     // DOM ids ------------------------------------------------------------------
     // UI Zones
-    sectionContainer: '.mybooking-chose-product-filter-item_section',
-    sectionToggleBtn: '.mybooking-chose-product-filter-item_section-btn',
-    sectionPanelContainer: '.mybooking-chose-product-filter-item_panel',
+    sectionContainer: '.mybooking-chose-product-filter-item_section', // Section container
+    sectionToggleBtn: '.mybooking-chose-product-filter-item_section-btn', // Section toggle button
+    sectionPanelContainer: '.mybooking-chose-product-filter-item_panel', // Section panel container
 
     // Events ------------------------------------------------------------------
     parentEvents: null,
@@ -43,9 +43,11 @@ define('filterSection', [
       arrows.removeClass('dashicons-arrow-up').addClass('dashicons-arrow-down');
       // Toggle the visibility of current panel and change arrow direction
       if (currentTarget.is(':visible')) {
+        $(this).removeClass('active');
         currentTarget.hide();
         currentArrow.removeClass('dashicons-arrow-up').addClass('dashicons-arrow-down');
       } else {
+        $(this).addClass('active');
         currentTarget.show();
         currentArrow.removeClass('dashicons-arrow-down').addClass('dashicons-arrow-up');
       }

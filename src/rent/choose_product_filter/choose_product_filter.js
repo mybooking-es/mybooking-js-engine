@@ -29,34 +29,37 @@ define('filterComponent', [
     // Request language
     requestLanguage: null,
 
-    // Function that get settings from choose_product.js
-    getFilterSettings: null,
-
     // Filters model
     filters: {
       families: null,
       otherFilters: null,
     },
 
+     // Function that get settings from choose_product.js
+     getFilterSettings: null,
+
     // DOM ids ------------------------------------------------------------------
     // UI Zones
-    filterContainer: '#mybooking-chose-product-filter',
-    templateContainer: 'script_choose_product_filter',
-    targetContainer: '#mybooking_choose_product_filter',
-    formContainer: 'form[name=mybooking_choose_product_filter_form]',
-    submitBtn: '#mybooking-chose-product-filter-item_send',
-    eraserBtn: '#mybooking-chose-product-filter-item_eraser',
-    advancedBtn: '#mybooking-choose-product-filter-btn_advanced',
-    advancedModalContainer: '#choose_product_filter_modal',
-    advancedModalContent: 'script_choose_product_filter_modal_content',
+    targetContainer: '#mybooking_choose_product_filter', // Initial empty container with conditional shortcode
+    
+    // Filter bar content
+    filterBarContainer: '#mybooking_choose_product_filter_bar', // All filter container (component)
+    templateFilterBarContent: 'script_choose_product_filter_bar_content', // Microtemplate
+    formFilterBarContainer: 'form[name=mybooking_choose_product_filter_bar_form]', // Form container
+    submitFilterBarBtn: '#mybooking_choose_product_filter_bar__send', // Submit button
+    eraserFilterBarBtn: '#mybooking_choose_product_filter_bar__eraser', // Eraser button
+    modalFilterBarBtn: '#mybooking_choose_product_filter_bar__modal', // Modal button
+
+    // Modal content
+    filterModalContainer: '#mybooking_choose_product_filter_modal', // Modal container
+    templateFilterModalContent: 'script_choose_product_filter_modal_content', // Microtemplate
     
     // SectionUI Zones
-    sectionContainer: '.mybooking-chose-product-filter-item_section_toogle',
-    sectionToggleBtn: '.mybooking-chose-product-filter-item_section-btn',
+    sectionContainer: '.mybooking-chose-product-filter-item_section_toogle', // Section container
+    sectionToggleBtn: '.mybooking-chose-product-filter-item_section-btn', // Section toggle button
 
     // Events ------------------------------------------------------------------
     parentEvents: null, // Events from choose_product.js
-
     events: new YSDEventTarget(),
     addListener: function(type, listener) { /* addListener */
       this.events.addEventListener(type, listener);  
@@ -216,22 +219,14 @@ define('filterComponent', [
     btnClick: function() {
       if ($(this).find('.dashicons-arrow-up').length > 0) {
         // Trigger click to close the section
-        $(this).find(model.sectionToggleBtn).trigger('click');
+        $(`${model.sectionToggleBtn}.active`).trigger('click');
       }
-    },
-
-    /**
-     * Submit button click
-     */
-    submitBtnClick: function(event) {
-      // Prevent form submission
-      event.preventDefault();
     },
 
     /**
      * Eraser button click
      */
-    eraserBtnClick: function(event) {
+    eraserFilterBarBtnClick: function(event) {
       // Prevent form submission
       event.preventDefault();
 
@@ -248,12 +243,12 @@ define('filterComponent', [
     /**
      * Advanced button click
      */
-    advancedBtnClick: function(event) {
+    modalFilterBarBtnClick: function(event) {
       // Prevent form submission
       event.preventDefault();
 
       // Load the advanced modal content
-      const advancedModalContent = tmpl(model.advancedModalContent)({
+      const templateFilterModalContent = tmpl(model.templateFilterModalContent)({
         model: model.getFilterSettings(),
         filters: model.filters,
         i18next: i18next
@@ -261,12 +256,12 @@ define('filterComponent', [
 
       // Show the advanced modal
       // Compatibility with bootstrap modal replacement (from 1.0.0)
-      if ($(`${model.advancedModalContainer}_MBM`).length) {
-        $(`${model.advancedModalContainer}_MBM .modal-product-detail-content`).html(advancedModalContent);     
+      if ($(`${model.filterModalContainer}_MBM`).length) {
+        $(`${model.filterModalContainer}_MBM .modal-product-detail-content`).html(templateFilterModalContent);     
       } else {
-        $(`${model.advancedModalContainer} .modal-product-detail-content`).html(advancedModalContent);
+        $(`${model.filterModalContainer} .modal-product-detail-content`).html(templateFilterModalContent);
       }
-      commonUI.showModal(model.advancedModalContainer);
+      commonUI.showModal(model.filterModalContainer);
 
       // Initialize the filter modal
       filterModal.view.init(model.parentEvents);
@@ -344,7 +339,7 @@ define('filterComponent', [
     */ 
 		refresh:  function() {
       // Render the template when data is refreshed
-      var filter = tmpl(model.templateContainer)({
+      var filter = tmpl(model.templateFilterBarContent)({
         model: model.getFilterSettings(),
         filters: model.filters,
         i18next: i18next
@@ -378,26 +373,26 @@ define('filterComponent', [
 		setupEvents: function() {
       // eslint-disable-next-line max-len
       // If sections exists when button click event is called close all sections before submit or reset or open modal
-      const form = $(model.filterContainer).find(model.formContainer);
+      const form = $(model.filterBarContainer).find(model.formFilterBarContainer);
       const sections = $(model.sectionContainer);
       if (sections.length > 0) {
         // Remove old button event
         form.find('button').off('click');
-        form.find('button').on('click', controller.btnClick);
+        form.find('button').on('click', controller.btnClick.bind(sections));
       }
 
        // Eraser button event
-       $(model.filterContainer).find(model.eraserBtn).on('click', controller.eraserBtnClick);
+       $(model.filterBarContainer).find(model.eraserFilterBarBtn).on('click', controller.eraserFilterBarBtnClick);
 
        // Advanced button event
-       $(model.filterContainer).find(model.advancedBtn).on('click', controller.advancedBtnClick);
+       $(model.filterBarContainer).find(model.modalFilterBarBtn).on('click', controller.modalFilterBarBtnClick);
 		},
 
     /**
      * Get form data
      */ 
     getFormData: function() {
-      const form = $(model.filterContainer).find(model.formContainer);
+      const form = $(model.filterBarContainer).find(model.formFilterBarContainer);
 
       // Get values incluide unchecked checkboxes
       const formValues = [];
@@ -457,7 +452,7 @@ define('filterComponent', [
      * Setup Validate
      */ 
     setupValidate: function() {
-      const form = $(model.filterContainer).find(model.formContainer);
+      const form = $(model.filterBarContainer).find(model.formFilterBarContainer);
 
       form.validate({
         submitHandler: function(form, event) {
