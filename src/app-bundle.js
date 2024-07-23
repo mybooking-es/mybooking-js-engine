@@ -128,6 +128,7 @@ $(document).ready(function () {
         require('./rent/mediator/rentEngineMediator.js');
         require('./rent/choose_product_filter/choose_product_filter.js');
         require('./rent/choose_product_filter/choose_product_filter_section.js');
+        require('./rent/choose_product_filter/choose_product_filter_bar.js');
         require('./rent/choose_product_filter/choose_product_filter_modal.js');
         require('./rent/choose_product.js');
     }

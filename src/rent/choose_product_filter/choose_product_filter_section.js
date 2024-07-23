@@ -1,148 +1,136 @@
 /* eslint-disable max-len */
 define('filterSection', [
   'jquery',
-  'commonServices',
   'commonSettings',
   'commonTranslations',
-  'commonLoader',
-  'ysdtemplate',
   'i18next',
 ], function(
   $,
-  commonServices,
   commonSettings,
   commonTranslations,
-  commonLoader,
-  tmpl,
   i18next,
 ) {
-  const model = {
-    // Model ------------------------------------------------------------------
-    requestLanguage: null,
-
-    // DOM ids ------------------------------------------------------------------
-    // UI Zones
-    sectionContainer: '.mybooking-chose-product-filter-item_section', // Section container
-    sectionToggleBtn: '.mybooking-chose-product-filter-item_section-btn', // Section toggle button
-    sectionPanelContainer: '.mybooking-chose-product-filter-item_panel', // Section panel container
-
-    // Events ------------------------------------------------------------------
-    parentEvents: null,
-	};
-
-  const controller = {
-    /**
-     * Toogle section visibility
-     */ 
-    toogleSectionVisibilityClick: function() {
-      const currentTarget = $(this).parent().find(model.sectionPanelContainer);
-      const arrows = $(model.sectionToggleBtn).find('i.dashicons');
-      const currentArrow = $(this).find('i.dashicons');
-      // Hide all panels except the current one and change arrow directions
-      $(model.sectionContainer).find(model.sectionPanelContainer).not(currentTarget).hide();
-      arrows.removeClass('dashicons-arrow-up').addClass('dashicons-arrow-down');
-      // Toggle the visibility of current panel and change arrow direction
-      if (currentTarget.is(':visible')) {
-        $(this).removeClass('active');
-        currentTarget.hide();
-        currentArrow.removeClass('dashicons-arrow-up').addClass('dashicons-arrow-down');
-      } else {
-        $(this).addClass('active');
-        currentTarget.show();
-        currentArrow.removeClass('dashicons-arrow-down').addClass('dashicons-arrow-up');
-      }
-    },
-
-    /**
-     * Select family childrens
-     */
-    toogleFamilyChildrenClick: function() {
-      const familyChecked = $(this).is(':checked');
-        
-      // If the family checkbox is checked, check all children
-      const children = $(this).closest('li').find('input[name="family_id"]');
-      if (familyChecked) {
-        children.prop('checked', true);
-      } else {
-        children.prop('checked', false);
-      }
-
-      model.parentEvents.fireEvent({type: 'choose_product_filter_section_update'});
-    },
-
-    /**
-     * Toogle item (on/off)
-     */ 
-    toogleItemClick: function(event) {
-      // Get first level input
-      const input = $(this).find('> input');
-    
-      // When click in same item, toggle the check
-      input.prop('checked', !input.is(':checked'));
-
-      // If the item is a family, check or uncheck all children
-      if (input.attr('name') === 'family_id' &&  $(this).attr('data-tree-parent') === 'true'){
-        controller.toogleFamilyChildrenClick.bind(input)();
-      }
-
-      model.parentEvents.fireEvent({type: 'choose_product_filter_section_update'});
-    },
-
-    /**
-     * Input click
-     */ 
-    inputClick: function(event) {
-      // Prevent default action from input click
-      event.preventDefault();
+  class FilterSection {
+    constructor(target) {
+      this.target = target;
     }
-	};
 
-  const view = {
-    /**
-     * Initialize
-     */ 
-		init: function(events) {
-      // Initialize i18next for translations
-      model.requestLanguage = commonSettings.language(document.documentElement.lang);
-      i18next.init({  
-        lng: model.requestLanguage,
-        resources: commonTranslations
-      }, 
-      function() {
-      });
+    model = {
+      // DOM ids ------------------------------------------------------------------
+      // UI Zones
+      sectionContainer: '.mybooking-chose-product-filter-item_section', // Section container
+      sectionToggleBtn: '.mybooking-chose-product-filter-item_section-btn', // Section toggle button
+      sectionPanelContainer: '.mybooking-chose-product-filter-item_panel', // Section panel container
+  
+      // Events ------------------------------------------------------------------
+      parentEvents: null,
+    };
 
-      // Set events
-      model.parentEvents = events;
+    controller = {
+      /**
+       * Toogle section visibility
+       */ 
+      toogleSectionVisibilityClick: (event) => {
+        const target = $(event.currentTarget);
+        const currentTarget = target.parent().find(this.model.sectionPanelContainer);
+        const arrows = $(`${this.target} ${this.model.sectionToggleBtn}`).find('i.dashicons');
+        const currentArrow = target.find('i.dashicons');
+        // Hide all panels except the current one and change arrow directions
+        $(`${this.target} ${this.model.sectionContainer}`).find(this.model.sectionPanelContainer).not(currentTarget).hide();
+        arrows.removeClass('dashicons-arrow-up').addClass('dashicons-arrow-down');
+        // Toggle the visibility of current panel and change arrow direction
+        if (currentTarget.is(':visible')) {
+          target.removeClass('active');
+          currentTarget.hide();
+          currentArrow.removeClass('dashicons-arrow-up').addClass('dashicons-arrow-down');
+        } else {
+          target.addClass('active');
+          currentTarget.show();
+          currentArrow.removeClass('dashicons-arrow-down').addClass('dashicons-arrow-up');
+        }
+      },
+  
+      /**
+       * Select family childrens
+       */
+      toogleFamilyChildrenClick: (target) => {
+        const familyChecked = target.is(':checked');
+          
+        // If the family checkbox is checked, check all children
+        const children = target.closest('li').find('input[name="family_id"]');
+        if (familyChecked) {
+          children.prop('checked', true);
+        } else {
+          children.prop('checked', false);
+        }
 
-      // Setup events
-      this.setupEvents();
-		},
+        // Fire event
+        this.model.parentEvents.fireEvent({type: 'choose_product_filter_section_update', target: this.target});
+      },
+  
+      /**
+       * Toogle item (on/off)
+       */ 
+      toogleItemClick: (event) => {
+        const target = $(event.currentTarget);
 
-    /**
-     * Setup UI Events
-     */ 
-		setupEvents: function() {
-      // Remove old events
-      $(model.sectionContainer).off('click');
-      $(model.sectionContainer).off('change');
-      $(model.sectionContainer).off('mousedown');
+        // Get first level input
+        const input = target.find('> input');
+      
+        // When click in same item, toggle the check
+        input.prop('checked', !input.is(':checked'));
+  
+        // If the item is a family, check or uncheck all children
+        if (input.attr('name') === 'family_id' &&  target.attr('data-tree-parent') === 'true'){
+          this.controller.toogleFamilyChildrenClick(input);
+        } else {
+          // Fire event
+          this.model.parentEvents.fireEvent({type: 'choose_product_filter_section_update', target: this.target});
+        }
+      },
+  
+      /**
+       * Input click
+       */ 
+      inputClick: (event) => {
+        // Prevent default action from input click
+        event.preventDefault();
+      }
+    };
 
-      // Section toggle event
-      $(model.sectionContainer).on('click', model.sectionToggleBtn, controller.toogleSectionVisibilityClick);
+    view = {
+      /**
+       * Initialize
+       */ 
+      init: (events) =>{
+        // Set events
+        this.model.parentEvents = events;
+  
+        // Setup events
+        this.view.setupEvents();
+      },
+  
+      /**
+       * Setup UI Events
+       */ 
+      setupEvents: () =>{
+        // Remove old events
+        $(`${this.target} ${this.model.sectionContainer}`).off('click');
+        $(`${this.target} ${this.model.sectionContainer}`).off('change');
+        $(`${this.target} ${this.model.sectionContainer}`).off('mousedown');
+  
+        // Section toggle event
+        $(`${this.target} ${this.model.sectionContainer}`).on('click', this.model.sectionToggleBtn, this.controller.toogleSectionVisibilityClick);
+  
+        // Item toogle event: The event mouse down is called before click event and check or radio change events
+        $(`${this.target} ${this.model.sectionContainer}`).on('mousedown', '.mybooking-chose-product-filter-item_label', this.controller.toogleItemClick);
+  
+        // Checkbox and radio event click is prevented default because the action is in label event and it's not necessary to check the input
+        $(`${this.target} ${this.model.sectionContainer}`).on('click', 'input[type="checkbox"], input[type="radio"]', this.controller.inputClick);
+      },
+    };
+  }
 
-      // Item toogle event: The event mouse down is called before click event and check or radio change events
-      $(model.sectionContainer).on('mousedown', '.mybooking-chose-product-filter-item_label', controller.toogleItemClick);
-
-      // Checkbox and radio event click is prevented default because the action is in label event and it's not necessary to check the input
-      $(model.sectionContainer).on('click', 'input[type="checkbox"], input[type="radio"]', controller.inputClick);
-		},
-	};
-
-  const filterSection = {
-    model,
-    controller,
-    view,
-  };
-
-  return filterSection;
+  // Return class to be instantiated
+  return FilterSection;
 });

@@ -1,36 +1,53 @@
 /* eslint-disable max-len */
 define('filterModal', [
   'jquery',
-  'commonServices',
-  'commonSettings',
-  'commonTranslations',
-  'commonLoader',
   'commonUI',
   'ysdtemplate',
   'i18next',
+  './choose_product_filter_section',
 ], function(
   $,
-  commonServices,
-  commonSettings,
-  commonTranslations,
-  commonLoader,
   commonUI,
   tmpl,
   i18next,
+  FilterSection,
 ) {
   const model = {
+    // Model ------------------------------------------------------------------
+    // Filters model
+    filters: {
+      families: null,
+      otherFilters: null,
+    },
+
+     // Function that get settings from choose_product.js
+     getFilterSettings: null,
+
     // DOM ids ------------------------------------------------------------------
     // UI Zones
+    filterModalBtn: '#mybooking_choose_product_filter__modal', // Modal button
+
     filterModalContainer: '#mybooking_choose_product_filter_modal', // Modal container
+    templateFilterModalContent: 'script_choose_product_filter_modal_content', // Microtemplate
     formFilterModalContainer: 'form[name=mybooking_choose_product_filter_modal_form]', // Form container
-    submitFilterModalBtn: '#mybooking_choose_product_filter_modal__send', // Submit button
     eraserFilterModalBtn: '#mybooking_choose_product_filter_modal__eraser', // Eraser button
 
     // Events ------------------------------------------------------------------
-    parentEvents: null,
+    filterEvents: null,
 	};
 
   const controller = {
+    /**
+     * Modal button click
+     */
+    filterModalBtnClick: function(event) {
+      // Prevent form submission
+      event.preventDefault();
+
+      // Show the modal
+      commonUI.showModal(model.filterModalContainer, view.refresh, view.update);
+    },
+
     /**
      * Eraser button click
      */
@@ -43,8 +60,7 @@ define('filterModal', [
       form.find('input[type="checkbox"], input[type="radio"]').prop('checked', false);
       form.find('select').prop('selectedIndex', 0);
       // Fire event
-      const data = view.getFormData();
-      model.parentEvents.fireEvent({type: 'choose_product_filter_update', data});
+      model.filterEvents.fireEvent({type: 'choose_product_filter_modal_update', target: model.formFilterModalContainer});
     },
 	};
 
@@ -52,84 +68,64 @@ define('filterModal', [
     /**
      * Initialize
      */ 
-		init: function(events) {
-      // Set events
-      model.parentEvents = events;
+    init: function({filters, getFilterSettings, events}) {
+      // Set the configuration
+			model.filters = filters;
+      model.getFilterSettings = getFilterSettings;
+      model.filterEvents = events;
 
-      // Setup events
-      this.setupEvents();
-
-      // Setup validate
-      this.setupValidate();
+      // Initialize Modal button event
+      $(model.filterModalBtn).off('click');
+      $(model.filterModalBtn).on('click', controller.filterModalBtnClick);
 		},
+
+    /**
+    * Refresh
+    */ 
+		refresh:  function() {
+      // Render the template when data is refreshed
+      // Load the advanced modal content
+      const templateFilterModalContent = tmpl(model.templateFilterModalContent)({
+        model: model.getFilterSettings(),
+        filters: model.filters,
+        i18next: i18next
+      });
+
+      // Show the advanced modal
+      // Compatibility with bootstrap modal replacement (from 1.0.0)
+      if ($(`${model.filterModalContainer}_MBM`).length) {
+        $(`${model.filterModalContainer}_MBM .modal-product-detail-content`).html(templateFilterModalContent);     
+      } else {
+        $(`${model.filterModalContainer} .modal-product-detail-content`).html(templateFilterModalContent);
+      }
+
+      // Initialize the sections panels in filter base
+      const filterSection = new FilterSection(model.formFilterModalContainer);
+      filterSection.view.init(model.filterEvents);
+
+      // Setup Events
+      view.setupEvents();
+
+      // Setup Validate
+      view.setupValidate();
+    },
+
+    /**
+    * Clear modal content
+    */ 
+    update: function() {
+      // Fire event
+      model.filterEvents.fireEvent({type: 'choose_product_filter_modal_close'});
+    },
 
     /**
      * Setup UI Events
      */ 
 		setupEvents: function() {
       // Eraser button event
+      $(model.filterModalContainer).find(model.eraserFilterModalBtn).off('click');
       $(model.filterModalContainer).find(model.eraserFilterModalBtn).on('click', controller.eraserFilterModalBtnClick);
 		},
-
-		/**
-     * Get form data
-     */ 
-    getFormData: function() {
-      const form = $(model.filterModalContainer).find(model.formFilterModalContainer);
-
-      // Get values incluide unchecked checkboxes
-      const formValues = [];
-
-      // Get all fields from the one , not zero because is the send field that is not a filter
-      for (var i = 1; i < form[0].elements.length; i++) {
-        let element = form[0].elements[i];
-        
-        if (element.name) {
-          let object = {
-            key: element.name,
-            value: 'undefined',
-          };
-
-          switch (element.type) {
-            case 'checkbox':
-              if (element.checked) {
-                const fieldGroup = formValues.find(item => item.key === element.name);
-
-                // If the field is already in the array, append the value in existed field
-                if (fieldGroup && fieldGroup.value !== 'undefined') {
-                  fieldGroup.value += ',' + element.value;
-                } else {
-                  object.value = element.value;
-                }
-              }
-              break;
-            case 'radio':
-              if (element.checked) {
-                object.value = element.value;
-              }
-              break;
-          
-            default:
-              if (element.value !== '') {
-                object.value = element.value;
-              }
-              break;
-          }
-
-          const elementExists =formValues.find(item => item.key === element.name);
-          
-          if (!elementExists) {
-            formValues.push(object);
-          } else {
-            if (object.value !== 'undefined') {
-              elementExists.value = object.value;
-            }
-          }
-        }
-      }
-
-      return formValues;
-    },
 
     /**
      * Setup validate
@@ -142,8 +138,7 @@ define('filterModal', [
           event.preventDefault();
 
           // Fire event
-          const data = view.getFormData(form);
-          model.parentEvents.fireEvent({type: 'choose_product_filter_update_send', data, target: 'modal'});
+          model.filterEvents.fireEvent({type: 'choose_product_filter_modal_update_send', target: model.formFilterModalContainer});
 
           // Close modal
           commonUI.hideModal(model.filterModalContainer);
