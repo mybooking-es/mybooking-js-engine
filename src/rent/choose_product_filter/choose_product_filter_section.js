@@ -84,6 +84,12 @@ define('filterSection', [
         if (input.attr('name') === 'family_id' &&  target.attr('data-tree-parent') === 'true'){
           this.controller.toogleFamilyChildrenClick(input);
         } else {
+          if (input.attr('name') === 'family_id' && input.prop('checked') === false) {
+            // Uncheck parent
+            const parent = target.closest('li[data-label]').find('input[name="family_id"]').first();
+            parent.prop('checked', false);
+          }
+
           // Fire event
           this.model.parentEvents.fireEvent({type: 'choose_product_filter_section_update', target: this.target});
         }
