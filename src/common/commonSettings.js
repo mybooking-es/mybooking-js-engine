@@ -45,6 +45,13 @@ define('commonSettings', ['jquery','commonServices','commonLoader','commonTransl
       calendarShowAvailabilityNotSelectable: false,
       chooseProductMultipleRateTypes: false,
       literalDepositFranchise: 'deposit',
+      // - Deposit literals
+      depositLiteral: null,
+      depositReductionLiteral: null,
+      guaranteeLiteral: null,
+      guaranteeReductionLiteral: null,
+      driverDepositLiteral: null,
+      depositTotalLiteral: null,
       // - Renting dates
       minDays   : 1,
       timeToFrom: true,
@@ -247,6 +254,14 @@ define('commonSettings', ['jquery','commonServices','commonLoader','commonTransl
              if (typeof data.literal_deposit_franchise !== 'undefined') {
               mybookingSettings.data.literalDepositFranchise = data.literal_deposit_franchise;
              }
+             // - Deposit literals
+             mybookingSettings.data.depositLiteral = data.deposit_literal;
+             mybookingSettings.data.depositReductionLiteral = data.deposit_reduction_literal;
+             mybookingSettings.data.guaranteeLiteral = data.guarantee_literal;
+             mybookingSettings.data.guaranteeReductionLiteral = data.guarantee_reduction_literal;
+             mybookingSettings.data.driverDepositLiteral = data.driver_deposit_literal;
+             mybookingSettings.data.depositTotalLiteral = data.deposit_total_literal;
+             // - Desposit literals end
              mybookingSettings.data.selectFamily = data.select_family;
              mybookingSettings.data.selectDestination = data.select_destination;
              mybookingSettings.data.selectorRentalLocation = data.selector_rental_location;
