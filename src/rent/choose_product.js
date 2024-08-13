@@ -3,14 +3,16 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
          'commonServices', 'commonSettings', 'commonTranslations', 'commonLoader', 'commonUI',
          'i18next', 'ysdtemplate', 
          './selector/modify_reservation_selector', './selector-wizard/selector_wizard',
-         './mediator/rentEngineMediator', 
+         './mediator/rentEngineMediator',
+         './choose_product_filter/choose_product_filter',
+         'YSDEventTarget',
          'jquery.i18next',         
          'jquery.validate', 'jquery.ui', 'jquery.ui.datepicker-es',
          'jquery.ui.datepicker-en', 'jquery.ui.datepicker-ca', 'jquery.ui.datepicker-it',
          'jquery.ui.datepicker.validation'],
        function($, RemoteDataSource, SelectSelector, 
                 commonServices, commonSettings, commonTranslations, commonLoader, commonUI,
-                i18next, tmpl, selector, selectorWizard, rentEngineMediator) {
+                i18next, tmpl, selector, selectorWizard, rentEngineMediator, filterComponent, YSDEventTarget) {
 
   var model = {
 
@@ -68,6 +70,58 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
     key_characteristic_4: null,
     key_characteristic_5: null,
     key_characteristic_6: null,
+    key_characteristic_7: null,
+    key_characteristic_8: null,
+    key_characteristic_9: null,
+
+    events: new YSDEventTarget(),
+    addListener: function(type, listener) { /* addListener */
+      this.events.addEventListener(type, listener);  
+    },
+    removeListener: function(type, listener) { /* removeListener */
+        this.events.removeEventListener(type, listener);     
+    },
+    removeListeners: function(type) { /* remove listeners*/
+        this.events.removeEventListeners(type);
+    },
+
+    // -------------- Filter get settings ----------------------------
+    getFilterSettings: function() {
+      // Only filter necessary data
+      const {
+        family_id,
+        characteristic_length,
+        characteristic_width,
+        characteristic_height,
+        characteristic_weight,
+        key_characteristic_1,
+        key_characteristic_2,
+        key_characteristic_3,
+        key_characteristic_4,
+        key_characteristic_5,
+        key_characteristic_6,
+        key_characteristic_7,
+        key_characteristic_8,
+        key_characteristic_9,
+      } = model;
+
+      return {
+        family_id,
+        characteristic_length,
+        characteristic_width,
+        characteristic_height,
+        characteristic_weight,
+        key_characteristic_1,
+        key_characteristic_2,
+        key_characteristic_3,
+        key_characteristic_4,
+        key_characteristic_5,
+        key_characteristic_6,
+        key_characteristic_7,
+        key_characteristic_8,
+        key_characteristic_9,
+      };
+    },
 
     // -------------- Load settings ----------------------------
 
@@ -172,7 +226,10 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
      * - key_characteristic_3,
      * - key_characteristic_4,
      * - key_characteristic_5,
-     * - key_characteristic_6
+     * - key_characteristic_6,
+     * - key_characteristic_7,
+     * - key_characteristic_8,
+     * - key_characteristic_9,
      */
     extractVariables: function() { // Load variables from the request
 
@@ -243,7 +300,9 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
       this.key_characteristic_4 = decodeURIComponent(urlVars['key_characteristic_4']);
       this.key_characteristic_5 = decodeURIComponent(urlVars['key_characteristic_5']);
       this.key_characteristic_6 = decodeURIComponent(urlVars['key_characteristic_6']);
-
+      this.key_characteristic_7 = decodeURIComponent(urlVars['key_characteristic_7']);
+      this.key_characteristic_8 = decodeURIComponent(urlVars['key_characteristic_8']);
+      this.key_characteristic_9 = decodeURIComponent(urlVars['key_characteristic_9']);
     },
 
     // -------------- Shopping cart ----------------------------
@@ -420,7 +479,16 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
       }                                    
       if (this.key_characteristic_6 != 'undefined' && this.key_characteristic_6 != '') {
         data.key_characteristic_6 = this.key_characteristic_6;
-      }  
+      }
+      if (this.key_characteristic_7 != 'undefined' && this.key_characteristic_7 != '') {
+        data.key_characteristic_7 = this.key_characteristic_7;
+      }
+      if (this.key_characteristic_8 != 'undefined' && this.key_characteristic_8 != '') {
+        data.key_characteristic_8 = this.key_characteristic_8;
+      }
+      if (this.key_characteristic_9 != 'undefined' && this.key_characteristic_9 != '') {
+        data.key_characteristic_9 = this.key_characteristic_9;
+      }
       
       // Append the referrer and the search (to manage conversions)
       if (typeof sessionStorage !== 'undefined') {
@@ -488,7 +556,8 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
     },
 
     loadShoppingCart: function() {
-
+      commonLoader.show(); 
+      
        // Build the URL
        var url = commonServices.URL_PREFIX + '/api/booking/frontend/shopping-cart';
        var freeAccessId = this.getShoppingCartFreeAccessId();
@@ -994,7 +1063,21 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
           productVideoBtn.hide();
           break;
       }
-    }
+    },
+
+   /**
+     * Set up filter values
+     */
+    formatFilterValues: function(data) {
+      data.forEach((item, index) => {
+        if (item.key === 'family_id') {
+          model.family_id = item.value;
+        } else {
+          // Set the key characteristic; Expect array order is the same in form order
+          model[`key_characteristic_${item.key}`] = item.value;
+        }
+      });
+    },
 
   };
 
@@ -1332,6 +1415,11 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
           // Verify first lazy loading products charge
           this.verifyFirstLazyLoading();
         }
+        
+        // Load filter if exists
+        if ($('#mybooking_choose_product_filter').length && model.configuration.chooseProductSearchShowFilter) {
+          this.initializeFilter();
+        }
     },
 
     /***
@@ -1451,8 +1539,49 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
         window.location.href= commonServices.completeUrl;
       }
 
-    }
+    },
 
+    /**
+     * Initialize the filter
+     */
+    initializeFilter: function() {
+      filterComponent.view.init({getFilterSettings: model.getFilterSettings, events: model.events});
+
+      // Setup event listener for filter
+      this.setupFilterEventListeners();
+    },
+
+     /**
+     * Initialize the filter
+     */
+     refreshFilter: function() {
+      filterComponent.view.refresh();
+
+      // Setup event listener for filter
+      this.setupFilterEventListeners();
+    },
+
+    /**
+     * Setup filter event listeners
+     */
+    setupFilterEventListeners: function() {
+      // Product filter update
+      model.removeListeners('choose_product_filter_update');
+      model.addListener('choose_product_filter_update', (formData) => controller.formatFilterValues(formData.data));
+
+      // Product filter and send to the shopping cart
+      model.removeListeners('choose_product_filter_update_send');
+      model.addListener('choose_product_filter_update_send', (formData) => {
+        // Fomat the filter values
+        controller.formatFilterValues(formData.data);
+        // Load the shopping cart
+        model.loadShoppingCart();
+        // Refresh the filter if it is a modal event send
+        if (formData.target === 'modal') {
+          this.refreshFilter();
+        }
+      });
+    },
   };
 
   // Configure the delegate
