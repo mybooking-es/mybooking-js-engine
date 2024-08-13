@@ -19,6 +19,9 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
     // Search result
     shopping_cart: null,   // Shopping cart
     products: null,        // Search products
+    total_products: 0,     // Total products
+    is_lazy_loading: false,  // Lazy loading
+    lazy_loading_limit: 3, // Lazy loading limit
     sales_process: null,   // Sales process information
     half_day_turns: null,  // Half day turns
     // Product detail
@@ -53,7 +56,6 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
     agent_id: null,
     optional_external_driver: null, 
     driving_license_type_id: null,
-    simple_location_id: null, 
     characteristic_length: null,
     characteristic_width: null,
     characteristic_height: null,
@@ -202,7 +204,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
       }
 */      
       this.pickup_place = decodeURIComponent(urlVars['pickup_place']).replace(/\+/g, " ");
-      this.pickup_place_other = decodeURIComponent(urlVars['pickup_place_other']).replace(/\+/g, " ");
+      this.pickup_place_other = decodeURIComponent(urlVars['pickup_place_other']).replace(/\+/g, ' ');
       this.custom_pickup_place = decodeURIComponent(urlVars['custom_pickup_place']);
       this.return_place = decodeURIComponent(urlVars['return_place']).replace(/\+/g, " ");
       this.return_place_other = decodeURIComponent(urlVars['return_place_other']).replace(/\+/g, " ");
@@ -302,11 +304,13 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
         data.renting_duration = this.renting_duration;
       }
 
+      // eslint-disable-next-line max-len
       if (this.rental_location_code != 'undefined' && this.rental_location_code != null && this.rental_location_code != '') {
         data.rental_location_code = this.rental_location_code;
         data.engine_fixed_rental_location = this.engine_fixed_rental_location;
       }
 
+      // eslint-disable-next-line max-len
       if (this.simple_location_id !== 'undefined' && this.simple_location_id !== null && this.simple_location_id !== '') {
         data.simple_location_id = this.simple_location_id;
       }
@@ -434,6 +438,55 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
 
     },
 
+    /*
+    * Load the lazy loading remaining products
+    */
+    loadRemainProducts: function() {
+      // Build the URL
+      var url = commonServices.URL_PREFIX + '/api/booking/frontend/shopping-cart';
+      var freeAccessId = this.getShoppingCartFreeAccessId();
+      if (freeAccessId) {
+        url += '/' + freeAccessId;
+      }
+      url += '?include_products=true';
+      if (model.requestLanguage != null) {
+        url += '&lang=' + model.requestLanguage;
+      }
+      if (commonServices.apiKey && commonServices.apiKey != '') {
+        url += '&api_key=' + commonServices.apiKey;
+      }
+      // Add a offset and a limit to paginate
+      url += '&offset=' + model.products.length;
+      url += '&limit=' + model.lazy_loading_limit;
+      // Request
+      $.ajax({
+            type: 'GET',
+            url : url,
+            dataType : 'json',
+            contentType : 'application/json; charset=utf-8',
+            crossDomain: true,
+            success: function(data, textStatus, jqXHR) {
+              // If there are products, show them
+              if (data.products.length > 0) {
+                // Remove the loader
+                $('.mybooking-page-container').find('#product_listing_loading').remove();
+                // Add the products
+                Array.prototype.push.apply(model.products, data.products);
+                // Show the products
+                view.showRemainProducts(data.products);
+                // Set the lazy loading flag
+                model.is_lazy_loading = false;
+              }
+            },
+            error: function(data, textStatus, jqXHR) {
+              // Remove the loader
+              $('.mybooking-page-container').find('#product_listing_loading').remove();
+              // Alert the error
+              alert(i18next.t('chooseProduct.loadShoppingCart.error'));
+            }
+      });
+    },
+
     loadShoppingCart: function() {
 
        // Build the URL
@@ -448,7 +501,11 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
        }
        if (commonServices.apiKey && commonServices.apiKey != '') {
          url += '&api_key=' + commonServices.apiKey;
-       }  
+       }
+       // Add a initial limit
+       if ($('#product_listing').attr('data-lazy-loading') === 'true') {
+        url += '&limit=' + model.lazy_loading_limit;
+       }
        // Request
        if (this.isShoppingCartData()) { // create or update shopping cart
          $.ajax({
@@ -527,6 +584,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
 
        model.shopping_cart = data.shopping_cart;
        model.products = data.products;
+       model.total_products = data.total;
        model.sales_process = data.sales_process;
        // Half day turns
        if (typeof data.half_day_turns !== 'undefined') {
@@ -979,6 +1037,71 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
       // Load shopping cart
       model.loadShoppingCart();
 
+      // Setup the lazy loading
+      if ($('#product_listing').attr('data-lazy-loading') === 'true') {
+        this.setupLazyLoading();
+      }
+    },
+
+    showRemainProducts: function(products) {
+      // Show the products
+      var available = 0;
+      for (var idx=0;idx<model.products.length;idx++) {
+        if (model.products[idx].availability) {
+          available += 1;
+        }
+      }
+      // Get template: detailed product or detailed product multiple rates
+      // eslint-disable-next-line max-len
+      const nameTmpl = model.configuration.chooseProductMultipleRateTypes ? 'script_detailed_product_multiple_rates' : 'script_detailed_product';
+
+      if (document.getElementById(nameTmpl)) {
+        // Append the new products
+        var result = tmpl(nameTmpl)({
+          shoppingCartProductQuantities: model.getShoppingCartProductQuantities(),
+          shoppingCart: model.shopping_cart, 
+          products: products,
+          configuration: model.configuration,
+          available: available,
+          i18next: i18next});
+        $('#product_listing').append(result);
+      }
+    },
+
+    setupLazyLoading: function() {
+      let scrollTimeout;
+      let lastScrollTop = 0;
+      // Scroll event
+      $(window).scroll(function() {
+        // Clear the timeout
+        clearTimeout(scrollTimeout);
+        // Return if the lazy loading is already in process
+        if (model.is_lazy_loading) {
+          return;
+        }
+        // Set a timeout to check the scroll
+        scrollTimeout = setTimeout(function() {
+          // Get the current scroll top
+          const currentScrollTop = $(this).scrollTop();
+          // Check if the user is scrolling down
+          const isADowloadScroll = currentScrollTop > lastScrollTop;
+          // Update the last scroll top
+          lastScrollTop = currentScrollTop;
+          // If the user is scrolling down load the remaining products
+          if (isADowloadScroll) {
+            if (model.products && model.products.length < model.total_products) {
+              // Set the lazy loading flag
+              model.is_lazy_loading = true;
+              // Show the loading message
+              // eslint-disable-next-line max-len
+              const loadingHtml = '<div id="product_listing_loading" style="padding: 1rem; text-align: center; background-color: rgba(0,0,0,0,6);">Loading ...</div>';
+              $('.mybooking-page-container').append(loadingHtml);
+              // Load the next step remaining products
+              model.loadRemainProducts();
+            }
+          }
+        }, 250);
+      });
     },
 
     refreshVariantsResume: function(productCode) {
@@ -1008,7 +1131,23 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
       }
     },
 
+    verifyFirstLazyLoading: function() {
+      // Return if the lazy loading is already in process
+      if (model.is_lazy_loading) {
+        return;
+      }
+      // If there are more products and list is shorter than windows height setup a first lazy loading
+      if (model.total_products > model.products.length && 
+        $('body').height() <= $(window).height()) {
+        model.is_lazy_loading = true;
+        model.loadRemainProducts();
+        console.log('First lazy loading');
+      }
+    },
+
     showShoppingCart: function() {
+        // Unbind the events in product listing delegate events
+        $('#product_listing').off();
 
         // Show the reservation summary 
         if (document.getElementById('script_reservation_summary')) {
@@ -1059,7 +1198,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
                 // Compatibility with old version of the theme
                 var modifyReservationModalSelector = '#choose_productModal';
                 if ($('#modify_reservation_modal').length || $('#modify_reservation_modal_MBM').length > 0) {
-                  modifyReservationModalSelector = '#modify_reservation_modal'
+                  modifyReservationModalSelector = '#modify_reservation_modal';
                 }
                 // Show the modal to change dates
                 commonUI.showModal(modifyReservationModalSelector,
@@ -1097,14 +1236,14 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
             $('#product_listing').html(result);
 
             // Bind the event to choose the product
-            $('.btn-choose-product').bind('click', function(e) {
+            $('#product_listing').on('click', '.btn-choose-product', function(e) {
               e.preventDefault();
               controller.selectProductBtnClick($(this).attr('data-product'),
                                                $(this).attr('data-rate-type-id'),
                                                $(this).attr('data-extra-code'));
             });
             // Bind the event to show detailed product
-            $('.js-product-info-btn').bind('click', function(){
+            $('#product_listing').on('click', '.js-product-info-btn', function(){
               controller.productDetailIconClick($(this).attr('data-product'));
             });  
             // Bind the event to show video
@@ -1120,14 +1259,14 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
 
           if (document.getElementById('script_detailed_product')) {
   
-            var result = tmpl('script_detailed_product')({
+            var detailedProduct = tmpl('script_detailed_product')({
                                 shoppingCartProductQuantities: model.getShoppingCartProductQuantities(),
                                 shoppingCart: model.shopping_cart, 
                                 products: model.products,
                                 configuration: model.configuration,
                                 available: available,
                                 i18next: i18next});
-            $('#product_listing').html(result);
+            $('#product_listing').html(detailedProduct);
   
             // Add variants resume
             model.shopping_cart.items.forEach((item) => {
@@ -1139,27 +1278,43 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
             // Bind the event to change to list
   
             // Bind the event to choose the product
-            $('.btn-choose-product').bind('click', function(e) {
+            $('#product_listing').on('click', '.btn-choose-product', function(e) {
               e.preventDefault();
               controller.selectProductBtnClick($(this).attr('data-product'),
                                                $(this).attr('data-rate-type-id'),
                                                $(this).attr('data-extra-code'));
             });
             // Bind the events to manage multiple products
-            $('.select-choose-product').bind('change', function() {
+            $('#product_listing').on('change', '.select-choose-product', function() {
                 var productCode = $(this).attr('data-value');
                 var productQuantity = $(this).val();
                 controller.productQuantityChanged(productCode, productQuantity);
             }); 
             // Bind the event to choose variant
-            $('.btn-choose-variant').bind('click', function() {
+            $('#product_listing').on('click', '.btn-choose-variant', function() {
               controller.selectVariantBtnClick($(this).attr('data-product'));
             });       
-            $('#go_to_complete').bind('click', function() {
-              controller.multipleProductsNextButtonClick();
-            });
+            // Show the next button in multiple product selection
+            if (model.configuration.multipleProductsSelection) {
+              $('#go_to_complete').show();
+              $('#go_to_complete').bind('click', function() {
+                controller.multipleProductsNextButtonClick();
+              });
+
+              // Situe margin in next button with multiple selection and listing bottom margin
+              if ($('.mybooking-product_listing').length > 0) {
+                // Set the margin right in button
+                const marginRight =  (window.innerWidth - $('.mybooking-product_listing').width()) / 2;
+                if (typeof marginRight === 'number' && marginRight > 0){
+                  $('.mybooking-process_choose #go_to_complete').css('right', marginRight);
+                }
+                // Add bottom margin in list
+                $('.mybooking-product_listing').addClass('mybooking-multiple_choose-margin');
+              }
+            }
+            
             // Bind the event to show detailed product
-            $('.js-product-info-btn').bind('click', function(){
+            $('#product_listing').on('click', '.js-product-info-btn', function(){
               controller.productDetailIconClick($(this).attr('data-product'));
             });  
             // Bind the event to show video
@@ -1173,6 +1328,10 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
           }  
         }
 
+        if ($('#product_listing').attr('data-lazy-loading') === 'true') {
+          // Verify first lazy loading products charge
+          this.verifyFirstLazyLoading();
+        }
     },
 
     /***
@@ -1301,7 +1460,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
     model: model,
     controller: controller,
     view: view
-  }
+  };
   rentEngineMediator.setChooseProduct( rentChooseProduct );
 
   // The loader is show on start and hidden after the result of
