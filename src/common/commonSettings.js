@@ -47,6 +47,7 @@ define('commonSettings', ['jquery','commonServices','commonLoader','commonTransl
       chooseProductMultipleRateTypes: false,
       chooseProductSearchShowFilter: false,
       literalDepositFranchise: 'deposit',
+      sesHospedajes: null,
       // - Deposit literals
       depositLiteral: null,
       depositReductionLiteral: null,
@@ -259,6 +260,9 @@ define('commonSettings', ['jquery','commonServices','commonLoader','commonTransl
              }
              if (typeof data.literal_deposit_franchise !== 'undefined') {
               mybookingSettings.data.literalDepositFranchise = data.literal_deposit_franchise;
+             }
+             if (typeof data.ses_hospedajes !== 'undefined') {
+              mybookingSettings.data.sesHospedajes = data.ses_hospedajes;
              }
              // - Deposit literals
              mybookingSettings.data.depositLiteral = data.deposit_literal;
