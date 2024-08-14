@@ -902,6 +902,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
         ];
         let $countrySelector = null;
         for (let idx=0; idx<selectors.length; idx++) { 
+          console.log('countries', selectors[idx]);
           $countrySelector = $(selectors[idx]);    
           if ($countrySelector.length > 0 && typeof values[idx] !== 'undefined') {
             $countrySelector.select2({
@@ -910,28 +911,25 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
               data: countriesArray
             });
 
-            if (model.configuration.sesHospedajes && ($countrySelector.attr('name') === 'customer_address[country]' || $countrySelector.attr('name') === 'driver_address[country]')) {
+            if (model.configuration.sesHospedajes && 
+                ($countrySelector.attr('name') === 'customer_address[country]' || 
+                 $countrySelector.attr('name') === 'driver_address[country]')) {
               $countrySelector.off('select2:select');
-              $countrySelector.on('select2:select', function() {
-                const value = $(this).val();
+              $countrySelector.on('select2:select', function(e) {
+                const value = e.params.data.id; //$(this).val();
 
                 if (value === 'ES') {
                   // Hide inputs
                   // Show selectors
                   // Load address states and set value if exists
-                  controller.loadAddressStates($countrySelector.attr('data-select-name'), $countrySelector.attr('data-select-value'));
+                  controller.loadAddressStates($countrySelector.attr('data-select-name'), 
+                                               $countrySelector.attr('data-select-value'));
                 } else {
                   // Hide selectors
                   // Show inputs
                 }
               });
               
-              debugger;
-
-              if ($countrySelector.val() === 'ES') {
-                // Load address states and set value if exists
-                controller.loadAddressStates($countrySelector.attr('data-select-name'), $countrySelector.attr('data-select-value'));
-              }
             }
 
             // Assign value
@@ -1175,7 +1173,6 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
         let $statesSelector = null;
         for (let idx=0; idx<selectors.length; idx++) { 
           $statesSelector = $(selectors[idx]); 
-          values[idx] = '01'; // TODO remove this
           if ($statesSelector.length > 0 && typeof values[idx] !== 'undefined') {
             $statesSelector.select2({
               width: '100%',
@@ -1225,8 +1222,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
         const selectors = [selectorName];
         let $citiesSelector = null;
         for (let idx=0; idx<selectors.length; idx++) { 
-          $citiesSelector = $(selectors[idx]);    
-          values[idx] = ''; // TODO remove this
+          $citiesSelector = $(selectors[idx]); 
           if ($citiesSelector.length > 0 && typeof values[idx] !== 'undefined') {
             $citiesSelector.select2({
               width: '100%',
