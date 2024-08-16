@@ -32,8 +32,6 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
     documentTypes: null,
     licenseTypes: null,
     required_fields: null,
-    addressStates: {},
-    addressCities: {},
 
     // -------------- Load settings ----------------------------
 
@@ -363,77 +361,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
       });
     },
 
-    /*
-    * Load address states
-    */
-    loadAddressStates: function async(selectorName, value) {
-      // Load address states
-      // Build the URL
-      let url = commonServices.URL_PREFIX + '/api/booking/frontend/states';
-      const urlParams = [];
-      if (this.requestLanguage != null) {
-        urlParams.push('lang=' + this.requestLanguage);
-      }
-      if (commonServices.apiKey && commonServices.apiKey != '') {
-        urlParams.push('api_key='+commonServices.apiKey);
-      }           
-      if (urlParams.length > 0) {
-        url += '?';
-        url += urlParams.join('&');
-      }
 
-      // Request
-      $.ajax({
-          type: 'GET',
-          url : url,
-          dataType : 'json',
-          contentType : 'application/json; charset=utf-8',
-          crossDomain: true,
-          success: function(data, textStatus, jqXHR) {
-            model.addressStates['ES'] = data;
-            view.formatAddressStates(data, selectorName, value);
-          }
-      });
-    },
-
-    /*
-    * Load address cities
-    */
-    loadAddressCities: function async(state, selectorName, value) {
-      // Load address states
-      // Build the URL
-      let url = commonServices.URL_PREFIX + '/api/booking/frontend/cities';
-      const urlParams = [];
-      if (state && state != '') {
-        urlParams.push('state='+state);
-      } else {
-        return;
-      }
-      // TODO Api not admit lang parameter
-      // if (this.requestLanguage != null) {
-      //   urlParams.push('lang=' + this.requestLanguage);
-      // }
-      if (commonServices.apiKey && commonServices.apiKey != '') {
-        urlParams.push('api_key='+commonServices.apiKey);
-      }           
-      if (urlParams.length > 0) {
-        url += '?';
-        url += urlParams.join('&');
-      }
-
-      // Request
-      $.ajax({
-          type: 'GET',
-          url : url,
-          dataType : 'json',
-          contentType : 'application/json; charset=utf-8',
-          crossDomain: true,
-          success: function(data, textStatus, jqXHR) {
-            model.addressCities[state] = data;
-            view.formatAddressCities(data, selectorName, value);
-          }
-      });
-    },
   };
 
   const controller = { // THE CONTROLLER
@@ -447,6 +375,34 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
     },
     
     // ----------------- Form ------------------------------
+
+    /**
+     * On Change the country
+     * @param {*} country 
+     * @param {*} stateName 
+     * @param {*} cityName 
+     */
+    onChangeCountry: function(country, stateCodeSelector, stateNameSelector, cityCodeSelector, cityNameSelector) {
+
+      console.log('Country changed', country, stateCodeSelector, stateNameSelector, cityCodeSelector, cityNameSelector);
+
+      if (country === 'ES') {
+        // Hide inputs
+        $(stateNameSelector).hide();
+        $(cityNameSelector).hide();
+        // Show selectors
+        $(stateCodeSelector).show();
+        $(cityCodeSelector).show();
+      } else {
+        // Hide selectors
+        $(stateCodeSelector).hide();
+        $(cityCodeSelector).hide();
+        // Show inputs
+        $(stateNameSelector).show();  
+        $(cityNameSelector).show();        
+      }
+
+    },
 
     /**
     * Load nationalities
@@ -485,31 +441,6 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
     },
 
     /**
-    * Load address states
-    */ 
-    loadAddressStates: function(selectorName, value) {
-      debugger;
-      if (model.addressCities['ES']) {
-        view.formatAddressStates(this.addressCities['ES'], selectorName, value);
-        return;
-      }
-
-      model.loadAddressStates(selectorName, value);
-    },
-
-    /**
-    * Load address cities
-    */ 
-    loadAddressCities: function(state, selectorName, value) {
-      if (model.addressCities[state]) {
-        view.formatAddressCities(this.addressCities[state], selectorName, value);
-        return;
-      }
-
-      model.loadAddressCities(state, selectorName, value);
-    },
-
-    /**
      * toggle driver panel click
      */
     toggleDriverPanelClick: function() {
@@ -533,7 +464,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
           model.holdedBookingDriver.customer_address_city = $('input[name=customer_address\\[city\\]]').val();
           model.holdedBookingDriver.customer_address_city_code = $('select[name=customer_address\\[city_code\\]]').val();
           model.holdedBookingDriver.customer_address_state = $('input[name=customer_address\\[state\\]]').val();
-          model.holdedBookingDriver.customer_address_state_code = $('input[name=customer_address\\[state_code\\]]').val();
+          model.holdedBookingDriver.customer_address_state_code = $('select[name=customer_address\\[state_code\\]]').val();
           model.holdedBookingDriver.customer_address_country_code = $('select[name=customer_address\\[country_code\\]]').val();
           model.holdedBookingDriver.customer_address_zip = $('input[name=customer_address\\[zip\\]]').val();
         }
@@ -908,33 +839,13 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
             $countrySelector.select2({
               width: '100%',
               theme: 'bootstrap4',                  
-              data: countriesArray
+              data: countriesArray,
+              placeholder: i18next.t('common.selectOption'),
             });
-
-            if (model.configuration.sesHospedajes && 
-                ($countrySelector.attr('name') === 'customer_address[country]' || 
-                 $countrySelector.attr('name') === 'driver_address[country]')) {
-              $countrySelector.off('select2:select');
-              $countrySelector.on('select2:select', function(e) {
-                const value = e.params.data.id; //$(this).val();
-
-                if (value === 'ES') {
-                  // Hide inputs
-                  // Show selectors
-                  // Load address states and set value if exists
-                  controller.loadAddressStates($countrySelector.attr('data-select-name'), 
-                                               $countrySelector.attr('data-select-value'));
-                } else {
-                  // Hide selectors
-                  // Show inputs
-                }
-              });
-              
-            }
-
             // Assign value
             $countrySelector.val(values[idx]);
             $countrySelector.trigger('change');
+            $countrySelector.trigger('select2:select');
           }
         }
       } else {
@@ -950,6 +861,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
           'additional_driver_2_driving_license_country',
         ];
         for (let idx=0; idx<selectors.length; idx++) {
+          // Load the contries          
           const elements = document.getElementsByName(selectors[idx]);
           if (elements.length > 0) {
             const countriesDataSource = new MemoryDataSource(countriesArray);
@@ -999,6 +911,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
               width: '100%',
               theme: 'bootstrap4',                  
               data: formatData,
+              placeholder: i18next.t('common.selectOption'),
             });
             // Assign value
             $nationalitySelector.val(values[idx]);
@@ -1063,6 +976,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
               width: '100%',
               theme: 'bootstrap4',                  
               data: formatData,
+              placeholder: i18next.t('common.selectOption'),
             });
             // Assign value
             $nationalitySelector.val(values[idx]);
@@ -1125,6 +1039,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
                 width: '100%',
                 theme: 'bootstrap4',                  
                 data: formatData,
+                placeholder: i18next.t('common.selectOption'),
               });
               // Assign value
               $nationalitySelector.val(values[idx]);
@@ -1150,95 +1065,6 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
             }
           }
         }
-    },
-
-    /*
-    * Format address states for select
-    */
-    formatAddressStates: function(data, selectorName, value) {
-      const formatData = [];
-      for (let idx=0; idx<data.length; idx++) {
-        formatData[idx] = {
-          id: data[idx].code,
-          text: data[idx].literal,
-          description: data[idx].literal
-        };
-      }
-
-      const values = [value]; 
-
-      if (commonServices.jsUseSelect2) {
-        // Configure address state
-        const selectors = [selectorName];
-        let $statesSelector = null;
-        for (let idx=0; idx<selectors.length; idx++) { 
-          $statesSelector = $(selectors[idx]); 
-          if ($statesSelector.length > 0 && typeof values[idx] !== 'undefined') {
-            $statesSelector.select2({
-              width: '100%',
-              theme: 'bootstrap4',                  
-              data: formatData,
-            });
-
-            $statesSelector.off('select2:select');
-            $statesSelector.on('select2:select', function() {
-              const state = $(this).val();
-
-              // Load address cities and set value if exists
-              if (state && state != '') {
-                controller.loadAddressCities(state, $statesSelector.attr('data-select-name'), $statesSelector.attr('data-select-value'));
-              }
-            });
-
-            // Assign value
-            $statesSelector.val(values[idx]);
-            $statesSelector.trigger('change');
-          }
-        }
-      } else {
-        // Setup country selector
-        const selectors = [selectorName];
-        // TODO: Implement
-      }
-    },
-
-    /*
-    * Format address cities for select
-    */
-    formatAddressCities: function(data, selectorName, value) {
-      const formatData = [];
-      for (let idx=0; idx<data.length; idx++) {
-        formatData[idx] = {
-          id: data[idx].cmun5d,
-          text: data[idx].name,
-          description: data[idx].name
-        };
-      }
-
-      const values = [value];
-
-      if (commonServices.jsUseSelect2) {
-        // Configure address country
-        const selectors = [selectorName];
-        let $citiesSelector = null;
-        for (let idx=0; idx<selectors.length; idx++) { 
-          $citiesSelector = $(selectors[idx]); 
-          if ($citiesSelector.length > 0 && typeof values[idx] !== 'undefined') {
-            $citiesSelector.select2({
-              width: '100%',
-              theme: 'bootstrap4',                  
-              data: formatData,
-            });
-            // Assign value
-            $citiesSelector.val(values[idx]);
-            $citiesSelector.trigger('change');
-          }
-        }
-      } else {
-        // Setup country selector
-        const selectors = [selectorName];
-        // TODO: Implement
-      }
     },
 
     /*
@@ -1410,6 +1236,23 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
     * Setup selects controls in form
     */
     setupSelectControls: function() {
+
+      if (model.configuration.sesHospedajes) {
+        // Setup state code and city code controls
+        const $customerAddressStateCode = $('select[name=customer_address\\[state_code\\]]');
+        const $customerAddressCityCode = $('select[name=customer_address\\[city_code\\]]');
+        const $driverAddressStateCode = $('select[name=driver_address\\[state_code\\]]');
+        const $driverAddressCityCode = $('select[name=driver_address\\[city_code\\]]');
+        this.setupAddressStateCodeControl($customerAddressStateCode);
+        this.setupAddressCityCodeControl($customerAddressCityCode, $customerAddressStateCode);
+        this.setupAddressStateCodeControl($driverAddressStateCode);
+        this.setupAddressCityCodeControl($driverAddressCityCode, $driverAddressStateCode);
+        //this.setupAddressStateControlEvents($customerAddressStateCode);
+        // Setup the customer/driver address country events
+        this.setupAddressCountryEvents($('select[name=customer_address\\[country\\]]'));
+        this.setupAddressCountryEvents($('select[name=driver_address\\[country\\]]'));
+      }
+
       // Load countries and set value if exists
       this.formatCountries();
       // Load nationalities and set value if exists
@@ -1419,6 +1262,157 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
       // Load license types and set value if exists
       model.loadLicenseTypes();
     },
+
+    /**
+     * Setup customer/driver address country events
+     */
+    setupAddressCountryEvents: function($countrySelector) {
+
+      if (commonServices.jsUseSelect2) {
+        $countrySelector.off('select2:select');
+        $countrySelector.on('select2:select', function(e) {
+          const country = $(this).val(); //e.params.data.id;
+          const stateSelectorName = $(this).attr('data-state-selector-name');
+          const stateInputName = $(this).attr('data-state-input-name');
+          const citySelectorName = $(this).attr('data-city-selector-name');
+          const cityInputName = $(this).attr('data-city-input-name');          
+          controller.onChangeCountry(country, stateSelectorName, stateInputName, citySelectorName, cityInputName);
+        });      
+      }
+      else {
+        $countrySelector.off('change');
+        $countrySelector.on('change', function(e) {
+          const country = $(this).val(); //e.params.data.id;
+          const stateSelectorName = $(this).attr('data-state-selector-name');
+          const stateInputName = $(this).attr('data-state-input-name');
+          const citySelectorName = $(this).attr('data-city-selector-name');
+          const cityInputName = $(this).attr('data-city-input-name');          
+          controller.onChangeCountry(country, stateSelectorName, stateInputName, citySelectorName, cityInputName);
+        });
+      }
+      
+    },
+
+    /**
+     * Setup address state code
+     */
+    setupAddressStateCodeControl: function($selector) {
+
+      console.log('setupAddressStateCodeControl', $selector);
+
+      // Build the URL to retrieve the states
+      let url = commonServices.URL_PREFIX + '/api/booking/frontend/states';
+      const urlParams = [];
+      if (this.requestLanguage != null) {
+        urlParams.push('lang=' + model.requestLanguage);
+      }
+      if (commonServices.apiKey && commonServices.apiKey != '') {
+        urlParams.push('api_key='+commonServices.apiKey);
+      }           
+      if (urlParams.length > 0) {
+        url += '?';
+        url += urlParams.join('&');
+      }
+
+      // Create the select2 control
+      $selector.select2({
+        width: '100%',
+        allowClear: true,
+        placeholder: i18next.t('common.selectOption'),
+        ajax: {
+          url: url,
+          processResults: function(data) {
+            var transformedData = [];
+            for (var idx=0; idx<data.length; idx++) {
+              var element = {
+                'text': data[idx].literal,
+                'id': data[idx].code
+              };
+              transformedData.push(element);
+            }
+            return {results: transformedData};
+          },
+        },
+      });
+
+      // Select current value (Create and option)
+      const stateValue = $selector.attr('data-code-value');
+      const stateText = $selector.attr('data-text-value');
+      if (stateValue && stateText && stateValue !== '' && stateText !== '') {
+        var selectedOption = new Option(stateText, 
+                                        stateValue, 
+                                        true, 
+                                        true);
+        $selector.append(selectedOption).trigger('change');
+      }
+
+    },
+
+    /**
+     * Setup address city code
+     */
+    setupAddressCityCodeControl: function($selector, $stateSelector) {
+
+      console.log('setupAddressCityCodeControl', $selector);
+
+      // Build the URL to retrieve the states
+      let url = commonServices.URL_PREFIX + '/api/booking/frontend/cities';
+      const urlParams = [];
+      if (this.requestLanguage != null) {
+        urlParams.push('lang=' + model.requestLanguage);
+      }
+      if (commonServices.apiKey && commonServices.apiKey != '') {
+        urlParams.push('api_key='+commonServices.apiKey);
+      }           
+      if (urlParams.length > 0) {
+        url += '?';
+        url += urlParams.join('&');
+      }
+
+      // Create the select2 control
+      $selector.select2({
+        width: '100%',
+        allowClear: true,
+        placeholder: i18next.t('common.selectOption'),
+        ajax: {
+          url: () => {
+            let theUrl;
+            const state_code = $stateSelector.val();
+            if (urlParams.length > 0) {
+              theUrl = `${url}&state_code=${state_code}`;
+            } else {
+              theUrl = `${url}?state_code=${state_code}`;
+            }
+            console.log('theUrl', theUrl);
+            return theUrl;
+          },
+          processResults: function(data) {
+            var transformedData = [];
+            for (var idx=0; idx<data.length; idx++) {
+              var element = {
+                'text': data[idx].name,
+                'id': data[idx].cmun5d
+              };
+              transformedData.push(element);
+            }
+            return {results: transformedData};
+          },
+        },
+      });
+
+      // Select current value (Create and option)
+      const stateValue = $selector.attr('data-code-value');
+      const stateText = $selector.attr('data-text-value');
+      if (stateValue && stateText && stateValue !== '' && stateText !== '') {
+        var selectedOption = new Option(stateText, 
+                                        stateValue, 
+                                        true, 
+                                        true);
+        $selector.append(selectedOption).trigger('change');
+      }
+
+    },
+
 
     /**
     * Setup reservation form
@@ -1769,7 +1763,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
         $(id).show();
       });
 
-       // ----------------- Form ------------------------------
+      // ----------------- Form ------------------------------
       
       // Driver is customer toggle
       if ($('#driver_is_customer').length) {
@@ -1793,9 +1787,10 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
           controller.toggleAdditionalDriversPanelClick(event);
         });
       }
+
     },
 
-     // ----------------- Payment mediator ------------------------------
+    // ----------------- Payment mediator ------------------------------
 
     /**
      * Pay
