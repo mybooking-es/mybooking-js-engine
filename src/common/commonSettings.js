@@ -499,7 +499,7 @@ define('commonSettings', ['jquery','commonServices','commonLoader','commonTransl
               return true;
             }
             return false;
-        }, "Please, insert a valid document type.");
+        }, i18next.t('complete.reservationForm.validations.invalidValue'));
 
     }
   };

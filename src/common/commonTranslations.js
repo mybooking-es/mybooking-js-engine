@@ -388,6 +388,7 @@ define("commonTranslations", [], function () {
             select_country: "Select country",
             validations: {
               fieldRequired: "This field is required",
+              invalidValue: "Invalid value",
               passwordCheck:
                 "Password must contain upper case letter, lower case letter, digit and symbol",
               minLength: "Minimum {{minlength}} characters",
@@ -943,6 +944,7 @@ define("commonTranslations", [], function () {
             select_country: "Seleccionar país",
             validations: {
               fieldRequired: "Campo obligatorio",
+              invalidValue: "El valor no es válido",
               passwordCheck:
                 "La contraseña debe contener letras mayúsculas, minúsculas, dígitos y símbolos",
               minLength: "Tamaño mínimo {{minlength}}",
@@ -1510,6 +1512,7 @@ define("commonTranslations", [], function () {
             select_country: "Escollir país",
             validations: {
               fieldRequired: "Camp obligatori",
+              invalidValue: "El valor no és vàlid",
               passwordCheck:
                 "La contrasenya ha de contenir lletres majúscules, minúscules, dígits i símbols",
               minLength: "Mínim {{minlength}} caràcters",
@@ -2074,6 +2077,7 @@ define("commonTranslations", [], function () {
             select_country: "Land auswählen",
             validations: {
               fieldRequired: "Dieses Feld wird benötigt",
+              invalidValue: "Der Wert ist ungültig",
               passwordCheck:
                 "Das Passwort muss Großbuchstaben, Kleinbuchstaben, Ziffern und Symbole enthalten",
               minLength: "Mindestens {{minlength}} Zeichen",
@@ -2640,6 +2644,7 @@ define("commonTranslations", [], function () {
               "Pour confirmer votre réservation un paiement de <strong>{{amount}}</strong> est demandé",
             validations: {
               fieldRequired: "Champ obligatoire",
+              invalidValue: "La valeur est invalide",
               passwordCheck:
                 "Le mot de passe doit contenir une lettre majuscule, une lettre minuscule, un chiffre et un symbole ",
               minLength: "Minimum {{minlength}} caractères",
@@ -3203,6 +3208,7 @@ define("commonTranslations", [], function () {
             select_country: "Seleziona il paese",
             validations: {
               fieldRequired: "Questo campo è obbligatorio",
+              invalidValue: "Il valore non è valido",
               passwordCheck:
                 "La password deve contenere una lettera maiuscola, una lettera minuscola, una cifra e un simbolo",
               minLength: "Minimo {{minlength}} caratteri",
@@ -3773,6 +3779,7 @@ define("commonTranslations", [], function () {
             select_country: "Выберите страну",
             validations: {
               fieldRequired: "Это поле обязательно к заполнению",
+              invalidValue: "Значение недействительно",
               passwordCheck:
                 "Пароль должен содержать заглавную букву, строчную букву, цифру и символ.",
               minLength: "Минимум {{minlength}} символов",
