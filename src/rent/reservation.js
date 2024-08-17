@@ -605,6 +605,8 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
 
   const view = { // THE VIEW
     init: function() {
+      // Append validators
+      commonSettings.appendValidators();
       // Initialize i18next for translations
       model.requestLanguage = commonSettings.language(document.documentElement.lang);
       i18next.init({  
@@ -1247,7 +1249,8 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
         this.setupAddressCityCodeControl($customerAddressCityCode, $customerAddressStateCode);
         this.setupAddressStateCodeControl($driverAddressStateCode);
         this.setupAddressCityCodeControl($driverAddressCityCode, $driverAddressStateCode);
-        //this.setupAddressStateControlEvents($customerAddressStateCode);
+        this.setupAddressStateControlEvents($customerAddressStateCode, $customerAddressCityCode);
+        this.setupAddressStateControlEvents($driverAddressStateCode, $driverAddressCityCode);
         // Setup the customer/driver address country events
         this.setupAddressCountryEvents($('select[name=customer_address\\[country\\]]'));
         this.setupAddressCountryEvents($('select[name=driver_address\\[country\\]]'));
@@ -1291,6 +1294,28 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
         });
       }
       
+    },
+
+    /**
+     * Setup address state code events
+     */
+    setupAddressStateControlEvents: function($selector, $citiesSelector) {
+
+      $($selector).off('select2:select');
+      $($selector).on('select2:select', function(e){
+
+        const stateCode = e.params.data.id;
+        // Clear city value
+        $($citiesSelector).val(undefined).trigger('change');
+        
+        if (stateCode && stateCode !== '') {
+          $($citiesSelector).removeAttr('disabled');
+        } else {
+          $($citiesSelector).attr('disabled', 'disabled');
+        }
+
+      });
+
     },
 
     /**
@@ -1496,9 +1521,15 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
               },
               'customer_document_id': {
                 required: () => $('[name="customer_document_id"]').is(':visible') && $('[name="customer_document_id"]').prop('required'),
+                documentValidator: {
+                  documentTypeControlId: 'select[name=customer_document_id_type_id]'
+                }
               },
               'driver_document_id': {
                 required: () => $('[name="driver_document_id"]').is(':visible') && $('[name="driver_document_id"]').prop('required'),
+                documentValidator: {
+                  documentTypeControlId: '#driver_document_id_type_id'
+                }                
               },
               'driver_origin_country': {
                 required: () => $('[name="driver_origin_country"]').is(':visible') && $('[name="driver_origin_country"]').prop('required'),
@@ -1576,6 +1607,16 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
               'driver_address\\[zip\\]': {
                 required: () => $('[name="driver_address\\[zip\\]"]').is(':visible') && $('[name="driver_address\\[zip\\]"]').prop('required'),
               },
+              'additional_driver_1_document_id': {
+                documentValidator: {
+                  documentTypeControlId: '#additional_driver_1_document_id_type_id'
+                }                
+              },
+              'additional_driver_2_document_id': {
+                documentValidator: {
+                  documentTypeControlId: '#additional_driver_2_document_id_type_id'
+                }                
+              },                                
             },
             messages: {
               'customer_company_name': {
@@ -1697,6 +1738,33 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
                 required: i18next.t('complete.reservationForm.validations.fieldRequired')
               },
             },
+            errorPlacement: function(error, element) {
+              if (element.attr('name') === 'customer_document_id_type_id')  {
+                if (commonServices.jsUseSelect2) {
+                  error.insertAfter('form[name=booking_information_form] select[name=customer_document_id_type_id] + span.select2-container');
+                }
+                else {
+                  error.insertAfter(element);
+                }                
+              } else if (element.attr('name') === 'driver_document_id_type_id')  {
+                if (commonServices.jsUseSelect2) {
+                  error.insertAfter('form[name=booking_information_form] select[name=driver_document_id_type_id] + span.select2-container');
+                }
+                else {
+                  error.insertAfter(element);
+                }
+              } else if (element.attr('name') === 'customer_address[state_code]' && element.is('select')) {
+                error.insertAfter('form[name=booking_information_form] select[name=customer_address\\[state_code\\]] + span.select2-container');
+              } else if (element.attr('name') === 'customer_address[city_code]' && element.is('select')) {
+                error.insertAfter('form[name=booking_information_form] select[name=customer_address\\[city_code\\]] + span.select2-container');
+              } else if (element.attr('name') === 'driver_address[state_code]' && element.is('select')) {
+                error.insertAfter('form[name=booking_information_form] select[name=driver_address\\[state_code\\]] + span.select2-container'); 
+              } else if (element.attr('name') === 'driver_address[city_code]' && element.is('select')) {
+                  error.insertAfter('form[name=booking_information_form] select[name=driver_address\\[city_code\\]] + span.select2-container');                
+              } else {
+                error.insertAfter(element);
+              } 
+            }    
           }
       );
 
