@@ -148,16 +148,23 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
         }
 
         // Set driver si customer to boolean
-       const driver_is_customer = reservation['driver_is_customer'] === 'on';
-       reservation['driver_is_customer'] = driver_is_customer;
+        const driver_is_customer = reservation['driver_is_customer'] === 'on';
+        reservation['driver_is_customer'] = driver_is_customer;
 
-       // Prefix
-       if ($('input[name=customer_phone]').length && $('input[name=customer_phone]').is(':enabled')){
-         var countryData = $('input[name=customer_phone]').intlTelInput('getSelectedCountryData');
-         if (countryData != null) {
-           reservation.customer_phone_prefix = countryData.dialCode;
-         }
-       }
+        // Prefix
+        if ($('input[name=customer_phone]').length && $('input[name=customer_phone]').is(':enabled')){
+          var countryData = $('input[name=customer_phone]').intlTelInput('getSelectedCountryData');
+          if (countryData != null) {
+            reservation.customer_phone_prefix = countryData.dialCode;
+          }
+        }
+        if ($('input[name=driver_phone]').length && $('input[name=driver_phone]').is(':enabled')){
+          var driverCountryData = $('input[name=driver_phone]').intlTelInput('getSelectedCountryData');
+          if (driverCountryData != null) {
+            reservation.driver_phone_prefix = driverCountryData.dialCode;
+          }
+        }
+
 
         // Remove all empty fields
         for (let prop in reservation) {
@@ -1211,7 +1218,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
     setupPhoneControls: function() {
       // Configure Telephone with prefix
       let countryCode = model.configuration.countryCode;
-      const input = $('[name="customer_phone"]');
+      let input = $('[name="customer_phone"]');
       if (typeof countryCode === 'undefined' || countryCode == null) {
         countryCode = commonUI.intlTelInputCountryCode(); 
       }
@@ -1228,10 +1235,32 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
           if (phoneNumber === null) {
             phoneNumber = '';
           }
-          const fullNumber = '+'+model.booking.customer_phone_prefix+phoneNumber;
+          let fullNumber = '+'+model.booking.customer_phone_prefix+phoneNumber;
           input.intlTelInput('setNumber', fullNumber);
         }
       }
+      // Configure Driver phone with prefix
+      input = $('[name="driver_phone"]');
+      if (typeof countryCode === 'undefined' || countryCode == null) {
+        countryCode = commonUI.intlTelInputCountryCode(); 
+      }
+      if (input.length) {
+        input.intlTelInput({
+          initialCountry: countryCode,
+          separateDialCode: true,        
+          utilsScript: commonServices.phoneUtilsPath,
+          preferredCountries: [countryCode],
+        });
+        if (model.booking.driver_phone_prefix &&
+            model.booking.driver_phone_prefix !== '') {
+          let phoneNumber = model.booking.driver_phone;
+          if (phoneNumber === null) {
+            phoneNumber = '';
+          }
+          let fullNumber = '+'+model.booking.driver_phone_prefix+phoneNumber;
+          input.intlTelInput('setNumber', fullNumber);
+        }
+      }      
     },
 
     /*
@@ -1274,7 +1303,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
       if (commonServices.jsUseSelect2) {
         $countrySelector.off('select2:select');
         $countrySelector.on('select2:select', function(e) {
-          const country = $(this).val(); //e.params.data.id;
+          const country = $(this).val();
           const stateSelectorName = $(this).attr('data-state-selector-name');
           const stateInputName = $(this).attr('data-state-input-name');
           const citySelectorName = $(this).attr('data-city-selector-name');
@@ -1471,12 +1500,14 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
         const regex = new RegExp('^\\d{4}-\\d{2}-\\d{2}$');
         return regex.test(value);
       }, 'Date format is YYYY-MM-DD.');
+
       $('form[name=booking_information_form]').data('validator', null);
       $('form[name=booking_information_form]').unbind('validate');
       $('form[name=booking_information_form]').validate(
           {   
             ignore: '',
             invalidHandler : function(form, validator) {
+              $('#additional_drivers_toggle_btn').trigger('click');
               alert(i18next.t('myReservation.passenger.validations.invalid'));
             },
             submitHandler: function(form) {
@@ -1520,17 +1551,25 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
               'driver_document_id_type_id': {
                 required: () => $('[name="driver_document_id_type_id"]').is(':visible') && $('[name="driver_document_id_type_id"]').prop('required'),
               },
+              'driver_email': {
+                required: () => $('[name="driver_email"]').is(':visible') && $('[name="driver_email"]').prop('required'),
+                email: () => $('[name="driver_email"]').is(':visible') && $('[name="driver_email"]').prop('required'),
+              },
+              'driver_phone': {
+                required: () => $('[name="driver_phone"]').is(':visible') && $('[name="driver_phone"]').prop('required'),
+                minlength: 9
+              },
               'customer_document_id': {
                 required: () => $('[name="customer_document_id"]').is(':visible') && $('[name="customer_document_id"]').prop('required'),
-                documentValidator: {
-                  documentTypeControlId: 'select[name=customer_document_id_type_id]'
-                }
+                //documentValidator: {
+                //  documentTypeControlId: 'select[name=customer_document_id_type_id]',
+                //}
               },
               'driver_document_id': {
                 required: () => $('[name="driver_document_id"]').is(':visible') && $('[name="driver_document_id"]').prop('required'),
-                documentValidator: {
-                  documentTypeControlId: 'select[name=driver_document_id_type_id]'
-                }                
+                //documentValidator: {
+                //  documentTypeControlId: 'select[name=driver_document_id_type_id]',
+                //}                
               },
               'driver_origin_country': {
                 required: () => $('[name="driver_origin_country"]').is(':visible') && $('[name="driver_origin_country"]').prop('required'),
@@ -1666,6 +1705,14 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
                 required: i18next.t('complete.reservationForm.validations.fieldRequired'),
                 documentValidator: i18next.t('complete.reservationForm.validations.invalidValue')
               },
+              'driver_email': {
+                required: i18next.t('complete.reservationForm.validations.customerEmailRequired'),
+                email: i18next.t('complete.reservationForm.validations.customerEmailInvalidFormat'),
+              },
+              'driver_phone': {
+                required: i18next.t('complete.reservationForm.validations.customerPhoneNumberRequired'),
+                minlength: i18next.t('complete.reservationForm.validations.customerPhoneNumberMinLength')
+              },
               'driver_document_id': {
                 required: i18next.t('complete.reservationForm.validations.fieldRequired'),
                 documentValidator: i18next.t('complete.reservationForm.validations.invalidValue')
@@ -1782,6 +1829,30 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
             }    
           }
       );
+
+      if (model.configuration.sesHospedajes) {
+        // Apply the validation rules for the document
+        $('input[name=customer_document_id]').rules('add', {
+          documentValidator: {
+            documentTypeControlId: 'select[name=customer_document_id_type_id]',
+          }
+        });
+        $('input[name=driver_document_id]').rules('add', {
+          documentValidator: {
+            documentTypeControlId: 'select[name=driver_document_id_type_id]',
+          }
+        });
+        $('input[name=additional_driver_1_document_id]').rules('add', {
+          documentValidator: {
+            documentTypeControlId: 'select[name=additional_driver_1_document_id_type_id]',
+          }
+        });
+        $('input[name=additional_driver_2_document_id]').rules('add', {
+          documentValidator: {
+            documentTypeControlId: 'select[name=additional_driver_2_document_id_type_id]',
+          }
+        });      
+      }
 
       rentEngineMediator.onMyReservationSetupReservationForm();
     },

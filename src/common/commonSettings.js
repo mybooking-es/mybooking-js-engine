@@ -497,7 +497,10 @@ define('commonSettings', ['jquery','commonServices','commonLoader','commonTransl
             } else if (documentType == "3" || documentType == "4") {
               // If the document type is not NIF, NIE or CIF, return true
               return true;
+            } else if (documentType == "" || documentType == null) {
+              return true; // No document type selected => return true
             }
+            
             return false;
         }, i18next.t('complete.reservationForm.validations.invalidValue'));
 

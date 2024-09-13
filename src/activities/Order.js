@@ -276,7 +276,37 @@ require(['jquery', 'i18next', 'ysdtemplate', 'YSDMemoryDataSource','YSDSelectSel
                 if (confirm(i18next.t('activities.myReservation.cancelReservationConfirm'))) {
                   model.cancelReservation();
                 }
-            }
+            },
+
+            /**
+             * On Change the country
+             * @param {*} country 
+             * @param {*} stateName 
+             * @param {*} cityName 
+             */
+            onChangeCountry: function(country, stateCodeSelector, stateNameSelector, 
+                                      cityCodeSelector, cityNameSelector) {
+
+              console.log('Country changed', country, stateCodeSelector, stateNameSelector, 
+                                             cityCodeSelector, cityNameSelector);
+
+              if (country === 'ES') {
+                // Hide inputs
+                $(stateNameSelector).hide();
+                $(cityNameSelector).hide();
+                // Show selectors
+                $(stateCodeSelector).show();
+                $(cityCodeSelector).show();
+              } else {
+                // Hide selectors
+                $(stateCodeSelector).hide();
+                $(cityCodeSelector).hide();
+                // Show inputs
+                $(stateNameSelector).show();  
+                $(cityNameSelector).show();        
+              }
+
+            },            
 
         };
 
@@ -332,7 +362,8 @@ require(['jquery', 'i18next', 'ysdtemplate', 'YSDMemoryDataSource','YSDSelectSel
 
               // Setup the select controls (address state, city, country)
               this.setupSelectControls();
-
+              
+              // Setup the events
               this.setupEvents();
 
             },
@@ -475,6 +506,36 @@ require(['jquery', 'i18next', 'ysdtemplate', 'YSDMemoryDataSource','YSDSelectSel
                 $selector.append(selectedOption).trigger('change');
               }
 
+            },
+
+            /**
+             * Setup customer/driver address country events
+             */
+            setupAddressCountryEvents: function($countrySelector) {
+
+              if (commonServices.jsUseSelect2) {
+                $countrySelector.off('select2:select');
+                $countrySelector.on('select2:select', function(e) {
+                  const country = $(this).val();
+                  const stateSelectorName = $(this).attr('data-state-selector-name');
+                  const stateInputName = $(this).attr('data-state-input-name');
+                  const citySelectorName = $(this).attr('data-city-selector-name');
+                  const cityInputName = $(this).attr('data-city-input-name');          
+                  controller.onChangeCountry(country, stateSelectorName, stateInputName, citySelectorName, cityInputName);
+                });      
+              }
+              else {
+                $countrySelector.off('change');
+                $countrySelector.on('change', function(e) {
+                  const country = $(this).val(); //e.params.data.id;
+                  const stateSelectorName = $(this).attr('data-state-selector-name');
+                  const stateInputName = $(this).attr('data-state-input-name');
+                  const citySelectorName = $(this).attr('data-city-selector-name');
+                  const cityInputName = $(this).attr('data-city-input-name');          
+                  controller.onChangeCountry(country, stateSelectorName, stateInputName, citySelectorName, cityInputName);
+                });
+              }
+              
             },
 
             /**
