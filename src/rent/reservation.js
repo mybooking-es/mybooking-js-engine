@@ -583,6 +583,9 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
       // Setup select controls
       view.setupSelectControls();
 
+      // Setup phone controls
+      view.setupPhoneControls();
+
       // Setup date controls
       view.setupDateControls();
     },
