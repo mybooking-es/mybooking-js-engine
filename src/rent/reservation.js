@@ -148,16 +148,23 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
         }
 
         // Set driver si customer to boolean
-       const driver_is_customer = reservation['driver_is_customer'] === 'on';
-       reservation['driver_is_customer'] = driver_is_customer;
+        const driver_is_customer = reservation['driver_is_customer'] === 'on';
+        reservation['driver_is_customer'] = driver_is_customer;
 
-       // Prefix
-       if ($('input[name=customer_phone]').length && $('input[name=customer_phone]').is(':enabled')){
-         var countryData = $('input[name=customer_phone]').intlTelInput('getSelectedCountryData');
-         if (countryData != null) {
-           reservation.customer_phone_prefix = countryData.dialCode;
-         }
-       }
+        // Prefix
+        if ($('input[name=customer_phone]').length && $('input[name=customer_phone]').is(':enabled')){
+          var countryData = $('input[name=customer_phone]').intlTelInput('getSelectedCountryData');
+          if (countryData != null) {
+            reservation.customer_phone_prefix = countryData.dialCode;
+          }
+        }
+        if ($('input[name=driver_phone]').length && $('input[name=driver_phone]').is(':enabled')){
+          var driverCountryData = $('input[name=driver_phone]').intlTelInput('getSelectedCountryData');
+          if (driverCountryData != null) {
+            reservation.driver_phone_prefix = driverCountryData.dialCode;
+          }
+        }
+
 
         // Remove all empty fields
         for (let prop in reservation) {
@@ -243,7 +250,9 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
         model.holdedBookingDriver.customer_address_number = booking.address_number;
         model.holdedBookingDriver.customer_address_complement = booking.address_complement;
         model.holdedBookingDriver.customer_address_city = booking.address_city;
+        model.holdedBookingDriver.customer_address_city_code = booking.address_city_code;
         model.holdedBookingDriver.customer_address_state = booking.address_state;
+        model.holdedBookingDriver.customer_address_state_code = booking.address_state_code;
         model.holdedBookingDriver.customer_address_country_code = booking.address_country_code;
         model.holdedBookingDriver.customer_address_zip = booking.address_zip;
       }
@@ -358,6 +367,8 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
           }
       });
     },
+
+
   };
 
   const controller = { // THE CONTROLLER
@@ -371,6 +382,34 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
     },
     
     // ----------------- Form ------------------------------
+
+    /**
+     * On Change the country
+     * @param {*} country 
+     * @param {*} stateName 
+     * @param {*} cityName 
+     */
+    onChangeCountry: function(country, stateCodeSelector, stateNameSelector, cityCodeSelector, cityNameSelector) {
+
+      console.log('Country changed', country, stateCodeSelector, stateNameSelector, cityCodeSelector, cityNameSelector);
+
+      if (country === 'ES') {
+        // Hide inputs
+        $(stateNameSelector).hide();
+        $(cityNameSelector).hide();
+        // Show selectors
+        $(stateCodeSelector).show();
+        $(cityCodeSelector).show();
+      } else {
+        // Hide selectors
+        $(stateCodeSelector).hide();
+        $(cityCodeSelector).hide();
+        // Show inputs
+        $(stateNameSelector).show();  
+        $(cityNameSelector).show();        
+      }
+
+    },
 
     /**
     * Load nationalities
@@ -430,7 +469,9 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
           model.holdedBookingDriver.customer_address_number = $('input[name=customer_address\\[number\\]]').val();
           model.holdedBookingDriver.customer_address_complement = $('input[name=customer_address\\[complement\\]]').val();
           model.holdedBookingDriver.customer_address_city = $('input[name=customer_address\\[city\\]]').val();
+          model.holdedBookingDriver.customer_address_city_code = $('select[name=customer_address\\[city_code\\]]').val();
           model.holdedBookingDriver.customer_address_state = $('input[name=customer_address\\[state\\]]').val();
+          model.holdedBookingDriver.customer_address_state_code = $('select[name=customer_address\\[state_code\\]]').val();
           model.holdedBookingDriver.customer_address_country_code = $('select[name=customer_address\\[country_code\\]]').val();
           model.holdedBookingDriver.customer_address_zip = $('input[name=customer_address\\[zip\\]]').val();
         }
@@ -460,7 +501,9 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
             model.booking.driver_address_number = model.booking.address_number;
             model.booking.driver_address_complement = model.booking.address_complement;
             model.booking.driver_address_city = model.booking.address_city;
+            model.booking.driver_address_city_code = model.booking.address_city_code;
             model.booking.driver_address_state = model.booking.address_state;
+            model.booking.driver_address_state_code = model.booking.address_state_code;
             model.booking.driver_address_country_code = model.booking.address_country_code;
             model.booking.driver_address_zip = model.booking.address_zip;
           }
@@ -477,7 +520,9 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
             model.booking.driver_address_number = model.holdedBookingDriver.customer_address_number;
             model.booking.driver_address_complement = model.holdedBookingDriver.customer_address_complement;
             model.booking.driver_address_city = model.holdedBookingDriver.customer_address_city;
+            model.booking.driver_address_city_code = model.holdedBookingDriver.customer_address_city_code;
             model.booking.driver_address_state = model.holdedBookingDriver.customer_address_state;
+            model.booking.driver_address_state_code = model.holdedBookingDriver.customer_address_state_code;
             model.booking.driver_address_country_code = model.holdedBookingDriver.customer_address_country_code;
             model.booking.driver_address_zip = model.holdedBookingDriver.customer_address_zip;    
           }      
@@ -538,6 +583,9 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
       // Setup select controls
       view.setupSelectControls();
 
+      // Setup phone controls
+      view.setupPhoneControls();
+
       // Setup date controls
       view.setupDateControls();
     },
@@ -567,6 +615,8 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
 
   const view = { // THE VIEW
     init: function() {
+      // Append validators
+      commonSettings.appendValidators();
       // Initialize i18next for translations
       model.requestLanguage = commonSettings.language(document.documentElement.lang);
       i18next.init({  
@@ -795,16 +845,19 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
         ];
         let $countrySelector = null;
         for (let idx=0; idx<selectors.length; idx++) { 
+          console.log('countries', selectors[idx]);
           $countrySelector = $(selectors[idx]);    
           if ($countrySelector.length > 0 && typeof values[idx] !== 'undefined') {
             $countrySelector.select2({
               width: '100%',
               theme: 'bootstrap4',                  
-              data: countriesArray
+              data: countriesArray,
+              placeholder: i18next.t('common.selectOption'),
             });
             // Assign value
             $countrySelector.val(values[idx]);
             $countrySelector.trigger('change');
+            $countrySelector.trigger('select2:select');
           }
         }
       } else {
@@ -820,6 +873,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
           'additional_driver_2_driving_license_country',
         ];
         for (let idx=0; idx<selectors.length; idx++) {
+          // Load the contries          
           const elements = document.getElementsByName(selectors[idx]);
           if (elements.length > 0) {
             const countriesDataSource = new MemoryDataSource(countriesArray);
@@ -869,6 +923,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
               width: '100%',
               theme: 'bootstrap4',                  
               data: formatData,
+              placeholder: i18next.t('common.selectOption'),
             });
             // Assign value
             $nationalitySelector.val(values[idx]);
@@ -897,7 +952,6 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
       }
     },
 
-    
     /*
     * Format document types for select
     */
@@ -934,6 +988,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
               width: '100%',
               theme: 'bootstrap4',                  
               data: formatData,
+              placeholder: i18next.t('common.selectOption'),
             });
             // Assign value
             $nationalitySelector.val(values[idx]);
@@ -996,6 +1051,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
                 width: '100%',
                 theme: 'bootstrap4',                  
                 data: formatData,
+                placeholder: i18next.t('common.selectOption'),
               });
               // Assign value
               $nationalitySelector.val(values[idx]);
@@ -1165,7 +1221,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
     setupPhoneControls: function() {
       // Configure Telephone with prefix
       let countryCode = model.configuration.countryCode;
-      const input = $('[name="customer_phone"]');
+      let input = $('[name="customer_phone"]');
       if (typeof countryCode === 'undefined' || countryCode == null) {
         countryCode = commonUI.intlTelInputCountryCode(); 
       }
@@ -1182,16 +1238,56 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
           if (phoneNumber === null) {
             phoneNumber = '';
           }
-          const fullNumber = '+'+model.booking.customer_phone_prefix+phoneNumber;
+          let fullNumber = '+'+model.booking.customer_phone_prefix+phoneNumber;
           input.intlTelInput('setNumber', fullNumber);
         }
       }
+      // Configure Driver phone with prefix
+      input = $('[name="driver_phone"]');
+      if (typeof countryCode === 'undefined' || countryCode == null) {
+        countryCode = commonUI.intlTelInputCountryCode(); 
+      }
+      if (input.length) {
+        input.intlTelInput({
+          initialCountry: countryCode,
+          separateDialCode: true,        
+          utilsScript: commonServices.phoneUtilsPath,
+          preferredCountries: [countryCode],
+        });
+        if (model.booking.driver_phone_prefix &&
+            model.booking.driver_phone_prefix !== '') {
+          let phoneNumber = model.booking.driver_phone;
+          if (phoneNumber === null) {
+            phoneNumber = '';
+          }
+          let fullNumber = '+'+model.booking.driver_phone_prefix+phoneNumber;
+          input.intlTelInput('setNumber', fullNumber);
+        }
+      }      
     },
 
     /*
     * Setup selects controls in form
     */
     setupSelectControls: function() {
+
+      if (model.configuration.sesHospedajes) {
+        // Setup state code and city code controls
+        const $customerAddressStateCode = $('select[name=customer_address\\[state_code\\]]');
+        const $customerAddressCityCode = $('select[name=customer_address\\[city_code\\]]');
+        const $driverAddressStateCode = $('select[name=driver_address\\[state_code\\]]');
+        const $driverAddressCityCode = $('select[name=driver_address\\[city_code\\]]');
+        this.setupAddressStateCodeControl($customerAddressStateCode);
+        this.setupAddressCityCodeControl($customerAddressCityCode, $customerAddressStateCode);
+        this.setupAddressStateCodeControl($driverAddressStateCode);
+        this.setupAddressCityCodeControl($driverAddressCityCode, $driverAddressStateCode);
+        this.setupAddressStateControlEvents($customerAddressStateCode, $customerAddressCityCode);
+        this.setupAddressStateControlEvents($driverAddressStateCode, $driverAddressCityCode);
+        // Setup the customer/driver address country events
+        this.setupAddressCountryEvents($('select[name=customer_address\\[country\\]]'));
+        this.setupAddressCountryEvents($('select[name=driver_address\\[country\\]]'));
+      }
+
       // Load countries and set value if exists
       this.formatCountries();
       // Load nationalities and set value if exists
@@ -1201,6 +1297,179 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
       // Load license types and set value if exists
       model.loadLicenseTypes();
     },
+
+    /**
+     * Setup customer/driver address country events
+     */
+    setupAddressCountryEvents: function($countrySelector) {
+
+      if (commonServices.jsUseSelect2) {
+        $countrySelector.off('select2:select');
+        $countrySelector.on('select2:select', function(e) {
+          const country = $(this).val();
+          const stateSelectorName = $(this).attr('data-state-selector-name');
+          const stateInputName = $(this).attr('data-state-input-name');
+          const citySelectorName = $(this).attr('data-city-selector-name');
+          const cityInputName = $(this).attr('data-city-input-name');          
+          controller.onChangeCountry(country, stateSelectorName, stateInputName, citySelectorName, cityInputName);
+        });      
+      }
+      else {
+        $countrySelector.off('change');
+        $countrySelector.on('change', function(e) {
+          const country = $(this).val(); //e.params.data.id;
+          const stateSelectorName = $(this).attr('data-state-selector-name');
+          const stateInputName = $(this).attr('data-state-input-name');
+          const citySelectorName = $(this).attr('data-city-selector-name');
+          const cityInputName = $(this).attr('data-city-input-name');          
+          controller.onChangeCountry(country, stateSelectorName, stateInputName, citySelectorName, cityInputName);
+        });
+      }
+      
+    },
+
+    /**
+     * Setup address state code events
+     */
+    setupAddressStateControlEvents: function($selector, $citiesSelector) {
+
+      $($selector).off('select2:select');
+      $($selector).on('select2:select', function(e){
+
+        const stateCode = e.params.data.id;
+        // Clear city value
+        $($citiesSelector).val(undefined).trigger('change');
+        
+        if (stateCode && stateCode !== '') {
+          $($citiesSelector).removeAttr('disabled');
+        } else {
+          $($citiesSelector).attr('disabled', 'disabled');
+        }
+
+      });
+
+    },
+
+    /**
+     * Setup address state code
+     */
+    setupAddressStateCodeControl: function($selector) {
+
+      console.log('setupAddressStateCodeControl', $selector);
+
+      // Build the URL to retrieve the states
+      let url = commonServices.URL_PREFIX + '/api/booking/frontend/states';
+      const urlParams = [];
+      if (this.requestLanguage != null) {
+        urlParams.push('lang=' + model.requestLanguage);
+      }
+      if (commonServices.apiKey && commonServices.apiKey != '') {
+        urlParams.push('api_key='+commonServices.apiKey);
+      }           
+      if (urlParams.length > 0) {
+        url += '?';
+        url += urlParams.join('&');
+      }
+
+      // Create the select2 control
+      $selector.select2({
+        width: '100%',
+        allowClear: true,
+        placeholder: i18next.t('common.selectOption'),
+        ajax: {
+          url: url,
+          processResults: function(data) {
+            var transformedData = [];
+            for (var idx=0; idx<data.length; idx++) {
+              var element = {
+                'text': data[idx].literal,
+                'id': data[idx].code
+              };
+              transformedData.push(element);
+            }
+            return {results: transformedData};
+          },
+        },
+      });
+
+      // Select current value (Create and option)
+      const stateValue = $selector.attr('data-code-value');
+      const stateText = $selector.attr('data-text-value');
+      if (stateValue && stateText && stateValue !== '' && stateText !== '') {
+        var selectedOption = new Option(stateText, 
+                                        stateValue, 
+                                        true, 
+                                        true);
+        $selector.append(selectedOption).trigger('change');
+      }
+
+    },
+
+    /**
+     * Setup address city code
+     */
+    setupAddressCityCodeControl: function($selector, $stateSelector) {
+
+      console.log('setupAddressCityCodeControl', $selector);
+
+      // Build the URL to retrieve the states
+      let url = commonServices.URL_PREFIX + '/api/booking/frontend/cities';
+      const urlParams = [];
+      if (this.requestLanguage != null) {
+        urlParams.push('lang=' + model.requestLanguage);
+      }
+      if (commonServices.apiKey && commonServices.apiKey != '') {
+        urlParams.push('api_key='+commonServices.apiKey);
+      }           
+      if (urlParams.length > 0) {
+        url += '?';
+        url += urlParams.join('&');
+      }
+
+      // Create the select2 control
+      $selector.select2({
+        width: '100%',
+        allowClear: true,
+        placeholder: i18next.t('common.selectOption'),
+        ajax: {
+          url: () => {
+            let theUrl;
+            const state_code = $stateSelector.val();
+            if (urlParams.length > 0) {
+              theUrl = `${url}&state_code=${state_code}`;
+            } else {
+              theUrl = `${url}?state_code=${state_code}`;
+            }
+            console.log('theUrl', theUrl);
+            return theUrl;
+          },
+          processResults: function(data) {
+            var transformedData = [];
+            for (var idx=0; idx<data.length; idx++) {
+              var element = {
+                'text': data[idx].name,
+                'id': data[idx].cmun5d
+              };
+              transformedData.push(element);
+            }
+            return {results: transformedData};
+          },
+        },
+      });
+
+      // Select current value (Create and option)
+      const stateValue = $selector.attr('data-code-value');
+      const stateText = $selector.attr('data-text-value');
+      if (stateValue && stateText && stateValue !== '' && stateText !== '') {
+        var selectedOption = new Option(stateText, 
+                                        stateValue, 
+                                        true, 
+                                        true);
+        $selector.append(selectedOption).trigger('change');
+      }
+
+    },
+
 
     /**
     * Setup reservation form
@@ -1235,10 +1504,13 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
         return regex.test(value);
       }, 'Date format is YYYY-MM-DD.');
 
+      $('form[name=booking_information_form]').data('validator', null);
+      $('form[name=booking_information_form]').unbind('validate');
       $('form[name=booking_information_form]').validate(
           {   
             ignore: '',
             invalidHandler : function(form, validator) {
+              $('#additional_drivers_toggle_btn').trigger('click');
               alert(i18next.t('myReservation.passenger.validations.invalid'));
             },
             submitHandler: function(form) {
@@ -1282,11 +1554,25 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
               'driver_document_id_type_id': {
                 required: () => $('[name="driver_document_id_type_id"]').is(':visible') && $('[name="driver_document_id_type_id"]').prop('required'),
               },
+              'driver_email': {
+                required: () => $('[name="driver_email"]').is(':visible') && $('[name="driver_email"]').prop('required'),
+                email: () => $('[name="driver_email"]').is(':visible') && $('[name="driver_email"]').prop('required'),
+              },
+              'driver_phone': {
+                required: () => $('[name="driver_phone"]').is(':visible') && $('[name="driver_phone"]').prop('required'),
+                minlength: 9
+              },
               'customer_document_id': {
                 required: () => $('[name="customer_document_id"]').is(':visible') && $('[name="customer_document_id"]').prop('required'),
+                //documentValidator: {
+                //  documentTypeControlId: 'select[name=customer_document_id_type_id]',
+                //}
               },
               'driver_document_id': {
                 required: () => $('[name="driver_document_id"]').is(':visible') && $('[name="driver_document_id"]').prop('required'),
+                //documentValidator: {
+                //  documentTypeControlId: 'select[name=driver_document_id_type_id]',
+                //}                
               },
               'driver_origin_country': {
                 required: () => $('[name="driver_origin_country"]').is(':visible') && $('[name="driver_origin_country"]').prop('required'),
@@ -1316,48 +1602,70 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
                 required: (element) => view.validateDateIsRequired(element),
                 date_pattern: true,
               },
-              'customer_address\\[street\\]': {
+              'customer_address[street]': {
                 required: () => $('[name="customer_address\\[street\\]"]').is(':visible') && $('[name="customer_address\\[street\\]"]').prop('required'),
               },
-              'customer_address\\[number\\]': {
+              'customer_address[number]': {
                 required: () => $('[name="customer_address\\[number\\]"]').is(':visible') && $('[name="customer_address\\[number\\]"]').prop('required'),
               },
-              'customer_address\\[complement\\]': {
+              'customer_address[complement]': {
                 required: () => $('[name="customer_address\\[complement\\]"]').is(':visible') && $('[name="customer_address\\[complement\\]"]').prop('required'),
               },
-              'customer_address\\[city\\]': {
-                required: () => $('[name="customer_address\\[city\\]"]').is(':visible') && $('[name="customer_address\\[city\\]"]').prop('required'),
+              'customer_address[state]': {
+                required: () => $('[name="customer_address\\[state\\]"]').is(':visible') && model.required_fields.includes('customer_address[state]'),
               },
-              'customer_address\\[state\\]': {
-                required: () => $('[name="customer_address\\[state\\]"]').is(':visible') && $('[name="customer_address\\[state\\]"]').prop('required'),
+              'customer_address[state_code]': {
+                required: () => $('[name="customer_address\\[state_code\\]"]').is(':visible') && model.required_fields.includes('customer_address[state]'),
+              },              
+              'customer_address[city]': {
+                required: () => $('[name="customer_address\\[city\\]"]').is(':visible') && model.required_fields.includes('customer_address[city]'),
               },
-              'customer_address\\[country\\]': {
+              'customer_address[city_code]': {
+                required: () => $('[name="customer_address\\[city_code\\]"]').is(':visible') && model.required_fields.includes('customer_address[city]'),
+              },                
+              'customer_address[country]': {
                 required: () => $('[name="customer_address\\[country\\]"]').is(':visible') && $('[name="customer_address\\[country\\]"]').prop('required'),
               },
-              'customer_address\\[zip\\]': {
+              'customer_address[zip]': {
                 required: () => $('[name="customer_address\\[zip\\]"]').is(':visible') && $('[name="customer_address\\[zip\\]"]').prop('required'),
               },
-              'driver_address\\[street\\]': {
+              'driver_address[street]': {
                 required: () => $('[name="driver_address\\[street\\]"]').is(':visible') && $('[name="driver_address\\[street\\]"]').prop('required'),
               },
-              'driver_address\\[number\\]': {
+              'driver_address[number]': {
                 required: () => $('[name="driver_address\\[number\\]"]').is(':visible') && $('[name="driver_address\\[number\\]"]').prop('required'),
               },
-              'driver_address\\[complement\\]': {
+              'driver_address[complement]': {
                 required: () => $('[name="driver_address\\[complement\\]"]').is(':visible') && $('[name="driver_address\\[complement\\]"]').prop('required'),
               },
-              'driver_address\\[city\\]': {
-                required: () => $('[name="driver_address\\[city\\]"]').is(':visible') && $('[name="driver_address\\[city\\]"]').prop('required'),
+              'driver_address[city]': {
+                required: () => $('[name="driver_address\\[city\\]"]').is(':visible') && model.required_fields.includes('driver_address[city]'),
               },
-              'driver_address\\[state\\]': {
-                required: () => $('[name="driver_address\\[state\\]"]').is(':visible') && $('[name="driver_address\\[state\\]"]').prop('required'),
+              'driver_address[city_code]': {
+                required: () => $('[name="driver_address\\[city_code\\]"]').is(':visible') && model.required_fields.includes('driver_address[city]'),
               },
-              'driver_address\\[country\\]': {
+              'driver_address[state]': {
+                required: () => $('[name="driver_address\\[state\\]"]').is(':visible') && model.required_fields.includes('driver_address[state]'),
+              },
+              'driver_address[state_code]': {
+                required: () => $('[name="driver_address\\[state_code\\]"]').is(':visible') && model.required_fields.includes('driver_address[state]'),
+              },
+              'driver_address[country]': {
                 required: () => $('[name="driver_address\\[country\\]"]').is(':visible') && $('[name="driver_address\\[country\\]"]').prop('required'),
               },
-              'driver_address\\[zip\\]': {
+              'driver_address[zip]': {
                 required: () => $('[name="driver_address\\[zip\\]"]').is(':visible') && $('[name="driver_address\\[zip\\]"]').prop('required'),
               },
+              'additional_driver_1_document_id': {
+                documentValidator: {
+                  documentTypeControlId: 'select[name=additional_driver_1_document_id_type_id]'
+                }                
+              },
+              'additional_driver_2_document_id': {
+                documentValidator: {
+                  documentTypeControlId: 'select[name=additional_driver_2_document_id_type_id]'
+                }                
+              },                                
             },
             messages: {
               'customer_company_name': {
@@ -1394,13 +1702,23 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
                 required: i18next.t('complete.reservationForm.validations.fieldRequired')
               },
               'driver_document_id_type_id': {
-                required: i18next.t('complete.reservationForm.validations.fieldRequired')
+                required: i18next.t('complete.reservationForm.validations.fieldRequired'),
               },
               'customer_document_id': {
                 required: i18next.t('complete.reservationForm.validations.fieldRequired'),
+                documentValidator: i18next.t('complete.reservationForm.validations.invalidValue')
+              },
+              'driver_email': {
+                required: i18next.t('complete.reservationForm.validations.customerEmailRequired'),
+                email: i18next.t('complete.reservationForm.validations.customerEmailInvalidFormat'),
+              },
+              'driver_phone': {
+                required: i18next.t('complete.reservationForm.validations.customerPhoneNumberRequired'),
+                minlength: i18next.t('complete.reservationForm.validations.customerPhoneNumberMinLength')
               },
               'driver_document_id': {
                 required: i18next.t('complete.reservationForm.validations.fieldRequired'),
+                documentValidator: i18next.t('complete.reservationForm.validations.invalidValue')
               },
               'driver_origin_country': {
                 required: i18next.t('complete.reservationForm.validations.fieldRequired')
@@ -1463,7 +1781,13 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
               'driver_address\\[city\\]': {
                 required: i18next.t('complete.reservationForm.validations.fieldRequired')
               },
+              'driver_address\\[city_code\\]': {
+                required: i18next.t('complete.reservationForm.validations.fieldRequired')
+              },
               'driver_address\\[state\\]': {
+                required: i18next.t('complete.reservationForm.validations.fieldRequired')
+              },
+              'driver_address\\[state_code\\]': {
                 required: i18next.t('complete.reservationForm.validations.fieldRequired')
               },
               'driver_address\\[country\\]': {
@@ -1472,9 +1796,66 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
               'driver_address\\[zip\\]': {
                 required: i18next.t('complete.reservationForm.validations.fieldRequired')
               },
+              'additional_driver_1_document_id': {
+                documentValidator: i18next.t('complete.reservationForm.validations.invalidValue')
+              },
+              'additional_driver_2_document_id': {
+                documentValidator: i18next.t('complete.reservationForm.validations.invalidValue')
+              },                                
             },
+            errorPlacement: function(error, element) {
+              if (element.attr('name') === 'customer_document_id_type_id')  {
+                if (commonServices.jsUseSelect2) {
+                  error.insertAfter('form[name=booking_information_form] select[name=customer_document_id_type_id] + span.select2-container');
+                }
+                else {
+                  error.insertAfter(element);
+                }                
+              } else if (element.attr('name') === 'driver_document_id_type_id')  {
+                if (commonServices.jsUseSelect2) {
+                  error.insertAfter('form[name=booking_information_form] select[name=driver_document_id_type_id] + span.select2-container');
+                }
+                else {
+                  error.insertAfter(element);
+                }
+              } else if (element.attr('name') === 'customer_address[state_code]' && element.is('select')) {
+                error.insertAfter('form[name=booking_information_form] select[name=customer_address\\[state_code\\]] + span.select2-container');
+              } else if (element.attr('name') === 'customer_address[city_code]' && element.is('select')) {
+                error.insertAfter('form[name=booking_information_form] select[name=customer_address\\[city_code\\]] + span.select2-container');
+              } else if (element.attr('name') === 'driver_address[state_code]' && element.is('select')) {
+                error.insertAfter('form[name=booking_information_form] select[name=driver_address\\[state_code\\]] + span.select2-container'); 
+              } else if (element.attr('name') === 'driver_address[city_code]' && element.is('select')) {
+                  error.insertAfter('form[name=booking_information_form] select[name=driver_address\\[city_code\\]] + span.select2-container');                
+              } else {
+                error.insertAfter(element);
+              } 
+            }    
           }
       );
+
+      if (model.configuration.sesHospedajes) {
+        // Apply the validation rules for the document
+        $('input[name=customer_document_id]').rules('add', {
+          documentValidator: {
+            documentTypeControlId: 'select[name=customer_document_id_type_id]',
+          }
+        });
+        $('input[name=driver_document_id]').rules('add', {
+          documentValidator: {
+            documentTypeControlId: 'select[name=driver_document_id_type_id]',
+          }
+        });
+        $('input[name=additional_driver_1_document_id]').rules('add', {
+          documentValidator: {
+            documentTypeControlId: 'select[name=additional_driver_1_document_id_type_id]',
+          }
+        });
+        $('input[name=additional_driver_2_document_id]').rules('add', {
+          documentValidator: {
+            documentTypeControlId: 'select[name=additional_driver_2_document_id_type_id]',
+          }
+        });      
+      }
 
       rentEngineMediator.onMyReservationSetupReservationForm();
     },
@@ -1539,7 +1920,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
         $(id).show();
       });
 
-       // ----------------- Form ------------------------------
+      // ----------------- Form ------------------------------
       
       // Driver is customer toggle
       if ($('#driver_is_customer').length) {
@@ -1563,9 +1944,10 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
           controller.toggleAdditionalDriversPanelClick(event);
         });
       }
+
     },
 
-     // ----------------- Payment mediator ------------------------------
+    // ----------------- Payment mediator ------------------------------
 
     /**
      * Pay

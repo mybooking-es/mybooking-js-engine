@@ -47,6 +47,7 @@ define('commonSettings', ['jquery','commonServices','commonLoader','commonTransl
       chooseProductMultipleRateTypes: false,
       chooseProductSearchShowFilter: false,
       literalDepositFranchise: 'deposit',
+      sesHospedajes: null,
       // - Deposit literals
       depositLiteral: null,
       depositReductionLiteral: null,
@@ -260,6 +261,9 @@ define('commonSettings', ['jquery','commonServices','commonLoader','commonTransl
              if (typeof data.literal_deposit_franchise !== 'undefined') {
               mybookingSettings.data.literalDepositFranchise = data.literal_deposit_franchise;
              }
+             if (typeof data.ses_hospedajes !== 'undefined') {
+              mybookingSettings.data.sesHospedajes = data.ses_hospedajes;
+             }
              // - Deposit literals
              mybookingSettings.data.depositLiteral = data.deposit_literal;
              mybookingSettings.data.depositReductionLiteral = data.deposit_reduction_literal;
@@ -434,6 +438,71 @@ define('commonSettings', ['jquery','commonServices','commonLoader','commonTransl
              return value !== undefined && value !== null && value.trim().length > 0;  
            }
         });
+
+        // Document validator (NIF, NIE, CIF)
+        $.validator.addMethod("documentValidator", function(value, element, params) {
+            value = value.toUpperCase();
+
+            // Get the control ID of the document type
+            var documentTypeControlId = params.documentTypeControlId;
+            var documentType = $(documentTypeControlId).val();
+
+            // Regexp to validate NIF, NIE and CIF
+            var validChars = "TRWAGMYFPDXBNJZSQVHLCKE";
+            var nifRegex = /^[0-9]{8}[TRWAGMYFPDXBNJZSQVHLCKE]$/;
+            var nieRegex = /^[XYZ][0-9]{7}[TRWAGMYFPDXBNJZSQVHLCKE]$/;
+            var cifRegex = /^[ABCDEFGHJKLMNPQRSUVW][0-9]{7}[0-9A-J]$/;
+
+            if (documentType == "1") {  // Validate NIF or CIF
+                if (nifRegex.test(value)) {
+                    var number = value.substr(0, 8);
+                    var letter = value.substr(-1);
+                    return validChars.charAt(parseInt(number) % 23) === letter;
+                }
+                if (cifRegex.test(value)) {
+                    var digits = value.substr(1, 7);
+                    var control = value.substr(-1);
+
+                    var sumEven = 0;
+                    var sumOdd = 0;
+                    for (var i = 0; i < digits.length; i++) {
+                        var n = parseInt(digits[i]);
+                        if (i % 2 === 0) {
+                            var double = (n * 2).toString();
+                            sumOdd += parseInt(double[0]) + (double[1] ? parseInt(double[1]) : 0);
+                        } else {
+                            sumEven += n;
+                        }
+                    }
+                    var controlDigit = (10 - ((sumEven + sumOdd) % 10)) % 10;
+                    var controlLetter = "JABCDEFGHI".charAt(controlDigit);
+
+                    if (/^[ABEH]/.test(value)) {
+                        return control == controlDigit;
+                    } else if (/^[KPQS]/.test(value)) {
+                        return control == controlLetter;
+                    } else {
+                        return control == controlDigit || control == controlLetter;
+                    }
+                }
+            } else if (documentType == "2") {  // Validate NIE
+                if (nieRegex.test(value)) {
+                    var niePrefix = { 'X': '0', 'Y': '1', 'Z': '2' };
+                    var nieNumber = value.replace(/[XYZ]/, function(match) {
+                        return niePrefix[match];
+                    }).substr(0, 8);
+                    var nieLetter = value.substr(-1);
+                    return validChars.charAt(parseInt(nieNumber) % 23) === nieLetter;
+                }
+            } else if (documentType == "3" || documentType == "4") {
+              // If the document type is not NIF, NIE or CIF, return true
+              return true;
+            } else if (documentType == "" || documentType == null) {
+              return true; // No document type selected => return true
+            }
+            
+            return false;
+        }, i18next.t('complete.reservationForm.validations.invalidValue'));
 
     }
   };

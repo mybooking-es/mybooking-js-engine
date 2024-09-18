@@ -276,7 +276,37 @@ require(['jquery', 'i18next', 'ysdtemplate', 'YSDMemoryDataSource','YSDSelectSel
                 if (confirm(i18next.t('activities.myReservation.cancelReservationConfirm'))) {
                   model.cancelReservation();
                 }
-            }
+            },
+
+            /**
+             * On Change the country
+             * @param {*} country 
+             * @param {*} stateName 
+             * @param {*} cityName 
+             */
+            onChangeCountry: function(country, stateCodeSelector, stateNameSelector, 
+                                      cityCodeSelector, cityNameSelector) {
+
+              console.log('Country changed', country, stateCodeSelector, stateNameSelector, 
+                                             cityCodeSelector, cityNameSelector);
+
+              if (country === 'ES') {
+                // Hide inputs
+                $(stateNameSelector).hide();
+                $(cityNameSelector).hide();
+                // Show selectors
+                $(stateCodeSelector).show();
+                $(cityCodeSelector).show();
+              } else {
+                // Hide selectors
+                $(stateCodeSelector).hide();
+                $(cityCodeSelector).hide();
+                // Show inputs
+                $(stateNameSelector).show();  
+                $(cityNameSelector).show();        
+              }
+
+            },            
 
         };
 
@@ -329,15 +359,220 @@ require(['jquery', 'i18next', 'ysdtemplate', 'YSDMemoryDataSource','YSDSelectSel
                    order: model.order, 
                    configuration: model.configuration});
               $('#reservation_detail').html(reservationInfo);
+
+              // Setup the select controls (address state, city, country)
+              this.setupSelectControls();
+              
+              // Setup the events
+              this.setupEvents();
+
+            },
+
+            /**
+             * Setup the select controls : state code, city code, country
+             */
+            setupSelectControls: function() {
+
+              if (model.configuration.sesHospedajes) {
+                // Setup state code and city code controls
+                const $customerAddressStateCode = $('select[name=customer_address\\[state_code\\]]');
+                const $customerAddressCityCode = $('select[name=customer_address\\[city_code\\]]');
+                this.setupAddressStateCodeControl($customerAddressStateCode);
+                this.setupAddressCityCodeControl($customerAddressCityCode, $customerAddressStateCode);
+                this.setupAddressStateControlEvents($customerAddressStateCode, $customerAddressCityCode);
+                // Setup the customer/driver address country events
+                this.setupAddressCountryEvents($('select[name=customer_address\\[country\\]]'));
+              }
+
+              this.formatCountries();
+
+            },
+
+            /**
+             * Setup address state code
+             */
+            setupAddressStateCodeControl: function($selector) {
+
+              console.log('setupAddressStateCodeControl', $selector);
+
+              // Build the URL to retrieve the states
+              let url = commonServices.URL_PREFIX + '/api/booking/frontend/states';
+              const urlParams = [];
+              if (this.requestLanguage != null) {
+                urlParams.push('lang=' + model.requestLanguage);
+              }
+              if (commonServices.apiKey && commonServices.apiKey != '') {
+                urlParams.push('api_key='+commonServices.apiKey);
+              }           
+              if (urlParams.length > 0) {
+                url += '?';
+                url += urlParams.join('&');
+              }
+
+              // Create the select2 control
+              $selector.select2({
+                width: '100%',
+                allowClear: true,
+                placeholder: i18next.t('common.selectOption'),
+                ajax: {
+                  url: url,
+                  processResults: function(data) {
+                    var transformedData = [];
+                    for (var idx=0; idx<data.length; idx++) {
+                      var element = {
+                        'text': data[idx].literal,
+                        'id': data[idx].code
+                      };
+                      transformedData.push(element);
+                    }
+                    return {results: transformedData};
+                  },
+                },
+              });
+
+              // Select current value (Create and option)
+              const stateValue = $selector.attr('data-code-value');
+              const stateText = $selector.attr('data-text-value');
+              if (stateValue && stateText && stateValue !== '' && stateText !== '') {
+                var selectedOption = new Option(stateText, 
+                                                stateValue, 
+                                                true, 
+                                                true);
+                $selector.append(selectedOption).trigger('change');
+              }
+
+            },
+            
+            /**
+             * Setup address city code
+             */
+            setupAddressCityCodeControl: function($selector, $stateSelector) {
+
+              console.log('setupAddressCityCodeControl', $selector);
+
+              // Build the URL to retrieve the states
+              let url = commonServices.URL_PREFIX + '/api/booking/frontend/cities';
+              const urlParams = [];
+              if (this.requestLanguage != null) {
+                urlParams.push('lang=' + model.requestLanguage);
+              }
+              if (commonServices.apiKey && commonServices.apiKey != '') {
+                urlParams.push('api_key='+commonServices.apiKey);
+              }           
+              if (urlParams.length > 0) {
+                url += '?';
+                url += urlParams.join('&');
+              }
+
+              // Create the select2 control
+              $selector.select2({
+                width: '100%',
+                allowClear: true,
+                placeholder: i18next.t('common.selectOption'),
+                ajax: {
+                  url: () => {
+                    let theUrl;
+                    const state_code = $stateSelector.val();
+                    if (urlParams.length > 0) {
+                      theUrl = `${url}&state_code=${state_code}`;
+                    } else {
+                      theUrl = `${url}?state_code=${state_code}`;
+                    }
+                    console.log('theUrl', theUrl);
+                    return theUrl;
+                  },
+                  processResults: function(data) {
+                    var transformedData = [];
+                    for (var idx=0; idx<data.length; idx++) {
+                      var element = {
+                        'text': data[idx].name,
+                        'id': data[idx].cmun5d
+                      };
+                      transformedData.push(element);
+                    }
+                    return {results: transformedData};
+                  },
+                },
+              });
+
+              // Select current value (Create and option)
+              const stateValue = $selector.attr('data-code-value');
+              const stateText = $selector.attr('data-text-value');
+              if (stateValue && stateText && stateValue !== '' && stateText !== '') {
+                var selectedOption = new Option(stateText, 
+                                                stateValue, 
+                                                true, 
+                                                true);
+                $selector.append(selectedOption).trigger('change');
+              }
+
+            },
+
+            /**
+             * Setup customer/driver address country events
+             */
+            setupAddressCountryEvents: function($countrySelector) {
+
+              if (commonServices.jsUseSelect2) {
+                $countrySelector.off('select2:select');
+                $countrySelector.on('select2:select', function(e) {
+                  const country = $(this).val();
+                  const stateSelectorName = $(this).attr('data-state-selector-name');
+                  const stateInputName = $(this).attr('data-state-input-name');
+                  const citySelectorName = $(this).attr('data-city-selector-name');
+                  const cityInputName = $(this).attr('data-city-input-name');          
+                  controller.onChangeCountry(country, stateSelectorName, stateInputName, citySelectorName, cityInputName);
+                });      
+              }
+              else {
+                $countrySelector.off('change');
+                $countrySelector.on('change', function(e) {
+                  const country = $(this).val(); //e.params.data.id;
+                  const stateSelectorName = $(this).attr('data-state-selector-name');
+                  const stateInputName = $(this).attr('data-state-input-name');
+                  const citySelectorName = $(this).attr('data-city-selector-name');
+                  const cityInputName = $(this).attr('data-city-input-name');          
+                  controller.onChangeCountry(country, stateSelectorName, stateInputName, citySelectorName, cityInputName);
+                });
+              }
+              
+            },
+
+            /**
+             * Setup address state code events
+             */
+            setupAddressStateControlEvents: function($selector, $citiesSelector) {
+
+              $($selector).off('select2:select');
+              $($selector).on('select2:select', function(e){
+
+                const stateCode = e.params.data.id;
+                // Clear city value
+                $($citiesSelector).val(undefined).trigger('change');
+                
+                if (stateCode && stateCode !== '') {
+                  $($citiesSelector).removeAttr('disabled');
+                } else {
+                  $($citiesSelector).attr('disabled', 'disabled');
+                }
+
+              });
+
+            },
+
+            /**
+             * Prepare the countries selector with the countries
+             */
+            formatCountries: function() {
+
               // Load countries
               var countries = i18next.t('common.countries', {returnObjects: true });
+              let countriesArray = [];
               if (countries instanceof Object) {
                 var countryCodes = Object.keys(countries);
-                var countriesArray = countryCodes.map(function(value){ 
+                countriesArray = countryCodes.map(function(value){ 
                                         return {id: value, text: countries[value], description: countries[value]};
                                      });
-              } else {
-                var countriesArray = [];
               }
               // Country selector
               if (commonServices.jsUseSelect2) {
@@ -363,9 +598,6 @@ require(['jquery', 'i18next', 'ysdtemplate', 'YSDMemoryDataSource','YSDSelectSel
                       countriesDataSource, countryModel, true, i18next.t('myReservation.select_country'));
                 }
               }
-
-              this.setupEvents();
-
             },
 
             setupEvents: function() {
