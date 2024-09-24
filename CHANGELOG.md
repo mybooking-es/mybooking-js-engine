@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.3.2] - 2024.09.23
+
+### New
+
+- Hospedajes y alquileres de vehiculos required fields in my reservation form
+
+## [2.3.1] - 2024.08.14
+
+### New
+
+- Renting Choose product - Filters and progressive loading
+
 ## [2.3.0] - 2024.06.26
 
 ### Improve
