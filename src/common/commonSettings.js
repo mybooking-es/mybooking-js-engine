@@ -49,6 +49,7 @@ define('commonSettings', ['jquery','commonServices','commonLoader','commonTransl
       literalDepositFranchise: 'deposit',
       sesHospedajes: null,
       // - Deposit literals
+      holdProductDepositCost: false,
       depositLiteral: null,
       depositReductionLiteral: null,
       guaranteeLiteral: null,
@@ -265,6 +266,9 @@ define('commonSettings', ['jquery','commonServices','commonLoader','commonTransl
               mybookingSettings.data.sesHospedajes = data.ses_hospedajes;
              }
              // - Deposit literals
+             if (typeof data.hold_product_deposit_cost !== 'undefined') {
+              mybookingSettings.data.holdProductDepositCost = data.hold_product_deposit_cost;
+            }
              mybookingSettings.data.depositLiteral = data.deposit_literal;
              mybookingSettings.data.depositReductionLiteral = data.deposit_reduction_literal;
              mybookingSettings.data.guaranteeLiteral = data.guarantee_literal;
