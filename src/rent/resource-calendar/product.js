@@ -830,8 +830,15 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
                                           productModel.configuration.timeToFromInOneDay;
           }
 
+          let rentTimesSelector = productModel.configuration.rentTimesSelector;
+          // Use specific rent times selector for category and rental location
+          if (typeof productModel.availabilityData.rent_times_selector !== 'undefined' && 
+              productModel.availabilityData.rent_times_selector !== null) {
+            rentTimesSelector = productModel.availabilityData.rent_times_selector;
+          }
+          
           if (productModel.showHoursTurns) {
-            if (productModel.configuration.rentTimesSelector === 'hours') { // Select pickup/return time
+            if (rentTimesSelector === 'hours') { // Select pickup/return time
               // Enable and initilize time from     
               if ($(productModel.time_from_selector).attr('disabled')) {   
                 $(productModel.time_from_selector).attr('disabled', false);
@@ -871,7 +878,7 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
                 productView.loadReturnHours();
               }          
             }
-            else if (productModel.configuration.rentTimesSelector === 'time_range') { // Select date/range
+            else if (rentTimesSelector === 'time_range') { // Select date/range
               // Load turns
               productView.loadTurns();
             }
