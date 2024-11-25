@@ -368,6 +368,9 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
       if (this.configuration.pickupReturnPlace && $(this.pickup_place_selector).val() != '') {
         url += '&place='+$(this.pickup_place_selector).val();
       }
+      if (this.rentalLocationCode) {
+        url += '&rental_location_code='+encodeURIComponent(this.rentalLocationCode);
+      }              
       if (commonServices.apiKey && commonServices.apiKey != '') {
         url += '&api_key='+commonServices.apiKey;
       }       
@@ -399,6 +402,9 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
       if (this.configuration.pickupReturnPlace && $(this.return_place_selector).val() != '') {
         url += '&place='+$(this.return_place_selector).val();
       }        
+      if (this.rentalLocationCode) {
+        url += '&rental_location_code='+encodeURIComponent(this.rentalLocationCode);
+      }          
       if (commonServices.apiKey && commonServices.apiKey != '') {
         url += '&api_key='+commonServices.apiKey;
       } 
