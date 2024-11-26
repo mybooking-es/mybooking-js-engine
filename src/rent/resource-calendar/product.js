@@ -88,6 +88,7 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
     // == Date selector
     productCalendar: null,
     date_selector: '#date',
+    duration_scope_class_selector: '.duration_scope_class_selector',
     duration_scope_selector: 'form[name=search_form] input[name=duration_scope]',
     // Do not use the selector directly => Use productView.getDurationScopeVal
     duration_scope_selector_val: 'form[name=search_form] input[name=duration_scope]:checked', 
@@ -289,6 +290,21 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
             }            
             // Hold the availability data
             productModel.availabilityData = data;
+
+            // Update the duration scope if multiple journals is in configuration (settings or in occupation data)
+            // eslint-disable-next-line max-len
+            if (data && data.renting_product_multiple_journals) {
+              productView.toogleDurationScope(true);
+            } else if (data && data.renting_product_multiple_journals === false) {
+              productView.toogleDurationScope(false);
+            } else {
+              if (productModel.configuration && productModel.configuration.rentingProductMultipleJournals) {
+                productView.toogleDurationScope(true);
+              } else {
+                productView.toogleDurationScope(false);
+              }
+            }
+
             // Update the calendar
             productModel.productCalendar.view.update(productModel.availabilityData, productView.getDurationScopeVal());
             // Callback
@@ -1442,6 +1458,19 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
     loadDayOccupation: function() { /** Load day occupation **/
       var date = moment(productModel.selectedDateFrom).format('YYYY-MM-DD'); 
       productModel.checkDayOccupation(date, 'inpage');
+    },
+
+     /**
+     * Show duration scope if is neccesary
+     */ 
+    toogleDurationScope: function(show) {
+      if ($(productModel.duration_scope_class_selector).length) {
+        if (show) {
+          $(productModel.duration_scope_class_selector).show();
+        } else {
+          $(productModel.duration_scope_class_selector).hide();
+        }
+      }
     },
 
     /**
