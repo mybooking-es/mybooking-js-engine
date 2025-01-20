@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.4.1] - 2025.01.11
+
+### New
+
+- Calendar widget with rental location customized
+
 ## [2.3.2] - 2024.09.23
 
 ### New
