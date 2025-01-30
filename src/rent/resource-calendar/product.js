@@ -524,6 +524,7 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
           if (data.shopping_cart.days > 0 && 
               productModel.configuration.cycleOf24Hours && 
               productModel.configuration.timeToFrom) {
+           
             // Check min days
             const minDays = productModel.productCalendar.model.calculateMinDays(data.shopping_cart.date_from);
             if (minDays !== null && minDays > data.shopping_cart.days) {
@@ -535,6 +536,19 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
               }
               return;
             }
+
+            // Check max days
+            const maxDays = productModel.productCalendar.model.calculateMaxDays(data.shopping_cart.date_from);
+            if (maxDays !== null && maxDays < data.shopping_cart.days) {
+              if (typeof data.warning_max_days !== 'undefined' && data.warning_max_days) {
+                alert(data.warning_max_days);
+              }
+              else {
+                alert(i18next.t('selector.error_max_days', {maxDays: maxDays}));
+              }
+              return;
+            }
+            
           }
           if (self.shoppingCartId == null || self.shoppingCartId != data.shopping_cart.free_access_id) {
             self.shoppingCartId = data.shopping_cart.free_access_id;
@@ -1208,6 +1222,7 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
                                              productModel.configuration, 
                                              productModel.requestLanguage,
                                              productModel.minDays,
+                                             productModel.maxDays,
                                              productModel.availabilityData,
                                              productModel.checkHourlyOccupation,
                                              productView.getDurationScopeVal(),

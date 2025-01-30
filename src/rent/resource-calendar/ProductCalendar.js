@@ -1,3 +1,5 @@
+/* eslint-disable quotes */
+/* eslint-disable max-len */
 define('ProductCalendar', ['jquery', 'YSDEventTarget', 
        'moment',        'jquery.validate', 'jquery.ui', 'jquery.ui.datepicker-es',
        'jquery.ui.datepicker-en', 'jquery.ui.datepicker-ca', 'jquery.ui.datepicker-it',
@@ -32,6 +34,8 @@ define('ProductCalendar', ['jquery', 'YSDEventTarget',
     this.checkHourlyOccupation = false;
     // Min days
     this.minDays = null;
+    // Max days
+    this.maxDays = null;
 
     // Events Management
     this.events = new YSDEventTarget();
@@ -68,6 +72,14 @@ define('ProductCalendar', ['jquery', 'YSDEventTarget',
       }
 
       return this.minDays;
+    }
+
+    this.calculateMaxDays = function(dateStr) {
+      if (typeof this.availabilityData.max_days[dateStr] !== 'undefined') {
+        return this.availabilityData.max_days[dateStr];
+      }
+
+      return this.maxDays;
     }
 
   }
@@ -185,7 +197,8 @@ define('ProductCalendar', ['jquery', 'YSDEventTarget',
                          i18next,
                          configuration,
                          requestLanguage, 
-                         minDays, 
+                         minDays,
+                         maxDays, 
                          availabilityData, 
                          checkHourlyOccupation,
                          durationScope,
@@ -200,6 +213,7 @@ define('ProductCalendar', ['jquery', 'YSDEventTarget',
       this.productCalendarModel.availabilityData = availabilityData;
       this.productCalendarModel.checkHourlyOccupation = checkHourlyOccupation;
       this.productCalendarModel.minDays = minDays;
+      this.productCalendarModel.maxDays = maxDays;
       var today = moment().format('YYYY-MM-DD');
 
       var self = this;
@@ -238,6 +252,7 @@ define('ProductCalendar', ['jquery', 'YSDEventTarget',
           startOfWeek: 'monday',
           language: requestLanguage,
           minDays: minDays,
+          maxDays: maxDays,
           showTopbar: false,
           customTopBar: '',
           extraClass: '',
@@ -303,6 +318,7 @@ define('ProductCalendar', ['jquery', 'YSDEventTarget',
             var dateStr = moment(time).format('YYYY-MM-DD');
             var renderPrice = "<div class=\"mybooking-product_calendar-price\">&nbsp;</div>";
             var renderMinDays =  "<div class=\"mybooking-product_calendar-mindays\">&nbsp;</div>";
+
             var renderCheckHourlyOccupation = "";
             // Show prices
             if (self.productCalendarModel.availabilityData && typeof self.productCalendarModel.availabilityData.prices !== 'undefined') {
@@ -322,6 +338,7 @@ define('ProductCalendar', ['jquery', 'YSDEventTarget',
                 renderPrice = "<div class=\"mybooking-product_calendar-price\">"+priceStr+"</div>";
               }
             }
+
             // Min days
             if (self.productCalendarModel.availabilityData && typeof self.productCalendarModel.availabilityData.min_days !== 'undefined') {
               var minDays = self.productCalendarModel.availabilityData.min_days;
@@ -332,6 +349,7 @@ define('ProductCalendar', ['jquery', 'YSDEventTarget',
                 renderMinDays = "<div class=\"mybooking-product_calendar-mindays mybooking-product_calendar-mindays-data\">"+minDaysLiteral+"</div>";
               }
             }
+
             // Check hourly occupation
             if (self.productCalendarModel.checkHourlyOccupation) {
               if (self.productCalendarModel.availabilityData && self.productCalendarModel.availabilityData['occupation'][dateStr] && 
@@ -416,6 +434,29 @@ define('ProductCalendar', ['jquery', 'YSDEventTarget',
                   // Clear the selection
                   $(self.productCalendarModel.dateSelector).data('dateRangePicker').clear();
                   alert(self.productCalendarModel.i18next.t('chooseProduct.min_duration',{duration: minDays}));
+                  return;
+                }
+              }
+            }
+          }
+
+          // Check max days (only duration scope days)
+          if (self.productCalendarModel.durationScope == 'days') {
+            var cycleOf24Hours = self.productCalendarModel.configuration.cycleOf24Hours;
+            var d1 = moment(obj.date1);
+            var d2 = moment(obj.date2);
+            var days = d2.diff(d1, 'days');
+            if (!cycleOf24Hours) {
+              days += 1;
+            }
+            if (typeof self.productCalendarModel.availabilityData.max_days[dateStr] !== 'undefined') {
+              var maxDays = self.productCalendarModel.availabilityData.max_days[dateStr];
+              if (days > maxDays) {
+                event.stopPropagation();
+                if (!cycleOf24Hours || (cycleOf24Hours && days !== maxDays - 1)) {
+                  // Clear the selection
+                  $(self.productCalendarModel.dateSelector).data('dateRangePicker').clear();
+                  alert(self.productCalendarModel.i18next.t('chooseProduct.max_duration',{duration: maxDays}));
                   return;
                 }
               }
