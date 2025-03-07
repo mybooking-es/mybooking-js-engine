@@ -539,7 +539,7 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
 
             // Check max days
             const maxDays = productModel.productCalendar.model.calculateMaxDays(data.shopping_cart.date_from);
-            if (maxDays !== null && maxDays < data.shopping_cart.days) {
+            if (maxDays !== null && maxDays !== 0 && maxDays < data.shopping_cart.days) {
               if (typeof data.warning_max_days !== 'undefined' && data.warning_max_days) {
                 alert(data.warning_max_days);
               }

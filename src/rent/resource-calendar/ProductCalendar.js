@@ -449,7 +449,8 @@ define('ProductCalendar', ['jquery', 'YSDEventTarget',
             if (!cycleOf24Hours) {
               days += 1;
             }
-            if (typeof self.productCalendarModel.availabilityData.max_days[dateStr] !== 'undefined') {
+
+            if (typeof self.productCalendarModel.availabilityData.max_days[dateStr] !== 'undefined' && self.productCalendarModel.availabilityData.max_days[dateStr] !== 0) {
               var maxDays = self.productCalendarModel.availabilityData.max_days[dateStr];
               if (days > maxDays) {
                 event.stopPropagation();
