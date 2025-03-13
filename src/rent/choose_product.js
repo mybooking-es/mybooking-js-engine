@@ -123,39 +123,6 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
       };
     },
 
-    // -------------- Load settings ----------------------------
-
-    // OPTIMIZATION 2024-01-27 START
-    /**
-     * Load the settings
-     */
-/*
-    loadSettings: function() {
-      commonSettings.loadSettings(function(data){
-        model.configuration = data;
-        // Check duplicated Tab
-        if (model.configuration.duplicatedTab) {
-          // Initialize i18next for translations
-          i18next.init({  
-                          lng: document.documentElement.lang,
-                          resources: commonTranslations
-                       }, 
-                       function (error, t) {
-                       });
-          alert(i18next.t('common.duplicateTab'));
-          // Clear the session for this tab so it can start a new process
-          sessionStorage.clear();
-          commonLoader.hide();
-          $('#product_listing').html(i18next.t('common.duplicateTab'));
-        }
-        else {
-          view.init();
-        }
-      });     
-    },   
-*/
-    // OPTIMIZATION 2024-01-27 END
-
     // ------------ Products information detail ------------------------
 
     /**
@@ -240,26 +207,12 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
       this.date_to = decodeURIComponent(urlVars['date_to']);
       this.time_to = decodeURIComponent(urlVars['time_to']);
       this.renting_duration = decodeURIComponent(urlVars['renting_duration']);
-      // OPTIMIZATION 2024-01-27 START
       this.rental_location_code = decodeURIComponent(urlVars['rental_location_code']);
       if (typeof urlVars['engine_fixed_rental_location'] !== 'undefined' && 
           urlVars['engine_fixed_rental_location'] === 'true') {
         this.engine_fixed_rental_location = true;
       }      
       this.simple_selector_id = decodeURIComponent(urlVars['simple_location_id']);
-      // OPTIMIZATION 2024-01-27 END
-/*
-      if (this.configuration.selectorRentalLocation) {
-        this.rental_location_code = decodeURIComponent(urlVars['rental_location_code']);
-        if (typeof urlVars['engine_fixed_rental_location'] !== 'undefined' && 
-            urlVars['engine_fixed_rental_location'] === 'true') {
-          this.engine_fixed_rental_location = true;
-        }
-      }
-      if (this.configuration.simpleLocation) {
-        this.simple_selector_id = decodeURIComponent(urlVars['simple_location_id']);
-      }
-*/      
       this.pickup_place = decodeURIComponent(urlVars['pickup_place']).replace(/\+/g, " ");
       this.pickup_place_other = decodeURIComponent(urlVars['pickup_place_other']).replace(/\+/g, ' ');
       this.custom_pickup_place = decodeURIComponent(urlVars['custom_pickup_place']);
@@ -317,27 +270,12 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
 
     isShoppingCartData: function() {
 
-      // OPTIMIZATION 2024-01-27 START
       var dateFromdateTo = (this.date_from != 'undefined' && this.date_from != '' &&
                             this.date_to != 'undefined' && this.date_to != '');
       var dateFromDuration = (this.date_from != 'undefined' && this.date_from != '' &&
                               this.renting_duration != 'undefined' && this.renting_duration != '');  
       
       return (dateFromdateTo || dateFromDuration);
-      // OPTIMIZATION 2024-01-27 END
-
-/*      
-      if (this.configuration.rentDateSelector === 'date_from_date_to') {
-        // Dates => check Start and End date
-        return (this.date_from != 'undefined' && this.date_from != '' &&
-                this.date_to != 'undefined' && this.date_to != '');
-      }
-      else if (this.configuration.rentDateSelector === 'date_from_duration') {
-        // Date and duration
-        return (this.date_from != 'undefined' && this.date_from != '' &&
-                this.renting_duration != 'undefined' && this.renting_duration != '');
-      }
-*/
     },
 
     buildLoadShoppingCartDataParams: function() { /* Build create/update shopping cart data */
@@ -625,7 +563,6 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
 
     shoppingCartResultProcess: function(data, textStatus, jqXHR) {
 
-       // OPTIMIZATION 2024-01-27 START - Load configuration within shopping cart and setup selector
        // Setup the configuration data
        commonSettings.setupConfigurationData(data.settings);
        model.configuration = commonSettings.data; 
@@ -649,7 +586,6 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
          $('#product_listing').html(i18next.t('common.duplicateTab'));
          return;
        }
-       // OPTIMIZATION 2024-01-27 END
 
        model.shopping_cart = data.shopping_cart;
        model.products = data.products;
@@ -1098,21 +1034,6 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
                       // Localize UI
                       //$('.nav').localize();
                    });
-
-      // OPTIMIZATION 2024-01-27 START
-/*                   
-      // Configure selector
-      if (commonServices.selectorInProcess == 'wizard') {
-        selectorWizard.model.requestLanguage = model.requestLanguage;
-        selectorWizard.model.configuration = model.configuration;
-      }
-      else {
-        selector.model.requestLanguage = model.requestLanguage;
-        selector.model.configuration = model.configuration;
-        selector.view.init();
-      }
-*/
-      // OPTIMIZATION 2024-01-27 END
 
       // Extract the query parameters from the query string
       model.extractVariables();
@@ -1595,9 +1516,6 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
   // The loader is show on start and hidden after the result of
   // the search has been rendered (in model.loadShoppingCart)
   commonLoader.show();
-  // OPTIMIZATION 2024-01-27 START
-  //model.loadSettings();
   view.init();
-  // OPTIMIZATION 2024-01-27 END
 
 });
