@@ -20,12 +20,18 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
     configuration: null,   // Settings
     // Search result
     shopping_cart: null,   // Shopping cart
-    products: null,        // Search products
-    total_products: 0,     // Total products
-    is_lazy_loading: false,  // Lazy loading
-    lazy_loading_limit: 3, // Lazy loading limit
-    sales_process: null,   // Sales process information
-    half_day_turns: null,  // Half day turns
+    products: null,         // Search products
+    // Lazy loading information
+    lazyLoading: false,     // Lazy loading
+    totalProducts: 0,       // Total products
+    isFetching: false,      // It's fetching data for lazy loading
+    pageSize: 3,            // Lazy loading limit
+    currentPage: 0,         // Current page
+    totalPages: 0,          // Total pages
+    bufferSize: 15,          // Prefetch blocks 
+    // Sales process
+    sales_process: null,    // Sales process information
+    half_day_turns: null,   // Half day turns
     // Product detail
     productDetail: null,   // product detail instance
     // Selected coverage
@@ -448,6 +454,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
     * Load the lazy loading remaining products
     */
     loadRemainProducts: function() {
+      console.log('load the next group of products', model.isFetching);
       // Build the URL
       var url = commonServices.URL_PREFIX + '/api/booking/frontend/shopping-cart';
       var freeAccessId = this.getShoppingCartFreeAccessId();
@@ -463,7 +470,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
       }
       // Add a offset and a limit to paginate
       url += '&offset=' + model.products.length;
-      url += '&limit=' + model.lazy_loading_limit;
+      url += '&limit=' + model.pageSize;
       // Request
       $.ajax({
             type: 'GET',
@@ -476,12 +483,12 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
               if (data.products.length > 0) {
                 // Remove the loader
                 $('.mybooking-page-container').find('#product_listing_loading').remove();
-                // Add the products
+                // Add the loaded products to model.products 
                 Array.prototype.push.apply(model.products, data.products);
+                // Set the lazy loading flag
+                model.isFetching = false;
                 // Show the products
                 view.showRemainProducts(data.products);
-                // Set the lazy loading flag
-                model.is_lazy_loading = false;
               }
             },
             error: function(data, textStatus, jqXHR) {
@@ -510,8 +517,8 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
          url += '&api_key=' + commonServices.apiKey;
        }
        // Add a initial limit
-       if ($('#product_listing').attr('data-lazy-loading') === 'true') {
-        url += '&limit=' + model.lazy_loading_limit;
+       if (model.lazyLoading) {
+        url += '&limit=' + model.pageSize;
        }
        // Request
        if (this.isShoppingCartData()) { // create or update shopping cart
@@ -589,7 +596,8 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
 
        model.shopping_cart = data.shopping_cart;
        model.products = data.products;
-       model.total_products = data.total;
+       model.totalProducts = data.total;
+       model.totalPages = Math.ceil(model.totalProducts / model.pageSize);
        model.sales_process = data.sales_process;
        // Half day turns
        if (typeof data.half_day_turns !== 'undefined') {
@@ -1035,6 +1043,8 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
                       //$('.nav').localize();
                    });
 
+      model.lazyLoading = ($('#product_listing').attr('data-lazy-loading') === 'true');
+
       // Extract the query parameters from the query string
       model.extractVariables();
 
@@ -1042,9 +1052,10 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
       model.loadShoppingCart();
 
       // Setup the lazy loading
-      if ($('#product_listing').attr('data-lazy-loading') === 'true') {
+      if (model.lazyLoading) {
         this.setupLazyLoading();
       }
+
     },
 
     showRemainProducts: function(products) {
@@ -1070,42 +1081,39 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
           i18next: i18next});
         $('#product_listing').append(result);
       }
+
+      // It is used to control in standard business (upto 80 products) 
+      // to automatic load everything in steps to speed up response time
+      model.currentPage += 1;
+      console.log('showRemainProducts - model.totalProducts', model.totalProducts);
+      console.log('showRemainProducts - model.currentPage', model.currentPage);
+      console.log('showRemainProducts - model.products.length', model.products.length);
+      if (model.totalProducts > model.products.length) {      
+        // Take into account the buffer to avoid preloading all the elements at once
+        if (model.currentPage % model.bufferSize !== 0) {
+          this.isFetching = true;
+          model.loadRemainProducts();     
+        }
+      }
+
     },
 
     setupLazyLoading: function() {
-      let scrollTimeout;
-      let lastScrollTop = 0;
-      // Scroll event
-      $(window).scroll(function() {
-        // Clear the timeout
-        clearTimeout(scrollTimeout);
-        // Return if the lazy loading is already in process
-        if (model.is_lazy_loading) {
-          return;
-        }
-        // Set a timeout to check the scroll
-        scrollTimeout = setTimeout(function() {
-          // Get the current scroll top
-          const currentScrollTop = $(this).scrollTop();
-          // Check if the user is scrolling down
-          const isADowloadScroll = currentScrollTop > lastScrollTop;
-          // Update the last scroll top
-          lastScrollTop = currentScrollTop;
-          // If the user is scrolling down load the remaining products
-          if (isADowloadScroll) {
-            if (model.products && model.products.length < model.total_products) {
-              // Set the lazy loading flag
-              model.is_lazy_loading = true;
-              // Show the loading message
-              // eslint-disable-next-line max-len
-              const loadingHtml = '<div id="product_listing_loading" style="padding: 1rem; text-align: center; background-color: rgba(0,0,0,0,6);">Loading ...</div>';
-              $('.mybooking-page-container').append(loadingHtml);
-              // Load the next step remaining products
-              model.loadRemainProducts();
-            }
+
+      // Observe the loader and load remain products
+      const loader = document.getElementById('mybooking-product_loader');
+      const observer = new IntersectionObserver(entries => {
+        if (entries[0].isIntersecting && !model.isFetching && model.products) {
+          if (model.totalProducts > model.products.length && model.currentPage % model.bufferSize === 0) {
+            console.log('intersection', model.currentPage);
+            this.isFetching = true;
+            model.loadRemainProducts();
           }
-        }, 250);
+        }
       });
+
+      observer.observe(loader);
+
     },
 
     refreshVariantsResume: function(productCode) {
@@ -1132,20 +1140,6 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
           total: model.getTotal(productCode),
         });
         $(`.product-variant-resume[data-product-code=${ productCode }]`).html(resumeHtml);
-      }
-    },
-
-    verifyFirstLazyLoading: function() {
-      // Return if the lazy loading is already in process
-      if (model.is_lazy_loading) {
-        return;
-      }
-      // If there are more products and list is shorter than windows height setup a first lazy loading
-      if (model.total_products > model.products.length && 
-        $('body').height() <= $(window).height()) {
-        model.is_lazy_loading = true;
-        model.loadRemainProducts();
-        console.log('First lazy loading');
       }
     },
 
@@ -1332,9 +1326,18 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
           }  
         }
 
-        if ($('#product_listing').attr('data-lazy-loading') === 'true') {
-          // Verify first lazy loading products charge
-          this.verifyFirstLazyLoading();
+        if (model.lazyLoading) {
+          // The first page is loaded and shown
+          model.currentPage = 1;
+          // If there are more products and list is shorter than windows height setup a first lazy loading
+          console.log('model.totalProducts', model.totalProducts);
+          console.log('model.currentPage', model.currentPage);
+          console.log('model.products.length', model.products.length);
+          // Check for remaining products
+          if (model.totalProducts > model.products.length) {
+            model.isFetching = true;
+            model.loadRemainProducts();
+          }
         }
         
         // Load filter if exists
