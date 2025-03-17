@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.4.2] - 2025.03.15
+
+### Fixed
+
+- Select product : Optimize lazy loading
+- Calendar : Manage max days
+
 ## [2.4.1] - 2025.01.11
 
 ### New
