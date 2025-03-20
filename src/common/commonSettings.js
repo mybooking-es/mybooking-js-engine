@@ -368,14 +368,27 @@ define('commonSettings', ['jquery','commonServices','commonLoader','commonTransl
      * Get page language
      */ 
     language: function(language) {
-      if (typeof language != 'undefined' && language != null) {
-        if (language.length && language.length > 2) {
-          return language.substring(0,2);
-        }
-        else {
-          return language;
-        }
+      // Set default language
+      let lang = 'en';
+
+      // If language is not defined, return default
+      if (typeof language === 'undefined' || language === null || language === '') {
+        return lang;
       }
+
+      // If language is more than two letters, get the first two otherwise set the language
+      if (language.length && language.length > 2) {
+        lang = language.substring(0,2);
+      } else {
+        lang = language;
+      }
+
+      // If language is not in the common translations, set default
+      if (!commonTranslations[lang]) {
+        lang = 'en';
+      }
+
+      return lang;
     },
 
     /**
