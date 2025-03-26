@@ -1683,11 +1683,23 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
         }
         if (commonServices.apiKey && commonServices.apiKey != '') {
           urlParams.push('api_key='+commonServices.apiKey);
-        }    
+        }
+        
+        let rentalLocation;
+        if (this.applyRentalLocationSelector() && $(this.selectorModel.rental_location_code_selector).val() != '') {
+          rentalLocation = $(this.selectorModel.rental_location_code_selector).val();
+        }  
+        else if (this.usedFixedRentalLocation() && this.fixedRentalLocationValue() != '') {
+          rentalLocation = this.fixedRentalLocationValue();
+        }
+
+        const rentalLocationFunction = (item) => item.rental_location_code === rentalLocation;
+        
         if (urlParams.length > 0) {
           url += '?';
           url += urlParams.join('&');
         }
+
         // DataSource
         this.selectorModel.dataSourcePickupPlaces = new RemoteDataSource(url,
                                                           {'id':'id',
@@ -1705,7 +1717,7 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
                                                                    value += '';
                                                                }
                                                                return value;
-                                                           }});
+                                                           }}, null, rentalLocationFunction);
 
         var pickupPlace = new SelectSelector(this.selectorModel.pickup_place_id, 
                                              this.selectorModel.dataSourcePickupPlaces, 
@@ -1810,7 +1822,18 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
         }
         if (commonServices.apiKey && commonServices.apiKey != '') {
           urlParams.push('api_key='+commonServices.apiKey);
-        }    
+        }
+
+        let rentalLocation;
+        if (this.applyRentalLocationSelector() && $(this.selectorModel.rental_location_code_selector).val() != '') {
+          rentalLocation = $(this.selectorModel.rental_location_code_selector).val();
+        }  
+        else if (this.usedFixedRentalLocation() && this.fixedRentalLocationValue() != '') {
+          rentalLocation = this.fixedRentalLocationValue();
+        }
+
+        const rentalLocationFunction = (item) => item.rental_location_code === rentalLocation;
+
         if (urlParams.length > 0) {
           url += '?';
           url += urlParams.join('&');
@@ -1832,7 +1855,7 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
                                                                    value += '';
                                                                }
                                                                return value;
-                                                           }});
+                                                           }}, null, rentalLocationFunction);
 
 
         var returnPlace = new SelectSelector(this.selectorModel.return_place_id, 
