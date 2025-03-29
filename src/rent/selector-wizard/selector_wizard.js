@@ -637,7 +637,12 @@ define('selector_wizard', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource
       }
 
       if (params.length > 0){
-        url += '?';
+        if (url.indexOf('?') == -1) {
+          url += '?';
+        }
+        else {
+          url += '&';
+        }
         url += params.join('&');
       }
 

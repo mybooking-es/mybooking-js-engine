@@ -1,5 +1,15 @@
 # Changelog
 
+## [2.4.4] - 2025.03.27
+
+### Fixed
+
+- Fixed wizard multi language with lang in query params
+
+### New
+
+- Selector : Filter pickup/return places by sales channel code
+
 ## [2.4.2] - 2025.03.15
 
 ### Fixed

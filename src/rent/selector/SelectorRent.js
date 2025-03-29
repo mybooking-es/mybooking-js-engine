@@ -1678,6 +1678,13 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
         // Build URL
         var url = commonServices.URL_PREFIX + '/api/booking/frontend/pickup-places';
         var urlParams = [];
+
+        // Filter by sales channel code
+        if ($(this.selectorModel.form_selector).find('input[type=hidden][name=sales_channel_code]').length > 0) {
+          let sc = $(this.selectorModel.form_selector).find('input[type=hidden][name=sales_channel_code]').val(); 
+          urlParams.push('sales_channel_code='+sc);
+        }
+   
         if (this.selectorModel.requestLanguage != null) {
           urlParams.push('lang='+this.selectorModel.requestLanguage);
         }
@@ -1805,6 +1812,13 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
         var url = commonServices.URL_PREFIX + '/api/booking/frontend/return-places';
         var urlParams = [];
         urlParams.push('pickup_place='+encodeURIComponent($(this.selectorModel.pickup_place_selector).val()));
+
+        // Filter by sales channel code
+        if ($(this.selectorModel.form_selector).find('input[type=hidden][name=sales_channel_code]').length > 0) {
+          let sc = $(this.selectorModel.form_selector).find('input[type=hidden][name=sales_channel_code]').val(); 
+          urlParams.push('sales_channel_code='+sc);
+        }
+
         if (this.selectorModel.requestLanguage != null) {
           urlParams.push('lang='+this.selectorModel.requestLanguage);
         }
