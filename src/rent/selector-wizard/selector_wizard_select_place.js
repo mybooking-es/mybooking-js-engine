@@ -50,6 +50,13 @@ define('selector_wizard_select_place', ['jquery', 'YSDMemoryDataSource', 'YSDRem
           url += '/api/booking/frontend/pickup-places';
         }
         var urlParams = [];
+
+        // Filter by sales channel code
+        if ($('form[name=wizard_search_form]').find('input[type=hidden][name=sales_channel_code]').length > 0) {
+          let sc = $('form[name=wizard_search_form]').find('input[type=hidden][name=sales_channel_code]').val(); 
+          urlParams.push('sales_channel_code='+sc);
+        }
+
         if (this.mode == 'return' && this.pickup_place) {
           urlParams.push('pickup_place='+encodeURIComponent(this.pickup_place));
         } 
