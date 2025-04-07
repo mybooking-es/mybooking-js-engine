@@ -189,7 +189,11 @@ define('ActivityCyclic', ['jquery','ysdtemplate', 'YSDRemoteDataSource','YSDSele
                          window.location.href = commonServices.shoppingCartUrl; 
                     },
                     error: function(data, textStatus, jqXHR) {
-                        alert(i18next.t('activities.common.errorUpdatingData'));
+                        if (data.responseJSON && data.responseJSON.error !== '') {
+                          alert(data.responseJSON.error);
+                        } else {
+                          alert(i18next.t('activities.common.errorUpdatingData'));
+                        }
                     },
                     complete: function(jqXHR, textStatus) {
 
