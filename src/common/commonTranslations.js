@@ -275,6 +275,8 @@ define("commonTranslations", [], function () {
             "The URL does not contain the information necessary to carry out the process",
           required: "Required",
           selectOption: "Select an option",
+          processSuccess: "Process completed successfully",
+          processError: "We are sorry. There was an error in the process",
           duplicateTab:
             "You cannot duplicate the tab in the reservation process. Please go to the home page and start the process again.",
         },
@@ -825,6 +827,8 @@ define("commonTranslations", [], function () {
             "La URL no contiene la información necesaria para llevar a cabo el proceso",
           required: "Obligatorio",
           selectOption: "Seleccionar una opción",
+          processSuccess: "Proceso realizado con éxito",
+          processError: "Lo sentimos. Se ha producido un error en el proceso",          
           duplicateTab:
             "No se puede duplicar la pestaña en el proceso de reserva. Por favor, vaya a la página de inicio e inicie el proceso de nuevo.",
         },

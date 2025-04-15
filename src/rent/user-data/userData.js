@@ -42,7 +42,7 @@ require([
     nationalities: null,
     documentTypes: null,
     licenseTypes: null,
-    required_fields: null,
+    required_fields: [], //null,
 
     // ------------ Product information detail ------------------------
 
@@ -66,11 +66,90 @@ require([
     /**
      * Update the userData
      */
-    create: function () {
-      // TODO: Implement
+    create: function () {      // Load document types
+
+      // Build request
+      const customer = $('form[name=new_customer_form]').formParams(false);
+      if ($('input[name=phone_number]').length && $('input[name=phone_number]').is(':enabled')){
+        var countryData = $('input[name=phone_number]').intlTelInput('getSelectedCountryData');
+        if (countryData != null) {
+          customer.phone_prefix = countryData.dialCode;
+        }
+      }
+      const customerJSON = JSON.stringify(customer);
+
+      // Build the URL
+      let url = commonServices.URL_PREFIX + '/api/v1/customers/frontend/customers';
+      const urlParams = [];
+      if (this.requestLanguage != null) {
+        urlParams.push('lang=' + this.requestLanguage);
+      }
+      if (commonServices.apiKey && commonServices.apiKey != '') {
+        urlParams.push('api_key=' + commonServices.apiKey);
+      }
+      if (urlParams.length > 0) {
+        url += '?';
+        url += urlParams.join('&');
+      }
+      // Request
+      $.ajax({
+        type: 'POST',
+        url: url,
+        data: customerJSON,
+        dataType : 'json',
+        contentType: 'application/json; charset=utf-8',
+        crossDomain: true,
+        success: function (data, textStatus, jqXHR) {
+          alert(i18next.t('common.processSuccess'));
+          $('form[name=new_customer_form]').trigger('reset');
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+          if (jqXHR.status === 400) {
+            if (jqXHR.responseJSON && jqXHR.responseJSON.message) {
+              alert(i18next.t(jqXHR.responseJSON.message));
+            }
+          } 
+          else {
+            alert(i18next.t('common.processError'));
+          }
+        }
+      });
     },
 
     // ----------------- Load forms data ------------------------------
+
+    /*
+     * Load required_fields
+     */
+    loadRequiredFields: function () {
+      // Load required fields
+      // Build the URL
+      let url = commonServices.URL_PREFIX + '/api/v1/customers/frontend/required-fields';
+      const urlParams = [];
+      if (this.requestLanguage != null) {
+        urlParams.push('lang=' + this.requestLanguage);
+      }
+      if (commonServices.apiKey && commonServices.apiKey != '') {
+        urlParams.push('api_key=' + commonServices.apiKey);
+      }
+      if (urlParams.length > 0) {
+        url += '?';
+        url += urlParams.join('&');
+      }
+
+      // Request
+      $.ajax({
+        type: 'GET',
+        url: url,
+        dataType: 'json',
+        contentType: 'application/json; charset=utf-8',
+        crossDomain: true,
+        success: function (data, textStatus, jqXHR) {
+          model.required_fields = data;
+          view.init();
+        },
+      });
+    },
 
     /*
      * Load nationalities
@@ -235,10 +314,24 @@ require([
       model.configuration = commonSettings.data;
       model.configuration.sesHospedajes = true; // TODO remove
 
+      this.setupForm();
       this.setupEvents();
     },
 
     // ----------------- Form ------------------------------
+
+    setupForm: function() {
+
+        // Customer panel
+        // Include customer driver form
+        if (document.getElementById('script_mybooking_new_customer')) {
+          const formCustomer = tmpl('script_mybooking_new_customer')(
+            {required_fields: model.required_fields,
+             configuration: model.configuration});
+          $('#mybooking_new_customer_container').html(formCustomer);
+        }
+
+    },
 
     /**
      * Load selects options
@@ -253,14 +346,15 @@ require([
         countriesArray = countryCodes.map(function (value) {
           return { id: value, text: countries[value], description: countries[value] };
         });
+        countriesArray.unshift({ id: '', text: '' });
       }
 
       if (commonServices.jsUseSelect2) {
         // Configure address country
         const selectors = [
-          'select[name=driver_address\\[country\\]]',
-          'select[name=driver_origin_country]',
-          'select[name=driver_driving_license_country]',
+          'select[name=address\\[country\\]]',
+          'select[name=origin_country]',
+          'select[name=driving_license_country]',
         ];
         let $countrySelector = null;
         for (let idx = 0; idx < selectors.length; idx++) {
@@ -278,9 +372,9 @@ require([
       } else {
         // Setup country selector
         const selectors = [
-          'driver_address[country]',
-          'driver_origin_country',
-          'driver_driving_license_country',
+          'address[country]',
+          'origin_country',
+          'driving_license_country',
         ];
         for (let idx = 0; idx < selectors.length; idx++) {
           // Load the contries
@@ -314,11 +408,12 @@ require([
           description: data[idx].name,
         };
       }
+      formatData.unshift({ id: '', text: '', description: '' });
 
       if (commonServices.jsUseSelect2) {
         // Configure address country
         const selectors = [
-          'select[name=driver_nacionality]',
+          'select[name=nacionality]',
         ];
         let $nationalitySelector = null;
         for (let idx = 0; idx < selectors.length; idx++) {
@@ -335,7 +430,7 @@ require([
       } else {
         // Setup country selector
         const selectors = [
-          'driver_nacionality',
+          'nacionality',
         ];
         for (let idx = 0; idx < selectors.length; idx++) {
           const elements = document.getElementsByName(selectors[idx]);
@@ -368,11 +463,12 @@ require([
           description: data[idx].label,
         };
       }
+      formatData.unshift({ id: '', text: '', description: '' });
 
       if (commonServices.jsUseSelect2) {
         // Configure address country
         const selectors = [
-          'select[name=driver_document_id_type_id]',
+          'select[name=document_id_type_id]',
         ];
         let $nationalitySelector = null;
         for (let idx = 0; idx < selectors.length; idx++) {
@@ -389,7 +485,7 @@ require([
       } else {
         // Setup country selector
         const selectors = [
-          'driver_document_id_type_id',
+          'document_id_type_id',
         ];
         for (let idx = 0; idx < selectors.length; idx++) {
           const elements = document.getElementsByName(selectors[idx]);
@@ -422,11 +518,12 @@ require([
           description: data[idx].label,
         };
       }
+      formatData.unshift({ id: '', text: '', description: '' });
 
       if (commonServices.jsUseSelect2) {
         // Configure address country
         const selectors = [
-          'select[name=driver_driving_license_type_id]',
+          'select[name=driving_license_type_id]',
         ];
         let $nationalitySelector = null;
         for (let idx = 0; idx < selectors.length; idx++) {
@@ -443,7 +540,7 @@ require([
       } else {
         // Setup country selector
         const selectors = [
-          'driver_driving_license_type_id',
+          'driving_license_type_id',
         ];
         for (let idx = 0; idx < selectors.length; idx++) {
           const elements = document.getElementsByName(selectors[idx]);
@@ -496,7 +593,7 @@ require([
     setupPhoneControls: function () {
       // Configure Telephone with prefix
       let countryCode = model.configuration.countryCode;
-      let input = $('[name="customer_phone"]');
+      let input = $('[name="phone_number"]');
       if (typeof countryCode === 'undefined' || countryCode == null) {
         countryCode = commonUI.intlTelInputCountryCode();
       }
@@ -507,27 +604,6 @@ require([
           utilsScript: commonServices.phoneUtilsPath,
           preferredCountries: [countryCode],
         });
-      }
-      // Configure Driver phone with prefix
-      input = $('[name="driver_phone"]');
-      if (typeof countryCode === 'undefined' || countryCode == null) {
-        countryCode = commonUI.intlTelInputCountryCode();
-      }
-      if (input.length) {
-        input.intlTelInput({
-          initialCountry: countryCode,
-          separateDialCode: true,
-          utilsScript: commonServices.phoneUtilsPath,
-          preferredCountries: [countryCode],
-        });
-        if (model.booking.driver_phone_prefix && model.booking.driver_phone_prefix !== '') {
-          let phoneNumber = model.booking.driver_phone;
-          if (phoneNumber === null) {
-            phoneNumber = '';
-          }
-          let fullNumber = '+' + model.booking.driver_phone_prefix + phoneNumber;
-          input.intlTelInput('setNumber', fullNumber);
-        }
       }
     },
 
@@ -537,15 +613,15 @@ require([
     setupSelectControls: function () {
       if (model.configuration.sesHospedajes) {
         // Setup state code and city code controls
-        const $driverAddressStateCode = $('select[name=driver_address\\[state_code\\]]');
-        const $driverAddressCityCode = $('select[name=driver_address\\[city_code\\]]');
+        const $driverAddressStateCode = $('select[name=address\\[state_code\\]]');
+        const $driverAddressCityCode = $('select[name=address\\[city_code\\]]');
         this.setupAddressStateCodeControl($driverAddressStateCode);
         $driverAddressStateCode.next('.select2-container').hide();
         this.setupAddressCityCodeControl($driverAddressCityCode, $driverAddressStateCode);
         $driverAddressCityCode.next('.select2-container').hide();
         this.setupAddressStateControlEvents($driverAddressStateCode, $driverAddressCityCode);
         // Setup the customer/driver address country events
-        this.setupAddressCountryEvents($('select[name=driver_address\\[country\\]]'));
+        this.setupAddressCountryEvents($('select[name=address\\[country\\]]'));
       }
 
       // Load countries and set value if exists
@@ -711,7 +787,7 @@ require([
       this.setupPhoneControls();
 
       $.extend($.validator.messages, {
-        required: i18next.t('complete.userDataForm.validations.fieldRequired'),
+        required: i18next.t('complete.reservationForm.validations.fieldRequired'),
       });
 
       // Date patter
@@ -740,6 +816,12 @@ require([
               return false;
             },
             rules : {
+              'name': {
+                required: () => $('[name="name"]').is(':visible') && $('[name="name"]').prop('required')
+              },
+              'surname': {
+                required: () => $('[name="surname"]').is(':visible') && $('[name="surname"]').prop('required')
+              },
               'customer_email': {
                 required: () => $('[name="customer_email"]').is(':visible') && $('[name="customer_email"]').prop('required'),
                 email: () => $('[name="customer_email"]').is(':visible') && $('[name="customer_email"]').prop('required'),
@@ -748,187 +830,193 @@ require([
                 required: () => $('[name="customer_phone"]').is(':visible') && $('[name="customer_phone"]').prop('required'),
                 minlength: 9
               },
-              'driver_date_of_birth': {
+              'date_of_birth': {
                 required: (element) => view.validateDateIsRequired(element),
                 date_pattern: true,
               },
-              'driver_nacionality': {
-                required: () => $('[name="driver_nacionality"]').is(':visible') && $('[name="driver_nacionality"]').prop('required'),
+              'nacionality': {
+                required: () => $('[name="nacionality"]').is(':visible') && $('[name="nacionality"]').prop('required'),
               },
-              'driver_document_id_type_id': {
-                required: () => $('[name="driver_document_id_type_id"]').is(':visible') && $('[name="driver_document_id_type_id"]').prop('required'),
+              'document_id_type_id': {
+                required: () => $('[name="document_id_type_id"]').is(':visible') && $('[name="document_id_type_id"]').prop('required'),
               },
-              'driver_email': {
-                required: () => $('[name="driver_email"]').is(':visible') && $('[name="driver_email"]').prop('required'),
-                email: () => $('[name="driver_email"]').is(':visible') && $('[name="driver_email"]').prop('required'),
+              'email': {
+                required: () => $('[name="email"]').is(':visible') && $('[name="email"]').prop('required'),
+                email: () => $('[name="email"]').is(':visible') && $('[name="email"]').prop('required'),
               },
-              'driver_phone': {
-                required: () => $('[name="driver_phone"]').is(':visible') && $('[name="driver_phone"]').prop('required'),
+              'phone_number': {
+                required: () => $('[name="phone_number"]').is(':visible') && $('[name="phone_number"]').prop('required'),
                 minlength: 9
               },
-              'driver_document_id': {
-                required: () => $('[name="driver_document_id"]').is(':visible') && $('[name="driver_document_id"]').prop('required'),
-                //documentValidator: {
-                //  documentTypeControlId: 'select[name=driver_document_id_type_id]',
-                //}                
+              'document_id': {
+                required: () => $('[name="document_id"]').is(':visible') && $('[name="document_id"]').prop('required'),             
               },
-              'driver_origin_country': {
-                required: () => $('[name="driver_origin_country"]').is(':visible') && $('[name="driver_origin_country"]').prop('required'),
+              'origin_country': {
+                required: () => $('[name="origin_country"]').is(':visible') && $('[name="origin_country"]').prop('required'),
               },
-              'driver_document_id_date': {
+              'document_id_date': {
                 required: (element) => view.validateDateIsRequired(element),
                 date_pattern: true,
               },
-              'driver_document_id_expiration_date': {
+              'document_id_expiration_date': {
                 required: (element) => view.validateDateIsRequired(element),
                 date_pattern: true,
               },
-              'driver_driving_license_type_id': {
-                required: () => $('[name="driver_driving_license_type_id"]').is(':visible') && $('[name="driver_driving_license_type_id"]').prop('required'),
+              'driving_license_type_id': {
+                required: () => $('[name="driving_license_type_id"]').is(':visible') && $('[name="driving_license_type_id"]').prop('required'),
               },
-              'driver_driving_license_number': {
-                required: () => $('[name="driver_driving_license_number"]').is(':visible') && $('[name="driver_driving_license_number"]').prop('required'),
+              'driving_license_number': {
+                required: () => $('[name="driving_license_number"]').is(':visible') && $('[name="driving_license_number"]').prop('required'),
               },
-              'driver_driving_license_country': {
-                required: () => $('[name="driver_driving_license_country"]').is(':visible') && $('[name="driver_driving_license_country"]').prop('required'),
+              'driving_license_country': {
+                required: () => $('[name="driving_license_country"]').is(':visible') && $('[name="driving_license_country"]').prop('required'),
               },
-              'driver_driving_license_date': {
+              'driving_license_date': {
                 required: (element) => view.validateDateIsRequired(element),
                 date_pattern: true,
               },
-              'driver_driving_license_expiration_date': {
+              'driving_license_expiration_date': {
                 required: (element) => view.validateDateIsRequired(element),
                 date_pattern: true,
               },
-              'driver_address[street]': {
-                required: () => $('[name="driver_address\\[street\\]"]').is(':visible') && $('[name="driver_address\\[street\\]"]').prop('required'),
+              'address[street]': {
+                required: () => $('[name="address\\[street\\]"]').is(':visible') && $('[name="address\\[street\\]"]').prop('required'),
               },
-              'driver_address[number]': {
-                required: () => $('[name="driver_address\\[number\\]"]').is(':visible') && $('[name="driver_address\\[number\\]"]').prop('required'),
+              'address[number]': {
+                required: () => $('[name="address\\[number\\]"]').is(':visible') && $('[name="address\\[number\\]"]').prop('required'),
               },
-              'driver_address[complement]': {
-                required: () => $('[name="driver_address\\[complement\\]"]').is(':visible') && $('[name="driver_address\\[complement\\]"]').prop('required'),
+              'address[complement]': {
+                required: () => $('[name="address\\[complement\\]"]').is(':visible') && $('[name="address\\[complement\\]"]').prop('required'),
               },
-              'driver_address[city]': {
-                required: () => $('[name="driver_address\\[city\\]"]').is(':visible') && model.required_fields.includes('driver_address[city]'),
+              'address[city]': {
+                required: () => $('[name="address\\[city\\]"]').is(':visible') && model.required_fields.includes('address[city]'),
               },
-              'driver_address[city_code]': {
-                required: () => $('[name="driver_address\\[city_code\\]"]').is(':visible') && model.required_fields.includes('driver_address[city]'),
+              'address[city_code]': {
+                required: () => $('[name="address\\[city_code\\]"]').is(':visible') && model.required_fields.includes('address[city]'),
               },
-              'driver_address[state]': {
-                required: () => $('[name="driver_address\\[state\\]"]').is(':visible') && model.required_fields.includes('driver_address[state]'),
+              'address[state]': {
+                required: () => $('[name="address\\[state\\]"]').is(':visible') && model.required_fields.includes('address[state]'),
               },
-              'driver_address[state_code]': {
-                required: () => $('[name="driver_address\\[state_code\\]"]').is(':visible') && model.required_fields.includes('driver_address[state]'),
+              'address[state_code]': {
+                required: () => $('[name="address\\[state_code\\]"]').is(':visible') && model.required_fields.includes('address[state]'),
               },
-              'driver_address[country]': {
-                required: () => $('[name="driver_address\\[country\\]"]').is(':visible') && $('[name="driver_address\\[country\\]"]').prop('required'),
+              'address[country]': {
+                required: () => $('[name="address\\[country\\]"]').is(':visible') && $('[name="address\\[country\\]"]').prop('required'),
               },
-              'driver_address[zip]': {
-                required: () => $('[name="driver_address\\[zip\\]"]').is(':visible') && $('[name="driver_address\\[zip\\]"]').prop('required'),
+              'address[zip]': {
+                required: () => $('[name="address\\[zip\\]"]').is(':visible') && $('[name="address\\[zip\\]"]').prop('required'),
               },                            
             },
 
             messages: {
-              'customer_email': {
-                required: i18next.t('complete.reservationForm.validations.customerEmailRequired'),
+              'name': {
+                required: i18next.t('complete.reservationForm.validations.fieldRequired')
+              },
+              'surname': {
+                required: i18next.t('complete.reservationForm.validations.fieldRequired')
+              },
+              'email': {
+                required: i18next.t('complete.reservationForm.validations.fieldRequired'),
                 email: i18next.t('complete.reservationForm.validations.customerEmailInvalidFormat'),
               },
-              'customer_phone': {
-                required: i18next.t('complete.reservationForm.validations.customerPhoneNumberRequired'),
+              'phone_number': {
+                required: i18next.t('complete.reservationForm.validations.fieldRequired'),
                 minlength: i18next.t('complete.reservationForm.validations.customerPhoneNumberMinLength')
               },
-              'driver_date_of_birth': {
+              'date_of_birth': {
                 required: i18next.t('complete.reservationForm.validations.fieldRequired'),
                 date_pattern: i18next.t('complete.reservationForm.validations.datePatternInvalid'),
               },
-              'driver_nacionality': {
+              'nacionality': {
                 required: i18next.t('complete.reservationForm.validations.fieldRequired')
               },
-              'driver_document_id_type_id': {
+              'document_id_type_id': {
                 required: i18next.t('complete.reservationForm.validations.fieldRequired'),
               },
-              'driver_email': {
-                required: i18next.t('complete.reservationForm.validations.customerEmailRequired'),
-                email: i18next.t('complete.reservationForm.validations.customerEmailInvalidFormat'),
-              },
-              'driver_phone': {
-                required: i18next.t('complete.reservationForm.validations.customerPhoneNumberRequired'),
-                minlength: i18next.t('complete.reservationForm.validations.customerPhoneNumberMinLength')
-              },
-              'driver_document_id': {
+              'document_id': {
                 required: i18next.t('complete.reservationForm.validations.fieldRequired'),
                 documentValidator: i18next.t('complete.reservationForm.validations.invalidValue')
               },
-              'driver_origin_country': {
+              'origin_country': {
                 required: i18next.t('complete.reservationForm.validations.fieldRequired')
               },
-              'driver_document_id_date': {
+              'document_id_date': {
                 required: i18next.t('complete.reservationForm.validations.fieldRequired'),
                 date_pattern: i18next.t('complete.reservationForm.validations.datePatternInvalid'),
               },
-              'driver_document_id_expiration_date': {
+              'document_id_expiration_date': {
                 rrequired: i18next.t('complete.reservationForm.validations.fieldRequired'),
                 date_pattern: i18next.t('complete.reservationForm.validations.datePatternInvalid'),
               },
-              'driver_driving_license_type_id': {
+              'driving_license_type_id': {
                 required: i18next.t('complete.reservationForm.validations.fieldRequired')
               },
-              'driver_driving_license_number': {
+              'driving_license_number': {
                 required: i18next.t('complete.reservationForm.validations.fieldRequired'),
               },
-              'driver_driving_license_country': {
+              'driving_license_country': {
                 required: i18next.t('complete.reservationForm.validations.fieldRequired')
               },
-              'driver_driving_license_date': {
-                required: i18next.t('complete.reservationForm.validations.fieldRequired'),
-                date_pattern: i18next.t('complete.reservationForm.validations.datePatternInvalid'),
-              },
-              'driver_driving_license_expiration_date': {
+              'driving_license_date': {
                 required: i18next.t('complete.reservationForm.validations.fieldRequired'),
                 date_pattern: i18next.t('complete.reservationForm.validations.datePatternInvalid'),
               },
-              'driver_address\\[street\\]': {
+              'driving_license_expiration_date': {
+                required: i18next.t('complete.reservationForm.validations.fieldRequired'),
+                date_pattern: i18next.t('complete.reservationForm.validations.datePatternInvalid'),
+              },
+              'address\\[street\\]': {
                 required: i18next.t('complete.reservationForm.validations.fieldRequired')
               },
-              'driver_address\\[number\\]': {
+              'address\\[number\\]': {
                 required: i18next.t('complete.reservationForm.validations.fieldRequired')
               },
-              'driver_address\\[complement\\]': {
+              'address\\[complement\\]': {
                 required: i18next.t('complete.reservationForm.validations.fieldRequired')
               },
-              'driver_address\\[city\\]': {
+              'address\\[city\\]': {
                 required: i18next.t('complete.reservationForm.validations.fieldRequired')
               },
-              'driver_address\\[city_code\\]': {
+              'address\\[city_code\\]': {
                 required: i18next.t('complete.reservationForm.validations.fieldRequired')
               },
-              'driver_address\\[state\\]': {
+              'address\\[state\\]': {
                 required: i18next.t('complete.reservationForm.validations.fieldRequired')
               },
-              'driver_address\\[state_code\\]': {
+              'address\\[state_code\\]': {
                 required: i18next.t('complete.reservationForm.validations.fieldRequired')
               },
-              'driver_address\\[country\\]': {
+              'address\\[country\\]': {
                 required: i18next.t('complete.reservationForm.validations.fieldRequired')
               },
-              'driver_address\\[zip\\]': {
+              'address\\[zip\\]': {
                 required: i18next.t('complete.reservationForm.validations.fieldRequired')
               },                           
             },
 
             errorPlacement: function(error, element) {
-              if (element.attr('name') === 'driver_document_id_type_id')  {
+              if (element.attr('name') === 'document_id_type_id')  {
                 if (commonServices.jsUseSelect2) {
-                  error.insertAfter('form[name=booking_information_form] select[name=driver_document_id_type_id] + span.select2-container');
+                  error.insertAfter('form[name=new_customer_form] select[name=document_id_type_id] + span.select2-container');
                 }
                 else {
                   error.insertAfter(element);
                 }
-              } else if (element.attr('name') === 'driver_address[state_code]' && element.is('select')) {
-                error.insertAfter('form[name=booking_information_form] select[name=driver_address\\[state_code\\]] + span.select2-container'); 
-              } else if (element.attr('name') === 'driver_address[city_code]' && element.is('select')) {
-                  error.insertAfter('form[name=booking_information_form] select[name=driver_address\\[city_code\\]] + span.select2-container');                
+              } 
+              else if (element.attr('name') === 'driving_license_type_id')  {
+                if (commonServices.jsUseSelect2) {
+                  error.insertAfter('form[name=new_customer_form] select[name=driving_license_type_id] + span.select2-container');
+                }
+                else {
+                  error.insertAfter(element);
+                }
+              } 
+              else if (element.attr('name') === 'address[state_code]' && element.is('select')) {
+                error.insertAfter('form[name=new_customer_form] select[name=address\\[state_code\\]] + span.select2-container'); 
+              } else if (element.attr('name') === 'address[city_code]' && element.is('select')) {
+                  error.insertAfter('form[name=new_customer_form] select[name=address\\[city_code\\]] + span.select2-container');    
+              } else if (element.attr('name') === 'address[country]' && element.is('select')) {
+                  error.insertAfter('form[name=new_customer_form] select[name=address\\[country\\]] + span.select2-container');                              
               } else {
                 error.insertAfter(element);
               } 
@@ -938,9 +1026,9 @@ require([
 
       if (model.configuration.sesHospedajes) {
         // Apply the validation rules for the document
-        $('input[name=driver_document_id]').rules('add', {
+        $('input[name=document_id]').rules('add', {
           documentValidator: {
-            documentTypeControlId: 'select[name=driver_document_id_type_id]',
+            documentTypeControlId: 'select[name=document_id_type_id]',
           },
         });
       }
@@ -989,5 +1077,8 @@ require([
   // has been rendered
   commonLoader.show();
 
-  view.init();
+  // Load required fields
+  model.loadRequiredFields();
+
+  //view.init();
 });
