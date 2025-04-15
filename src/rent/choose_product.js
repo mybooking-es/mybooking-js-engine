@@ -32,6 +32,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
     // Sales process
     sales_process: null,    // Sales process information
     half_day_turns: null,   // Half day turns
+    candidate_turns: null,  // Candidate turns
     // Product detail
     productDetail: null,   // product detail instance
     // Selected coverage
@@ -603,6 +604,10 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
        if (typeof data.half_day_turns !== 'undefined') {
          model.half_day_turns = data.half_day_turns;
        }
+       // Candidate turns
+       if (typeof data.candidate_turns !== 'undefined') {
+         model.candidate_turns = data.candidate_turns;
+       }
        // Store the shopping cart free access id in the session
        var freeAccessId = model.getShoppingCartFreeAccessId();
        if (freeAccessId == null || freeAccessId != model.shopping_cart.free_access_id) {
@@ -1149,10 +1154,18 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
 
         // Show the reservation summary 
         if (document.getElementById('script_reservation_summary')) {
+          let turns = null;
+          if (model.half_day_turns && model.half_day_turns.length > 0) {
+            turns = model.half_day_turns;
+          } else if (model.candidate_turns && model.candidate_turns.length > 0) { 
+            // Allow to use turns that are not half day turns
+            turns = model.candidate_turns;
+          }
+          console.log('turns', turns);
           var reservationDetail = tmpl('script_reservation_summary')({
                 shopping_cart: model.shopping_cart,
                 configuration: model.configuration,
-                halfDayTurns: model.half_day_turns});
+                halfDayTurns: turns});
           $('#reservation_detail').html(reservationDetail);
 
           // Half day turns
