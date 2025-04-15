@@ -173,6 +173,13 @@ $(document).ready(function () {
     }
 });
 
+// Page customer data JS
+$(document).ready(function() {
+    if ($('body').hasClass('new_customer')) {
+        require('./rent/user-data/userData.js');
+    }
+});
+
 // == Product renting
 
 // Product Search JS
