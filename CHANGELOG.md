@@ -1,6 +1,6 @@
 # Changelog
 
-## [2.4.4] - 2025.03.27
+## [2.5.0] - 2025.04.16
 
 ### Fixed
 
@@ -8,7 +8,9 @@
 
 ### New
 
-- Selector and Selector wizard : Filter pickup/return places by sales channel code
+- Selector and selector wizard : Filter pickup/return places by sales channel code
+- Allow to show candidate turns in the selection product when times do not represent half day. Useful for 
+  2 hours o 3 hours reservations
 
 ## [2.4.2] - 2025.03.15
 
