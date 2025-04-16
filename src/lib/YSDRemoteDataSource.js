@@ -3,7 +3,7 @@ define(['YSDAbstractDataSource','jquery'], function(YSDAbstractDataSource, $) {
   /* --------------------------------
      RemoteDataSource
      -------------------------------- */
-  var YSDRemoteDataSource = function(url, matchingProperties, adapters, conditionalFunction) {
+  var YSDRemoteDataSource = function(url, matchingProperties, adapters) {
 
     YSDAbstractDataSource.apply(this, arguments);
 
@@ -19,7 +19,7 @@ define(['YSDAbstractDataSource','jquery'], function(YSDAbstractDataSource, $) {
       $.getJSON(this.url,
                 query,
                 function success_handler(data) {
-                  self.data = conditionalFunction ? data.filter(conditionalFunction) : data;
+                  self.data = data;
                   // eslint-disable-next-line max-len
                   self.events.fireEvent({type:'data_available', data: self.adaptData(self.data, self.matchingProperties, self.adapters)});
                 });          
