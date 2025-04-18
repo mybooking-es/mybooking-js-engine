@@ -1,3 +1,5 @@
+/* eslint-disable camelcase */
+/* eslint-disable max-len */
 require(['jquery', 
          'commonServices', 'commonSettings', 'commonTranslations', 'commonLoader', 'commonUI',
          'i18next','ysdtemplate','YSDDateControl', 
@@ -5,15 +7,15 @@ require(['jquery',
          'YSDMemoryDataSource','YSDSelectSelector', './mediator/rentEngineMediator', '../profile/Login',
          '../profile/PasswordForgottenComponent', 'moment',
          'jquery.i18next', 'jquery.formparams', 'jquery.form',
-	       'jquery.validate', 'jquery.ui', 'jquery.ui.datepicker-es',
+          'jquery.validate', 'jquery.ui', 'jquery.ui.datepicker-es',
          'jquery.ui.datepicker-en', 'jquery.ui.datepicker-ca', 'jquery.ui.datepicker-it',
-	       'jquery.ui.datepicker.validation'],
-	     function($, 
+         'jquery.ui.datepicker.validation'],
+       function($, 
                 commonServices, commonSettings, commonTranslations, commonLoader, commonUI,
                 i18next, tmpl, DateControl, selector, selectorWizard, select2,
                 MemoryDataSource, SelectSelector, rentEngineMediator, Login, PasswordForgottenComponent, moment) {
 
-  var model = { // THE MODEL
+  const model = { // THE MODEL
     reservationFormSubmitted: false,
     //
     requestLanguage: null,
@@ -70,9 +72,9 @@ require(['jquery',
     loadCustomerClassifier: function() { 
 
       console.log('loadCustomerClassifier');
-      var self = this;
-      var url = commonServices.URL_PREFIX + '/api/booking/frontend/customer-classifier';
-      var urlParams = []
+      const self = this;
+      let url = commonServices.URL_PREFIX + '/api/booking/frontend/customer-classifier';
+      const urlParams = [];
       if (commonServices.apiKey && commonServices.apiKey != '') {
         urlParams.push('api_key='+commonServices.apiKey);
       }  
@@ -83,7 +85,7 @@ require(['jquery',
         url += '?';
         url += urlParams.join('&');
       }
-      var self = this;
+
       // Request
       $.ajax({
         type: 'GET',
@@ -91,7 +93,7 @@ require(['jquery',
         dataType: 'json',
         success: function(data, textStatus, jqXHR) {
           self.customerClassifiers = data;
-          for (var idx=0;idx<self.customerClassifiers.length;idx++){
+          for (let idx=0;idx<self.customerClassifiers.length;idx++){
             self.customerClassifiers[idx]['text'] = self.customerClassifiers[idx]['description'] = self.customerClassifiers[idx]['name'];
           } 
 
@@ -112,10 +114,10 @@ require(['jquery',
      */
     getShoppingCartExtrasQuantities: function() { 
 
-      var shoppingCartExtras = {};
+      const shoppingCartExtras = {};
 
       if (this.shopping_cart != null) {
-          for (var idx=0;idx<this.shopping_cart.extras.length;idx++) {
+          for (let idx=0;idx<this.shopping_cart.extras.length;idx++) {
             shoppingCartExtras[this.shopping_cart.extras[idx].extra_id] = this.shopping_cart.extras[idx].quantity;
           }
       }
@@ -128,9 +130,9 @@ require(['jquery',
      * Check if an extra code is a coverage
      */  
     isCoverage: function(extraCode) {
-      var found = false;
+      let found = false;
       if (this.coverages) {
-        for (var idx=0;idx<this.coverages.length;idx++) {
+        for (let idx=0;idx<this.coverages.length;idx++) {
           if (this.coverages[idx].code == extraCode) {
             found = true;
             break;
@@ -162,12 +164,12 @@ require(['jquery',
     loadShoppingCart: function() { 
 
        // Build the URL
-       var url = commonServices.URL_PREFIX + '/api/booking/frontend/shopping-cart';
-       var freeAccessId = this.getShoppingCartFreeAccessId();
+       let url = commonServices.URL_PREFIX + '/api/booking/frontend/shopping-cart';
+       const freeAccessId = this.getShoppingCartFreeAccessId();
        if (freeAccessId) {
          url += '/' + freeAccessId;
        }
-       var urlParams = [];
+       const urlParams = [];
        urlParams.push('include_extras=true');
        urlParams.push('include_coverage=true');
        if (model.requestLanguage != null) {
@@ -229,15 +231,15 @@ require(['jquery',
                  // Airport and hotel form required  conditional rules
                  // In the html it must exist a id="airport-form-section" and a atribute data-airport-required="true"
                  // in this case it will only be required when the pick-up site is the airport
-                 var airportSection = $('#airport-form-section');
-                 if (airportSection.length > 0 )  {
+                 const airportSection = $('#airport-form-section');
+                 if (airportSection.length > 0)  {
                   if (data.shopping_cart.pickup_place_type === 'airport' && airportSection.attr('data-airport-required') === 'true') {
                     model.isAirportDataRequired = true;
                   }
                  }
                  // In the html it must exist a id="hotel-form-section" and a atribute data-hotel-required="true"
-                 var hotelSection = $('#hotel-form-section');
-                 if (hotelSection.length > 0 )  {
+                 const hotelSection = $('#hotel-form-section');
+                 if (hotelSection.length > 0)  {
                    if (hotelSection.attr('data-hotel-required') === 'true') {
                      model.isHotelDataRequired = true;
                    }
@@ -267,14 +269,14 @@ require(['jquery',
     setExtra: function(extraCode, quantity) { 
 
       // Build the URL
-      var url = commonServices.URL_PREFIX + '/api/booking/frontend/shopping-cart';
-      var freeAccessId = this.getShoppingCartFreeAccessId();
+      let url = commonServices.URL_PREFIX + '/api/booking/frontend/shopping-cart';
+      const freeAccessId = this.getShoppingCartFreeAccessId();
       if (freeAccessId) {
         url += '/' + freeAccessId;
       }
       url += '/set-extra';
-      var urlParams = [];
-      if (model.requestLanguage != null) {
+      const urlParams = [];
+      if (model.requestLanguage != null) {
        urlParams.push('lang='+model.requestLanguage);
       }
       if (commonServices.apiKey && commonServices.apiKey != '') {
@@ -319,14 +321,14 @@ require(['jquery',
     deleteExtra: function(extraCode) { 
 
       // Build the URL
-      var url = commonServices.URL_PREFIX + '/api/booking/frontend/shopping-cart';
-      var freeAccessId = this.getShoppingCartFreeAccessId();
+      let url = commonServices.URL_PREFIX + '/api/booking/frontend/shopping-cart';
+      const freeAccessId = this.getShoppingCartFreeAccessId();
       if (freeAccessId) {
         url += '/' + freeAccessId;
       }
       url += '/remove-extra';
-      var urlParams = [];
-      if (model.requestLanguage != null) {
+      const urlParams = [];
+      if (model.requestLanguage != null) {
        urlParams.push('lang='+model.requestLanguage);
       }
       if (commonServices.apiKey && commonServices.apiKey != '') {
@@ -370,8 +372,8 @@ require(['jquery',
     loadExtra: function(extraCode) {
 
        // Build the URL
-       var url = commonServices.URL_PREFIX + '/api/booking/frontend/extras/'+extraCode;
-       var urlParams = [];
+       let url = commonServices.URL_PREFIX + '/api/booking/frontend/extras/'+extraCode;
+       const urlParams = [];
        if (this.requestLanguage != null) {
          urlParams.push('lang=' + this.requestLanguage);
        }
@@ -407,12 +409,12 @@ require(['jquery',
 
     buildSetExtraDataParams: function(extraCode, quantity) {
 
-      var data = {
+      const data = {
         extra: extraCode,
         quantity: quantity
       };
 
-      var jsonData = encodeURIComponent(JSON.stringify(data));
+      const jsonData = encodeURIComponent(JSON.stringify(data));
 
       return jsonData;
 
@@ -420,11 +422,11 @@ require(['jquery',
     
     buildDeleteExtraDataParams: function(extraCode) {
 
-      var data = {
+      const data = {
         extra: extraCode
       };
 
-      var jsonData = encodeURIComponent(JSON.stringify(data));
+      const jsonData = encodeURIComponent(JSON.stringify(data));
 
       return jsonData;
 
@@ -437,15 +439,15 @@ require(['jquery',
      */ 
     applyPromotionCode: function(promotionCode) {
 
-      var requestData = {promotion_code: promotionCode};
-      var requestDataJSON = encodeURIComponent(JSON.stringify(requestData));
-      var url = commonServices.URL_PREFIX + '/api/booking/frontend/shopping-cart';
-      var freeAccessId = this.getShoppingCartFreeAccessId();
+      const requestData = {promotion_code: promotionCode};
+      const requestDataJSON = encodeURIComponent(JSON.stringify(requestData));
+      let url = commonServices.URL_PREFIX + '/api/booking/frontend/shopping-cart';
+      const freeAccessId = this.getShoppingCartFreeAccessId();
       if (freeAccessId) {
         url += '/' + freeAccessId;
       }
       url += '/apply-promotion-code';
-      var urlParams = [];
+      const urlParams = [];
       if (this.requestLanguage != null) {
         urlParams.push('lang=' + this.requestLanguage);
       }
@@ -505,10 +507,10 @@ require(['jquery',
      */  
     sendBookingRequest: function() { 
 
-      var paymentAmountOverride = null;
+      let paymentAmountOverride = null;
 
       // Prepare the request data
-      var reservation = $('form[name=reservation_form]').formParams(false);
+      const reservation = $('form[name=reservation_form]').formParams(false);
       if (typeof reservation.complete_action != 'undefined') {
         if (reservation.complete_action != 'pay_now') {
           reservation.payment = 'none';
@@ -525,13 +527,13 @@ require(['jquery',
       }
       // Prepare phone prefix
       if ($('#customer_phone').length) {
-        var countryData = $('#customer_phone').intlTelInput('getSelectedCountryData');
+        const countryData = $('#customer_phone').intlTelInput('getSelectedCountryData');
         if (countryData != null) {
           reservation.customer_phone_prefix = countryData.dialCode;
         }
       }
       if ($('#customer_mobile_phone').length) {
-        var countryData = $('#customer_mobile_phone').intlTelInput('getSelectedCountryData');
+        const countryData = $('#customer_mobile_phone').intlTelInput('getSelectedCountryData');
         if (countryData != null) {
           reservation.customer_mobile_phone_prefix = countryData.dialCode;
         }
@@ -546,15 +548,15 @@ require(['jquery',
       reservation.web_hostname = window.location.hostname;
       
       // Convert to JSON
-      var reservationJSON = JSON.stringify(reservation);
+      const reservationJSON = JSON.stringify(reservation);
       // Prepare the URL
-      var url = commonServices.URL_PREFIX + '/api/booking/frontend/shopping-cart';
-      var freeAccessId = this.getShoppingCartFreeAccessId();
+      let url = commonServices.URL_PREFIX + '/api/booking/frontend/shopping-cart';
+      const freeAccessId = this.getShoppingCartFreeAccessId();
       if (freeAccessId) {
         url += '/' + freeAccessId;
       }
       url += '/checkout';
-      var urlParams = [];
+      const urlParams = [];
       if (this.requestLanguage != null) {
         urlParams.push('lang=' + this.requestLanguage);
       }
@@ -567,13 +569,12 @@ require(['jquery',
       }
 
       // Authorization => Customer
-      var headers = {};
+      const headers = {};
       if (view.login && view.login.model && view.login.model.bearer) {
         headers['Authorization'] = view.login.model.bearer;
       }
 
       // Request
-      var self = this;
       commonLoader.show();
       $.ajax({
             type: 'POST',
@@ -587,23 +588,23 @@ require(['jquery',
                 // Hide Loader (OK)
                 commonLoader.hide();
                 // Prepare the connection to the payment page or to the summary
-                var payNow = data.pay_now;
-                var bookingId = data.free_access_id;
-                var payment_method_id = data.payment_method_id;
+                const payNow = data.pay_now;
+                const bookingId = data.free_access_id;
+                const payment_method_id = data.payment_method_id;
                 // remove the shopping cart id from the session
                 model.deleteShoppingCartFreeAccessId();
                 model.putBookingFreeAccessId(bookingId);
                 if (payNow && payment_method_id != null && payment_method_id != '') {
                     // Notify the event
-                    var event = {type: 'newReservationWithPaymentRequested',
+                    const event = {type: 'newReservationWithPaymentRequested',
                                  data: data};
                     rentEngineMediator.notifyEvent(event);
                     // Go to payment
-                    var paymentData = {
+                    const paymentData = {
                         id: bookingId,
                         payment: model.sales_process.can_pay_deposit ? 'deposit' : 'total', 
                         payment_method_id: payment_method_id
-                    }
+                    };
                     // Allows to override the amount depending
                     if (paymentAmountOverride !== null) {
                       paymentData.payment = paymentAmountOverride;
@@ -614,7 +615,7 @@ require(['jquery',
                 }
                 else {
                     // Notify the event
-                    var event = {type: 'newReservationRequested',
+                    const event = {type: 'newReservationRequested',
                                  data: data};
                     rentEngineMediator.notifyEvent(event);
                     // Go to summary          
@@ -680,7 +681,7 @@ require(['jquery',
     }
   };
 
-  var controller = { // THE CONTROLLER
+  const controller = { // THE CONTROLLER
 
       customerTypeChanged: function(customerType) {
 
@@ -728,7 +729,7 @@ require(['jquery',
           // Form data
           const reservationForm = $('form[name=reservation_form]').formParams(false);
 
-          rentEngineMediator.onCheckout( model.coverages, 
+          rentEngineMediator.onCheckout(model.coverages, 
                                          model.extras,
                                          model.shopping_cart,
                                          reservationForm);
@@ -796,19 +797,19 @@ require(['jquery',
 
   };
 
-  var view = { // THE VIEW
+  const view = { // THE VIEW
 
     selectorLoaded: false,
     login: null,
 
-  	init: function() {
+    init: function() {
       model.requestLanguage = commonSettings.language(document.documentElement.lang);
       // Initialize i18next for translations
       i18next.init({  
                       lng: model.requestLanguage,
                       resources: commonTranslations
                    }, 
-                   function (error, t) {
+                   function(error, t) {
                       // https://github.com/i18next/jquery-i18next#initialize-the-plugin
                       //jqueryI18next.init(i18next, $);
                       // Localize UI
@@ -837,13 +838,12 @@ require(['jquery',
 
       // Load shopping cart
       model.loadShoppingCart();
-  	},
+    },
 
     /**
      * Setup the login form
      */
     setupLoginForm: function() {
-      var self = this;
       // Complete hide
       $('#form-reservation').hide();
       $('#extras_listing').hide();
@@ -851,20 +851,20 @@ require(['jquery',
       if (document.getElementById('script_complete_complement') && 
           document.getElementById('script_create_account')) {
         // Login form
-        var html = tmpl('script_complete_complement')({});
+        const html = tmpl('script_complete_complement')({});
         $('#extras_listing').before(html);
         // Setup password forgotten
         $('.mybooking_login_password_forgotten').on('click', function(){
-          var htmlPasswordForgotten = tmpl('script_password_forgotten')({});
+          const htmlPasswordForgotten = tmpl('script_password_forgotten')({});
           if ($('div.mybooking_password_forgotten_container').length > 0) { // Show in div
             $('div.mybooking_password_forgotten_container').html(htmlPasswordForgotten);
-            var passwordForgottenComponent = new PasswordForgottenComponent();
+            const passwordForgottenComponent = new PasswordForgottenComponent();
             passwordForgottenComponent.model.addListener('PasswordForgotten', function(event){
               if (event.type === 'PasswordForgotten' && (typeof event.data != 'undefined') && event.data.success === true) {
                 $('div.mybooking_password_forgotten_container').empty();
               }
             });
-            passwordForgottenComponent.view.init();            
+            passwordForgottenComponent.view.init();          
           }
           else { // Show in a modal
             
@@ -877,7 +877,7 @@ require(['jquery',
               $('#modalExtraDetail .modal-title').html('');
               $('#modalExtraDetail .modal-body').html(htmlPasswordForgotten);
             }
-            var passwordForgottenComponent = new PasswordForgottenComponent();
+            const passwordForgottenComponent = new PasswordForgottenComponent();
             passwordForgottenComponent.model.addListener('PasswordForgotten', function(event){
               if (event.type === 'PasswordForgotten' && (typeof event.data != 'undefined') && event.data.success === true) {
                 commonUI.hideModal('#modalExtraDetail');
@@ -905,12 +905,12 @@ require(['jquery',
               $('form[name=mybooking_login_form] input, form[name=mybooking_login_form] button').prop('disabled', true);
               // Show login message
               if (document.getElementById('script_welcome_customer')) {
-                var htmlMessage = tmpl('script_welcome_customer')({i18next: i18next, user: event.data.user});
+                const htmlMessage = tmpl('script_welcome_customer')({i18next: i18next, user: event.data.user});
                 $('#reservation_complement_container').append(htmlMessage);
               }
               // Empty password forgotten components
               $('.mybooking_login_password_forgotten').remove();
-              if ( $('.mybooking_password_forgotten_container').length > 0) {
+              if ($('.mybooking_password_forgotten_container').length > 0) {
                 $('.mybooking_password_forgotten_container').empty();        
               }     
               // Remove create account components
@@ -932,7 +932,7 @@ require(['jquery',
           if ($(this).val() === 'true') {
             $('.mybooking_login_form_element').show();
             // Empty password forgotten container
-            if ( $('.mybooking_password_forgotten_container').length > 0) {            
+            if ($('.mybooking_password_forgotten_container').length > 0) {            
               $('.mybooking_password_forgotten_container').empty();
             }            
             $('#form-reservation').hide();
@@ -942,7 +942,7 @@ require(['jquery',
           else {
             $('.mybooking_login_form_element').hide();
             // Empty password forgotten container
-            if ( $('.mybooking_password_forgotten_container').length > 0) {            
+            if ($('.mybooking_password_forgotten_container').length > 0) {            
               $('.mybooking_password_forgotten_container').empty();
             }
             $('#form-reservation').show();
@@ -959,10 +959,9 @@ require(['jquery',
      */ 
     setupSignupForm: function() {
 
-      var self = this;
       if (document.getElementById('script_create_account')) {
         // Signup form
-        var htmlSignup = tmpl('script_create_account');
+        const htmlSignup = tmpl('script_create_account');
         $('#payment_detail').before(htmlSignup);
         // Setup create account components
         $('input[name=create_customer_account]').on('change', function(){
@@ -997,21 +996,21 @@ require(['jquery',
      */
     setupReservationForm: function() {
 
-      var connectedUser = false;
-      if ( this.login && this.login.model.connectedUser ) {
-        connectedUser = true;
+      let connectedUser = false;
+      if (this.login && this.login.model.connectedUser) {
+        connectedUser = true; // TODO remove this?
       }
 
       // The reservation form fields are defined in a micro-template
-      var locale = model.requestLanguage;
-      var localeReservationFormScript = 'script_renting_complete_form_tmpl_'+locale;
+      const locale = model.requestLanguage;
+      const localeReservationFormScript = 'script_renting_complete_form_tmpl_'+locale;
       if (locale != null && document.getElementById(localeReservationFormScript)) {
-        var reservationForm = tmpl(localeReservationFormScript)({configuration: model.configuration,
+        const reservationForm = tmpl(localeReservationFormScript)({configuration: model.configuration,
                                                                  shopping_cart: model.shopping_cart});
         $('form[name=reservation_form]').html(reservationForm);           
       }
       else if (document.getElementById('script_renting_complete_form_tmpl')) {
-        var reservationForm = tmpl('script_renting_complete_form_tmpl')({configuration: model.configuration,
+        const reservationForm = tmpl('script_renting_complete_form_tmpl')({configuration: model.configuration,
                                                                          shopping_cart: model.shopping_cart});
         $('form[name=reservation_form]').html(reservationForm);                                                                    
       }
@@ -1030,21 +1029,19 @@ require(['jquery',
       // Configure address country
 
       // Load countries
-      var countries = i18next.t('common.countries', {returnObjects: true });
+      const countries = i18next.t('common.countries', {returnObjects: true});
+      let countriesArray = [];
       if (countries instanceof Object) {
-        var countryCodes = Object.keys(countries);
-        var countriesArray = countryCodes.map(function(value){ 
+        const countryCodes = Object.keys(countries);
+        countriesArray = countryCodes.map(function(value){ 
                                 return {id: value, text: countries[value], description: countries[value]};
                              });
-      } 
-      else {
-        var countriesArray = [];
       }
 
-      var values = ['','','','','','','','','']; 
+      const values = ['','','','','','','','','']; 
       if (commonServices.jsUseSelect2) {
         // Setup country selector
-        var selectors = ['select[name=country]',
+        const selectors = ['select[name=country]',
                          'select[name=customer_origin_country]',
                          'select[name=driver_address\\[country\\]]',
                          'select[name=driver_origin_country]',
@@ -1054,8 +1051,8 @@ require(['jquery',
                          'select[name=additional_driver_2_origin_country]',
                          'select[name=additional_driver_2_driving_license_country]'];
         console.log(selectors);
-        var $countrySelector = null;
-        for (var idx=0; idx<selectors.length; idx++) {
+        let $countrySelector = null;
+        for (let idx=0; idx<selectors.length; idx++) {
           if ($(selectors[idx]).length > 0) { 
             $countrySelector = $(selectors[idx]);    
             if ($countrySelector.length > 0 && $countrySelector.prop('tagName') === 'SELECT' && typeof values[idx] !== 'undefined') {
@@ -1065,8 +1062,8 @@ require(['jquery',
                 data: countriesArray
               });
               // Assign value
-              var value = (values[idx] !== null && values[idx] !== '' ? values[idx] : '');
-              $countrySelector.val(values[idx]);
+              const value = (values[idx] !== null && values[idx] !== '' ? values[idx] : '');
+              $countrySelector.val(value);
               $countrySelector.trigger('change');
             }
           }
@@ -1074,7 +1071,7 @@ require(['jquery',
       }
       else {
         // Setup country selector
-        var selectors = ['country',
+        const selectors = ['country',
                          'customer_origin_country', 
                          'driver_address_country',
                          'driver_origin_country',
@@ -1084,26 +1081,26 @@ require(['jquery',
                          'additional_driver_2_origin_country',
                          'additional_driver_2_driving_license_country'
                         ];
-        for (var idx=0; idx<selectors.length; idx++) { 
-          var countryElement = document.getElementById(selectors[idx]);
+        for (let idx=0; idx<selectors.length; idx++) { 
+          const countryElement = document.getElementById(selectors[idx]);
           if (countryElement && countryElement.tagName === 'SELECT') {
-            var countriesDataSource = new MemoryDataSource(countriesArray);
-            var countryModel = (values[idx] == null ? '' : values[idx])
-            var selectorModel = new SelectSelector(selectors[idx],
+            const countriesDataSource = new MemoryDataSource(countriesArray);
+            const countryModel = (values[idx] == null ? '' : values[idx]);
+            new SelectSelector(selectors[idx],
                 countriesDataSource, countryModel, true, i18next.t('complete.reservationForm.select_country'));
           }
         }
       }
 
       // Configure Telephone with prefix
-      //var countryCode = commonUI.intlTelInputCountryCode();
-      var countryCode = model.configuration.countryCode;
+      //const countryCode = commonUI.intlTelInputCountryCode();
+      let countryCode = model.configuration.countryCode;
       if (typeof countryCode === 'undefined' || countryCode == null) {
         countryCode = commonUI.intlTelInputCountryCode(); 
       }
 
       if ($('#customer_phone').length) {
-        $("#customer_phone").intlTelInput({
+        $('#customer_phone').intlTelInput({
           initialCountry: countryCode,
           separateDialCode: true,        
           utilsScript: commonServices.phoneUtilsPath,
@@ -1111,8 +1108,8 @@ require(['jquery',
         });
       }
 
-      if ($("#customer_mobile_phone").length) {
-        $("#customer_mobile_phone").intlTelInput({
+      if ($('#customer_mobile_phone').length) {
+        $('#customer_mobile_phone').intlTelInput({
           initialCountry: countryCode,
           separateDialCode: true,
           utilsScript: commonServices.phoneUtilsPath,
@@ -1211,7 +1208,7 @@ require(['jquery',
                     return false;
                 },
 
-                invalidHandler : function (form, validator) {
+                invalidHandler : function(form, validator) {
                     console.log('COMPLETE - invalidHandler');
                     // Enable submit again
                     $('form[name=reservation_form] button[type=submit]').removeAttr('disabled');
@@ -1272,52 +1269,52 @@ require(['jquery',
                         required: '#country[required]:visible'
                     },
                     'driver_document_id_date_day': {
-                      required: "#driver_document_id_date_day[required]:visible"
+                      required: '#driver_document_id_date_day[required]:visible'
                     },
                     'driver_document_id_date_month': {
-                      required: "#driver_document_id_date_month[required]:visible"
+                      required: '#driver_document_id_date_month[required]:visible'
                     },
                     'driver_document_id_date_year': {
-                      required: "#driver_document_id_date_year[required]:visible"
+                      required: '#driver_document_id_date_year[required]:visible'
                     },
                     'driver_document_id_date': {
-                      required: "#driver_document_id_date[required]:visible"
+                      required: '#driver_document_id_date[required]:visible'
                     },
                     'driver_document_id_expiration_date_day': {
-                      required: "#driver_document_id_expiration_date_day[required]:visible"
+                      required: '#driver_document_id_expiration_date_day[required]:visible'
                     },
                     'driver_document_id_expiration_date_month': {
-                      required: "#driver_document_id_expiration_date_month[required]:visible"
+                      required: '#driver_document_id_expiration_date_month[required]:visible'
                     },
                     'driver_document_id_expiration_date_year': {
-                      required: "#driver_document_id_expiration_date_year[required]:visible"
+                      required: '#driver_document_id_expiration_date_year[required]:visible'
                     },
                     'driver_document_id_expiration_date': {
-                      required: "#driver_document_id_expiration_date[required]:visible"
+                      required: '#driver_document_id_expiration_date[required]:visible'
                     },
                     'driver_date_of_birth_day': {
-                      required: "#driver_date_of_birth_day[required]:visible"
+                      required: '#driver_date_of_birth_day[required]:visible'
                     },
                     'driver_date_of_birth_month': {
-                      required: "#driver_date_of_birth_month[required]:visible"
+                      required: '#driver_date_of_birth_month[required]:visible'
                     },
                     'driver_date_of_birth_year': {
-                      required: "#driver_date_of_birth_year[required]:visible"
+                      required: '#driver_date_of_birth_year[required]:visible'
                     },
                     'driver_date_of_birth': {
-                        required: "#driver_date_of_birth[required]:visible"
+                        required: '#driver_date_of_birth[required]:visible'
                     },
                     'driver_driving_license_date_day': {
-                      required: "#driver_driving_license_date_day[required]:visible"                       
+                      required: '#driver_driving_license_date_day[required]:visible'                       
                     },
                     'driver_driving_license_date_month': {
-                      required: "#driver_driving_license_date_month[required]:visible"                         
+                      required: '#driver_driving_license_date_month[required]:visible'                         
                     },
                     'driver_driving_license_date_year': {
-                      required: "#driver_driving_license_date_year[required]:visible"                     
+                      required: '#driver_driving_license_date_year[required]:visible'                     
                     },
                     'driver_driving_license_date': {
-                      required: "#driver_driving_license_date[required]:visible"                        
+                      required: '#driver_driving_license_date[required]:visible'                        
                     },
                     'additional_driver_1_driving_license_date_day': {
                       //required: "#additional_driver_1_driving_license_date_day:visible"
@@ -1563,7 +1560,7 @@ require(['jquery',
                     }
                 },
 
-                errorPlacement: function (error, element) {
+                errorPlacement: function(error, element) {
                     if (element.attr('type') == 'radio') {
                       if (element.parent() && element.parent().parent()) {
                         error.insertAfter(element.parent().parent());
@@ -1624,7 +1621,7 @@ require(['jquery',
      */
     setupPromotionCode: function() {
 
-      if ( $('#apply_promotion_code_btn').length > 0) {
+      if ($('#apply_promotion_code_btn').length > 0) {
         $('#apply_promotion_code_btn').off('click');
         $('#apply_promotion_code_btn').on('click', function() {
            controller.applyPromotionCodeBtnClick($('#promotion_code').val());
@@ -1668,8 +1665,8 @@ require(['jquery',
       $('.js-mb-delivery-slot').show();
 
       // Prepare hours available End Point call
-      var url = commonServices.URL_PREFIX + '/api/booking/frontend/delivery-slots/hours-available';
-      var urlParams = []
+      let url = commonServices.URL_PREFIX + '/api/booking/frontend/delivery-slots/hours-available';
+      const urlParams = [];
       if (commonServices.apiKey && commonServices.apiKey != '') {
         urlParams.push('api_key='+commonServices.apiKey);
       }  
@@ -1683,7 +1680,7 @@ require(['jquery',
           urlParams.push('minutes_duration='+model.shopping_cart.total_minutes);
         }
         if (model.shopping_cart.items && model.shopping_cart.items.length === 1) {
-          var product = model.shopping_cart.items[0].item_id;
+          const product = model.shopping_cart.items[0].item_id;
           urlParams.push('product='+product);
         }
         else {
@@ -1702,19 +1699,19 @@ require(['jquery',
         url += urlParams.join('&');
       }
       // Setup select2 component
-      $('form[name=reservation_form] select[name=slot_time_from]').select2({ width: '100%',
+      $('form[name=reservation_form] select[name=slot_time_from]').select2({width: '100%',
               ajax: {
                 placeholder: i18next.t('common.selectOption'),
                 allowClear: true,
                 url: url,
                 theme: 'bootstrap4',
                 processResults: function(data) {
-                  var transformedData = [];
-                  for (var idx=0; idx<data.length; idx++) {
-                    var element = {
+                  const transformedData = [];
+                  for (let idx=0; idx<data.length; idx++) {
+                    const element = {
                       'text': data[idx].text,
                       'id': data[idx].value
-                    }
+                    };
                     transformedData.push(element);
                   }
                   return {results: transformedData};
@@ -1731,7 +1728,7 @@ require(['jquery',
      * Update customer classifier
      */ 
     updateCustomerClassifiers: function() {
-      var $customerClassifierSelector = null;
+      let $customerClassifierSelector = null;
       if (commonServices.jsUseSelect2) {
         $customerClassifierSelector = $('#customer_classifier_id');
         if ($customerClassifierSelector.length > 0) {
@@ -1749,9 +1746,9 @@ require(['jquery',
       else {
         // Setup customer classifier
         if (document.getElementById('customer_classifier_id')) {
-          var customerClassifierDataSource = new MemoryDataSource(model.customerClassifiers);
-          var customerClassifierModel = null;
-          var selectorModel = new SelectSelector('customer_classifier_id',
+          const customerClassifierDataSource = new MemoryDataSource(model.customerClassifiers);
+          const customerClassifierModel = null;
+          new SelectSelector('customer_classifier_id',
                                                  customerClassifierDataSource, 
                                                  customerClassifierModel, 
                                                  true, 
@@ -1768,7 +1765,7 @@ require(['jquery',
 
       this.prepareReservationForm();
 
-    	// Show the product information   
+      // Show the product information   
       this.updateProducts();
       // Update the summary
       this.updateShoppingCartSummary();
@@ -1841,7 +1838,7 @@ require(['jquery',
     updateShoppingCartSummary: function() { // Updates the shopping cart summary (total)
       // Summary sticky
       if (document.getElementById('script_reservation_summary_sticky')) {
-        var reservationDetailSticky = tmpl('script_reservation_summary_sticky')({
+        const reservationDetailSticky = tmpl('script_reservation_summary_sticky')({
           shopping_cart: model.shopping_cart,
           configuration: model.configuration
         });
@@ -1850,7 +1847,7 @@ require(['jquery',
 
       // Summary
       if (document.getElementById('script_reservation_summary')) {
-        var reservationDetail = tmpl('script_reservation_summary')({
+        const reservationDetail = tmpl('script_reservation_summary')({
           shopping_cart: model.shopping_cart, // Retrocompatibility in override complete views
           booking: model.shopping_cart,
           configuration: model.configuration
@@ -1858,8 +1855,8 @@ require(['jquery',
         $('#reservation_detail').html(reservationDetail);
       }
 
-      if ( model.configuration.multipleProductsSelection && document.getElementById('script_mybooking_summary_product_detail_table')) {
-        var reservationTableDetail = tmpl('script_mybooking_summary_product_detail_table')({
+      if (model.configuration.multipleProductsSelection && document.getElementById('script_mybooking_summary_product_detail_table')) {
+        const reservationTableDetail = tmpl('script_mybooking_summary_product_detail_table')({
           bookings: model.shopping_cart.items,
           booking: model.shopping_cart,
           configuration: model.configuration
@@ -1887,9 +1884,9 @@ require(['jquery',
               }
               else { // Show the reservation form
                 // Compatibility with old version of the theme
-                var modifyReservationModalSelector = '#choose_productModal';
+                let modifyReservationModalSelector = '#choose_productModal';
                 if ($('#modify_reservation_modal').length || $('#modify_reservation_modal_MBM').length) {
-                  modifyReservationModalSelector = '#modify_reservation_modal'
+                  modifyReservationModalSelector = '#modify_reservation_modal';
                 }
                 // Show the modal to change dates
                 commonUI.showModal(modifyReservationModalSelector,
@@ -1914,7 +1911,7 @@ require(['jquery',
 
       if (document.getElementById('script_product_detail')) {  
         if (!$('#script_product_detail').is(':empty')) {
-          var productInfo = tmpl('script_product_detail')(
+          const productInfo = tmpl('script_product_detail')(
                         {configuration: model.configuration, 
                          shopping_cart: model.shopping_cart});
           $('#selected_product').html(productInfo);
@@ -1948,7 +1945,7 @@ require(['jquery',
 
         if (document.getElementById('script_detailed_extra')) {
           // Show the extras
-          var result = tmpl('script_detailed_extra')({extras:model.extras,
+          const result = tmpl('script_detailed_extra')({extras:model.extras,
                                                       coverages: model.coverages,
                                                       configuration: model.configuration,   
                                                       extrasInShoppingCart: model.getShoppingCartExtrasQuantities(),
@@ -1960,7 +1957,7 @@ require(['jquery',
 
           // Extra check button [1 unit]
           $('.extra-check-button').bind('click', function() {
-              var extraCode = $(this).attr('data-extra-code');
+              const extraCode = $(this).attr('data-extra-code');
               if ($(this).hasClass('extra-selected')) {
                 controller.extraUnchecked(extraCode);
               }
@@ -1971,8 +1968,8 @@ require(['jquery',
 
           // Extra checkbox [1 unit]
           $('.extra-checkbox').bind('change', function() {
-              var extraCode = $(this).attr('data-value');
-              var checked = $(this).is(':checked');
+              const extraCode = $(this).attr('data-value');
+              const checked = $(this).is(':checked');
               if (checked) {
                   controller.extraChecked(extraCode);
               }
@@ -1983,15 +1980,15 @@ require(['jquery',
 
           // Extra select [N units]
           $('.extra-select').bind('change', function() {
-              var extraCode = $(this).attr('data-extra-code');
-              var extraQuantity = $(this).val();
+              const extraCode = $(this).attr('data-extra-code');
+              const extraQuantity = $(this).val();
               controller.extraQuantityChanged(extraCode, extraQuantity);
           });
 
           // Extra minus button extra clicked [N units]
           $('.btn-minus-extra').bind('click', function() {
-              var extraCode = $(this).attr('data-value');
-              var extraQuantity = parseInt($('#extra-'+extraCode+'-quantity').val() || '0');
+              const extraCode = $(this).attr('data-value');
+              let extraQuantity = parseInt($('#extra-'+extraCode+'-quantity').val() || '0');
               if (extraQuantity > 0) {
                 extraQuantity--;     
                 controller.btnMinusExtraClicked(extraCode, extraQuantity);
@@ -2000,9 +1997,9 @@ require(['jquery',
 
           // Extra plus button extra clicked [N units]
           $('.btn-plus-extra').bind('click', function() {
-              var extraCode = $(this).attr('data-value');
-              var extraQuantity = parseInt($('#extra-'+extraCode+'-quantity').val() || '0');
-              var maxQuantity = $(this).attr('data-max-quantity');
+              const extraCode = $(this).attr('data-value');
+              let extraQuantity = parseInt($('#extra-'+extraCode+'-quantity').val() || '0');
+              const maxQuantity = $(this).attr('data-max-quantity');
               console.log(extraQuantity);
               console.log(maxQuantity);
               if (extraQuantity < maxQuantity) {
@@ -2029,11 +2026,11 @@ require(['jquery',
      * Updates the payment
      */
     updatePayment: function() {
-      var paymentInfo = tmpl('script_payment_detail')(
+      const paymentInfo = tmpl('script_payment_detail')(
                     {sales_process: model.sales_process,
                      shopping_cart: model.shopping_cart,
                      configuration: model.configuration,
-                     i18next: i18next });
+                     i18next: i18next});
       $('#payment_detail').html(paymentInfo);
 
       // Choose complete action between different options:
@@ -2058,7 +2055,7 @@ require(['jquery',
 
     showExtraDetail: function() {
       if (document.getElementById('script_extra_modal')) {
-        var result = tmpl('script_extra_modal')({
+        const result = tmpl('script_extra_modal')({
                         extra: model.extraDetail
                       });
         // Compatibility with bootstrap modal replacement (from 1.0.0)
@@ -2096,7 +2093,7 @@ require(['jquery',
      */
     payment: function(url, bookingId, paymentData) {
 
-      var summaryUrl = commonServices.summaryUrl;
+      let summaryUrl = commonServices.summaryUrl;
 
       // Append the id querystring
       if (summaryUrl.indexOf('?') > 0) {
@@ -2135,7 +2132,7 @@ require(['jquery',
      */
     gotoSummary: function(bookingId) {
 
-      var theUrl = commonServices.summaryUrl;
+      let theUrl = commonServices.summaryUrl;
 
       if (theUrl && theUrl !== '') {
         // Append the id querystring
@@ -2147,7 +2144,7 @@ require(['jquery',
         }
         theUrl += 'id=';
         theUrl += bookingId;
-        var parameters = {id: bookingId};
+        const parameters = {id: bookingId};
         // Append the company (single site for multiple companies)
         if (commonServices.company && commonServices.company !== '') {
           parameters.company = commonServices.company;
@@ -2179,22 +2176,22 @@ require(['jquery',
   };
 
   // Check if it is a booking recorded in order to load summary page
-  var shoppingCartId = model.getShoppingCartFreeAccessId();
+  const shoppingCartId = model.getShoppingCartFreeAccessId();
   if (shoppingCartId == null) {
     // Not shoppingcart in session => Try if it was a booking
-    var bookingId = model.getBookingFreeAccessId();
+    const bookingId = model.getBookingFreeAccessId();
     if (bookingId != null) {
       window.location.href = commonServices.summaryUrl + '?id=' + bookingId;
     }
   }
 
   // Prepare the mediator
-  var rentComplete = {
+  const rentComplete = {
     model: model,
     controller: controller,
     view: view
-  }
-  rentEngineMediator.setComplete( rentComplete );
+  };
+  rentEngineMediator.setComplete(rentComplete);
 
   // The loader is show on start and hidden after the result of
   // the search has been rendered (in model.loadShoppingCart)
