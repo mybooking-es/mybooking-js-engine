@@ -6,6 +6,7 @@ require(['jquery',
          './selector/modify_reservation_selector', './selector-wizard/selector_wizard', 'select2', 
          'YSDMemoryDataSource','YSDSelectSelector', './mediator/rentEngineMediator', '../profile/Login',
          '../profile/PasswordForgottenComponent', 'moment',
+         './customer-driver-data/CustomerDriverDataComponent',
          'jquery.i18next', 'jquery.formparams', 'jquery.form',
           'jquery.validate', 'jquery.ui', 'jquery.ui.datepicker-es',
          'jquery.ui.datepicker-en', 'jquery.ui.datepicker-ca', 'jquery.ui.datepicker-it',
@@ -13,7 +14,8 @@ require(['jquery',
        function($, 
                 commonServices, commonSettings, commonTranslations, commonLoader, commonUI,
                 i18next, tmpl, DateControl, selector, selectorWizard, select2,
-                MemoryDataSource, SelectSelector, rentEngineMediator, Login, PasswordForgottenComponent, moment) {
+                MemoryDataSource, SelectSelector, rentEngineMediator, Login, PasswordForgottenComponent, moment,
+                CustomerDriverDataComponent) {
 
   const model = { // THE MODEL
     reservationFormSubmitted: false,
@@ -507,8 +509,6 @@ require(['jquery',
      */  
     sendBookingRequest: function() { 
 
-      let paymentAmountOverride = null;
-
       // Prepare the request data
       const reservation = $('form[name=reservation_form]').formParams(false);
       if (typeof reservation.complete_action != 'undefined') {
@@ -518,6 +518,7 @@ require(['jquery',
       }
       // Allows to setup the payment amount using an input type hidden with 
       // name payment_amount_override (deposit or total)
+      let paymentAmountOverride = null;
       if (typeof reservation.payment_amount_override !== 'undefined') {
         if (reservation.payment_amount_override === 'deposit') {
           paymentAmountOverride = 'deposit';
@@ -546,6 +547,20 @@ require(['jquery',
       }
       // Control the web hostname to manage the reservation origin
       reservation.web_hostname = window.location.hostname;
+
+      // Clean empty values from the reservation object because the API does not accept them for shopping cart
+      for (const key in reservation) {
+        const value = reservation[key];
+      
+        if (
+          value === null ||
+          value === undefined ||
+          value === '' ||
+          (typeof value === 'object' && !Array.isArray(value) && Object.keys(value).length === 0)
+        ) {
+          delete reservation[key];
+        }
+      }
       
       // Convert to JSON
       const reservationJSON = JSON.stringify(reservation);
@@ -980,39 +995,9 @@ require(['jquery',
      * Prepare reservation form
      */ 
     prepareReservationForm: function() {
-        // Setup UI
-        this.setupReservationForm();
-        $('.complete-section-title.customer_component').show();
-        $('#form-reservation').show();
-        this.setupReservationFormValidation();
-        // Setup signup form
-        if (model.configuration.engineCustomerAccess) {
-          this.setupSignupForm();
-        }
-    },
-
-    /**
-     * Setup the reservation form
-     */
-    setupReservationForm: function() {
-
       let connectedUser = false;
       if (this.login && this.login.model.connectedUser) {
         connectedUser = true; // TODO remove this?
-      }
-
-      // The reservation form fields are defined in a micro-template
-      const locale = model.requestLanguage;
-      const localeReservationFormScript = 'script_renting_complete_form_tmpl_'+locale;
-      if (locale != null && document.getElementById(localeReservationFormScript)) {
-        const reservationForm = tmpl(localeReservationFormScript)({configuration: model.configuration,
-                                                                 shopping_cart: model.shopping_cart});
-        $('form[name=reservation_form]').html(reservationForm);           
-      }
-      else if (document.getElementById('script_renting_complete_form_tmpl')) {
-        const reservationForm = tmpl('script_renting_complete_form_tmpl')({configuration: model.configuration,
-                                                                         shopping_cart: model.shopping_cart});
-        $('form[name=reservation_form]').html(reservationForm);                                                                    
       }
 
       // Load customer classifier
@@ -1026,594 +1011,28 @@ require(['jquery',
         controller.customerTypeChanged($(this).val());
       });
 
-      // Configure address country
-
-      // Load countries
-      const countries = i18next.t('common.countries', {returnObjects: true});
-      let countriesArray = [];
-      if (countries instanceof Object) {
-        const countryCodes = Object.keys(countries);
-        countriesArray = countryCodes.map(function(value){ 
-                                return {id: value, text: countries[value], description: countries[value]};
-                             });
+      // Initialize the customer/driver data component
+      // NOTE: Ensure a container element 
+      // exists within the form[name=reservation_form] in the corresponding HTML template.
+      // The CustomerDriverDataComponent will inject its form fields there.
+      // We assume the component handles finding its specific target container internally for now.
+      if (CustomerDriverDataComponent) {
+        // Pass shopping cart data if available and needed by init
+        CustomerDriverDataComponent.init({
+          configuration: model.configuration,
+          shoppingCartData: model.shopping_cart,
+          updatePayment: this.updatePayment,
+          sendReservationButtonClick: controller.sendReservationButtonClick,
+        }); // Pass updatePayment and sendReservationButtonClick like callback functions
+      } else {
+        // Update the payment
+        this.updatePayment();
       }
 
-      const values = ['','','','','','','','','']; 
-      if (commonServices.jsUseSelect2) {
-        // Setup country selector
-        const selectors = ['select[name=country]',
-                         'select[name=customer_origin_country]',
-                         'select[name=driver_address\\[country\\]]',
-                         'select[name=driver_origin_country]',
-                         'select[name=driver_driving_license_country]',
-                         'select[name=additional_driver_1_origin_country]',
-                         'select[name=additional_driver_1_driving_license_country]',
-                         'select[name=additional_driver_2_origin_country]',
-                         'select[name=additional_driver_2_driving_license_country]'];
-        console.log(selectors);
-        let $countrySelector = null;
-        for (let idx=0; idx<selectors.length; idx++) {
-          if ($(selectors[idx]).length > 0) { 
-            $countrySelector = $(selectors[idx]);    
-            if ($countrySelector.length > 0 && $countrySelector.prop('tagName') === 'SELECT' && typeof values[idx] !== 'undefined') {
-              $countrySelector.select2({
-                width: '100%',
-                theme: 'bootstrap4',                  
-                data: countriesArray
-              });
-              // Assign value
-              const value = (values[idx] !== null && values[idx] !== '' ? values[idx] : '');
-              $countrySelector.val(value);
-              $countrySelector.trigger('change');
-            }
-          }
-        }
+      // Setup signup form
+      if (model.configuration.engineCustomerAccess) {
+        this.setupSignupForm();
       }
-      else {
-        // Setup country selector
-        const selectors = ['country',
-                         'customer_origin_country', 
-                         'driver_address_country',
-                         'driver_origin_country',
-                         'driver_driving_license_country',
-                         'additional_driver_1_origin_country',
-                         'additional_driver_1_driving_license_country',
-                         'additional_driver_2_origin_country',
-                         'additional_driver_2_driving_license_country'
-                        ];
-        for (let idx=0; idx<selectors.length; idx++) { 
-          const countryElement = document.getElementById(selectors[idx]);
-          if (countryElement && countryElement.tagName === 'SELECT') {
-            const countriesDataSource = new MemoryDataSource(countriesArray);
-            const countryModel = (values[idx] == null ? '' : values[idx]);
-            new SelectSelector(selectors[idx],
-                countriesDataSource, countryModel, true, i18next.t('complete.reservationForm.select_country'));
-          }
-        }
-      }
-
-      // Configure Telephone with prefix
-      //const countryCode = commonUI.intlTelInputCountryCode();
-      let countryCode = model.configuration.countryCode;
-      if (typeof countryCode === 'undefined' || countryCode == null) {
-        countryCode = commonUI.intlTelInputCountryCode(); 
-      }
-
-      if ($('#customer_phone').length) {
-        $('#customer_phone').intlTelInput({
-          initialCountry: countryCode,
-          separateDialCode: true,        
-          utilsScript: commonServices.phoneUtilsPath,
-          preferredCountries: [countryCode]
-        });
-      }
-
-      if ($('#customer_mobile_phone').length) {
-        $('#customer_mobile_phone').intlTelInput({
-          initialCountry: countryCode,
-          separateDialCode: true,
-          utilsScript: commonServices.phoneUtilsPath,
-          preferredCountries: [countryCode]
-        });
-      }
-
-      // Configure driver document id date
-      if (document.getElementById('driver_document_id_date_day')) {
-        new DateControl(document.getElementById('driver_document_id_date_day'),
-                        document.getElementById('driver_document_id_date_month'),
-                        document.getElementById('driver_document_id_date_year'),
-                        document.getElementById('driver_document_id_date'),
-                        commonSettings.language(model.requestLanguage));
-      }
-      if (document.getElementById('driver_document_id_expiration_date_day')) {
-        new DateControl(document.getElementById('driver_document_id_expiration_date_day'),
-                        document.getElementById('driver_document_id_expiration_date_month'),
-                        document.getElementById('driver_document_id_expiration_date_year'),
-                        document.getElementById('driver_document_id_expiration_date'),
-                        commonSettings.language(model.requestLanguage),
-                        undefined, 'future');
-      }
-      // Configure driver date of birth and driver license date
-      if (document.getElementById('driver_date_of_birth_day')) {
-        new DateControl(document.getElementById('driver_date_of_birth_day'),
-                        document.getElementById('driver_date_of_birth_month'),
-                        document.getElementById('driver_date_of_birth_year'),
-                        document.getElementById('driver_date_of_birth'),
-                        commonSettings.language(model.requestLanguage));
-      }
-      // Configure driver driving license date 
-      if (document.getElementById('driver_driving_license_date_day')) {
-        new DateControl(document.getElementById('driver_driving_license_date_day'),
-                        document.getElementById('driver_driving_license_date_month'),
-                        document.getElementById('driver_driving_license_date_year'),
-                        document.getElementById('driver_driving_license_date'),
-                        commonSettings.language(model.requestLanguage));
-      }
-      // Configure driver driving license expiration date 
-      if (document.getElementById('driver_driving_license_expiration_date_day')) {
-        new DateControl(document.getElementById('driver_driving_license_expiration_date_day'),
-                        document.getElementById('driver_driving_license_expiration_date_month'),
-                        document.getElementById('driver_driving_license_expiration_date_year'),
-                        document.getElementById('driver_driving_license_expiration_date'),
-                        commonSettings.language(model.requestLanguage),
-                        undefined, 'future');
-      }
-
-      // Configure additional driver driving license date 
-      if (document.getElementById('additional_driver_1_driving_license_date_day')) {
-        new DateControl(document.getElementById('additional_driver_1_driving_license_date_day'),
-                        document.getElementById('additional_driver_1_driving_license_date_month'),
-                        document.getElementById('additional_driver_1_driving_license_date_year'),
-                        document.getElementById('additional_driver_1_driving_license_date'),
-                        commonSettings.language(model.requestLanguage));
-      }
-      if (document.getElementById('additional_driver_2_driving_license_date_day')) {
-        new DateControl(document.getElementById('additional_driver_2_driving_license_date_day'),
-                        document.getElementById('additional_driver_2_driving_license_date_month'),
-                        document.getElementById('additional_driver_2_driving_license_date_year'),
-                        document.getElementById('additional_driver_2_driving_license_date'),
-                        commonSettings.language(model.requestLanguage));
-      }
-
-      // Reservation Form is complete
-      rentEngineMediator.onCompleteSetupReservationForm();
-
-    },
-
-    /**
-     * Setup the reservation form validation
-     */ 
-    setupReservationFormValidation: function() {
-
-        commonSettings.appendValidators();
-        jQuery.extend(jQuery.validator.messages, {
-            required: i18next.t('complete.reservationForm.validations.fieldRequired')
-        });
-        
-        $('form[name=reservation_form]').validate(
-            {
-                ignore: '', // To be able to validate driver date of birth
-                
-                submitHandler: function(form) {
-                    console.log('COMPLETE - submit');
-                    if (!model.reservationFormSubmitted) {
-                      model.reservationFormSubmitted = true;
-                      // Disable submit to avoid double click
-                      $('form[name=reservation_form] button[type=submit]').attr('disabled', 'disabled');
-                      // Hide errors
-                      $('#reservation_error').hide();
-                      $('#reservation_error').html('');
-                      controller.sendReservationButtonClick();
-                    }
-                    return false;
-                },
-
-                invalidHandler : function(form, validator) {
-                    console.log('COMPLETE - invalidHandler');
-                    // Enable submit again
-                    $('form[name=reservation_form] button[type=submit]').removeAttr('disabled');
-                    model.reservationFormSubmitted = false; 
-                    // Show errors
-                    $('#reservation_error').html(i18next.t('complete.reservationForm.errors'));
-                    $('#reservation_error').show();
-                },
-
-                rules : {
-                    'customer_classifier_id': {
-                      required: '#customer_classifier_id:visible'
-                    },
-                    'customer_type': {
-                      required: '#customer_type:visible'
-                    },
-                    'customer_company_name': {
-                      required: '#customer_company_name:visible',
-                    },
-                    'customer_company_contact_name': {
-                      required: '#customer_company_contact_name:visible',
-                    },
-                    'customer_name': {
-                      required: '#customer_name:visible',
-                    },
-                    'customer_surname' : {
-                      required: '#customer_surname:visible',
-                    },
-                    'customer_email' : {
-                        required: '#customer_email:visible',
-                        email: '#customer_email:visible'
-                    },
-                    'confirm_customer_email': {
-                        required: '#confirm_customer_email:visible',
-                        email: '#confirm_customer_email:visible',
-                        equalTo : '#customer_email'
-                    },
-                    'customer_phone': {
-                        required: '#customer_phone:visible',
-                        minlength: 9
-                    },
-                    'customer_document_id': {
-                      required: '#customer_document_id[required]:visible'
-                    },
-                    'street': {
-                        required: '#street[required]:visible'
-                    },
-                    'city': {
-                        required: '#city[required]:visible'
-                    },    
-                    'state': {
-                        required: '#state[required]:visible'
-                    }, 
-                    'zip': {
-                        required: '#zip[required]:visible'
-                    }, 
-                    'country': {
-                        required: '#country[required]:visible'
-                    },
-                    'driver_document_id_date_day': {
-                      required: '#driver_document_id_date_day[required]:visible'
-                    },
-                    'driver_document_id_date_month': {
-                      required: '#driver_document_id_date_month[required]:visible'
-                    },
-                    'driver_document_id_date_year': {
-                      required: '#driver_document_id_date_year[required]:visible'
-                    },
-                    'driver_document_id_date': {
-                      required: '#driver_document_id_date[required]:visible'
-                    },
-                    'driver_document_id_expiration_date_day': {
-                      required: '#driver_document_id_expiration_date_day[required]:visible'
-                    },
-                    'driver_document_id_expiration_date_month': {
-                      required: '#driver_document_id_expiration_date_month[required]:visible'
-                    },
-                    'driver_document_id_expiration_date_year': {
-                      required: '#driver_document_id_expiration_date_year[required]:visible'
-                    },
-                    'driver_document_id_expiration_date': {
-                      required: '#driver_document_id_expiration_date[required]:visible'
-                    },
-                    'driver_date_of_birth_day': {
-                      required: '#driver_date_of_birth_day[required]:visible'
-                    },
-                    'driver_date_of_birth_month': {
-                      required: '#driver_date_of_birth_month[required]:visible'
-                    },
-                    'driver_date_of_birth_year': {
-                      required: '#driver_date_of_birth_year[required]:visible'
-                    },
-                    'driver_date_of_birth': {
-                        required: '#driver_date_of_birth[required]:visible'
-                    },
-                    'driver_driving_license_date_day': {
-                      required: '#driver_driving_license_date_day[required]:visible'                       
-                    },
-                    'driver_driving_license_date_month': {
-                      required: '#driver_driving_license_date_month[required]:visible'                         
-                    },
-                    'driver_driving_license_date_year': {
-                      required: '#driver_driving_license_date_year[required]:visible'                     
-                    },
-                    'driver_driving_license_date': {
-                      required: '#driver_driving_license_date[required]:visible'                        
-                    },
-                    'additional_driver_1_driving_license_date_day': {
-                      //required: "#additional_driver_1_driving_license_date_day:visible"
-                      required: function() {
-                        if ($('#additional_driver_1_driving_license_date_day').length) {
-                          if ($('#additional_driver_1_driving_license_date_day').attr('required')) {
-                            return true;
-                          }
-                        }
-                        return false;
-                      }  
-                    },
-                    'additional_driver_1_driving_license_date_month': {
-                      //required: "#additional_driver_1_driving_license_date_month:visible"
-                      required: function() {
-                        if ($('#additional_driver_1_driving_license_date_month').length) {
-                          if ($('#additional_driver_1_driving_license_date_month').attr('required')) {
-                            return true;
-                          }
-                        }
-                        return false;
-                      }                       
-                    },
-                    'additional_driver_1_driving_license_date_year': {
-                      //required: "#additional_driver_1_driving_license_date_year:visible"
-                      required: function() {
-                        if ($('#additional_driver_1_driving_license_date_year').length) {
-                          if ($('#additional_driver_1_driving_license_date_year').attr('required')) {
-                            return true;
-                          }
-                        }
-                        return false;
-                      }                        
-                    },
-                    'additional_driver_1_driving_license_date': {
-                        //required: "#additional_driver_1_driving_license_date:visible"
-                        required: function() {
-                          if ($('#additional_driver_1_driving_license_date').length) {
-                            if ($('#additional_driver_1_driving_license_date').attr('required')) {
-                              return true;
-                            }
-                          }
-                          return false;
-                        }                             
-                    },
-                    'additional_driver_2_driving_license_date_day': {
-                      //required: "#additional_driver_2_driving_license_date_day:visible"
-                      required: function() {
-                        if ($('#additional_driver_2_driving_license_date_day').length) {
-                          if ($('#additional_driver_2_driving_license_date_day').attr('required')) {
-                            return true;
-                          }
-                        }
-                        return false;
-                      }  
-                    },
-                    'additional_driver_2_driving_license_date_month': {
-                      //required: "#additional_driver_2_driving_license_date_month:visible"
-                      required: function() {
-                        if ($('#additional_driver_2_driving_license_date_month').length) {
-                          if ($('#additional_driver_2_driving_license_date_month').attr('required')) {
-                            return true;
-                          }
-                        }
-                        return false;
-                      }                       
-                    },
-                    'additional_driver_2_driving_license_date_year': {
-                      //required: "#additional_driver_2_driving_license_date_year:visible"
-                      required: function() {
-                        if ($('#additional_driver_2_driving_license_date_year').length) {
-                          if ($('#additional_driver_2_driving_license_date_year').attr('required')) {
-                            return true;
-                          }
-                        }
-                        return false;
-                      }                        
-                    },
-                    'additional_driver_2_driving_license_date': {
-                        //required: "#additional_driver_2_driving_license_date:visible"
-                        required: function() {
-                          if ($('#additional_driver_2_driving_license_date').length) {
-                            if ($('#additional_driver_2_driving_license_date').attr('required')) {
-                              return true;
-                            }
-                          }
-                          return false;
-                        }                             
-                    },                    
-                    'number_of_adults': {
-                        required: '#number_of_adults:visible'               
-                    },
-                    'conditions_read_request_reservation' :  {
-                        required: '#conditions_read_request_reservation:visible'
-                    },
-                    'conditions_read_payment_on_delivery' :  {
-                        required: '#conditions_read_payment_on_delivery:visible'
-                    },
-                    'conditions_read_pay_now' :  {
-                        required: '#conditions_read_pay_now:visible'
-                    },
-                    'privacy_read_request_reservation' :  {
-                      required: '#privacy_read_request_reservation:visible'
-                    },
-                    'privacy_read_payment_on_delivery' :  {
-                        required: '#privacy_read_payment_on_delivery:visible'
-                    }, 
-                    'privacy_read_pay_now' :  {
-                        required: '#privacy_read_pay_now:visible'
-                    },                                            
-                    'payment_method_select': {
-                        required: 'input[name=payment_method_select]:visible'
-                    },
-                    'account_password': {
-                        required: '#account_password:visible',
-                        pwcheck: '#account_password:visible',
-                        minlength: 8
-                    },
-                    'slot_time_from': {
-                        required: '#slot_time_from:visible'
-                    },
-                    'with_optional_external_driver': {
-                        required: '#with_optional_external_driver:visible'
-                    },
-                    'flight_company': {
-                      required: function(){
-                        return $('#flight_company').attr('required') === 'required' && model.isAirportDataRequired;
-                      }
-                    },
-                    'flight_number': {
-                      required: function() {
-                        return $('#flight_number').attr('required') === 'required' && model.isAirportDataRequired;
-                      }
-                    },
-                    'flight_time': {
-                      required: function() {
-                        return $('#flight_time').attr('required') === 'required' && model.isAirportDataRequired;
-                      }
-                    },
-                    'destination_accommodation': {
-                      required: function() {
-                        return $('#destination_accommodation').attr('required') === 'required' || model.isHotelDataRequired;
-                      }
-                    }
-                },
-
-                messages : {
-                    'customer_classifier_id': {
-                      required: i18next.t('complete.reservationForm.validations.fieldRequired')
-                    },
-                    'customer_type': {
-                      required: i18next.t('complete.reservationForm.validations.fieldRequired')
-                    },
-                    'customer_company_name': {
-                      required: i18next.t('complete.reservationForm.validations.fieldRequired')
-                    },
-                    'customer_company_contact_name': {
-                      required: i18next.t('complete.reservationForm.validations.fieldRequired')
-                    },
-                    'customer_name': {
-                      required: i18next.t('complete.reservationForm.validations.customerNameRequired')
-                    },
-                    'customer_surname' : {
-                      required: i18next.t('complete.reservationForm.validations.customerSurnameRequired')
-                    },
-                    'customer_email' : {
-                        required: i18next.t('complete.reservationForm.validations.customerEmailRequired'),
-                        email: i18next.t('complete.reservationForm.validations.customerEmailInvalidFormat'),
-                    },
-                    'confirm_customer_email': {
-                        'required': i18next.t('complete.reservationForm.validations.customerEmailConfirmationRequired'),
-                        'email': i18next.t('complete.reservationForm.validations.customerEmailInvalidFormat'),
-                        'equalTo': i18next.t('complete.reservationForm.validations.customerEmailConfirmationEqualsEmail')
-                    },
-                    'customer_phone': {
-                        'required': i18next.t('complete.reservationForm.validations.customerPhoneNumberRequired'),
-                        'minlength': i18next.t('complete.reservationForm.validations.customerPhoneNumberMinLength')
-                    },
-                    'customer_document_id': {
-                        'required': i18next.t('complete.reservationForm.validations.fieldRequired')
-                    },
-                    'street': {
-                        'required': i18next.t('complete.reservationForm.validations.fieldRequired')
-                    },
-                    'city': {
-                        'required': i18next.t('complete.reservationForm.validations.fieldRequired')
-                    },    
-                    'state': {
-                        'required': i18next.t('complete.reservationForm.validations.fieldRequired')
-                    }, 
-                    'zip': {
-                        'required': i18next.t('complete.reservationForm.validations.fieldRequired')
-                    }, 
-                    'country': {
-                        'required': i18next.t('complete.reservationForm.validations.fieldRequired')
-                    },
-                    'number_of_adults': {
-                        'required': i18next.t('complete.reservationForm.validations.numberOfAdultsRequired')
-                    },
-                    'conditions_read_request_reservation': {
-                        'required': i18next.t('complete.reservationForm.validations.conditionsReadRequired')
-                    },                       
-                    'conditions_read_payment_on_delivery': {
-                        'required': i18next.t('complete.reservationForm.validations.conditionsReadRequired')
-                    },   
-                    'conditions_read_pay_now': {
-                        'required': i18next.t('complete.reservationForm.validations.conditionsReadRequired')
-                    },
-                    'privacy_read_request_reservation' :  {
-                      'required': i18next.t('complete.reservationForm.validations.privacyPolicyRequired')
-                    },
-                    'privacy_read_payment_on_delivery' :  {
-                        'required': i18next.t('complete.reservationForm.validations.privacyPolicyRequired')
-                    }, 
-                    'privacy_read_pay_now' :  {
-                        'required': i18next.t('complete.reservationForm.validations.privacyPolicyRequired')
-                    },                                      
-                    'payment_method_select': {
-                        'required': i18next.t('complete.reservationForm.validations.selectPaymentMethod')
-                    },
-                    'account_password': {
-                        'required': i18next.t('complete.reservationForm.validations.fieldRequired'),
-                        'pwcheck': i18next.t('complete.reservationForm.validations.passwordCheck'),
-                        'minlength': i18next.t('complete.reservationForm.validations.minLength', {minlength: 8}),
-                    },
-                    'slot_time_from': {
-                        required: i18next.t('complete.reservationForm.validations.fieldRequired')
-                    },
-                    'with_optional_external_driver': {
-                        required: i18next.t('complete.reservationForm.validations.fieldRequired')
-                    },             
-                    'flight_company': {
-                      required: i18next.t('complete.reservationForm.validations.fieldRequired')
-                    },
-                    'flight_number': {
-                      required: i18next.t('complete.reservationForm.validations.fieldRequired')
-                    },
-                    'flight_time': {
-                      required: i18next.t('complete.reservationForm.validations.fieldRequired')
-                    },
-                    'destination_accommodation': {
-                      required: i18next.t('complete.reservationForm.validations.fieldRequired')
-                    }
-                },
-
-                errorPlacement: function(error, element) {
-                    if (element.attr('type') == 'radio') {
-                      if (element.parent() && element.parent().parent()) {
-                        error.insertAfter(element.parent().parent());
-                      }
-                      else {
-                        error.insertAfter(element.parent());
-                      }                    
-                    }
-                    else if (element.attr('name') == 'conditions_read_request_reservation' || 
-                      element.attr('name') == 'conditions_read_payment_on_delivery' || 
-                      element.attr('name') == 'conditions_read_pay_now' ||
-                      element.attr('name') == 'privacy_read_request_reservation'  || 
-                      element.attr('name') == 'privacy_read_payment_on_delivery'  || 
-                      element.attr('name') == 'privacy_read_pay_now')
-                    { 
-                        error.insertAfter(element.parent());
-                        element.parent().css('display', 'block');
-                    }
-                    else if (element.attr('name') == 'payment_method_select') {
-                        error.insertAfter(document.getElementById('payment_method_select_error'));
-                    }
-                    else if (element.attr('name') == 'customer_classifier_id' && 
-                             $('#customer_classifier_id + span.select2-container').length) {
-                        error.insertAfter('#customer_classifier_id + span.select2-container');
-                    }
-                    else if (element.attr('name') == 'slot_time_from' && 
-                             $('#slot_time_from + span.select2-container').length) {
-                        error.insertAfter('#slot_time_from + span.select2-container');
-                    }
-                    else if (element.attr('name') == 'with_optional_external_driver' && 
-                             $('#with_optional_external_driver + span.select2-container').length) {
-                        error.insertAfter('#with_optional_external_driver + span.select2-container');
-                    }
-                    else if (element.attr('name') == 'driver_driving_license_country' && 
-                             $('#driver_driving_license_country + span.select2-container').length) {
-                        error.insertAfter('#driver_driving_license_country + span.select2-container');
-                    }    
-                    else if (element.attr('name') == 'country' && 
-                             $('#country + span.select2-container').length) {
-                        error.insertAfter('#country + span.select2-container');
-                    }
-                    else
-                    {
-                      error.insertAfter(element);
-                    }
-
-                },
-
-                errorClass : 'form-reservation-error'
-
-            }
-        );
-
     },
 
     /**
