@@ -1910,7 +1910,7 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
                         self.selectorController.customPickupPlaceValueChanged();
                       }
                       else {
-                        $(self.selectorModel.return_place_selector).val($(self.selectorModel.pickup_place_selector).val());
+                        $(self.selectorModel.return_place_selector).val($(self.selectorModel.pickup_place_selector).val()).attr('disabled', false);
                         $(self.selectorModel.return_place_other_selector).val('');
                       }
                       // In both cases notify that the return place has changed
