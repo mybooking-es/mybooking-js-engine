@@ -76,8 +76,7 @@ define([
         contentType: 'application/json; charset=utf-8',
         crossDomain: true,
         success: function(data, textStatus, jqXHR) {
-          // Update the required_fields property with the data from the API
-          model.required_fields = data;
+          model.required_fields = model.formatRequiredFields(data);
         },
         error: function(jqXHR, textStatus, errorThrown) {
           console.warn('Error loading required fields');
@@ -89,6 +88,36 @@ define([
           view.setupReservationFormValidation();
         },
       });
+    },
+
+    /**
+     * Format the required fields because in form are other ids
+     */
+    formatRequiredFields: function(data) {
+      const customerFields = [
+        'name',
+        'surname',
+        'document_id_type_id',
+        'document_id',
+        'email',
+        'phone_number',
+        'date_of_birth',
+        'address[street]',
+        'address[city]',
+        'address[state]',
+        'address[country]',
+        'address[zip]',
+      ];
+
+      const formattedFields = data.map((field) => {
+        let value = field;
+        if (customerFields.includes(field)) {
+          value = `customer_${field}`;
+        }
+        return value;
+      });
+
+      return formattedFields;
     },
 
     /**
