@@ -618,6 +618,7 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
       $(this.selectorModel.return_place_selector).val('other');
       $(this.selectorModel.return_place_other_selector).val($(this.selectorModel.pickup_place_other_selector).val());
       $(this.selectorModel.custom_return_place_selector).val('true');
+      $(this.selectorModel.return_place_group_selector).hide();
       $(this.selectorModel.another_return_place_group_selector).show();        
 
     }
@@ -690,7 +691,7 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
      * Return place custom address close click
      */
     this.customReturnPlaceCloseBtnClick = function() {
-      $(this.selectorModel.return_place_selector).val('');
+      $(this.selectorModel.return_place_selector).val('').attr('disabled', false);
       $(this.selectorModel.return_place_other_selector).val('');
       $(this.selectorModel.custom_return_place_selector).val('false');      
       $(this.selectorModel.return_place_group_selector).show();
@@ -1684,7 +1685,13 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
           let sc = $(this.selectorModel.form_selector).find('input[type=hidden][name=sales_channel_code]').val(); 
           urlParams.push('sales_channel_code='+sc);
         }
-   
+
+        // Filter by rental location code
+        if ($(this.selectorModel.form_selector).find('input[type=hidden][name=rental_location_code]').length > 0) {
+          let rl = $(this.selectorModel.form_selector).find('input[type=hidden][name=rental_location_code]').val(); 
+          urlParams.push('rental_location_code='+rl);
+        }
+ 
         if (this.selectorModel.requestLanguage != null) {
           urlParams.push('lang='+this.selectorModel.requestLanguage);
         }
@@ -1910,7 +1917,7 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
                         self.selectorController.customPickupPlaceValueChanged();
                       }
                       else {
-                        $(self.selectorModel.return_place_selector).val($(self.selectorModel.pickup_place_selector).val()).attr('disabled', false);
+                        $(self.selectorModel.return_place_selector).val($(self.selectorModel.pickup_place_selector).val());
                         $(self.selectorModel.return_place_other_selector).val('');
                       }
                       // In both cases notify that the return place has changed
