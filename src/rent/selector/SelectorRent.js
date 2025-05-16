@@ -1685,7 +1685,13 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
           let sc = $(this.selectorModel.form_selector).find('input[type=hidden][name=sales_channel_code]').val(); 
           urlParams.push('sales_channel_code='+sc);
         }
-   
+
+        // Filter by rental location code
+        if ($(this.selectorModel.form_selector).find('input[type=hidden][name=rental_location_code]').length > 0) {
+          let rl = $(this.selectorModel.form_selector).find('input[type=hidden][name=rental_location_code]').val(); 
+          urlParams.push('rental_location_code='+rl);
+        }
+ 
         if (this.selectorModel.requestLanguage != null) {
           urlParams.push('lang='+this.selectorModel.requestLanguage);
         }
