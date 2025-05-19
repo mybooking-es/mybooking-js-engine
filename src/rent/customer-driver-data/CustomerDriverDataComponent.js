@@ -54,7 +54,7 @@ define([
     /**
      * Load required_fields for the reservation form.
      */
-    loadRequiredFields: function() {
+    /* loadRequiredFields: function() {
       let url = commonServices.URL_PREFIX + '/api/v1/customers/frontend/required-fields'; // TODO: Change to the correct URL because this is not the correct one but booking is not ready yet
       const urlParams = [];
       if (this.requestLanguage != null) {
@@ -76,7 +76,7 @@ define([
         contentType: 'application/json; charset=utf-8',
         crossDomain: true,
         success: function(data, textStatus, jqXHR) {
-          model.required_fields = model.formatRequiredFields(data);
+          model.required_fields = data;
         },
         error: function(jqXHR, textStatus, errorThrown) {
           console.warn('Error loading required fields');
@@ -88,37 +88,7 @@ define([
           view.setupReservationFormValidation();
         },
       });
-    },
-
-    /**
-     * Format the required fields because in form are other ids
-     */
-    formatRequiredFields: function(data) {
-      const customerFields = [
-        'name',
-        'surname',
-        'document_id_type_id',
-        'document_id',
-        'email',
-        'phone_number',
-        'date_of_birth',
-        'address[street]',
-        'address[city]',
-        'address[state]',
-        'address[country]',
-        'address[zip]',
-      ];
-
-      const formattedFields = data.map((field) => {
-        let value = field;
-        if (customerFields.includes(field)) {
-          value = `customer_${field}`;
-        }
-        return value;
-      });
-
-      return formattedFields;
-    },
+    }, */
 
     /**
      * Load Nationalities from API.
@@ -275,7 +245,11 @@ define([
         },
       );
 
-      model.loadRequiredFields();
+      // model.loadRequiredFields();
+      // Setup the reservation form and pass the update payment function to it
+      view.setupReservationForm();
+      // Setup the reservation form validation
+      view.setupReservationFormValidation();
     },
 
     /**
@@ -1108,39 +1082,49 @@ define([
           }
 
           if (selectorName === 'customer_address[country]' || selectorName === 'driver_address[country]') {
+            const typeEvent = commonServices.jsUseSelect2 ? 'select2:select' : 'change';
             // Add event listener to the country selector
-            $countrySelector.off('change');
-            $countrySelector.on('change', () => {
+            $countrySelector.off(typeEvent);
+            $countrySelector.on(typeEvent, (e) => {
               const type = $countrySelector.attr('name') === 'customer_address[country]' ? 'customer_address' : 'driver_address';
-              const value = $countrySelector.val();
-              if (value && value === 'ES') {
-                // Hide state input
-                $(`input[name="${type}[state]"]`).val('').hide();
-                // Show state selector
-                $(`select[name="${type}[state_code]"]`).show();
-                // Hide city input
-                $(`input[name="${type}[city]"]`).val('').hide();
-                // Show city selector
-                $(`select[name="${type}[city_code]"]`).show();
+              const value = commonServices.jsUseSelect2 ? e.params.data.id : $countrySelector.val();
 
-                // Add event listener to the state selector
+              const stateCodeSelector = $(`select[name="${type}\\[state_code\\]"]`);
+              const stateInput = $(`input[name="${type}\\[state\\]"]`);
+              const cityCodeSelector = $(`select[name="${type}\\[city_code\\]"]`);
+              const cityInput = $(`input[name="${type}\\[city\\]"]`);
+
+              if (value && value === 'ES') {
+                // Para España
+                stateInput.val('').attr('disabled', true).hide();
+                stateCodeSelector.attr('disabled', false).show();
+                stateCodeSelector.next('.select2-container').show();
+                cityInput.val('').attr('disabled', true).hide();
+                cityCodeSelector.attr('disabled', false).show();
+                cityCodeSelector.next('.select2-container').show();
+
                 const stateName = $(`select[name="${type}[state_code]"]`).attr('name');
                 if (stateName) {
-                  model.loadSpanishStates(stateName);
+                    model.loadSpanishStates(stateName);
                 }
 
                 // Add event listener to the city selectors
-                this.addEventListenersToCitySelectors($form);
+                view.addEventListenersToCitySelectors($form);
               } else {
-                // Hide state selector
-                $(`select[name="${type}[state_code]"]`).html('').attr('disabled', true).hide();
-                // Show state input
-                $(`input[name="${type}[state]"]`).show();
-                // Hide city selector
-                $(`select[name="${type}[city_code]"]`).html('').attr('disabled', true).hide();
-                // Show city input
-                $(`input[name="${type}[city]"]`).show();
+                // Para otros países
+                stateCodeSelector.attr('disabled', true).hide();
+                stateCodeSelector.next('.select2-container').hide();
+                stateInput.attr('disabled', false).show();
+                cityCodeSelector.attr('disabled', true).hide();
+                cityCodeSelector.next('.select2-container').hide();
+                cityInput.attr('disabled', false).show();
               }
+
+              if (commonServices.jsUseSelect2) {
+                // Refresh the select2 visible value
+                $countrySelector.val(value).trigger('change');
+              }
+
             });
           }
         }
@@ -1328,7 +1312,7 @@ define([
                   dropdownParent: $select.parent(),
                 })
                 .val('')
-                .trigger('change');
+                .trigger('change');              
             }
           } else {
             // Populate standard select element
