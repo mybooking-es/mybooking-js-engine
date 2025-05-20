@@ -443,6 +443,9 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
         if (sessionStorage.getItem('mybookingSearch') !== null) {
           data.web_search = sessionStorage.getItem('mybookingSearch');
         }
+        if (sessionStorage.getItem('mybookingLandingPage') !== null) {
+          data.web_landing_page = sessionStorage.getItem('mybookingLandingPage');
+        }
       }
 
       var jsonData = encodeURIComponent(JSON.stringify(data));

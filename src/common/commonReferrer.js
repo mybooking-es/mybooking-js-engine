@@ -2,17 +2,25 @@ require(['jquery', 'commonSettings'],
          function($, commonSettings) {
    
   if (typeof sessionStorage !== 'undefined') {
+
     // Store the referrer        
-    var mybookingReferrer = sessionStorage.getItem('mybookingReferrer');
-    if (mybookingReferrer === null || mybookingReferrer === '') {
-      sessionStorage.setItem('mybookingReferrer', document.referrer);
-    }
+    if (sessionStorage.getItem('mybookingReferrer') === null) {
+      const mybookingReferrer = document.referrer;
+      sessionStorage.setItem('mybookingReferrer', mybookingReferrer || '');
+    } 
 
     // Store the search query
-    var mybookingSearch = sessionStorage.getItem('mybookingSearch');
-    if (mybookingSearch === null || mybookingSearch === '') {
-      sessionStorage.setItem('mybookingSearch', window.location.search);
+    if (sessionStorage.getItem('mybookingSearch') === null) {
+      const mybookingSearch = window.location.search;
+      sessionStorage.setItem('mybookingSearch', mybookingSearch || '');
     }
+
+    // Store the landing page
+    if (sessionStorage.getItem('mybookingLandingPage') === null) {
+      const mybookingLandingPage = window.location.href;
+      sessionStorage.setItem('mybookingLandingPage', mybookingLandingPage || '');
+    }
+
   }
   
 });
