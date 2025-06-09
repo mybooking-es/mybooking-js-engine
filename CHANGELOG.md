@@ -1,5 +1,10 @@
 # Changelog
 
+## [2.5.2] - 2025.05.20
+
+### Fixed
+- Custom delivery and collection address on rent selector
+
 ## [2.5.0] - 2025.04.16
 
 ### Fixed
