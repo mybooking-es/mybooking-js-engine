@@ -781,6 +781,43 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
 
     }
 
+    // Validate duration
+    this.validateDuration = () => {
+      // Process time value
+      const processDurationValue = (timeValue) => {
+        if (timeValue.endsWith('h')) {
+          return parseInt(timeValue);
+        }
+
+        return null;
+      };
+
+      // Convert string HH:MM to hours
+      const convertStringToHours = (timeLimit) => {
+        const [hours, minutes] = timeLimit.split(':').map(Number);
+        return hours + (minutes / 60);
+      };
+
+      const duration = $(this.selectorModel.duration_selector).val();
+      const hours = processDurationValue(duration);
+
+      // If hours is not null => check if the duration is valid
+      if (hours) {
+        const timeFromValue = $(this.selectorModel.time_from_selector).val();
+        const timeFrom = convertStringToHours(timeFromValue);
+        const lastHourValue = this.selectorModel.pickupHours[this.selectorModel.pickupHours.length - 1];
+        const lastHour = convertStringToHours(lastHourValue);
+
+        if (timeFrom && hours && lastHour && (timeFrom + hours) > lastHour) {
+          return false; // Duration is not valid
+        } else {
+          return true; // Duration is valid
+        }
+      }
+
+      return true; // Duration is valid
+    }
+
   };
 
 
@@ -1459,7 +1496,11 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
           var isAllowed = $(element).find('option[value=' + value + ']').attr('allowed') === 'true';
 
           return isAllowed;
-       });
+        });
+
+        $.validator.addMethod("durationLimit", function(value, element) {
+          return self.selectorController.validateDuration();
+        });
 
         $(this.selectorModel.form_selector).validate({
            submitHandler: function(form) {
@@ -1504,7 +1545,8 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
                    same_day_time_from: true
                },
                renting_duration: {
-                   required: self.selectorModel.configuration.rentDateSelector === 'date_from_duration'
+                   required: self.selectorModel.configuration.rentDateSelector === 'date_from_duration',
+                   durationLimit: self.selectorModel.configuration.rentDateSelector === 'date_from_duration'
                },
                promotion_code: {
                    remote: {
@@ -1567,7 +1609,8 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
                    same_day_time_from: i18next.t('selector.validations.sameDayTimeToGreaterTimeFrom')
                },
                renting_duration: {
-                   required: i18next.t('common.required')
+                   required: i18next.t('common.required'),
+                   durationLimit: i18next.t('selector.validations.durationLimit')
                },               
                promotion_code: {
                    remote: i18next.t('selector.validations.promotionCodeInvalid')

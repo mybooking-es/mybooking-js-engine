@@ -340,6 +340,7 @@ define("commonTranslations", [], function () {
             acceptAge:
               "You must confirm that you are older than {{years}} years",
             promotionCodeInvalid: "Promotion code is not valid",
+            durationLimit: "You cannot select a duration that exceeds the opening hours",
           },
         },
         chooseProduct: {
@@ -890,6 +891,7 @@ define("commonTranslations", [], function () {
             sameDayTimeToGreaterTimeFrom: "Debe ser mayor que la entrega",
             acceptAge: "Debe confirmar que es mayor de {{years}} años",
             promotionCodeInvalid: "Código de promoción no es válido",
+            durationLimit: "No puedes seleccionar una duración que exceda el horario de apertura"
           },
         },
         chooseProduct: {
@@ -1465,6 +1467,7 @@ define("commonTranslations", [], function () {
             promotionCodeInvalid: "El codi de promoció no és vàlid",
             selectPaymentMethod: "Si us plau, escollir la forma de pagament",
             datePatternInvalid: "Format de data invàlid",
+            durationLimit: "No pots seleccionar una duració que excedeixi l'horari d'obertura"
           },
         },
         chooseProduct: {
@@ -2024,6 +2027,7 @@ define("commonTranslations", [], function () {
             acceptAge:
               "Sie müssen bestätigen, dass Sie über {{years}} Jahre alt sind",
             promotionCodeInvalid: "Ungültiger Promotion-Code",
+            durationLimit: "Die Dauer darf nicht größer als der Öffnungszeitraum sein"
           },
         },
         chooseProduct: {
@@ -2590,6 +2594,7 @@ define("commonTranslations", [], function () {
             acceptAge:
               "Vous devez confirmer que vous avez plus de {{years}} ans",
             promotionCodeInvalid: "Le code promotionnel n'est pas valide",
+            durationLimit: "La durée ne peut pas dépasser l'horaire d'ouverture"
           },
         },
         chooseProduct: {
@@ -3154,6 +3159,7 @@ define("commonTranslations", [], function () {
             sameDayTimeToGreaterTimeFrom: "Deve essere maggiore della consegna",
             acceptAge: "Devi confermare di avere più di {{years}} anni",
             promotionCodeInvalid: "Codice promozione non valido",
+            durationLimit: "La durata non può essere maggiore dell'orario di apertura"
           },
         },
         chooseProduct: {
@@ -3733,6 +3739,7 @@ define("commonTranslations", [], function () {
             sameDayTimeToGreaterTimeFrom: "Должен быть позже срока доставки",
             acceptAge: "Вы должны подтвердить, что вам больше {{years}} лет",
             promotionCodeInvalid: "Промокод недействителен",
+            durationLimit: "Длительность не может превышать время открытия"
           },
         },
         chooseProduct: {
