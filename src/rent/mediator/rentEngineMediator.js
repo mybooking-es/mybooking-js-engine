@@ -458,9 +458,13 @@ define('rentEngineMediator', ['jquery', 'YSDEventTarget'],
      * continue existing reservation payment
      */
     continueExistingReservationPayment: function(url, paymentData) {
-
+      
       if (this.myReservation != null) {
         this.myReservation.view.gotoPayment(url, paymentData);
+      }
+
+      if (this.summary != null) {
+        this.summary.view.gotoPayment(url, paymentData);
       }
 
     },

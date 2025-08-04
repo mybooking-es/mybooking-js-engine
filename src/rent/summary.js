@@ -1,12 +1,12 @@
 require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
          'commonServices', 'commonSettings', 'commonTranslations', 'commonLoader',
          './mediator/rentEngineMediator', 
-         'i18next','ysdtemplate', 'YSDDateControl', 'moment',
+         'i18next','ysdtemplate', 'YSDDateControl', 'moment', './payment/paymentComponent',
          'jquery.i18next',   
          'jquery.validate', 'jquery.ui', 'jquery.form'],
     function($, RemoteDataSource, SelectSelector,
              commonServices, commonSettings, commonTranslations, commonLoader, rentEngineMediator, 
-             i18next, tmpl, DateControl, moment) {
+             i18next, tmpl, DateControl, moment, paymentComponent) {
 
   var model = { // THE MODEL
     requestLanguage: null,
@@ -172,7 +172,36 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
         });
         $('#mybooking_summary_product_detail_table').html(reservationTableDetail);
       }
-    }
+
+      // Initialize payment component
+      paymentComponent.view.init(model.bookingFreeAccessId, model.sales_process, 
+        model.booking, model.configuration);
+      paymentComponent.model.addListener('payment', function(event){
+        if (event.type === 'payment') {
+          const url = event.data.url;
+          const paymentData = event.data.paymentData;
+          view.payment(url, paymentData);
+        }
+      });
+    },
+
+    // ----------------- Payment mediator ------------------------------
+
+    /**
+     * Pay
+     */
+    payment: function(url, paymentData) {
+      // Call to the mediator
+      rentEngineMediator.onExistingReservationPayment(url, paymentData);
+    },
+
+    /*
+     * Go to the payment
+     */
+    gotoPayment: function(url, paymentData) {
+      // Use the payment component to make the payment
+      paymentComponent.view.gotoPayment(url, paymentData);
+    },
   };
 
 
