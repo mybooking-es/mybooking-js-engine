@@ -52,45 +52,6 @@ define([
     formSelector: 'form[name=reservation_form]',
   
     /**
-     * Load required_fields for the reservation form.
-     */
-    /* loadRequiredFields: function() {
-      let url = commonServices.URL_PREFIX + '/api/v1/customers/frontend/required-fields'; // TODO: Change to the correct URL because this is not the correct one but booking is not ready yet
-      const urlParams = [];
-      if (this.requestLanguage != null) {
-        urlParams.push('lang=' + this.requestLanguage);
-      }
-      if (commonServices.apiKey && commonServices.apiKey != '') {
-        urlParams.push('api_key=' + commonServices.apiKey);
-      }
-      if (urlParams.length > 0) {
-        url += '?';
-        url += urlParams.join('&');
-      }
-
-      // Request
-      $.ajax({
-        type: 'GET',
-        url: url,
-        dataType: 'json',
-        contentType: 'application/json; charset=utf-8',
-        crossDomain: true,
-        success: function(data, textStatus, jqXHR) {
-          model.required_fields = data;
-        },
-        error: function(jqXHR, textStatus, errorThrown) {
-          console.warn('Error loading required fields');
-        },
-        complete: function() {
-          // Setup the reservation form and pass the update payment function to it
-          view.setupReservationForm();
-          // Setup the reservation form validation
-          view.setupReservationFormValidation();
-        },
-      });
-    }, */
-
-    /**
      * Load Nationalities from API.
      */
     loadNationalities: function() {
@@ -1002,7 +963,7 @@ define([
 			}
 
       const countrySelectors = [
-        'select[name="customer_address[country]"]',
+        'select[name=country]',
         'select[name=customer_origin_country]',
         'select[name="driver_address[country]"]',
         'select[name=driver_origin_country]', 
@@ -1081,7 +1042,7 @@ define([
             );
           }
 
-          if (selectorName === 'customer_address[country]' || selectorName === 'driver_address[country]') {
+          if (selectorName === 'country' || selectorName === 'driver_address[country]') {
             const typeEvent = commonServices.jsUseSelect2 ? 'select2:select' : 'change';
             // Add event listener to the country selector
             $countrySelector.off(typeEvent);
@@ -1137,7 +1098,7 @@ define([
      */
     addEventListenersToCitySelectors: function($form) {
       // Add event listener to city selectors
-      const $stateSelectors = $form.find('select[name="customer_address[state_code]"], select[name="driver_address[state_code]"]');
+      const $stateSelectors = $form.find('select[name=state_code], select[name="driver_address[state_code]"]');
       $stateSelectors.off('change');
       $stateSelectors.on('change', function() {
         const name = $(this).attr('name');
