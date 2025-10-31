@@ -1199,6 +1199,15 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
      */
     this.setupPickupReturnPlace = function() {
 
+      // Use select2 for pickup and return places
+      if ($(this.selectorModel.form_selector).find('input[type=hidden][name=search_places]').length > 0) {
+        let value = $(this.selectorModel.form_selector).find('input[type=hidden][name=search_places]').val(); 
+        if (value == '1') {
+          $(this.selectorModel.pickup_place_selector).select2({width: '100%'});
+          $(this.selectorModel.return_place_selector).select2({width: '100%'});
+        }
+      }
+
       var self = this;
 
       // Bind pickup place changed
