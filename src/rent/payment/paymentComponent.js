@@ -14,6 +14,7 @@ define('paymentComponent', [
     booking: null,
     configuration: null,
     requestLanguage: 'es',
+    rentEngineMediator: null,
 
     events: new YSDEventTarget(),
     addListener: function(type, listener) { /* addListener */
@@ -48,11 +49,12 @@ define('paymentComponent', [
     /**
      * Initialize
      */
-    init: function(bookingFreeAccessId, salesProcess, booking, configuration) {
+    init: function(bookingFreeAccessId, salesProcess, booking, configuration, rentEngineMediator) {
       model.bookingFreeAccessId = bookingFreeAccessId;
       model.salesProcess = salesProcess;
       model.booking = booking;
       model.configuration = configuration;
+      model.rentEngineMediator = rentEngineMediator;
 
       // Initialize i18next for translations
       model.requestLanguage = commonSettings.language(document.documentElement.lang);
@@ -98,7 +100,9 @@ define('paymentComponent', [
      * Payment
      */
     payment: function(url, paymentData) {
-      model.rentEngineMediator.onExistingReservationPayment(url, paymentData);
+      if (model.rentEngineMediator) {
+        model.rentEngineMediator.onExistingReservationPayment(url, paymentData);
+      }
     },
 
     /*

@@ -692,6 +692,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
             {
               booking: model.booking,
               sales_process: model.sales_process,
+              deposit_process: model.deposit_process,
             });
           $('#mybooking_reservation_steps').html(reservationSteps);
         }
@@ -703,6 +704,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
             {
               booking: model.booking,
               sales_process: model.sales_process,
+              deposit_process: model.deposit_process,
               configuration: model.configuration,
               showReservationForm,
             });
@@ -774,7 +776,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
 
       // Initialize payment component
       paymentComponent.view.init(model.bookingFreeAccessId, model.sales_process, 
-                                 model.booking, model.configuration);
+                                 model.booking, model.configuration, rentEngineMediator);
       paymentComponent.model.addListener('payment', function(event){
         if (event.type === 'payment') {
           const url = event.data.url;
@@ -791,7 +793,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
           if (event.type === 'deposit_payment') {
             const url = event.data.url;
             const paymentData = event.data.paymentData;
-            view.payment(url, paymentData);
+            depositComponent.view.depositPayment(url, paymentData);
           }
         });
       }
@@ -1980,6 +1982,14 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
     gotoPayment: function(url, paymentData) {
       // Use the payment component to make the payment
       paymentComponent.view.gotoPayment(url, paymentData);
+    },
+
+    /*
+     * Go to the deposit payment
+     */
+    gotoDepositPayment: function(url, paymentData) {
+      // Use the deposit component to make the payment
+      depositComponent.view.gotoPayment(url, paymentData);
     },
   };
 
