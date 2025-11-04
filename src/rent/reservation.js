@@ -6,6 +6,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
          'i18next','ysdtemplate', 'YSDDateControl',
          './passengers/passengersComponent',
          './payment/paymentComponent',
+         './deposit/depositComponent',
          './documents/documentsComponent',
          './signature/signatureComponent',
          'jquery.i18next',   
@@ -13,7 +14,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
     function($, RemoteDataSource, MemoryDataSource, SelectSelector, select2,
              commonServices, commonSettings, commonTranslations, commonLoader, commonUI,
              rentEngineMediator, i18next, tmpl, DateControl, 
-             passengersComponent,  paymentComponent, documentsComponent, signatureComponent
+             passengersComponent,  paymentComponent, depositComponent, documentsComponent, signatureComponent
           ) {
 
   const model = { // THE MODEL
@@ -27,6 +28,8 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
     holdedBookingDriver: null,
     /* Sales process */
     sales_process: null,
+    /* Deposit process */
+    deposit_process: null,
     /* Form */
     nationalities: null,
     documentTypes: null,
@@ -119,6 +122,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
                  model.required_fields = data.required_fields;
                  model.bookingFreeAccessId = data.booking.free_access_id;
                  model.sales_process = data.sales_process;
+                 model.deposit_process = data.deposit_process;
 
                  view.updateBooking();
                },
@@ -778,6 +782,19 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
           view.payment(url, paymentData);
         }
       });
+
+      // Initialize deposit component
+      if (model.deposit_process && model.deposit_process.can_receive_deposit && !model.booking.deposit_received) {
+        depositComponent.view.init(model.bookingFreeAccessId, model.deposit_process, 
+                                   model.booking, model.configuration, rentEngineMediator);
+        depositComponent.model.addListener('deposit_payment', function(event){
+          if (event.type === 'deposit_payment') {
+            const url = event.data.url;
+            const paymentData = event.data.paymentData;
+            view.payment(url, paymentData);
+          }
+        });
+      }
 
       // Include documents upload and contract signature
       if (showReservationForm) {
