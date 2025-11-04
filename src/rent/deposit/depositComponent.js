@@ -33,10 +33,10 @@ define('depositComponent', [
      */
     sendPayDepositRequest: function(paymentMethod) {
       // TODO: parece que el backend no calcula bien el amount
-      var depositAmount = model.booking.total_deposit || model.booking.booking_deposit;
+      //var depositAmount = model.booking.total_deposit || model.booking.booking_deposit;
       var data = {
         id: model.bookingFreeAccessId,
-        amount: depositAmount,
+        //amount: depositAmount,
         payment_method_id: paymentMethod
       };
       // Fire the event
