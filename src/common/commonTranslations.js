@@ -446,7 +446,6 @@ define("commonTranslations", [], function () {
           },
           deposit: {
             total_deposit: "Total deposit: {{amount}}",
-            deposit_info: "To confirm your reservation, a deposit payment of <strong>{{amount}}</strong> is required.",
             deposit_button: "Pay deposit {{amount}}",
           },
           updateReservation: {
@@ -1018,7 +1017,6 @@ define("commonTranslations", [], function () {
           },
           deposit: {
             total_deposit: "Total fianza: {{amount}}",
-            deposit_info: "Para confirmar su reserva, se requiere un pago de fianza de <strong>{{amount}}</strong>.",
             deposit_button: "Pagar fianza {{amount}}",
           },
           updateReservation: {
@@ -1588,7 +1586,6 @@ define("commonTranslations", [], function () {
           },
           deposit: {
             total_deposit: "Total fiança: {{amount}}",
-            deposit_info: "Per confirmar la seva reserva, es requereix un pagament de fiança de <strong>{{amount}}</strong>.",
             deposit_button: "Pagar fiança {{amount}}",
           },
           updateReservation: {
@@ -2161,7 +2158,6 @@ define("commonTranslations", [], function () {
           },
           deposit: {
             total_deposit: "Gesamte Kaution: {{amount}}",
-            deposit_info: "Zur Bestätigung Ihrer Reservierung ist eine Kaution von <strong>{{amount}}</strong> erforderlich.",
             deposit_button: "Kaution zahlen {{amount}}",
           },
           updateReservation: {
@@ -2735,7 +2731,6 @@ define("commonTranslations", [], function () {
           },
           deposit: {
             total_deposit: "Total dépôt: {{amount}}",
-            deposit_info: "Pour confirmer votre réservation, un paiement de dépôt de <strong>{{amount}}</strong> est requis.",
             deposit_button: "Payer le dépôt {{amount}}",
           },
           updateReservation: {
@@ -3319,7 +3314,6 @@ define("commonTranslations", [], function () {
           },
           deposit: {
             total_deposit: "Deposito totale: {{amount}}",
-            deposit_info: "Per confermare la prenotazione è richiesto un pagamento di deposito di <strong>{{amount}}</strong>.",
             deposit_button: "Paga deposito {{amount}}",
           },
           updateReservation: {
@@ -3883,7 +3877,6 @@ define("commonTranslations", [], function () {
           },
           deposit: {
             total_deposit: "Общий депозит: {{amount}}",
-            deposit_info: "Для подтверждения бронирования требуется депозит в размере <strong>{{amount}}</strong>.",
             deposit_button: "Оплатить депозит {{amount}}",
           },
           updateReservation: {
