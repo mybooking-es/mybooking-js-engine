@@ -438,10 +438,15 @@ define("commonTranslations", [], function () {
             total_payment: "Pay {{amount}}",
             payment_button: "Pay {{amount}}",
             paymentMethodRequired: "Please, select the payment method.",
+            depositPaymentMethodRequired: "Please, select the payment method.",
             booking_amount:
               "To confirm your reservation a <strong>{{amount}}</strong> payment is required",
             pending_amount:
               "Payment of the pending amount <strong>{{amount}}</strong> is an option",
+          },
+          deposit: {
+            total_deposit: "Total deposit: {{amount}}",
+            deposit_button: "Pay deposit {{amount}}",
           },
           updateReservation: {
             success: "Reservation updated successfully",
@@ -1004,10 +1009,15 @@ define("commonTranslations", [], function () {
             total_payment: "Pagar {{amount}}",
             payment_button: "Pagar {{amount}}",
             paymentMethodRequired: "Por favor, seleccione la forma de pago.",
+            depositPaymentMethodRequired: "Por favor, seleccione la forma de pago.",
             booking_amount:
               "Para confirmar su reserva ha de realizarse un pago de <strong>{{amount}}</strong>.",
             pending_amount:
               "Puede realizar, por adelantado, el pago del importe pendiente de la reserva, <strong>{{amount}}</strong>",
+          },
+          deposit: {
+            total_deposit: "Total fianza: {{amount}}",
+            deposit_button: "Pagar fianza {{amount}}",
           },
           updateReservation: {
             success: "La reserva se ha actualizado.",
@@ -1568,10 +1578,15 @@ define("commonTranslations", [], function () {
             total_payment: "Pagar {{amount}}",
             payment_button: "Pagar {{amount}}",
             paymentMethodRequired: "Si us plau, escolli el medi de pagament",
+            depositPaymentMethodRequired: "Si us plau, escolli el medi de pagament",
             booking_amount:
               "Per confirmar la reserva s'ha de realitzar un pagament de <strong>{{amount}}</strong>.",
             pending_amount:
               "Pot realitzar el pagament, per avançat, de l'import pendent de la seva reserva, <strong>{{amount}}</strong>",
+          },
+          deposit: {
+            total_deposit: "Total fiança: {{amount}}",
+            deposit_button: "Pagar fiança {{amount}}",
           },
           updateReservation: {
             success: "Reserva actualitzada",
@@ -2135,10 +2150,15 @@ define("commonTranslations", [], function () {
             total_payment: "Zahlen {{amount}}",
             payment_button: "Zahlen {{amount}}",
             paymentMethodRequired: "Bitte wählen Sie die Zahlungsart.",
+            depositPaymentMethodRequired: "Bitte wählen Sie die Zahlungsart.",
             booking_amount:
               "Um Ihre Reservierung zu bestätigen, wird Ihre Karte mit <strong>{{amount}}</strong> belastet.",
             pending_amount:
               "Die Zahlung des ausstehenden Betrags von <strong>{{amount}}</strong> ist zulässig",
+          },
+          deposit: {
+            total_deposit: "Gesamte Kaution: {{amount}}",
+            deposit_button: "Kaution zahlen {{amount}}",
           },
           updateReservation: {
             success: "Reservierung erfolgreich aktualisiert",
@@ -2703,10 +2723,15 @@ define("commonTranslations", [], function () {
             total_payment: "Payer {{amount}}",
             payment_button: "Payer {{amount}}",
             paymentMethodRequired: "Veuillez sélectionner le mode de paiement.",
+            depositPaymentMethodRequired: "Veuillez sélectionner le mode de paiement.",
             booking_amount:
               "Pour confirmer votre réservation un paiement de <strong>{{amount}}</strong> est demandé",
             pending_amount:
               "Le paiement du montant en attente <strong>{{amount}}</strong> est autorisé",
+          },
+          deposit: {
+            total_deposit: "Total dépôt: {{amount}}",
+            deposit_button: "Payer le dépôt {{amount}}",
           },
           updateReservation: {
             success: "Réservation mise à jour avec succès",
@@ -3281,10 +3306,15 @@ define("commonTranslations", [], function () {
             total_payment: "Paga {{amount}}",
             payment_button: "Paga {{amount}}",
             paymentMethodRequired: "Seleziona il metodo di pagamento.",
+            depositPaymentMethodRequired: "Seleziona il metodo di pagamento.",
             booking_amount:
               "Per confermare la prenotazione verrà addebitato un importo di <strong>{{amount}} </strong> sulla tua carta.",
             pending_amount:
               "Il pagamento dell'importo in sospeso <strong>{{amount}}</strong> è consentito",
+          },
+          deposit: {
+            total_deposit: "Deposito totale: {{amount}}",
+            deposit_button: "Paga deposito {{amount}}",
           },
           updateReservation: {
             success: "Prenotazione aggiornata correttamente",
@@ -3839,10 +3869,15 @@ define("commonTranslations", [], function () {
             total_payment: "Оплатить {{amount}}",
             payment_button: "Оплатить {{amount}}",
             paymentMethodRequired: "Пожалуйста, выберите способ оплаты.",
+            depositPaymentMethodRequired: "Пожалуйста, выберите способ оплаты.",
             booking_amount:
               "Для подтверждения бронирования требуется оплатить <strong> {{amount}} </strong>.",
             pending_amount:
               "Выплата ожидаемой суммы <strong> {{amount}} </strong> это вариант",
+          },
+          deposit: {
+            total_deposit: "Общий депозит: {{amount}}",
+            deposit_button: "Оплатить депозит {{amount}}",
           },
           updateReservation: {
             success: "Бронирование успешно обновлено",

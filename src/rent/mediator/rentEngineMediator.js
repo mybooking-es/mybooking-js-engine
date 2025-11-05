@@ -18,6 +18,7 @@ define('rentEngineMediator', ['jquery', 'YSDEventTarget'],
     checkoutSetupReservationFormDelegate: null,
     newReservationPaymentDelegate: null,
     existingReservationPaymentDelegate: null,
+    existingDepositPaymentDelegate: null,
     summaryUpdateBookingDelegate: null,
     myReservationSetupReservationFormDelegate: null,
 
@@ -141,6 +142,11 @@ define('rentEngineMediator', ['jquery', 'YSDEventTarget'],
       // My reservation -> Go to Payment
       if (typeof delegate.existingReservationPayment === 'function') {
         this.existingReservationPaymentDelegate = delegate.existingReservationPayment;
+      }
+
+      // My reservation -> Go to Deposit Payment
+      if (typeof delegate.existingDepositPayment === 'function') {
+        this.existingDepositPaymentDelegate = delegate.existingDepositPayment;
       }
 
       // My reservation => SetupReservationForm
@@ -461,6 +467,32 @@ define('rentEngineMediator', ['jquery', 'YSDEventTarget'],
 
       if (this.myReservation != null) {
         this.myReservation.view.gotoPayment(url, paymentData);
+      }
+
+    },
+
+    /**
+     * onExisting deposit payment
+     */
+    onExistingDepositPayment: function(url, paymentData) {
+
+      console.log('rentEngineMediator_depositPayment');
+      if (typeof this.existingDepositPaymentDelegate === 'function') {
+        var data = { url: url,
+                     paymentData: paymentData};
+        this.existingDepositPaymentDelegate(data, this);
+      } else  {
+        this.continueExistingDepositPayment(url, paymentData);
+      }
+    },
+
+    /**
+     * continue existing deposit payment
+     */
+    continueExistingDepositPayment: function(url, paymentData) {
+
+      if (this.myReservation != null) {
+        this.myReservation.view.gotoDepositPayment(url, paymentData);
       }
 
     },
