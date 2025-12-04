@@ -91,53 +91,10 @@ define('depositComponent', [
             i18next: i18next,
           });
           $('#deposit_detail').html(depositInfo);
-          // Process translations after inserting HTML
-          this.processTranslations();
           this.setupValidate();
-          
-          // Hide the deposit container initially if it's inside a step container
-          // The tabs/steps system will show it when the tab is clicked
-          var $depositContainer = $('#deposit_detail').closest('.mb--step-container');
-          if ($depositContainer.length > 0) {
-            $depositContainer.hide();
-          } else {
-            // If not in a step container, hide the deposit_detail itself
-            $('#deposit_detail').hide();
-          }
+          $('#deposit_detail').show();
         }
       }
-    },
-
-    /**
-     * Process translations in the inserted HTML
-     */
-    processTranslations: function() {
-      var $container = $('#deposit_detail');
-      
-      // Process all elements that contain only text (no children)
-      $container.find('*').addBack().each(function() {
-        var $elem = $(this);
-        
-        // Skip if element has child elements (to avoid double processing)
-        if ($elem.children().length > 0) {
-          return;
-        }
-        
-        // Process text content - look for translation keys pattern
-        var text = $elem.text();
-        if (text && text.trim()) {
-          // Pattern: text that looks like a translation key (e.g., "myReservation.deposit.total_deposit")
-          var translationKeyPattern = /^([a-zA-Z_]+(?:\.[a-zA-Z_]+)+)$/;
-          var textTrimmed = text.trim();
-          if (translationKeyPattern.test(textTrimmed)) {
-            var translated = i18next.t(textTrimmed);
-            // Only replace if translation exists and is different
-            if (translated && translated !== textTrimmed) {
-              $elem.text(translated);
-            }
-          }
-        }
-      });
     },
 
     /**

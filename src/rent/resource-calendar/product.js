@@ -1837,9 +1837,9 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
           // Show the time from / to selectors
           $('.js-mybooking-product_calendar-time-hours').show();
           // Scroll the time ranges container
-          $('html, body').animate({
-                  scrollTop: $(".js-mybooking-product_calendar-time-hours").offset().top - 100
-          }, 2000);          
+          //$('html, body').animate({
+          //        scrollTop: $(".js-mybooking-product_calendar-time-hours").offset().top - 100
+          //}, 2000);          
           break;
         case 'turns':
           var turns = productModel.turns;
@@ -1862,9 +1862,9 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
             // Show the time
             $('.js-mybooking-product_calendar-time-ranges').show();
             // Scroll the time ranges container
-            $('html, body').animate({
-                  scrollTop: $(".js-mybooking-product_calendar-time-ranges").offset().top - 100
-            }, 2000);
+            //$('html, body').animate({
+            //      scrollTop: $(".js-mybooking-product_calendar-time-ranges").offset().top - 100
+            //}, 2000);
             // Pre selection
             if (productModel.preselectedTimeFrom && productModel.preselectedTimeFrom !== '' &&
                 productModel.preselectedTimeTo && productModel.preselectedTimeTo !== '') {
@@ -1895,9 +1895,9 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
             $(productModel.add_to_shopping_cart_btn_selector).attr('disabled', false);
           }
           // Scroll the time ranges container
-          $('html, body').animate({
-                  scrollTop: $("#reservation_detail").offset().top
-          }, 2000); 
+          //$('html, body').animate({
+          //        scrollTop: $("#reservation_detail").offset().top
+          //}, 2000); 
           break;
       }
 
