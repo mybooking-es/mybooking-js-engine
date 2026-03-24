@@ -1,5 +1,23 @@
 # Changelog
 
+## [2.6.1] - 2026.03.24
+
+### Fixed
+- Modify reservation take into account sales channel code on search form
+
+## [2.6.0] - 2025.12.04
+
+### Fixed
+
+- Selector : allow to search pickup/return places
+- Calendar : Avoid to scroll
+- My reservation : Pay deposit
+
+## [2.5.2] - 2025.05.20
+
+### Fixed
+- Custom delivery and collection address on rent selector
+
 ## [2.5.2] - 2025.05.20
 
 ### Fixed

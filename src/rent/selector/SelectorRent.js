@@ -1114,6 +1114,7 @@ define('SelectorRent', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','
                                                                 promotionCode: this.selectorModel.promotionCode,
                                                                 family_id:  (this.selectorModel.shopping_cart ? this.selectorModel.shopping_cart.family_id : null),
                                                                 rental_location_code: (this.selectorModel.shopping_cart ? this.selectorModel.shopping_cart.rental_location_code : null),
+                                                                sales_channel_code: (this.selectorModel.shopping_cart ? this.selectorModel.shopping_cart.sales_channel_code : null),
                                                                 company: commonServices.company
                                                                });
         // Assign to the form
