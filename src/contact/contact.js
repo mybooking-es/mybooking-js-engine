@@ -7,11 +7,13 @@ require(['jquery',
 
     requestLanguage: null,
 
-  	sendMessage: function() {
+  	sendMessage: function(captchaToken, onSuccess = () => {}) {
       var formdata = $('form[name="widget_contact_form"]').formParams(true);
       formdata.action = 'mybooking_contact';
       formdata.nonce  = mybooking_init_vars.mybooking_contact_nonce;
-      // Request
+      if (captchaToken) {
+        formdata['g-recaptcha-response'] = captchaToken;
+      }
       $.ajax({
          type: 'POST',
          data : formdata,
@@ -19,13 +21,7 @@ require(['jquery',
          success: function(data, textStatus, jqXHR) {
            alert(i18next.t('contact.message_sent_successfully'));
            $('form[name=widget_contact_form]').trigger('reset');
-           // Reset the Google Recaptcha
-           if ( $('form[name=widget_contact_form').find('.g-recaptcha').length > 0 &&
-                typeof grecaptcha !== 'undefined') {
-             if (typeof grecaptcha.reset !== 'undefined') {
-               grecaptcha.reset();
-             }
-           }
+           onSuccess();
          },
          error: function(data, textStatus, jqXHR) {
            alert(i18next.t('contact.error_sending_message'));
@@ -64,27 +60,45 @@ require(['jquery',
 
               submitHandler: function(form)
               {
-                  $('#contact_form_errors').html('');
-                  $('#contact_form_errors').hide();
-                  if ( $('form[name=widget_contact_form').find('.g-recaptcha').length > 0 && 
-                       typeof grecaptcha !== 'undefined') {
-                    if (grecaptcha.getResponse() === '') {
+                  $('#contact_form_errors').html('').hide();
+                  var captchaMode = mybooking_init_vars.mybooking_recaptcha_mode;
+
+                  // reCaptcha enterprise.
+                  if ( captchaMode === 'enterprise' &&
+                       typeof grecaptcha !== 'undefined' &&
+                       typeof grecaptcha.enterprise !== 'undefined' ) {
+
+                    grecaptcha.enterprise.ready(function() {
+                      grecaptcha.enterprise.execute(
+                        mybooking_init_vars.mybooking_recaptcha_site_key,
+                        {action: 'contact'}
+                      ).then(function(token) {
+                        contactModel.sendMessage(token);
+                      });
+                    });
+                  }
+
+                  // reCaptcha v2. Legacy but still working in some configs.
+                  else if ( captchaMode === 'v2' && typeof grecaptcha !== 'undefined' ) {
+
+                    if ( grecaptcha.getResponse() === '' ) {
                       alert(i18next.t('contact.validate_captcha'));
                       return false;
                     }
-                    else {
-                      contactModel.sendMessage();
-                    }
+                    contactModel.sendMessage(null, () => grecaptcha.reset());
                   }
+
+                  // No captcha at all.
                   else {
-                    contactModel.sendMessage();
+                    contactModel.sendMessage(null);
                   }
                   return false;
               },
 
               invalidHandler : function (form, validator) {
-                  $('#contact_form_errors').html(i18next.t('contact.form_errors'));
-                  $('#contact_form_errors').show();
+                  $('#contact_form_errors')
+                      .html(i18next.t('contact.form_errors'))
+                      .show();
               },
 
               rules : {
