@@ -9,22 +9,18 @@ require(['jquery',
 
   	sendMessage: function() {
       var formdata = $('form[name="widget_contact_form"]').formParams(true);
-      var json_request = JSON.stringify(formdata);
-      // Build URL
-      var url = commonServices.URL_PREFIX + '/api/booking/frontend/contact';
-      if (commonServices.apiKey && commonServices.apiKey != '') {
-        url += '?api_key='+commonServices.apiKey;
-      }    
+      formdata.action = 'mybooking_contact';
+      formdata.nonce  = mybooking_init_vars.mybooking_contact_nonce;
       // Request
       $.ajax({
          type: 'POST',
-         data : json_request,
-         url : url,
-         success: function(data, textStatus, jqXHR) {      
+         data : formdata,
+         url  : mybooking_init_vars.mybooking_ajax_url,
+         success: function(data, textStatus, jqXHR) {
            alert(i18next.t('contact.message_sent_successfully'));
            $('form[name=widget_contact_form]').trigger('reset');
            // Reset the Google Recaptcha
-           if ( $('form[name=widget_contact_form').find('.g-recaptcha').length > 0 && 
+           if ( $('form[name=widget_contact_form').find('.g-recaptcha').length > 0 &&
                 typeof grecaptcha !== 'undefined') {
              if (typeof grecaptcha.reset !== 'undefined') {
                grecaptcha.reset();
@@ -36,7 +32,7 @@ require(['jquery',
          },
          complete: function(jqXHT, textStatus) {
          }
-      });     		
+      });
   	}
 
   };
