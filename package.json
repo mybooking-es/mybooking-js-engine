@@ -6,6 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "rm -rf dist && webpack --config webpack.config.js",
+    "build-2": "NODE_OPTIONS=--openssl-legacy-provider npm run build",
     "start": "npx env-cmd --file config/env.json supervisor -e 'html|js|json' -w . node server.js",
     "format": "npx prettier --write \"src/**/*.js\"",
     "eslint": "npx eslint src/**/*.js"
