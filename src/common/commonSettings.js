@@ -195,6 +195,7 @@ define('commonSettings', ['jquery','commonServices','commonLoader','commonTransl
       if (typeof productId !== 'undefined' && productId && productId !='') {
         urlParams.push('product_id='+productId);
       }
+      urlParams.push('lang='+this.language(document.documentElement.lang));
       if (urlParams.length > 0) {
         url += '?';
         url += urlParams.join('&');
@@ -346,6 +347,7 @@ define('commonSettings', ['jquery','commonServices','commonLoader','commonTransl
              mybookingSettings.data.guests = data.guests || false;
              // - Renting calendar
              mybookingSettings.data.calendarShowDailyPrices = data.calendar_show_daily_prices;
+             mybookingSettings.data.categoryRateTypes = data.category_rate_types;
              mybookingSettings.data.samePickupReturnTime = data.same_pickup_return_time;
              // Activities / Appointments
              mybookingSettings.data.activityReservationMultipleItems = data.activity_reservation_multiple_items;

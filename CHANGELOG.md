@@ -1,5 +1,10 @@
 # Changelog
 
+## [2.7.0] - 2026.05.27
+
+### Added
+- Ability for showing detailed prices in calendar widget via shortcode
+
 ## [2.6.1] - 2026.03.24
 
 ### Fixed

@@ -1,10 +1,10 @@
 /* eslint-disable quotes */
 /* eslint-disable max-len */
-define('ProductCalendar', ['jquery', 'YSDEventTarget', 
-       'moment',        'jquery.validate', 'jquery.ui', 'jquery.ui.datepicker-es',
+define('ProductCalendar', ['jquery', 'YSDEventTarget',
+       'moment', './tariff-selector', 'jquery.validate', 'jquery.ui', 'jquery.ui.datepicker-es',
        'jquery.ui.datepicker-en', 'jquery.ui.datepicker-ca', 'jquery.ui.datepicker-it',
        'jquery.ui.datepicker.validation'],
-       function($, YSDEventTarget, moment) {
+       function($, YSDEventTarget, moment, tariffSelector) {
 
 
   /***************************************************************************
@@ -323,12 +323,13 @@ define('ProductCalendar', ['jquery', 'YSDEventTarget',
             // Show prices
             if (self.productCalendarModel.availabilityData && typeof self.productCalendarModel.availabilityData.prices !== 'undefined') {
               var prices = self.productCalendarModel.availabilityData.prices;
+              var displayPrice = tariffSelector ? tariffSelector.getPriceForDate(dateStr, prices[dateStr]) : prices[dateStr];
               // If the day is selectable or duration scope is by days
-              if (prices[dateStr] && 
-                  (self.productCalendarModel.availabilityData.occupation[dateStr].selectable_day || 
+              if (displayPrice &&
+                  (self.productCalendarModel.availabilityData.occupation[dateStr].selectable_day ||
                    self.productCalendarModel.configuration.calendarShowAvailabilityNotSelectable) ) {
-                var priceValue = new Number(prices[dateStr]);
-                var priceStr = self.productCalendarModel.configuration.formatCurrency(prices[dateStr],
+                var priceValue = new Number(displayPrice);
+                var priceStr = self.productCalendarModel.configuration.formatCurrency(displayPrice,
                                                                          self.productCalendarModel.configuration.currencySymbol,
                                                                          0,
                                                                          self.productCalendarModel.configuration.currencyThousandsSeparator,

@@ -1,14 +1,14 @@
 define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDSelectSelector',
          'commonServices','commonSettings', 'commonTranslations', 'commonLoader','commonUI',
          './../mediator/rentEngineMediator',
-         'i18next', 'moment', 'ysdtemplate', './ProductCalendar', 'customCookie',
+         'i18next', 'moment', 'ysdtemplate', './ProductCalendar', './tariff-selector', 'customCookie',
          'jquery.i18next',
          'jquery.validate', 'jquery.ui', 'jquery.ui.datepicker-es',
          'jquery.ui.datepicker-en', 'jquery.ui.datepicker-ca', 'jquery.ui.datepicker-it',
          'jquery.ui.datepicker.validation'],
          function($, MemoryDataSource, RemoteDataSource, SelectSelector,
                   commonServices, commonSettings, commonTranslations, commonLoader, commonUI, rentEngineMediator,
-                  i18next, moment, tmpl, ProductCalendar, customCookie) {
+                  i18next, moment, tmpl, ProductCalendar, tariffSelector, customCookie) {
 
   /***************************************************************************
    *
@@ -121,6 +121,10 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
     loadSettings: function() {
       commonSettings.loadSettings(function(data){
         productModel.configuration = data;
+        if (data.categoryRateTypes && data.categoryRateTypes.length) {
+          tariffSelector.setCommonSettings(data);
+          tariffSelector.setDescriptions(data.categoryRateTypes);
+        }
         // Performance - 2024-03-03
         if (productModel.performanceId !== null && productModel.performanceId !== '') {
           console.log('performanceId', productModel.performanceId);
@@ -290,7 +294,10 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
             }            
             // Hold the availability data
             productModel.availabilityData = data;
-
+            if (data.all_prices) {
+              tariffSelector.setPrices(data.all_prices);
+            }
+            tariffSelector.renderCards('#date-container');
             // Update the duration scope if multiple journals is in configuration (settings or in occupation data)
             // eslint-disable-next-line max-len
             if (data && data.renting_product_multiple_journals) {
@@ -1027,7 +1034,8 @@ define('selector', ['jquery', 'YSDMemoryDataSource', 'YSDRemoteDataSource','YSDS
 
         // Setup Form
         this.setupSelectorFormTmpl();
-        
+        tariffSelector.renderCards('#date-container');
+
         // Setup Controls
         this.setupControls();
 

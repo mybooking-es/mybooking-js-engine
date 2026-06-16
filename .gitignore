@@ -41,10 +41,6 @@ bower_components
 
 # IDE - VSCode
 .vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
 
 # misc
 .sass-cache
@@ -95,3 +91,11 @@ config
 Thumbs.db
 
 /config/*
+
+# Agent interaction files (local context only — do not push to shared repo)
+CLAUDE.md
+docs/
+memory/
+.github/prompts/
+.github/copilot-instructions.md
+
