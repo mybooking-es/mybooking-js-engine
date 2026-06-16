@@ -1,5 +1,10 @@
 # Changelog
 
+## [2.6.4] - 2026.06.16
+
+### Added
+- Customer customization by category
+
 ## [2.6.3] - 2026.05.27
 
 ### Added
