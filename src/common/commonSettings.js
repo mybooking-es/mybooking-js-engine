@@ -366,6 +366,26 @@ define('commonSettings', ['jquery','commonServices','commonLoader','commonTransl
       }
     },
 
+    buildSummarySettings: function(settings) {
+      if (typeof settings === 'undefined' || settings === null) {
+       return {};
+      }
+
+      return {
+       country_code: settings.country_code,
+       deposit_literal: settings.deposit_literal,
+       deposit_reduction_literal: settings.deposit_reduction_literal,
+       deposit_total_literal: settings.deposit_total_literal,
+       driver_deposit_literal: settings.driver_deposit_literal,
+       guarantee_literal: settings.guarantee_literal,
+       guarantee_reduction_literal: settings.guarantee_reduction_literal,
+       hold_product_deposit_cost: settings.hold_product_deposit_cost,
+       literal_deposit_franchise: settings.literal_deposit_franchise,
+       show_deposit: settings.show_deposit,
+       show_excess: settings.show_excess
+      };
+    },
+
     /**
      * Get page language
      */ 

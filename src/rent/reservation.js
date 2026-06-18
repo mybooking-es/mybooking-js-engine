@@ -123,6 +123,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
                  model.bookingFreeAccessId = data.booking.free_access_id;
                  model.sales_process = data.sales_process;
                  model.deposit_process = data.deposit_process;
+                 model.settings = commonSettings.buildSummarySettings(data.settings);
 
                  view.updateBooking();
                },
@@ -221,8 +222,9 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
                 // Update reservation
                 if (typeof data.booking !== 'undefined') {
                   model.booking = data.booking;
+                  model.settings = commonSettings.buildSummarySettings(data.settings);
                   // Refresh original values
-                  model.storeOriginalDriverCustomer(model.booking);              
+                  model.storeOriginalDriverCustomer(model.booking);
                   view.updateBooking();
                 }
 
@@ -707,6 +709,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
               deposit_process: model.deposit_process,
               configuration: model.configuration,
               showReservationForm,
+              settings: model.settings || {}
             });
         $('#reservation_detail').html(reservationDetail);
       }

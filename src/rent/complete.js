@@ -223,7 +223,8 @@ require(['jquery',
                  model.extras = data.extras;
                  model.coverages = data.coverages;
                  model.sales_process = data.sales_process;
-                 
+                 model.settings = commonSettings.buildSummarySettings(data.settings);
+
                  view.updateShoppingCart();
 
                  // Airport and hotel form required  conditional rules
@@ -348,6 +349,7 @@ require(['jquery',
         success: function(data, textStatus, jqXHR) {
             model.shopping_cart = data.shopping_cart;
             model.sales_process = data.sales_process;
+            model.settings = commonSettings.buildSummarySettings(data.settings);
             // Updates the shopping cart
             view.updateShoppingCartExtra(extraCode, 0);          
             // Hide the loader (OK)
@@ -469,6 +471,7 @@ require(['jquery',
                 // Update the shopping cart
                 model.shopping_cart = data.shopping_cart;
                 model.sales_process = data.sales_process;
+                model.settings = commonSettings.buildSummarySettings(data.settings);
                 view.updateShoppingCartPromotionCode();
                 // Hide the loader
                 commonLoader.hide();
@@ -1853,7 +1856,8 @@ require(['jquery',
         var reservationDetail = tmpl('script_reservation_summary')({
           shopping_cart: model.shopping_cart, // Retrocompatibility in override complete views
           booking: model.shopping_cart,
-          configuration: model.configuration
+          configuration: model.configuration,
+          settings: model.settings || {}
         });
         $('#reservation_detail').html(reservationDetail);
       }

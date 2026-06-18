@@ -98,6 +98,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
                  model.booking = data.booking;
                  model.bookingFreeAccessId = data.booking.free_access_id;
                  model.sales_process = data.sales_process;
+                 model.settings = commonSettings.buildSummarySettings(data.settings);
                  view.updateBooking();
                },
                error: function(data, textStatus, jqXHR) {
@@ -161,7 +162,8 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
       var reservationDetail = tmpl('script_reservation_summary')(
           {
             booking: model.booking,
-            configuration: model.configuration
+            configuration: model.configuration,
+            settings: model.settings || {}
           });
       $('#reservation_detail').html(reservationDetail);
 
