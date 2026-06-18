@@ -3992,6 +3992,2656 @@ define("commonTranslations", [], function () {
         }
       },
     },
+        et: {
+      translation: {
+        common: {
+          countries: {
+            ES: "Hispaania",
+            GB: "\u00dchendkuningriik",
+            FR: "Prantsusmaa",
+            IT: "Itaalia",
+            DE: "Saksamaa",
+            PT: "Portugal",
+            NL: "Holland",
+            US: "Ameerika \u00dchendriigid",
+            AF: "Afganistan",
+            AX: "Ahvenamaa",
+            AL: "Albaania",
+            DZ: "Al\u017eeeria",
+            AS: "Ameerika Samoa",
+            AD: "Andorra",
+            AO: "Angola",
+            AI: "Anguilla",
+            AQ: "Antarktika",
+            AG: "Antigua ja Barbuda",
+            AR: "Argentina",
+            AM: "Armeenia",
+            AW: "Aruba",
+            AC: "Ascensioni saar",
+            AU: "Austraalia",
+            AT: "Austria",
+            AZ: "Aserbaid\u017eaan",
+            BS: "Bahama",
+            BH: "Bahrein",
+            BD: "Bangladesh",
+            BB: "Barbados",
+            BY: "Valgevene",
+            BE: "Belgia",
+            BZ: "Belize",
+            BJ: "Benin",
+            BM: "Bermuda",
+            BT: "Bhutan",
+            BO: "Boliivia",
+            BA: "Bosnia ja Hertsegoviina",
+            BW: "Botswana",
+            BR: "Brasiilia",
+            IO: "Briti India ookeani territoorium",
+            VG: "Briti Neitsisaared",
+            BN: "Brunei",
+            BG: "Bulgaaria",
+            BF: "Burkina Faso",
+            BI: "Burundi",
+            KH: "Kambod\u017ea",
+            CM: "Kamerun",
+            CA: "Kanada",
+            IC: "Kanaari saared",
+            CV: "Cabo Verde",
+            BQ: "Kariibi mere Holland",
+            KY: "Kaimanisaared",
+            CF: "Kesk-Aafrika Vabariik",
+            EA: "Ceuta ja Melilla",
+            TD: "T\u0161aad",
+            CL: "T\u0161iili",
+            CN: "Hiina",
+            CX: "J\u00f5ulusaar",
+            CC: "Kookose (Keelingi) saared",
+            CO: "Kolumbia",
+            KM: "Komoorid",
+            CG: "Kongo \u2013 Brazzaville",
+            CD: "Kongo \u2013 Kinshasa",
+            CK: "Cooki saared",
+            CR: "Costa Rica",
+            CI: "C\u00f4te d\u2019Ivoire",
+            HR: "Horvaatia",
+            CU: "Kuuba",
+            CW: "Cura\u00e7ao",
+            CY: "K\u00fcpros",
+            CZ: "T\u0161ehhi",
+            DK: "Taani",
+            DG: "Diego Garcia",
+            DJ: "Djibouti",
+            DM: "Dominica",
+            DO: "Dominikaani Vabariik",
+            EC: "Ecuador",
+            EG: "Egiptus",
+            SV: "El Salvador",
+            GQ: "Ekvatoriaal-Guinea",
+            ER: "Eritrea",
+            EE: "Eesti",
+            SZ: "Eswatini",
+            ET: "Etioopia",
+            FK: "Falklandi saared",
+            FO: "F\u00e4\u00e4ri saared",
+            FJ: "Fid\u017ei",
+            FI: "Soome",
+            GF: "Prantsuse Guajaana",
+            PF: "Prantsuse Pol\u00fcneesia",
+            TF: "Prantsuse l\u00f5unaterritooriumid",
+            GA: "Gabon",
+            GM: "Gambia",
+            GE: "Gruusia",
+            GH: "Ghana",
+            GI: "Gibraltar",
+            GR: "Kreeka",
+            GL: "Gr\u00f6\u00f6nimaa",
+            GD: "Grenada",
+            GP: "Guadeloupe",
+            GU: "Guam",
+            GT: "Guatemala",
+            GG: "Guernsey",
+            GN: "Guinea",
+            GW: "Guinea-Bissau",
+            GY: "Guajaana",
+            HT: "Haiti",
+            HN: "Honduras",
+            HK: "Hongkongi erihalduspiirkond Hiina",
+            HU: "Ungari",
+            IS: "Island",
+            IN: "India",
+            ID: "Indoneesia",
+            IR: "Iraan",
+            IQ: "Iraak",
+            IE: "Iirimaa",
+            IM: "Mani saar",
+            IL: "Iisrael",
+            JM: "Jamaica",
+            JP: "Jaapan",
+            JE: "Jersey",
+            JO: "Jordaania",
+            KZ: "Kasahstan",
+            KE: "Keenia",
+            KI: "Kiribati",
+            XK: "Kosovo",
+            KW: "Kuveit",
+            KG: "K\u00f5rg\u00f5zstan",
+            LA: "Laos",
+            LV: "L\u00e4ti",
+            LB: "Liibanon",
+            LS: "Lesotho",
+            LR: "Libeeria",
+            LY: "Liib\u00fca",
+            LI: "Liechtenstein",
+            LT: "Leedu",
+            LU: "Luksemburg",
+            MO: "Aomeni erihalduspiirkond Hiina",
+            MG: "Madagaskar",
+            MW: "Malawi",
+            MY: "Malaisia",
+            MV: "Maldiivid",
+            ML: "Mali",
+            MT: "Malta",
+            MH: "Marshalli saared",
+            MQ: "Martinique",
+            MR: "Mauritaania",
+            MU: "Mauritius",
+            YT: "Mayotte",
+            MX: "Mehhiko",
+            FM: "Mikroneesia",
+            MD: "Moldova",
+            MC: "Monaco",
+            MN: "Mongoolia",
+            ME: "Montenegro",
+            MS: "Montserrat",
+            MA: "Maroko",
+            MZ: "Mosambiik",
+            MM: "Myanmar (Birma)",
+            NA: "Namiibia",
+            NR: "Nauru",
+            NP: "Nepal",
+            NC: "Uus-Kaledoonia",
+            NZ: "Uus-Meremaa",
+            NI: "Nicaragua",
+            NE: "Niger",
+            NG: "Nigeeria",
+            NU: "Niue",
+            NF: "Norfolki saar",
+            KP: "P\u00f5hja-Korea",
+            MK: "P\u00f5hja-Makedoonia",
+            MP: "P\u00f5hja-Mariaanid",
+            NO: "Norra",
+            OM: "Omaan",
+            PK: "Pakistan",
+            PW: "Palau",
+            PS: "Palestiina alad",
+            PA: "Panama",
+            PG: "Paapua Uus-Guinea",
+            PY: "Paraguay",
+            PE: "Peruu",
+            PH: "Filipiinid",
+            PN: "Pitcairni saared",
+            PL: "Poola",
+            XA: "Pseudoaktsendid",
+            XB: "Pseudo-Bidi",
+            PR: "Puerto Rico",
+            QA: "Katar",
+            RE: "R\u00e9union",
+            RO: "Rumeenia",
+            RU: "Venemaa",
+            RW: "Rwanda",
+            WS: "Samoa",
+            SM: "San Marino",
+            ST: "S\u00e3o Tom\u00e9 ja Pr\u00edncipe",
+            SA: "Saudi Araabia",
+            SN: "Senegal",
+            RS: "Serbia",
+            SC: "Sei\u0161ellid",
+            SL: "Sierra Leone",
+            SG: "Singapur",
+            SX: "Sint Maarten",
+            SK: "Slovakkia",
+            SI: "Sloveenia",
+            SB: "Saalomoni saared",
+            SO: "Somaalia",
+            ZA: "L\u00f5una-Aafrika",
+            GS: "L\u00f5una-Georgia ja L\u00f5una-Sandwichi saared",
+            KR: "L\u00f5una-Korea",
+            SS: "L\u00f5una-Sudaan",
+            LK: "Sri Lanka",
+            BL: "P\u00fcha Barth\u00e9lemy",
+            SH: "P\u00fcha Helena",
+            KN: "St Kitts ja Nevis",
+            LC: "P\u00fcha Lucia",
+            MF: "P\u00fcha Martin",
+            PM: "St Pierre ja Miquelon",
+            VC: "St Vincent ja Grenadiinid",
+            SD: "Sudaan",
+            SR: "Suriname",
+            SJ: "Svalbard ja Jan Mayen",
+            SE: "Rootsi",
+            CH: "\u0160veits",
+            SY: "S\u00fc\u00fcria",
+            TW: "Taiwan",
+            TJ: "Tad\u017eikistan",
+            TZ: "Tansaania",
+            TH: "Tai",
+            TL: "Ida-Timor",
+            TG: "Togo",
+            TK: "Tokelau",
+            TO: "Tonga",
+            TT: "Trinidad ja Tobago",
+            TA: "Tristan da Cunha",
+            TN: "Tuneesia",
+            TR: "T\u00fcrgi",
+            TM: "T\u00fcrkmenistan",
+            TC: "Turksi ja Caicose saared",
+            TV: "Tuvalu",
+            UM: "USA \u00e4\u00e4repoolsed saared",
+            VI: "USA Neitsisaared",
+            UG: "Uganda",
+            UA: "Ukraina",
+            AE: "Araabia \u00dchendemiraadid",
+            UY: "Uruguay",
+            UZ: "Usbekistan",
+            VU: "Vanuatu",
+            VA: "Vatikan",
+            VE: "Venezuela",
+            VN: "Vietnam",
+            WF: "Wallis ja Futuna",
+            EH: "L\u00e4\u00e4ne-Sahara",
+            YE: "Jeemen",
+            ZM: "Sambia",
+            ZW: "Zimbabwe"
+          },
+          days: "&nbsp;<u><b> {{count}} </b></u>&nbsp; p\u00e4ev",
+          days_plural: "&nbsp;<u><b> {{count}} </b></u>&nbsp; p\u00e4eva",
+          hours: "&nbsp;<u><b> {{count}} </b></u>&nbsp; tund",
+          hours_plural: "&nbsp;<u><b> {{count}} </b></u>&nbsp; tundi",
+          minutes: "&nbsp;<u><b> {{count}} </b></u>&nbsp; minut",
+          minutes_plural: "&nbsp;<u><b> {{count}} </b></u>&nbsp; minutit",
+          error: "Meil on kahju. ",
+          welcomeConnectedUser: "Tere tulemast! <b> {{name}} </b> saate oma broneeringuga j\u00e4tkata",
+          invalid_user_password: "Kehtetu kasutaja v\u00f5i parool",
+          no_necessary_url_params: "URL ei sisalda protsessi l\u00e4biviimiseks vajalikku teavet",
+          required: "N\u00f5utav",
+          selectOption: "Valige suvand",
+          processSuccess: "Protsess edukalt l\u00f5pule viidud",
+          processError: "Meil on kahju. ",
+          duplicateTab: "Te ei saa vahekaarti broneerimisprotsessis kopeerida. "
+        },
+        password_forgotten: {
+          message: "Teie e-posti aadressile on saadetud s\u00f5num parooli l\u00e4htestamiseks",
+          invalid_username_email: "Sisestatud kasutajanime v\u00f5i e-posti aadressi pole olemas"
+        },
+        change_password: {
+          message: "Parool on muudetud. "
+        },
+        extra: {
+          daily_amount: "{{oneUnitPrice}} p\u00e4evas",
+          hourly_amount: "{{oneUnitPrice}} tunnis",
+          unitary_amount: "{{oneUnitPrice}}",
+          total: "Kokku {{total}}"
+        },
+        contact: {
+          form_errors: "Palun kontrollige vigu",
+          validate_captcha: "Palun kinnitage captcha",
+          validations: {
+            nameRequired: "Nimi on kohustuslik",
+            surnameRequired: "Perekonnanimi on kohustuslik",
+            emailRequired: "E-post on kohustuslik",
+            phoneNumberRequired: "Telefoninumber on n\u00f5utav",
+            commentsRequired: "S\u00f5num on kohustuslik",
+            privacyPolicyRequired: "Te ei ole m\u00e4rkinud, et olete privaatsuspoliitikaga tutvunud"
+          },
+          message_sent_successfully: "S\u00f5num edukalt saadetud",
+          error_sending_message: "Viga s\u00f5numi saatmisel"
+        },
+        calendar_selector: {
+          min_time: "Eelmise broneeringu kogu asub aadressil {{time}}",
+          max_time: "J\u00e4rgmise broneeringu kohaletoimetamine toimub aadressil {{time}}",
+          min_duration: "{{days}} d",
+          busy: "H\u00f5ivatud",
+          no_deliveries_collection: "Day ei aktsepteeri kohaletoimetamist ega \u00e4rav\u00f5tmist",
+          delivery_not_allowed: "T\u00e4htp\u00e4eval ei ole v\u00f5imalik kohale toimetada.",
+          collection_not_allowed: "Kuup\u00e4eval pole v\u00f5imalik naasta."
+        },
+        selector: {
+          select: "Vali",
+          select_pickup_place: "Valige pealev\u00f5tmise koht",
+          select_return_place: "Valige tagasip\u00f6\u00f6rdumiskoht",
+          another_place: "T\u00e4pne aadress",
+          error_loading_data: "Meil on kahju. ",
+          error_min_days: "Kahjuks ei vasta see p\u00e4evade miinimumarvule. ",
+          validations: {
+            pickupPlaceRequired: "Vajalik pealev\u00f5tmise koht",
+            dateFromRequired: "Kuup\u00e4ev on n\u00f5utav",
+            timeFromRequired: "Vajalik aeg",
+            returnPlaceRequired: "Vajalik tagastuskoht",
+            dateToRequired: "Kuup\u00e4ev on n\u00f5utav",
+            timeToRequired: "Vajalik aeg",
+            sameDayTimeToGreaterTimeFrom: "Peab olema tarneajast hilisem",
+            acceptAge: "Peate kinnitama, et olete vanem kui {{years}} aastat",
+            promotionCodeInvalid: "Sooduskood ei kehti",
+            durationLimit: "Te ei saa valida kestust, mis \u00fcletab lahtiolekuaegu"
+          }
+        },
+        chooseProduct: {
+          loadShoppingCart: {
+            error: "Meil on kahju. "
+          },
+          selectProduct: {
+            productNotSelected: "Palun valige s\u00f5iduk.",
+            error: "Meil on kahju. "
+          },
+          selectUnits: "Valitud \u00c3\u00bcksused",
+          units: "{{count}} \u00fcksus",
+          units_plural: "{{count}} \u00fchikut",
+          max_duration: "Maksimaalne kestus on {{duration}}",
+          min_duration: "Minimaalne kestus on {{duration}}"
+        },
+        chooseExtras: {
+          loadShoppingCart: {
+            error: "Meil on kahju. "
+          },
+          selectExtra: {
+            error: "Meil on kahju. "
+          },
+          deleteExtra: {
+            error: "Meil on kahju. "
+          }
+        },
+        complete: {
+          loadShoppingCart: {
+            error: "Meil on kahju. "
+          },
+          selectExtra: {
+            error: "Meil on kahju. "
+          },
+          deleteExtra: {
+            error: "Meil on kahju. "
+          },
+          promotionCode: {
+            error: "Meil on kahju. "
+          },
+          reservationForm: {
+            errors: "Palun kontrollige broneeringu vormis olevaid vigu.",
+            total_payment: "Maksa {{amount}}",
+            payment_button: "Maksa {{amount}}",
+            booking_amount: "Broneeringu kinnitamiseks tuleb tasuda <strong> {{amount}} </strong>",
+            select_country: "Valige riik",
+            validations: {
+              fieldRequired: "See v\u00e4li on kohustuslik",
+              invalidValue: "Kehtetu v\u00e4\u00e4rtus",
+              passwordCheck: "Parool peab sisaldama suurt\u00e4hti, v\u00e4iket\u00e4hti, numbrit ja s\u00fcmbolit",
+              minLength: "Minimaalselt {{minlength}} t\u00e4hem\u00e4rki",
+              customerNameRequired: "Kliendi nimi on n\u00f5utav",
+              customerSurnameRequired: "Kliendi perekonnanimi on kohustuslik",
+              customerEmailRequired: "Kliendi meiliaadress on n\u00f5utav",
+              customerEmailInvalidFormat: "Vale e-posti aadress",
+              customerEmailConfirmationRequired: "Vajalik on kliendi e-posti kinnitus",
+              customerEmailConfirmationEqualsEmail: "Kliendi meili kinnitus peab v\u00f5rduma kliendi meiliga",
+              customerPhoneNumberRequired: "Kliendi telefoninumber on n\u00f5utav",
+              customerPhoneNumberMinLength: "Kliendi telefoninumbri min pikkus",
+              documentIdInvalidFormat: "Vale dokumendi ID-number",
+              drivingLicenseNumberInvalidFormat: "Kehtetu juhiloa number",
+              driverDateOfBirthRequired: "Juhi s\u00fcnnikuup\u00e4ev on kohustuslik",
+              numberOfAdultsRequired: "N\u00f5utav number erakonnas",
+              conditionsReadRequired: "Palun kontrollige, kas olete tingimused l\u00e4bi lugenud",
+              privacyPolicyRequired: "Palun kontrollige, kas olete privaatsuspoliitika l\u00e4bi lugenud",
+              selectPaymentMethod: "Palun valige makseviis",
+              datePatternInvalid: "Sobimatu kuup\u00e4evavorming"
+            }
+          },
+          createReservation: {
+            error: "Meil on kahju. "
+          }
+        },
+        summary: {
+          loadReservation: {
+            error: "Meil on kahju. "
+          }
+        },
+        myReservation: {
+          confirmDriverIsCustomer: "Kas olete kindel, et soovite muudatust teha? ",
+          select_country: "Valige riik",
+          select_nationality: "Valige rahvus",
+          select_type_document: "Valige dokumendi t\u00fc\u00fcp",
+          loadReservation: {
+            error: "Meil on kahju. "
+          },
+          pay: {
+            total_payment: "Maksa {{amount}}",
+            payment_button: "Maksa {{amount}}",
+            paymentMethodRequired: "Palun valige makseviis.",
+            depositPaymentMethodRequired: "Palun valige makseviis.",
+            booking_amount: "Broneeringu kinnitamiseks tuleb tasuda <strong> {{amount}} </strong>",
+            pending_amount: "V\u00f5imalik on tasuda ootel summa <strong> {{amount}} </strong>"
+          },
+          deposit: {
+            total_deposit: "Kogu sissemakse: {{amount}}",
+            deposit_button: "Makske sissemakse {{amount}}"
+          },
+          updateReservation: {
+            success: "Broneeringu v\u00e4rskendamine \u00f5nnestus",
+            error: "Meil on kahju. "
+          },
+          validations: {
+            privacyPolicyRequired: "Te ei ole m\u00e4rkinud, et olete privaatsuspoliitikaga tutvunud"
+          },
+          passenger: {
+            listed: {
+              error: "Viga reisijate toomisel"
+            },
+            added: {
+              success: "Reisija lisamine \u00f5nnestus",
+              error: "Viga reisija lisamisel"
+            },
+            remove: {
+              warning: "Kas soovite reisija eemaldada?",
+              success: "Reisija eemaldamine \u00f5nnestus",
+              error: "Viga reisija eemaldamisel"
+            },
+            validations: {
+              invalid: "Palun kontrollige vormi.",
+              fieldRequired: "Kohustuslik v\u00e4li"
+            }
+          }
+        },
+        selectorWizard: {
+          pickupPlace: "Kogumispunkt",
+          dateFrom: "Kogumise kuup\u00e4ev",
+          timeFrom: "Kogumise aeg",
+          returnPlace: "Tagasip\u00f6\u00f6rdumispunkt",
+          dateTo: "Tagasituleku kuup\u00c3\u00a4ev",
+          timeTo: "Tagastamisaeg",
+          age: "Vanus"
+        },
+        activities: {
+          common: {
+            errorLoadingData: "Meil on kahju. ",
+            errorUpdatingData: "Meil on kahju. ",
+            dataUpdateOk: "Andmete v\u00e4rskendamine \u00f5nnestus"
+          },
+          calendarWidget: {
+            selectTickets: "Te pole valinud \u00fchtegi piletit",
+            fullPlaces: "T\u00e4isv\u00f5imsus",
+            fewPlacesWarning: "Viimased kohad",
+            fewNoPlacesWarning: "Viimased p\u00f6\u00f6rded"
+          },
+          multipleDates: {
+            selectDate: "Palun valige kuup\u00e4ev"
+          },
+          checkout: {
+            errorCreatingOrder: "Meil on kahju. ",
+            errors: "Palun kontrollige broneeringu vormis olevaid vigu.",
+            validations: {
+              customerNameRequired: "Kliendi nimi on n\u00f5utav",
+              customerSurnameRequired: "Kliendi perekonnanimi on kohustuslik",
+              customerEmailRequired: "Kliendi meiliaadress on n\u00f5utav",
+              customerEmailInvalidFormat: "Vale e-posti aadress",
+              customerEmailConfirmationRequired: "Vajalik on kliendi e-posti kinnitus",
+              customerEmailConfirmationEqualsEmail: "Kliendi meili kinnitus peab v\u00f5rduma kliendi meiliga",
+              customerPhoneNumberRequired: "Kliendi telefoninumber on n\u00f5utav",
+              customerPhoneNumberMinLength: "Kliendi telefoninumbri min pikkus",
+              conditionsReadRequired: "Palun kontrollige, kas olete tingimused l\u00e4bi lugenud",
+              privacyPolicyRequired: "Palun kontrollige, kas olete privaatsuspoliitika l\u00e4bi lugenud",
+              selectPaymentMethod: "Palun valige makseviis"
+            }
+          },
+          payment: {
+            total_payment: "Maksa {{amount}}",
+            payment_button: "Maksa {{amount}}",
+            deposit_amount: "Broneeringu kinnitamiseks tuleb tasuda <strong> {{amount}} </strong>",
+            pending_amount: "Ootel oleva summa <strong> {{amount}} </strong> tasumine on lubatud",
+            errors: "Palun kontrollige vigu.",
+            paymentMethodNotSelected: "Palun valige makseviis."
+          },
+          myReservation: {
+            cancelReservationConfirm: "Kas soovite broneeringu t\u00fchistada?"
+          }
+        },
+        transfer: {
+          selectPickupPlace: "Valige pealev\u00f5tmise koht",
+          selectDropOffPlace: "Valige mahav\u00f5tmise koht",
+          chooseVehicle: {
+            vehicleFound: "<strong> {{available}} </strong>&nbsp;leiti saadaolevaid s\u00f5idukeid",
+            vehicleNotFound: "Meil on kahju. "
+          }
+        },
+        planning: {
+          api_conexion_error: "Kahjuks ilmnes \u00fchenduse viga",
+          no_schedules_found: "Ajakavasid ei leitud",
+          no_resources_found: "Ressursse ei leitud",
+          no_data_found: "Andmeid ei leitud",
+          generic_error: "Kahjuks ilmnes viga."
+        },
+        shiftPicker: {
+          no_data_found: "Andmeid ei leitud",
+          generic_error: "Kahjuks ilmnes viga.",
+          turn_not_available: "See p\u00f6\u00f6re pole saadaval.",
+          min_max_units_error: "Minimaalne \u00fchikute arv \u00fcletab maksimumi."
+        }
+      }
+    },
+    fi: {
+      translation: {
+        common: {
+          countries: {
+            ES: "Espanja",
+            GB: "Yhdistynyt kuningaskunta",
+            FR: "Ranska",
+            IT: "Italia",
+            DE: "Saksa",
+            PT: "Portugali",
+            NL: "Alankomaat",
+            US: "Yhdysvallat",
+            AF: "Afganistan",
+            AX: "Ahvenanmaa",
+            AL: "Albania",
+            DZ: "Algeria",
+            AS: "Amerikan Samoa",
+            AD: "Andorra",
+            AO: "Angola",
+            AI: "Anguilla",
+            AQ: "Etel\u00e4manner",
+            AG: "Antigua & Barbuda",
+            AR: "Argentiina",
+            AM: "Armenia",
+            AW: "Aruba",
+            AC: "Ascension Island",
+            AU: "Australia",
+            AT: "It\u00e4valta",
+            AZ: "Azerbaid\u017ean",
+            BS: "Bahama",
+            BH: "Bahrain",
+            BD: "Bangladesh",
+            BB: "Barbados",
+            BY: "Valko-Ven\u00e4j\u00e4",
+            BE: "Belgia",
+            BZ: "Belize",
+            BJ: "Benin",
+            BM: "Bermuda",
+            BT: "Bhutan",
+            BO: "Bolivia",
+            BA: "Bosnia ja Hertsegovina",
+            BW: "Botswana",
+            BR: "Brasilia",
+            IO: "Brittil\u00e4inen Intian valtameren alue",
+            VG: "Brittil\u00e4iset Neitsytsaaret",
+            BN: "Brunei",
+            BG: "Bulgaria",
+            BF: "Burkina Faso",
+            BI: "Burundi",
+            KH: "Kambod\u017ea",
+            CM: "Kamerun",
+            CA: "Kanada",
+            IC: "Kanarian saaret",
+            CV: "Kap Verde",
+            BQ: "Karibian Alankomaat",
+            KY: "Caymansaaret",
+            CF: "Keski-Afrikan tasavalta",
+            EA: "Ceuta & Melilla",
+            TD: "T\u0161ad",
+            CL: "Chile",
+            CN: "Kiina",
+            CX: "Joulusaari",
+            CC: "Kookossaaret (Keeling).",
+            CO: "Kolumbia",
+            KM: "Komorit",
+            CG: "Kongo - Brazzaville",
+            CD: "Kongo - Kinshasa",
+            CK: "Cookin saaret",
+            CR: "Costa Rica",
+            CI: "Norsunluurannikko",
+            HR: "Kroatia",
+            CU: "Kuuba",
+            CW: "Cura\u00e7ao",
+            CY: "Kypros",
+            CZ: "T\u0161ekki",
+            DK: "Tanska",
+            DG: "Diego Garcia",
+            DJ: "Djibouti",
+            DM: "Dominica",
+            DO: "Dominikaaninen tasavalta",
+            EC: "Ecuador",
+            EG: "Egypti",
+            SV: "El Salvador",
+            GQ: "P\u00e4iv\u00e4ntasaajan Guinea",
+            ER: "Eritrea",
+            EE: "Viro",
+            SZ: "Eswatini",
+            ET: "Etiopia",
+            FK: "Falklandin saaret",
+            FO: "F\u00e4rsaaret",
+            FJ: "Fid\u017ei",
+            FI: "Suomi",
+            GF: "Ranskan Guayana",
+            PF: "Ranskan Polynesia",
+            TF: "Ranskan etel\u00e4iset alueet",
+            GA: "Gabon",
+            GM: "Gambia",
+            GE: "Georgia",
+            GH: "Ghana",
+            GI: "Gibraltar",
+            GR: "Kreikka",
+            GL: "Gr\u00f6nlanti",
+            GD: "Grenada",
+            GP: "Guadeloupe",
+            GU: "Guam",
+            GT: "Guatemala",
+            GG: "Guernseyss\u00e4",
+            GN: "Guinea",
+            GW: "Guinea-Bissau",
+            GY: "Guyana",
+            HT: "Haiti",
+            HN: "Honduras",
+            HK: "Hongkongin erityishallintoalue Kiina",
+            HU: "Unkari",
+            IS: "Islanti",
+            IN: "Intia",
+            ID: "Indonesia",
+            IR: "Iran",
+            IQ: "Irak",
+            IE: "Irlanti",
+            IM: "Mansaari",
+            IL: "Israel",
+            JM: "Jamaika",
+            JP: "Japani",
+            JE: "Jersey",
+            JO: "Jordania",
+            KZ: "Kazakstan",
+            KE: "Kenia",
+            KI: "Kiribati",
+            XK: "Kosovo",
+            KW: "Kuwait",
+            KG: "Kirgisia",
+            LA: "Laos",
+            LV: "Latvia",
+            LB: "Libanon",
+            LS: "Lesotho",
+            LR: "Liberia",
+            LY: "Libya",
+            LI: "Liechtenstein",
+            LT: "Liettua",
+            LU: "Luxemburg",
+            MO: "Macaon erityishallintoalue Kiina",
+            MG: "Madagaskar",
+            MW: "Malawi",
+            MY: "Malesia",
+            MV: "Malediivit",
+            ML: "Mali",
+            MT: "Malta",
+            MH: "Marshallin saaret",
+            MQ: "Martinique",
+            MR: "Mauritania",
+            MU: "Mauritius",
+            YT: "Mayotte",
+            MX: "Meksiko",
+            FM: "Mikronesia",
+            MD: "Moldova",
+            MC: "Monaco",
+            MN: "Mongolia",
+            ME: "Montenegro",
+            MS: "Montserrat",
+            MA: "Marokko",
+            MZ: "Mosambik",
+            MM: "Myanmar (Burma)",
+            NA: "Namibia",
+            NR: "Nauru",
+            NP: "Nepal",
+            NC: "Uusi-Kaledonia",
+            NZ: "Uusi-Seelanti",
+            NI: "Nicaragua",
+            NE: "Niger",
+            NG: "Nigeria",
+            NU: "Niue",
+            NF: "Norfolkin saari",
+            KP: "Pohjois-Korea",
+            MK: "Pohjois-Makedonia",
+            MP: "Pohjois-Mariaanit",
+            NO: "Norja",
+            OM: "Oman",
+            PK: "Pakistan",
+            PW: "Palau",
+            PS: "Palestiinan alueet",
+            PA: "Panama",
+            PG: "Papua-Uusi-Guinea",
+            PY: "Paraguay",
+            PE: "Peru",
+            PH: "Filippiinit",
+            PN: "Pitcairnin saaret",
+            PL: "Puola",
+            XA: "Pseudo-aksentit",
+            XB: "Pseudo-Bidi",
+            PR: "Puerto Rico",
+            QA: "Qatar",
+            RE: "R\u00e9union",
+            RO: "Romania",
+            RU: "Ven\u00e4j\u00e4",
+            RW: "Ruanda",
+            WS: "Samoa",
+            SM: "San Marino",
+            ST: "S\u00e3o Tom\u00e9 & Pr\u00edncipe",
+            SA: "Saudi-Arabia",
+            SN: "Senegal",
+            RS: "Serbia",
+            SC: "Seychellit",
+            SL: "Sierra Leone",
+            SG: "Singapore",
+            SX: "Sint Maarten",
+            SK: "Slovakia",
+            SI: "Slovenia",
+            SB: "Salomonsaaret",
+            SO: "Somalia",
+            ZA: "Etel\u00e4-Afrikka",
+            GS: "Etel\u00e4-Georgia ja Etel\u00e4iset Sandwichsaaret",
+            KR: "Etel\u00e4-Korea",
+            SS: "Etel\u00e4-Sudan",
+            LK: "Sri Lanka",
+            BL: "St. Barth\u00e9lemy",
+            SH: "Pyh\u00e4 Helena",
+            KN: "St. Kitts & Nevis",
+            LC: "St. Lucia",
+            MF: "St. Martin",
+            PM: "St. Pierre & Miquelon",
+            VC: "St. Vincent ja Grenadiinit",
+            SD: "Sudan",
+            SR: "Suriname",
+            SJ: "Svalbard & Jan Mayen",
+            SE: "Ruotsi",
+            CH: "Sveitsi",
+            SY: "Syyria",
+            TW: "Taiwan",
+            TJ: "Tad\u017eikistan",
+            TZ: "Tansania",
+            TH: "Thaimaa",
+            TL: "It\u00e4-Timor",
+            TG: "Togo",
+            TK: "Tokelau",
+            TO: "Tonga",
+            TT: "Trinidad & Tobago",
+            TA: "Tristan da Cunha",
+            TN: "Tunisia",
+            TR: "Turkki",
+            TM: "Turkmenistan",
+            TC: "Turks- ja Caicossaaret",
+            TV: "Tuvalu",
+            UM: "Yhdysvaltain syrj\u00e4iset saaret",
+            VI: "Yhdysvaltain Neitsytsaaret",
+            UG: "Uganda",
+            UA: "Ukraina",
+            AE: "Yhdistyneet arabiemiirikunnat",
+            UY: "Uruguay",
+            UZ: "Uzbekistan",
+            VU: "Vanuatu",
+            VA: "Vatikaanikaupunki",
+            VE: "Venezuela",
+            VN: "Vietnam",
+            WF: "Wallis & Futuna",
+            EH: "L\u00e4nsi-Sahara",
+            YE: "Jemen",
+            ZM: "Sambia",
+            ZW: "Zimbabwe"
+          },
+          days: "&nbsp;<u><b> {{count}} </b></u>&nbsp; p\u00e4iv\u00e4",
+          days_plural: "&nbsp;<u><b> {{count}} </b></u>&nbsp; p\u00e4iv\u00e4\u00e4",
+          hours: "&nbsp;<u><b> {{count}} </b></u>&nbsp; tunti",
+          hours_plural: "&nbsp;<u><b> {{count}} </b></u>&nbsp; tuntia",
+          minutes: "&nbsp;<u><b> {{count}} </b></u>&nbsp; minuutti",
+          minutes_plural: "&nbsp;<u><b> {{count}} </b></u>&nbsp; minuuttia",
+          error: "Olemme pahoillamme. ",
+          welcomeConnectedUser: "Tervetuloa <b> {{name}} </b> voit jatkaa varaustasi",
+          invalid_user_password: "Virheellinen k\u00e4ytt\u00e4j\u00e4 tai salasana",
+          no_necessary_url_params: "URL-osoite ei sis\u00e4ll\u00e4 prosessin suorittamiseen tarvittavia tietoja",
+          required: "Pakollinen",
+          selectOption: "Valitse vaihtoehto",
+          processSuccess: "Prosessi suoritettu onnistuneesti",
+          processError: "Olemme pahoillamme. ",
+          duplicateTab: "Et voi kopioida v\u00e4lilehte\u00e4 varausprosessissa. "
+        },
+        password_forgotten: {
+          message: "S\u00e4hk\u00f6postiosoitteeseesi on l\u00e4hetetty viesti salasanan vaihtamiseksi",
+          invalid_username_email: "Antamaasi k\u00e4ytt\u00e4j\u00e4tunnusta tai s\u00e4hk\u00f6postiosoitetta ei ole olemassa"
+        },
+        change_password: {
+          message: "Salasana on vaihdettu. "
+        },
+        extra: {
+          daily_amount: "{{oneUnitPrice}} p\u00e4iv\u00e4ss\u00e4",
+          hourly_amount: "{{oneUnitPrice}} tunnissa",
+          unitary_amount: "{{oneUnitPrice}}",
+          total: "Yhteens\u00e4 {{total}}"
+        },
+        contact: {
+          form_errors: "Ole hyv\u00e4 ja tarkista virheet",
+          validate_captcha: "Ole hyv\u00e4 ja vahvista captcha",
+          validations: {
+            nameRequired: "Nimi vaaditaan",
+            surnameRequired: "Sukunimi vaaditaan",
+            emailRequired: "S\u00e4hk\u00f6posti vaaditaan",
+            phoneNumberRequired: "Puhelinnumero vaaditaan",
+            commentsRequired: "Viesti vaaditaan",
+            privacyPolicyRequired: "Et ole merkinnyt lukeneesi tietosuojak\u00e4yt\u00e4nt\u00f6\u00e4"
+          },
+          message_sent_successfully: "Viesti l\u00e4hetetty onnistuneesti",
+          error_sending_message: "Virhe l\u00e4hetett\u00e4ess\u00e4 viesti\u00e4"
+        },
+        calendar_selector: {
+          min_time: "Edellisen varauksen kokoelma on osoitteessa {{time}}",
+          max_time: "Seuraavan varauksen toimitus on osoitteeseen {{time}}",
+          min_duration: "{{days}} d",
+          busy: "Kiireinen",
+          no_deliveries_collection: "Day ei hyv\u00e4ksy toimitusta tai noutoa",
+          delivery_not_allowed: "Ei ole mahdollista toimittaa p\u00e4iv\u00e4m\u00e4\u00e4r\u00e4n\u00e4.",
+          collection_not_allowed: "P\u00e4iv\u00e4m\u00e4\u00e4r\u00e4n\u00e4 ei ole mahdollista palata."
+        },
+        selector: {
+          select: "Valitse",
+          select_pickup_place: "Valitse noutopaikka",
+          select_return_place: "Valitse palautuspaikka",
+          another_place: "Tarkka osoite",
+          error_loading_data: "Olemme pahoillamme. ",
+          error_min_days: "Valitettavasti se ei t\u00e4yt\u00e4 v\u00e4himm\u00e4isp\u00e4ivien m\u00e4\u00e4r\u00e4\u00e4. ",
+          validations: {
+            pickupPlaceRequired: "Noutopaikka vaaditaan",
+            dateFromRequired: "P\u00e4iv\u00e4m\u00e4\u00e4r\u00e4 vaaditaan",
+            timeFromRequired: "Tarvittava aika",
+            returnPlaceRequired: "Paluupaikka vaaditaan",
+            dateToRequired: "P\u00e4iv\u00e4m\u00e4\u00e4r\u00e4 vaaditaan",
+            timeToRequired: "Tarvittava aika",
+            sameDayTimeToGreaterTimeFrom: "On oltava my\u00f6h\u00e4isempi kuin toimitusaika",
+            acceptAge: "Sinun on vahvistettava, ett\u00e4 olet yli {{years}}-vuotias",
+            promotionCodeInvalid: "Tarjouskoodi ei kelpaa",
+            durationLimit: "Et voi valita aukioloaikoja ylitt\u00e4v\u00e4\u00e4 kestoa"
+          }
+        },
+        chooseProduct: {
+          loadShoppingCart: {
+            error: "Olemme pahoillamme. "
+          },
+          selectProduct: {
+            productNotSelected: "Ole hyv\u00e4 ja valitse ajoneuvo.",
+            error: "Olemme pahoillamme. "
+          },
+          selectUnits: "Valikoidut yksik\u00c3\u00b6t",
+          units: "{{count}} yksikk\u00f6\u00e4",
+          units_plural: "{{count}} yksikk\u00f6\u00e4",
+          max_duration: "Enimm\u00e4iskesto on {{duration}}",
+          min_duration: "V\u00e4himm\u00e4iskesto on {{duration}}"
+        },
+        chooseExtras: {
+          loadShoppingCart: {
+            error: "Olemme pahoillamme. "
+          },
+          selectExtra: {
+            error: "Olemme pahoillamme. "
+          },
+          deleteExtra: {
+            error: "Olemme pahoillamme. "
+          }
+        },
+        complete: {
+          loadShoppingCart: {
+            error: "Olemme pahoillamme. "
+          },
+          selectExtra: {
+            error: "Olemme pahoillamme. "
+          },
+          deleteExtra: {
+            error: "Olemme pahoillamme. "
+          },
+          promotionCode: {
+            error: "Olemme pahoillamme. "
+          },
+          reservationForm: {
+            errors: "Tarkista varauslomakkeen virheet.",
+            total_payment: "Maksa {{amount}}",
+            payment_button: "Maksa {{amount}}",
+            booking_amount: "Varauksen vahvistamiseksi vaaditaan <strong> {{amount}} </strong> maksu",
+            select_country: "Valitse maa",
+            validations: {
+              fieldRequired: "T\u00e4m\u00e4 kentt\u00e4 on pakollinen",
+              invalidValue: "Virheellinen arvo",
+              passwordCheck: "Salasanan tulee sis\u00e4lt\u00e4\u00e4 iso kirjain, pieni kirjain, numero ja symboli",
+              minLength: "V\u00e4hint\u00e4\u00e4n {{minlength}} merkki\u00e4",
+              customerNameRequired: "Asiakkaan nimi vaaditaan",
+              customerSurnameRequired: "Asiakkaan sukunimi vaaditaan",
+              customerEmailRequired: "Asiakkaan s\u00e4hk\u00f6postiosoite vaaditaan",
+              customerEmailInvalidFormat: "Virheellinen s\u00e4hk\u00f6postiosoite",
+              customerEmailConfirmationRequired: "Asiakkaan s\u00e4hk\u00f6postivahvistus vaaditaan",
+              customerEmailConfirmationEqualsEmail: "Asiakkaan s\u00e4hk\u00f6postivahvistuksen tulee olla sama kuin asiakkaan s\u00e4hk\u00f6posti",
+              customerPhoneNumberRequired: "Asiakkaan puhelinnumero vaaditaan",
+              customerPhoneNumberMinLength: "Asiakkaan puhelinnumeron minimipituus",
+              documentIdInvalidFormat: "Virheellinen asiakirjan tunnusnumero",
+              drivingLicenseNumberInvalidFormat: "Virheellinen ajokortin numero",
+              driverDateOfBirthRequired: "Kuljettajan syntym\u00e4aika vaaditaan",
+              numberOfAdultsRequired: "Puolueen numero vaaditaan",
+              conditionsReadRequired: "Tarkista, ett\u00e4 olet lukenut ehdot",
+              privacyPolicyRequired: "Ole hyv\u00e4 ja tarkista, ett\u00e4 olet lukenut tietosuojak\u00e4yt\u00e4nn\u00f6n",
+              selectPaymentMethod: "Ole hyv\u00e4 ja valitse maksutapa",
+              datePatternInvalid: "Virheellinen p\u00e4iv\u00e4m\u00e4\u00e4r\u00e4n muoto"
+            }
+          },
+          createReservation: {
+            error: "Olemme pahoillamme. "
+          }
+        },
+        summary: {
+          loadReservation: {
+            error: "Olemme pahoillamme. "
+          }
+        },
+        myReservation: {
+          confirmDriverIsCustomer: "Oletko varma, ett\u00e4 haluat tehd\u00e4 muutoksen? ",
+          select_country: "Valitse maa",
+          select_nationality: "Valitse kansallisuus",
+          select_type_document: "Valitse asiakirjan tyyppi",
+          loadReservation: {
+            error: "Olemme pahoillamme. "
+          },
+          pay: {
+            total_payment: "Maksa {{amount}}",
+            payment_button: "Maksa {{amount}}",
+            paymentMethodRequired: "Ole hyv\u00e4 ja valitse maksutapa.",
+            depositPaymentMethodRequired: "Ole hyv\u00e4 ja valitse maksutapa.",
+            booking_amount: "Varauksen vahvistamiseksi vaaditaan <strong> {{amount}} </strong> maksu",
+            pending_amount: "Odottavan summan maksaminen <strong> {{amount}} </strong> on vaihtoehto"
+          },
+          deposit: {
+            total_deposit: "Talletus yhteens\u00e4: {{amount}}",
+            deposit_button: "Maksa talletus {{amount}}"
+          },
+          updateReservation: {
+            success: "Varauksen p\u00e4ivitys onnistui",
+            error: "Olemme pahoillamme. "
+          },
+          validations: {
+            privacyPolicyRequired: "Et ole merkinnyt lukeneesi tietosuojak\u00e4yt\u00e4nt\u00f6\u00e4"
+          },
+          passenger: {
+            listed: {
+              error: "Virhe noudettaessa matkustajia"
+            },
+            added: {
+              success: "Matkustaja lis\u00e4tty onnistuneesti",
+              error: "Virhe lis\u00e4tt\u00e4ess\u00e4 matkustajaa"
+            },
+            remove: {
+              warning: "Haluatko poistaa matkustajan?",
+              success: "Matkustaja poistettiin onnistuneesti",
+              error: "Virhe poistettaessa matkustajaa"
+            },
+            validations: {
+              invalid: "Tarkista lomake.",
+              fieldRequired: "Pakollinen kentt\u00e4"
+            }
+          }
+        },
+        selectorWizard: {
+          pickupPlace: "Ker\u00e4yspiste",
+          dateFrom: "Ker\u00e4ysp\u00e4iv\u00e4m\u00e4\u00e4r\u00e4",
+          timeFrom: "Ker\u00e4ysaika",
+          returnPlace: "Paluupiste",
+          dateTo: "Paluup\u00c3\u00a4iv\u00c3\u00a4",
+          timeTo: "Paluuaika",
+          age: "Ik\u00e4"
+        },
+        activities: {
+          common: {
+            errorLoadingData: "Olemme pahoillamme. ",
+            errorUpdatingData: "Olemme pahoillamme. ",
+            dataUpdateOk: "Tietojen p\u00e4ivitys onnistui"
+          },
+          calendarWidget: {
+            selectTickets: "Et ole valinnut yht\u00e4\u00e4n lippua",
+            fullPlaces: "T\u00e4ysi kapasiteetti",
+            fewPlacesWarning: "Viimeiset paikat",
+            fewNoPlacesWarning: "Viimeiset k\u00e4\u00e4nn\u00f6kset"
+          },
+          multipleDates: {
+            selectDate: "Valitse p\u00e4iv\u00e4m\u00e4\u00e4r\u00e4"
+          },
+          checkout: {
+            errorCreatingOrder: "Olemme pahoillamme. ",
+            errors: "Tarkista varauslomakkeen virheet.",
+            validations: {
+              customerNameRequired: "Asiakkaan nimi vaaditaan",
+              customerSurnameRequired: "Asiakkaan sukunimi vaaditaan",
+              customerEmailRequired: "Asiakkaan s\u00e4hk\u00f6postiosoite vaaditaan",
+              customerEmailInvalidFormat: "Virheellinen s\u00e4hk\u00f6postiosoite",
+              customerEmailConfirmationRequired: "Asiakkaan s\u00e4hk\u00f6postivahvistus vaaditaan",
+              customerEmailConfirmationEqualsEmail: "Asiakkaan s\u00e4hk\u00f6postivahvistuksen tulee olla sama kuin asiakkaan s\u00e4hk\u00f6posti",
+              customerPhoneNumberRequired: "Asiakkaan puhelinnumero vaaditaan",
+              customerPhoneNumberMinLength: "Asiakkaan puhelinnumeron minimipituus",
+              conditionsReadRequired: "Tarkista, ett\u00e4 olet lukenut ehdot",
+              privacyPolicyRequired: "Ole hyv\u00e4 ja tarkista, ett\u00e4 olet lukenut tietosuojak\u00e4yt\u00e4nn\u00f6n",
+              selectPaymentMethod: "Ole hyv\u00e4 ja valitse maksutapa"
+            }
+          },
+          payment: {
+            total_payment: "Maksa {{amount}}",
+            payment_button: "Maksa {{amount}}",
+            deposit_amount: "Varauksen vahvistamiseksi vaaditaan <strong> {{amount}} </strong> maksu",
+            pending_amount: "Odottavan summan <strong> {{amount}} </strong> maksaminen on sallittu",
+            errors: "Tarkista virheet.",
+            paymentMethodNotSelected: "Ole hyv\u00e4 ja valitse maksutapa."
+          },
+          myReservation: {
+            cancelReservationConfirm: "Haluatko peruuttaa varauksen?"
+          }
+        },
+        transfer: {
+          selectPickupPlace: "Valitse noutopaikka",
+          selectDropOffPlace: "Valitse pudotuspaikka",
+          chooseVehicle: {
+            vehicleFound: "<strong> {{available}} </strong>&nbsp;vapaita ajoneuvoja l\u00f6ytyi",
+            vehicleNotFound: "Olemme pahoillamme. "
+          }
+        },
+        planning: {
+          api_conexion_error: "Valitettavasti tapahtui yhteysvirhe",
+          no_schedules_found: "Aikatauluja ei l\u00f6ytynyt",
+          no_resources_found: "Resursseja ei l\u00f6ytynyt",
+          no_data_found: "Tietoja ei l\u00f6ytynyt",
+          generic_error: "Valitettavasti tapahtui virhe."
+        },
+        shiftPicker: {
+          no_data_found: "Tietoja ei l\u00f6ytynyt",
+          generic_error: "Valitettavasti tapahtui virhe.",
+          turn_not_available: "Se vuoro ei ole k\u00e4ytett\u00e4viss\u00e4.",
+          min_max_units_error: "Yksik\u00f6iden v\u00e4himm\u00e4ism\u00e4\u00e4r\u00e4 ylitt\u00e4\u00e4 enimm\u00e4ism\u00e4\u00e4r\u00e4n."
+        }
+      }
+    },
+    nl: {
+      translation: {
+        common: {
+          countries: {
+            ES: "Spanje",
+            GB: "Verenigd Koninkrijk",
+            FR: "Frankrijk",
+            IT: "Itali\u00eb",
+            DE: "Duitsland",
+            PT: "Portugal",
+            NL: "Nederland",
+            US: "Verenigde Staten",
+            AF: "Afghanistan",
+            AX: "\u00c5land-eilanden",
+            AL: "Albani\u00eb",
+            DZ: "Algerije",
+            AS: "Amerikaans-Samoa",
+            AD: "Andorra",
+            AO: "Angola",
+            AI: "Anguilla",
+            AQ: "Antarctica",
+            AG: "Antigua en Barbuda",
+            AR: "Argentini\u00eb",
+            AM: "Armeni\u00eb",
+            AW: "Aruba",
+            AC: "Ascension-eiland",
+            AU: "Australi\u00eb",
+            AT: "Oostenrijk",
+            AZ: "Azerbeidzjan",
+            BS: "Bahamas",
+            BH: "Bahrein",
+            BD: "Bangladesh",
+            BB: "Barbados",
+            BY: "Wit-Rusland",
+            BE: "Belgi\u00eb",
+            BZ: "Belize",
+            BJ: "Benin",
+            BM: "Bermuda",
+            BT: "Bhutan",
+            BO: "Bolivia",
+            BA: "Bosni\u00eb & Herzegovina",
+            BW: "Botswana",
+            BR: "Brazili\u00eb",
+            IO: "Brits Indische Oceaanterritorium",
+            VG: "Britse Maagdeneilanden",
+            BN: "Brunei",
+            BG: "Bulgarije",
+            BF: "Burkina Faso",
+            BI: "Burundi",
+            KH: "Cambodja",
+            CM: "Kameroen",
+            CA: "Canada",
+            IC: "Canarische Eilanden",
+            CV: "Kaapverdi\u00eb",
+            BQ: "Caribisch Nederland",
+            KY: "Kaaimaneilanden",
+            CF: "Centraal-Afrikaanse Republiek",
+            EA: "Ceuta en Melilla",
+            TD: "Tsjaad",
+            CL: "Chili",
+            CN: "China",
+            CX: "Christmaseiland",
+            CC: "Cocoseilanden (Keeling).",
+            CO: "Colombia",
+            KM: "Comoren",
+            CG: "Congo-Brazzaville",
+            CD: "Congo-Kinshasa",
+            CK: "Cook Eilanden",
+            CR: "Costa Rica",
+            CI: "Ivoorkust",
+            HR: "Kroati\u00eb",
+            CU: "Cuba",
+            CW: "Curacao",
+            CY: "Cyprus",
+            CZ: "Tsjechi\u00eb",
+            DK: "Denemarken",
+            DG: "Diego Garcia",
+            DJ: "Djibouti",
+            DM: "Dominica",
+            DO: "Dominicaanse Republiek",
+            EC: "Ecuador",
+            EG: "Egypte",
+            SV: "El Salvador",
+            GQ: "Equatoriaal-Guinea",
+            ER: "Eritrea",
+            EE: "Estland",
+            SZ: "Eswatini",
+            ET: "Ethiopi\u00eb",
+            FK: "Falklandeilanden",
+            FO: "Faer\u00f6er eilanden",
+            FJ: "Fiji",
+            FI: "Finland",
+            GF: "Frans-Guyana",
+            PF: "Frans-Polynesi\u00eb",
+            TF: "Franse Zuidelijke Gebieden",
+            GA: "Gabon",
+            GM: "Gambia",
+            GE: "Georgi\u00eb",
+            GH: "Ghana",
+            GI: "Gibraltar",
+            GR: "Griekenland",
+            GL: "Groenland",
+            GD: "Grenada",
+            GP: "Guadeloupe",
+            GU: "Guam",
+            GT: "Guatemala",
+            GG: "Guernsey",
+            GN: "Guinea",
+            GW: "Guinee-Bissau",
+            GY: "Guyana",
+            HT: "Ha\u00efti",
+            HN: "Honduras",
+            HK: "Hongkong SAR China",
+            HU: "Hongarije",
+            IS: "IJsland",
+            IN: "Indi\u00eb",
+            ID: "Indonesi\u00eb",
+            IR: "Iran",
+            IQ: "Irak",
+            IE: "Ierland",
+            IM: "Eiland Man",
+            IL: "Isra\u00ebl",
+            JM: "Jamaica",
+            JP: "Japan",
+            JE: "Jersey",
+            JO: "Jordani\u00eb",
+            KZ: "Kazachstan",
+            KE: "Kenia",
+            KI: "Kiribati",
+            XK: "Kosovo",
+            KW: "Koeweit",
+            KG: "Kirgizi\u00eb",
+            LA: "Laos",
+            LV: "Letland",
+            LB: "Libanon",
+            LS: "Lesotho",
+            LR: "Liberia",
+            LY: "Libi\u00eb",
+            LI: "Liechtenstein",
+            LT: "Litouwen",
+            LU: "Luxemburg",
+            MO: "Macau SAR China",
+            MG: "Madagascar",
+            MW: "Malawi",
+            MY: "Maleisi\u00eb",
+            MV: "Maldiven",
+            ML: "Mali",
+            MT: "Malta",
+            MH: "Marshall eilanden",
+            MQ: "Martinique",
+            MR: "Mauritani\u00eb",
+            MU: "Mauritius",
+            YT: "Mayotte",
+            MX: "Mexico",
+            FM: "Micronesi\u00eb",
+            MD: "Moldavi\u00eb",
+            MC: "Monaco",
+            MN: "Mongoli\u00eb",
+            ME: "Montenegro",
+            MS: "Montserrat",
+            MA: "Marokko",
+            MZ: "Mozambique",
+            MM: "Myanmar (Birma)",
+            NA: "Namibi\u00eb",
+            NR: "Nauru",
+            NP: "Nepal",
+            NC: "Nieuw-Caledoni\u00eb",
+            NZ: "Nieuw-Zeeland",
+            NI: "Nicaragua",
+            NE: "Niger",
+            NG: "Nigeria",
+            NU: "Niue",
+            NF: "Norfolkeiland",
+            KP: "Noord-Korea",
+            MK: "Noord-Macedoni\u00eb",
+            MP: "Noordelijke Marianen",
+            NO: "Noorwegen",
+            OM: "Oman",
+            PK: "Pakistan",
+            PW: "Palau",
+            PS: "Palestijnse Gebieden",
+            PA: "Panama",
+            PG: "Papoea-Nieuw-Guinea",
+            PY: "Paraguay",
+            PE: "Peru",
+            PH: "Filippijnen",
+            PN: "Pitcairneilanden",
+            PL: "Polen",
+            XA: "Pseudo-accenten",
+            XB: "Pseudo-Bidi",
+            PR: "Puerto Rico",
+            QA: "Katar",
+            RE: "Bijeenkomst",
+            RO: "Roemeni\u00eb",
+            RU: "Rusland",
+            RW: "Rwanda",
+            WS: "Samoa",
+            SM: "San Marino",
+            ST: "Sao Tom\u00e9 en Principe",
+            SA: "Saoedi-Arabi\u00eb",
+            SN: "Senegal",
+            RS: "Servi\u00eb",
+            SC: "Seychellen",
+            SL: "Sierra Leone",
+            SG: "Singapore",
+            SX: "Sint Maarten",
+            SK: "Slowakije",
+            SI: "Sloveni\u00eb",
+            SB: "Salomonseilanden",
+            SO: "Somali\u00eb",
+            ZA: "Zuid-Afrika",
+            GS: "Zuid-Georgi\u00eb en Zuid-Sandwicheilanden",
+            KR: "Zuid-Korea",
+            SS: "Zuid-Soedan",
+            LK: "Sri Lanka",
+            BL: "St. Barth\u00e9lemy",
+            SH: "Sint-Helena",
+            KN: "St. Kitts en Nevis",
+            LC: "St. Lucia",
+            MF: "Sint Maarten",
+            PM: "St. Pierre & Miquelon",
+            VC: "St. Vincent en de Grenadines",
+            SD: "Soedan",
+            SR: "Suriname",
+            SJ: "Spitsbergen en Jan Mayen",
+            SE: "Zweden",
+            CH: "Zwitserland",
+            SY: "Syri\u00eb",
+            TW: "Taiwan",
+            TJ: "Tadzjikistan",
+            TZ: "Tanzania",
+            TH: "Thailand",
+            TL: "Oost-Timor",
+            TG: "Togo",
+            TK: "Tokelau",
+            TO: "Tonga",
+            TT: "Trinidad & Tobago",
+            TA: "Tristan da Cunha",
+            TN: "Tunesi\u00eb",
+            TR: "Kalkoen",
+            TM: "Turkmenistan",
+            TC: "Turks- en Caicoseilanden",
+            TV: "Tuvalu",
+            UM: "Amerikaanse afgelegen eilanden",
+            VI: "Amerikaanse Maagdeneilanden",
+            UG: "Oeganda",
+            UA: "Oekra\u00efne",
+            AE: "Verenigde Arabische Emiraten",
+            UY: "Uruguay",
+            UZ: "Oezbekistan",
+            VU: "Vanuatu",
+            VA: "Vaticaanstad",
+            VE: "Venezuela",
+            VN: "Vietnam",
+            WF: "Wallis & Futuna",
+            EH: "Westelijke Sahara",
+            YE: "Jemen",
+            ZM: "Zambia",
+            ZW: "Zimbabwe"
+          },
+          days: "&nbsp;<u><b> {{count}} </b></u>&nbsp; dag",
+          days_plural: "&nbsp;<u><b> {{count}} </b></u>&nbsp; dagen",
+          hours: "&nbsp;<u><b> {{count}} </b></u>&nbsp; uur",
+          hours_plural: "&nbsp;<u><b> {{count}} </b></u>&nbsp; uur",
+          minutes: "&nbsp;<u><b> {{count}} </b></u>&nbsp; minuut",
+          minutes_plural: "&nbsp;<u><b> {{count}} </b></u>&nbsp; minuten",
+          error: "Het spijt ons. ",
+          welcomeConnectedUser: "Welkom <b> {{name}} </b> u kunt doorgaan met uw reservering",
+          invalid_user_password: "Ongeldige gebruiker of wachtwoord",
+          no_necessary_url_params: "De URL bevat niet de informatie die nodig is om het proces uit te voeren",
+          required: "Vereist",
+          selectOption: "Selecteer een optie",
+          processSuccess: "Proces succesvol afgerond",
+          processError: "Het spijt ons. ",
+          duplicateTab: "U kunt het tabblad niet dupliceren tijdens het reserveringsproces. "
+        },
+        password_forgotten: {
+          message: "Er is een bericht naar uw e-mailadres verzonden om het wachtwoord opnieuw in te stellen",
+          invalid_username_email: "De gebruikersnaam of het e-mailadres dat u heeft ingevoerd, bestaat niet"
+        },
+        change_password: {
+          message: "Het wachtwoord is gewijzigd. "
+        },
+        extra: {
+          daily_amount: "{{oneUnitPrice}} per dag",
+          hourly_amount: "{{oneUnitPrice}} per uur",
+          unitary_amount: "{{oneUnitPrice}}",
+          total: "Totaal {{total}}"
+        },
+        contact: {
+          form_errors: "Controleer alstublieft de fouten",
+          validate_captcha: "Valideer de captcha",
+          validations: {
+            nameRequired: "Naam is vereist",
+            surnameRequired: "Achternaam is vereist",
+            emailRequired: "E-mail is vereist",
+            phoneNumberRequired: "Telefoonnummer is vereist",
+            commentsRequired: "Bericht is vereist",
+            privacyPolicyRequired: "U heeft niet aangegeven dat u het privacybeleid heeft gelezen"
+          },
+          message_sent_successfully: "Bericht succesvol verzonden",
+          error_sending_message: "Fout bij verzenden van bericht"
+        },
+        calendar_selector: {
+          min_time: "De afhaling van de vorige reservering vindt plaats op {{time}}",
+          max_time: "De bezorging van de volgende reservering is op {{time}}",
+          min_duration: "{{days}} d",
+          busy: "Druk bezig",
+          no_deliveries_collection: "Day accepteert geen bezorging of afhaling",
+          delivery_not_allowed: "Het is niet mogelijk om op de datum te leveren.",
+          collection_not_allowed: "Het is niet mogelijk om op de datum terug te keren."
+        },
+        selector: {
+          select: "Selecteer",
+          select_pickup_place: "Selecteer ophaalplaats",
+          select_return_place: "Selecteer retourplaats",
+          another_place: "Exact adres",
+          error_loading_data: "Het spijt ons. ",
+          error_min_days: "Sorry, het voldoet niet aan het minimum aantal dagen. ",
+          validations: {
+            pickupPlaceRequired: "Ophaalplaats vereist",
+            dateFromRequired: "Datum vereist",
+            timeFromRequired: "Benodigde tijd",
+            returnPlaceRequired: "Retourplaats vereist",
+            dateToRequired: "Datum vereist",
+            timeToRequired: "Benodigde tijd",
+            sameDayTimeToGreaterTimeFrom: "Moet later zijn dan de levertijd",
+            acceptAge: "U moet bevestigen dat u ouder bent dan {{years}} jaar",
+            promotionCodeInvalid: "Promotiecode is niet geldig",
+            durationLimit: "U kunt geen duur selecteren die de openingstijden overschrijdt"
+          }
+        },
+        chooseProduct: {
+          loadShoppingCart: {
+            error: "Het spijt ons. "
+          },
+          selectProduct: {
+            productNotSelected: "Selecteer het voertuig.",
+            error: "Het spijt ons. "
+          },
+          selectUnits: "Geselecteerde eenheden",
+          units: "{{count}} eenheid",
+          units_plural: "{{count}} eenheden",
+          max_duration: "De maximale duur is {{duration}}",
+          min_duration: "De minimale duur is {{duration}}"
+        },
+        chooseExtras: {
+          loadShoppingCart: {
+            error: "Het spijt ons. "
+          },
+          selectExtra: {
+            error: "Het spijt ons. "
+          },
+          deleteExtra: {
+            error: "Het spijt ons. "
+          }
+        },
+        complete: {
+          loadShoppingCart: {
+            error: "Het spijt ons. "
+          },
+          selectExtra: {
+            error: "Het spijt ons. "
+          },
+          deleteExtra: {
+            error: "Het spijt ons. "
+          },
+          promotionCode: {
+            error: "Het spijt ons. "
+          },
+          reservationForm: {
+            errors: "Controleer de fouten in het reserveringsformulier.",
+            total_payment: "Betaal {{amount}}",
+            payment_button: "Betaal {{amount}}",
+            booking_amount: "Om uw reservering te bevestigen is een betaling van <strong> {{amount}} </strong> vereist",
+            select_country: "Selecteer land",
+            validations: {
+              fieldRequired: "Dit veld is verplicht",
+              invalidValue: "Ongeldige waarde",
+              passwordCheck: "Het wachtwoord moet een hoofdletter, kleine letter, cijfer en symbool bevatten",
+              minLength: "Minimaal {{minlength}} tekens",
+              customerNameRequired: "Klantnaam is vereist",
+              customerSurnameRequired: "De achternaam van de klant is vereist",
+              customerEmailRequired: "E-mailadres van de klant is vereist",
+              customerEmailInvalidFormat: "Ongeldig e-mailadres",
+              customerEmailConfirmationRequired: "Een e-mailbevestiging van de klant is vereist",
+              customerEmailConfirmationEqualsEmail: "De e-mailbevestiging van de klant moet gelijk zijn aan het e-mailadres van de klant",
+              customerPhoneNumberRequired: "Het telefoonnummer van de klant is vereist",
+              customerPhoneNumberMinLength: "Min. lengte van het telefoonnummer van de klant",
+              documentIdInvalidFormat: "Ongeldig document-ID-nummer",
+              drivingLicenseNumberInvalidFormat: "Ongeldig rijbewijsnummer",
+              driverDateOfBirthRequired: "Geboortedatum van de bestuurder is vereist",
+              numberOfAdultsRequired: "Nummer in feest vereist",
+              conditionsReadRequired: "Controleer of u de algemene voorwaarden heeft gelezen",
+              privacyPolicyRequired: "Controleer of u het privacybeleid heeft gelezen",
+              selectPaymentMethod: "Selecteer de betaalmethode",
+              datePatternInvalid: "Ongeldig datumformaat"
+            }
+          },
+          createReservation: {
+            error: "Het spijt ons. "
+          }
+        },
+        summary: {
+          loadReservation: {
+            error: "Het spijt ons. "
+          }
+        },
+        myReservation: {
+          confirmDriverIsCustomer: "Weet u zeker dat u de wijziging wilt doorvoeren? ",
+          select_country: "Selecteer land",
+          select_nationality: "Selecteer nationaliteit",
+          select_type_document: "Selecteer het type document",
+          loadReservation: {
+            error: "Het spijt ons. "
+          },
+          pay: {
+            total_payment: "Betaal {{amount}}",
+            payment_button: "Betaal {{amount}}",
+            paymentMethodRequired: "Selecteer de betaalmethode.",
+            depositPaymentMethodRequired: "Selecteer de betaalmethode.",
+            booking_amount: "Om uw reservering te bevestigen is een betaling van <strong> {{amount}} </strong> vereist",
+            pending_amount: "Betaling van het openstaande bedrag <strong> {{amount}} </strong> is een optie"
+          },
+          deposit: {
+            total_deposit: "Totale storting: {{amount}}",
+            deposit_button: "Betaal borg {{amount}}"
+          },
+          updateReservation: {
+            success: "Reservering succesvol bijgewerkt",
+            error: "Het spijt ons. "
+          },
+          validations: {
+            privacyPolicyRequired: "U heeft niet aangegeven dat u het privacybeleid heeft gelezen"
+          },
+          passenger: {
+            listed: {
+              error: "Fout bij het ophalen van passagiers"
+            },
+            added: {
+              success: "Passagier succesvol toegevoegd",
+              error: "Fout bij toevoegen van passagier"
+            },
+            remove: {
+              warning: "Wilt u de passagier verwijderen?",
+              success: "Passagier succesvol verwijderd",
+              error: "Fout bij verwijderen passagier"
+            },
+            validations: {
+              invalid: "Controleer het formulier.",
+              fieldRequired: "Verplicht veld"
+            }
+          }
+        },
+        selectorWizard: {
+          pickupPlace: "Verzamelpunt",
+          dateFrom: "Ophaaldatum",
+          timeFrom: "Verzameltijd",
+          returnPlace: "Terugkeerpunt",
+          dateTo: "Terugkeer datum",
+          timeTo: "Tijd van terugkomst",
+          age: "Leeftijd"
+        },
+        activities: {
+          common: {
+            errorLoadingData: "Het spijt ons. ",
+            errorUpdatingData: "Het spijt ons. ",
+            dataUpdateOk: "Gegevens zijn succesvol bijgewerkt"
+          },
+          calendarWidget: {
+            selectTickets: "Je hebt geen tickets geselecteerd",
+            fullPlaces: "Volledige capaciteit",
+            fewPlacesWarning: "Laatste plaatsen",
+            fewNoPlacesWarning: "Laatste beurten"
+          },
+          multipleDates: {
+            selectDate: "Selecteer de datum"
+          },
+          checkout: {
+            errorCreatingOrder: "Het spijt ons. ",
+            errors: "Controleer de fouten in het reserveringsformulier.",
+            validations: {
+              customerNameRequired: "Klantnaam is vereist",
+              customerSurnameRequired: "De achternaam van de klant is vereist",
+              customerEmailRequired: "E-mailadres van de klant is vereist",
+              customerEmailInvalidFormat: "Ongeldig e-mailadres",
+              customerEmailConfirmationRequired: "Een e-mailbevestiging van de klant is vereist",
+              customerEmailConfirmationEqualsEmail: "De e-mailbevestiging van de klant moet gelijk zijn aan het e-mailadres van de klant",
+              customerPhoneNumberRequired: "Het telefoonnummer van de klant is vereist",
+              customerPhoneNumberMinLength: "Min. lengte van het telefoonnummer van de klant",
+              conditionsReadRequired: "Controleer of u de algemene voorwaarden heeft gelezen",
+              privacyPolicyRequired: "Controleer of u het privacybeleid heeft gelezen",
+              selectPaymentMethod: "Selecteer de betaalmethode"
+            }
+          },
+          payment: {
+            total_payment: "Betaal {{amount}}",
+            payment_button: "Betaal {{amount}}",
+            deposit_amount: "Om uw reservering te bevestigen is een betaling van <strong> {{amount}} </strong> vereist",
+            pending_amount: "Betaling van het openstaande bedrag <strong> {{amount}} </strong> is toegestaan",
+            errors: "Controleer de fouten.",
+            paymentMethodNotSelected: "Selecteer de betaalmethode."
+          },
+          myReservation: {
+            cancelReservationConfirm: "Wilt u de reservering annuleren?"
+          }
+        },
+        transfer: {
+          selectPickupPlace: "Selecteer ophaalplaats",
+          selectDropOffPlace: "Selecteer een afleverplaats",
+          chooseVehicle: {
+            vehicleFound: "<strong> {{available}} </strong>&nbsp;beschikbare voertuigen gevonden",
+            vehicleNotFound: "Het spijt ons. "
+          }
+        },
+        planning: {
+          api_conexion_error: "Sorry, er is een verbindingsfout opgetreden",
+          no_schedules_found: "Geen schema's gevonden",
+          no_resources_found: "Geen bronnen gevonden",
+          no_data_found: "Geen gegevens gevonden",
+          generic_error: "Sorry, er is een fout opgetreden."
+        },
+        shiftPicker: {
+          no_data_found: "Geen gegevens gevonden",
+          generic_error: "Sorry, er is een fout opgetreden.",
+          turn_not_available: "Die beurt is niet beschikbaar.",
+          min_max_units_error: "Het minimumaantal eenheden overschrijdt het maximum."
+        }
+      }
+    },
+    pl: {
+      translation: {
+        common: {
+          countries: {
+            ES: "Hiszpania",
+            GB: "Zjednoczone Kr\u00f3lestwo",
+            FR: "Francja",
+            IT: "W\u0142ochy",
+            DE: "Niemcy",
+            PT: "Portugalia",
+            NL: "Niderlandy",
+            US: "Stany Zjednoczone",
+            AF: "Afganistan",
+            AX: "Wyspy Alandzkie",
+            AL: "Albania",
+            DZ: "Algieria",
+            AS: "Samoa Ameryka\u0144skie",
+            AD: "Andora",
+            AO: "Angola",
+            AI: "Anguilla",
+            AQ: "Antarktyda",
+            AG: "Antigua i Barbuda",
+            AR: "Argentyna",
+            AM: "Armenia",
+            AW: "Aruba",
+            AC: "Wyspa Wniebowst\u0105pienia",
+            AU: "Australia",
+            AT: "Austria",
+            AZ: "Azerbejd\u017can",
+            BS: "Bahamy",
+            BH: "Bahrajn",
+            BD: "Bangladesz",
+            BB: "Barbados",
+            BY: "Bia\u0142oru\u015b",
+            BE: "Belgia",
+            BZ: "Belize",
+            BJ: "Benin",
+            BM: "Bermudy",
+            BT: "Bhutan",
+            BO: "Boliwia",
+            BA: "Bo\u015bnia i Hercegowina",
+            BW: "Botswana",
+            BR: "Brazylia",
+            IO: "Brytyjskie Terytorium Oceanu Indyjskiego",
+            VG: "Brytyjskie Wyspy Dziewicze",
+            BN: "Brunei",
+            BG: "Bu\u0142garia",
+            BF: "Burkina Faso",
+            BI: "Burundi",
+            KH: "Kambod\u017ca",
+            CM: "Kamerun",
+            CA: "Kanada",
+            IC: "Wyspy Kanaryjskie",
+            CV: "Republika Zielonego Przyl\u0105dka",
+            BQ: "Karaibska Holandia",
+            KY: "Kajmany",
+            CF: "Republika \u015arodkowoafryka\u0144ska",
+            EA: "Ceuta i Melilla",
+            TD: "Czad",
+            CL: "Chile",
+            CN: "Chiny",
+            CX: "Wyspa Bo\u017cego Narodzenia",
+            CC: "Wyspy Kokosowe (Keelinga).",
+            CO: "Kolumbia",
+            KM: "Komory",
+            CG: "Kongo \u2013 Brazzaville",
+            CD: "Kongo \u2013 Kinszasa",
+            CK: "Wyspy Cooka",
+            CR: "Kostaryka",
+            CI: "Wybrze\u017ce Ko\u015bci S\u0142oniowej",
+            HR: "Chorwacja",
+            CU: "Kuba",
+            CW: "Curacao",
+            CY: "Cypr",
+            CZ: "Czechy",
+            DK: "Dania",
+            DG: "Diego Garcii",
+            DJ: "D\u017cibuti",
+            DM: "Dominika",
+            DO: "Dominikana",
+            EC: "Ekwador",
+            EG: "Egipt",
+            SV: "Salwador",
+            GQ: "Gwinea R\u00f3wnikowa",
+            ER: "Erytrea",
+            EE: "Estonia",
+            SZ: "Eswatini",
+            ET: "Etiopia",
+            FK: "Falklandy",
+            FO: "Wyspy Owcze",
+            FJ: "Fid\u017ci",
+            FI: "Finlandia",
+            GF: "Gujana Francuska",
+            PF: "Polinezja Francuska",
+            TF: "Francuskie Terytoria Po\u0142udniowe",
+            GA: "Gabon",
+            GM: "Gambia",
+            GE: "Gruzja",
+            GH: "Ghana",
+            GI: "Gibraltar",
+            GR: "Grecja",
+            GL: "Grenlandia",
+            GD: "Grenada",
+            GP: "Gwadelupa",
+            GU: "Guam",
+            GT: "Gwatemala",
+            GG: "Guernsey",
+            GN: "Gwinea",
+            GW: "Gwinea Bissau",
+            GY: "Gujana",
+            HT: "Haiti",
+            HN: "Honduras",
+            HK: "Hongkong SAR Chiny",
+            HU: "W\u0119gry",
+            IS: "Islandia",
+            IN: "Indie",
+            ID: "Indonezja",
+            IR: "Iran",
+            IQ: "Irak",
+            IE: "Irlandia",
+            IM: "Wyspa Man",
+            IL: "Izrael",
+            JM: "Jamajka",
+            JP: "Japonia",
+            JE: "Golf",
+            JO: "Jordania",
+            KZ: "Kazachstan",
+            KE: "Kenia",
+            KI: "Kiribati",
+            XK: "Kosowo",
+            KW: "Kuwejt",
+            KG: "Kirgistan",
+            LA: "Laos",
+            LV: "\u0141otwa",
+            LB: "Liban",
+            LS: "Lesoto",
+            LR: "Liberia",
+            LY: "Libia",
+            LI: "Liechtenstein",
+            LT: "Litwa",
+            LU: "Luksemburg",
+            MO: "Specjalny Region Administracyjny Makau, Chiny",
+            MG: "Madagaskar",
+            MW: "Malawi",
+            MY: "Malezja",
+            MV: "Malediwy",
+            ML: "Mali",
+            MT: "Malta",
+            MH: "Wyspy Marshalla",
+            MQ: "Martynika",
+            MR: "Mauretania",
+            MU: "Mauritius",
+            YT: "Majotta",
+            MX: "Meksyk",
+            FM: "Mikronezja",
+            MD: "Moldova",
+            MC: "Monako",
+            MN: "Mongolia",
+            ME: "Czarnog\u00f3ra",
+            MS: "Montserrat",
+            MA: "Maroko",
+            MZ: "Mozambik",
+            MM: "Birma (Birma)",
+            NA: "Namibia",
+            NR: "Nauru",
+            NP: "Nepal",
+            NC: "Nowa Kaledonia",
+            NZ: "Nowa Zelandia",
+            NI: "Nikaragua",
+            NE: "Niger",
+            NG: "Nigeria",
+            NU: "Nie",
+            NF: "Wyspa Norfolk",
+            KP: "Korea P\u00f3\u0142nocna",
+            MK: "Macedonia P\u00f3\u0142nocna",
+            MP: "Mariany P\u00f3\u0142nocne",
+            NO: "Norwegia",
+            OM: "Oman",
+            PK: "Pakistan",
+            PW: "Palau",
+            PS: "Terytoria Palesty\u0144skie",
+            PA: "Panama",
+            PG: "Papua Nowa Gwinea",
+            PY: "Paragwaj",
+            PE: "Peru",
+            PH: "Filipiny",
+            PN: "Wyspy Pitcairn",
+            PL: "Polska",
+            XA: "Pseudoakcenty",
+            XB: "Pseudo-Bidi",
+            PR: "Portoryko",
+            QA: "Katar",
+            RE: "Zjazd",
+            RO: "Rumunia",
+            RU: "Rosja",
+            RW: "Rwanda",
+            WS: "Samoa",
+            SM: "San Marino",
+            ST: "Wyspy \u015awi\u0119tego Tomasza i Ksi\u0105\u017c\u0119ca",
+            SA: "Arabia Saudyjska",
+            SN: "Senegal",
+            RS: "Serbia",
+            SC: "Seszele",
+            SL: "Sierra Leone",
+            SG: "Singapur",
+            SX: "Sint Maarten",
+            SK: "S\u0142owacja",
+            SI: "S\u0142owenia",
+            SB: "Wyspy Salomona",
+            SO: "Somali",
+            ZA: "Republika Po\u0142udniowej Afryki",
+            GS: "Georgia Po\u0142udniowa i Sandwich Po\u0142udniowy",
+            KR: "Korea Po\u0142udniowa",
+            SS: "Sudan Po\u0142udniowy",
+            LK: "Sri Lanka",
+            BL: "\u015aw. Barth\u00e9lemy",
+            SH: "\u015awi\u0119ta Helena",
+            KN: "Saint Kitts i Nevis",
+            LC: "\u015awi\u0119ta \u0141ucja",
+            MF: "\u015aw. Marcin",
+            PM: "Saint-Pierre i Miquelon",
+            VC: "Saint Vincent i Grenadyny",
+            SD: "Sudan",
+            SR: "Surinam",
+            SJ: "Svalbard i Jan Mayen",
+            SE: "Szwecja",
+            CH: "Szwajcaria",
+            SY: "Syria",
+            TW: "Tajwan",
+            TJ: "Tad\u017cykistan",
+            TZ: "Tanzania",
+            TH: "Tajlandia",
+            TL: "Timor Wschodni",
+            TG: "Togo",
+            TK: "Tokelau",
+            TO: "Tonga",
+            TT: "Trynidad i Tobago",
+            TA: "Tristana da Cunha",
+            TN: "Tunezja",
+            TR: "Indyk",
+            TM: "Turkmenia",
+            TC: "Turks i Caicos",
+            TV: "Tuvalu",
+            UM: "Dalekie wyspy USA",
+            VI: "Wyspy Dziewicze Stan\u00f3w Zjednoczonych",
+            UG: "Uganda",
+            UA: "Ukraina",
+            AE: "Emiraty Arabskie",
+            UY: "Urugwaj",
+            UZ: "Uzbekistan",
+            VU: "Vanuatu",
+            VA: "Watykan",
+            VE: "Wenezuela",
+            VN: "Wietnam",
+            WF: "Wallisa i Futuny",
+            EH: "Sahara Zachodnia",
+            YE: "Jemen",
+            ZM: "Zambia",
+            ZW: "Zimbabwe"
+          },
+          days: "&nbsp;<u><b> {{count}} </b></u>&nbsp; dzie\u0144",
+          days_plural: "&nbsp;<u><b> {{count}} </b></u>&nbsp; dni",
+          hours: "&nbsp;<u><b> {{count}} </b></u>&nbsp; godzina",
+          hours_plural: "&nbsp;<u><b> {{count}} </b></u>&nbsp; godziny",
+          minutes: "&nbsp;<u><b> {{count}} </b></u>&nbsp; minuta",
+          minutes_plural: "&nbsp;<u><b> {{count}} </b></u>&nbsp; minut",
+          error: "Przepraszamy. ",
+          welcomeConnectedUser: "Witamy <b> {{name}} </b> mo\u017cesz kontynuowa\u0107 rezerwacj\u0119",
+          invalid_user_password: "Nieprawid\u0142owy u\u017cytkownik lub has\u0142o",
+          no_necessary_url_params: "Adres URL nie zawiera informacji niezb\u0119dnych do przeprowadzenia procesu",
+          required: "Wymagany",
+          selectOption: "Wybierz opcj\u0119",
+          processSuccess: "Proces zako\u0144czony pomy\u015blnie",
+          processError: "Przepraszamy. ",
+          duplicateTab: "Nie mo\u017cna powiela\u0107 zak\u0142adki w procesie rezerwacji. "
+        },
+        password_forgotten: {
+          message: "Na Tw\u00f3j adres e-mail zosta\u0142a wys\u0142ana wiadomo\u015b\u0107 z pro\u015bb\u0105 o zresetowanie has\u0142a",
+          invalid_username_email: "Wprowadzona nazwa u\u017cytkownika lub adres e-mail nie istnieje"
+        },
+        change_password: {
+          message: "Has\u0142o zosta\u0142o zmienione. "
+        },
+        extra: {
+          daily_amount: "{{oneUnitPrice}} dziennie",
+          hourly_amount: "{{oneUnitPrice}} na godzin\u0119",
+          unitary_amount: "{{oneUnitPrice}}",
+          total: "Razem {{total}}"
+        },
+        contact: {
+          form_errors: "Prosz\u0119 sprawdzi\u0107 b\u0142\u0119dy",
+          validate_captcha: "Prosz\u0119 zatwierdzi\u0107 captcha",
+          validations: {
+            nameRequired: "Imi\u0119 i nazwisko jest wymagane",
+            surnameRequired: "Nazwisko jest wymagane",
+            emailRequired: "Adres e-mail jest wymagany",
+            phoneNumberRequired: "Numer telefonu jest wymagany",
+            commentsRequired: "Wiadomo\u015b\u0107 jest wymagana",
+            privacyPolicyRequired: "Nie zaznaczy\u0142e\u015b, \u017ce zapozna\u0142e\u015b si\u0119 z polityk\u0105 prywatno\u015bci"
+          },
+          message_sent_successfully: "Wiadomo\u015b\u0107 wys\u0142ana pomy\u015blnie",
+          error_sending_message: "B\u0142\u0105d podczas wysy\u0142ania wiadomo\u015bci"
+        },
+        calendar_selector: {
+          min_time: "Odbi\u00f3r poprzedniej rezerwacji odbywa si\u0119 pod adresem {{time}}",
+          max_time: "Dostawa nast\u0119pnej rezerwacji nast\u0119puje pod adresem {{time}}",
+          min_duration: "{{days}} d",
+          busy: "Zaj\u0119ty",
+          no_deliveries_collection: "Day nie przyjmuje dostaw ani odbioru",
+          delivery_not_allowed: "Dor\u0119czenie w podanym terminie nie jest mo\u017cliwe.",
+          collection_not_allowed: "Nie ma mo\u017cliwo\u015bci zwrotu w wyznaczonym terminie."
+        },
+        selector: {
+          select: "Wybierz",
+          select_pickup_place: "Wybierz miejsce odbioru",
+          select_return_place: "Wybierz miejsce zwrotu",
+          another_place: "Dok\u0142adny adres",
+          error_loading_data: "Przepraszamy. ",
+          error_min_days: "Przepraszamy, nie spe\u0142nia ona minimalnej liczby dni. ",
+          validations: {
+            pickupPlaceRequired: "Wymagane miejsce odbioru",
+            dateFromRequired: "Wymagana data",
+            timeFromRequired: "Wymagany czas",
+            returnPlaceRequired: "Wymagane miejsce zwrotu",
+            dateToRequired: "Wymagana data",
+            timeToRequired: "Wymagany czas",
+            sameDayTimeToGreaterTimeFrom: "Musi by\u0107 p\u00f3\u017aniej ni\u017c czas dostawy",
+            acceptAge: "Musisz potwierdzi\u0107, \u017ce masz wi\u0119cej ni\u017c {{years}} lat",
+            promotionCodeInvalid: "Kod promocyjny jest nieprawid\u0142owy",
+            durationLimit: "Nie mo\u017cna wybra\u0107 czasu trwania przekraczaj\u0105cego godziny otwarcia"
+          }
+        },
+        chooseProduct: {
+          loadShoppingCart: {
+            error: "Przepraszamy. "
+          },
+          selectProduct: {
+            productNotSelected: "Prosz\u0119 wybra\u0107 pojazd.",
+            error: "Przepraszamy. "
+          },
+          selectUnits: "Wybierz jednostki",
+          units: "{{count}} jednostka",
+          units_plural: "{{count}} jednostek",
+          max_duration: "Maksymalny czas trwania to {{duration}}",
+          min_duration: "Minimalny czas trwania to {{duration}}"
+        },
+        chooseExtras: {
+          loadShoppingCart: {
+            error: "Przepraszamy. "
+          },
+          selectExtra: {
+            error: "Przepraszamy. "
+          },
+          deleteExtra: {
+            error: "Przepraszamy. "
+          }
+        },
+        complete: {
+          loadShoppingCart: {
+            error: "Przepraszamy. "
+          },
+          selectExtra: {
+            error: "Przepraszamy. "
+          },
+          deleteExtra: {
+            error: "Przepraszamy. "
+          },
+          promotionCode: {
+            error: "Przepraszamy. "
+          },
+          reservationForm: {
+            errors: "Prosimy o sprawdzenie b\u0142\u0119d\u00f3w w formularzu rezerwacji.",
+            total_payment: "Zap\u0142a\u0107 {{amount}}",
+            payment_button: "Zap\u0142a\u0107 {{amount}}",
+            booking_amount: "Aby potwierdzi\u0107 rezerwacj\u0119, wymagana jest p\u0142atno\u015b\u0107 <strong> {{amount}} </strong>",
+            select_country: "Wybierz kraj",
+            validations: {
+              fieldRequired: "To pole jest wymagane",
+              invalidValue: "Nieprawid\u0142owa warto\u015b\u0107",
+              passwordCheck: "Has\u0142o musi zawiera\u0107 du\u017c\u0105 i ma\u0142\u0105 liter\u0119, cyfr\u0119 i symbol",
+              minLength: "Minimum {{minlength}} znak\u00f3w",
+              customerNameRequired: "Nazwa klienta jest wymagana",
+              customerSurnameRequired: "Nazwisko klienta jest wymagane",
+              customerEmailRequired: "Adres e-mail klienta jest wymagany",
+              customerEmailInvalidFormat: "Nieprawid\u0142owy adres e-mail",
+              customerEmailConfirmationRequired: "Wymagane jest potwierdzenie e-mailem klienta",
+              customerEmailConfirmationEqualsEmail: "Potwierdzenie e-mailem klienta musi by\u0107 takie samo jak e-mail klienta",
+              customerPhoneNumberRequired: "Numer telefonu klienta jest wymagany",
+              customerPhoneNumberMinLength: "Minimalna d\u0142ugo\u015b\u0107 numeru telefonu klienta",
+              documentIdInvalidFormat: "Nieprawid\u0142owy numer identyfikacyjny dokumentu",
+              drivingLicenseNumberInvalidFormat: "Nieprawid\u0142owy numer prawa jazdy",
+              driverDateOfBirthRequired: "Wymagana jest data urodzenia kierowcy",
+              numberOfAdultsRequired: "Wymagany numer na imprezie",
+              conditionsReadRequired: "Prosz\u0119 sprawdzi\u0107, czy zapozna\u0142e\u015b si\u0119 z regulaminem",
+              privacyPolicyRequired: "Prosimy o sprawdzenie, czy zapozna\u0142e\u015b si\u0119 z polityk\u0105 prywatno\u015bci",
+              selectPaymentMethod: "Prosz\u0119 wybra\u0107 metod\u0119 p\u0142atno\u015bci",
+              datePatternInvalid: "Nieprawid\u0142owy format daty"
+            }
+          },
+          createReservation: {
+            error: "Przepraszamy. "
+          }
+        },
+        summary: {
+          loadReservation: {
+            error: "Przepraszamy. "
+          }
+        },
+        myReservation: {
+          confirmDriverIsCustomer: "Czy na pewno chcesz dokona\u0107 zmiany? ",
+          select_country: "Wybierz kraj",
+          select_nationality: "Wybierz narodowo\u015b\u0107",
+          select_type_document: "Wybierz typ dokumentu",
+          loadReservation: {
+            error: "Przepraszamy. "
+          },
+          pay: {
+            total_payment: "Zap\u0142a\u0107 {{amount}}",
+            payment_button: "Zap\u0142a\u0107 {{amount}}",
+            paymentMethodRequired: "Prosz\u0119 wybra\u0107 metod\u0119 p\u0142atno\u015bci.",
+            depositPaymentMethodRequired: "Prosz\u0119 wybra\u0107 metod\u0119 p\u0142atno\u015bci.",
+            booking_amount: "Aby potwierdzi\u0107 rezerwacj\u0119, wymagana jest p\u0142atno\u015b\u0107 <strong> {{amount}} </strong>",
+            pending_amount: "P\u0142atno\u015b\u0107 oczekuj\u0105cej kwoty <strong> {{amount}} </strong> jest opcj\u0105"
+          },
+          deposit: {
+            total_deposit: "Ca\u0142kowity depozyt: {{amount}}",
+            deposit_button: "Zap\u0142a\u0107 depozyt {{amount}}"
+          },
+          updateReservation: {
+            success: "Rezerwacja zosta\u0142a pomy\u015blnie zaktualizowana",
+            error: "Przepraszamy. "
+          },
+          validations: {
+            privacyPolicyRequired: "Nie zaznaczy\u0142e\u015b, \u017ce zapozna\u0142e\u015b si\u0119 z polityk\u0105 prywatno\u015bci"
+          },
+          passenger: {
+            listed: {
+              error: "B\u0142\u0105d podczas pobierania pasa\u017cer\u00f3w"
+            },
+            added: {
+              success: "Pasa\u017cer zosta\u0142 dodany pomy\u015blnie",
+              error: "B\u0142\u0105d podczas dodawania pasa\u017cera"
+            },
+            remove: {
+              warning: "Czy chcesz usun\u0105\u0107 pasa\u017cera?",
+              success: "Pasa\u017cer zosta\u0142 pomy\u015blnie usuni\u0119ty",
+              error: "B\u0142\u0105d podczas usuwania pasa\u017cera"
+            },
+            validations: {
+              invalid: "Sprawd\u017a formularz.",
+              fieldRequired: "Pole wymagane"
+            }
+          }
+        },
+        selectorWizard: {
+          pickupPlace: "Punkt zbi\u00f3rki",
+          dateFrom: "Data odbioru",
+          timeFrom: "Czas zbierania",
+          returnPlace: "Punkt zwrotu",
+          dateTo: "Data zwrotu",
+          timeTo: "Czas powrotu",
+          age: "Wiek"
+        },
+        activities: {
+          common: {
+            errorLoadingData: "Przepraszamy. ",
+            errorUpdatingData: "Przepraszamy. ",
+            dataUpdateOk: "Dane zosta\u0142y pomy\u015blnie zaktualizowane"
+          },
+          calendarWidget: {
+            selectTickets: "Nie wybra\u0142e\u015b \u017cadnych bilet\u00f3w",
+            fullPlaces: "Pe\u0142na pojemno\u015b\u0107",
+            fewPlacesWarning: "Ostatnie miejsca",
+            fewNoPlacesWarning: "Ostatnie zakr\u0119ty"
+          },
+          multipleDates: {
+            selectDate: "Prosz\u0119 wybra\u0107 dat\u0119"
+          },
+          checkout: {
+            errorCreatingOrder: "Przepraszamy. ",
+            errors: "Prosimy o sprawdzenie b\u0142\u0119d\u00f3w w formularzu rezerwacji.",
+            validations: {
+              customerNameRequired: "Nazwa klienta jest wymagana",
+              customerSurnameRequired: "Nazwisko klienta jest wymagane",
+              customerEmailRequired: "Adres e-mail klienta jest wymagany",
+              customerEmailInvalidFormat: "Nieprawid\u0142owy adres e-mail",
+              customerEmailConfirmationRequired: "Wymagane jest potwierdzenie e-mailem klienta",
+              customerEmailConfirmationEqualsEmail: "Potwierdzenie e-mailem klienta musi by\u0107 takie samo jak e-mail klienta",
+              customerPhoneNumberRequired: "Numer telefonu klienta jest wymagany",
+              customerPhoneNumberMinLength: "Minimalna d\u0142ugo\u015b\u0107 numeru telefonu klienta",
+              conditionsReadRequired: "Sprawd\u017a, czy przeczyta\u0142e\u015b regulamin",
+              privacyPolicyRequired: "Prosimy o sprawdzenie, czy zapozna\u0142e\u015b si\u0119 z polityk\u0105 prywatno\u015bci",
+              selectPaymentMethod: "Prosz\u0119 wybra\u0107 metod\u0119 p\u0142atno\u015bci"
+            }
+          },
+          payment: {
+            total_payment: "Zap\u0142a\u0107 {{amount}}",
+            payment_button: "Zap\u0142a\u0107 {{amount}}",
+            deposit_amount: "Aby potwierdzi\u0107 rezerwacj\u0119, wymagana jest p\u0142atno\u015b\u0107 <strong> {{amount}} </strong>",
+            pending_amount: "Dozwolona jest p\u0142atno\u015b\u0107 oczekuj\u0105cej kwoty <strong> {{amount}} </strong>",
+            errors: "Prosz\u0119 sprawdzi\u0107 b\u0142\u0119dy.",
+            paymentMethodNotSelected: "Prosz\u0119 wybra\u0107 metod\u0119 p\u0142atno\u015bci."
+          },
+          myReservation: {
+            cancelReservationConfirm: "Czy chcesz anulowa\u0107 rezerwacj\u0119?"
+          }
+        },
+        transfer: {
+          selectPickupPlace: "Wybierz miejsce odbioru",
+          selectDropOffPlace: "Wybierz miejsce odbioru",
+          chooseVehicle: {
+            vehicleFound: "<strong> {{available}} </strong>&nbsp;znaleziono dost\u0119pne pojazdy",
+            vehicleNotFound: "Przepraszamy. "
+          }
+        },
+        planning: {
+          api_conexion_error: "Przepraszamy, wyst\u0105pi\u0142 b\u0142\u0105d po\u0142\u0105czenia",
+          no_schedules_found: "Nie znaleziono harmonogram\u00f3w",
+          no_resources_found: "Nie znaleziono zasob\u00f3w",
+          no_data_found: "Nie znaleziono danych",
+          generic_error: "Przepraszamy, wyst\u0105pi\u0142 b\u0142\u0105d."
+        },
+        shiftPicker: {
+          no_data_found: "Nie znaleziono danych",
+          generic_error: "Przepraszamy, wyst\u0105pi\u0142 b\u0142\u0105d.",
+          turn_not_available: "Ten zakr\u0119t jest niedost\u0119pny.",
+          min_max_units_error: "Minimalna liczba jednostek przekracza maksymaln\u0105."
+        }
+      }
+    },
+        pt: {
+      translation: {
+        common: {
+          countries: {
+            ES: "Espanha",
+            GB: "Reino Unido",
+            FR: "Fran\u00e7a",
+            IT: "It\u00e1lia",
+            DE: "Alemanha",
+            PT: "Portugal",
+            NL: "Holanda",
+            US: "Estados Unidos",
+            AF: "Afeganist\u00e3o",
+            AX: "Ilhas Alanda",
+            AL: "Alb\u00e2nia",
+            DZ: "Arg\u00e9lia",
+            AS: "Samoa Americana",
+            AD: "Andorra",
+            AO: "Angola",
+            AI: "Anguila",
+            AQ: "Ant\u00e1rtica",
+            AG: "Ant\u00edgua e Barbuda",
+            AR: "Argentina",
+            AM: "Arm\u00eania",
+            AW: "Aruba",
+            AC: "Ilha de Ascens\u00e3o",
+            AU: "Austr\u00e1lia",
+            AT: "\u00c1ustria",
+            AZ: "Azerbaij\u00e3o",
+            BS: "Bahamas",
+            BH: "Bahrein",
+            BD: "Bangladesh",
+            BB: "Barbados",
+            BY: "Bielorr\u00fassia",
+            BE: "B\u00e9lgica",
+            BZ: "Belize",
+            BJ: "Benim",
+            BM: "Bermudas",
+            BT: "But\u00e3o",
+            BO: "Bol\u00edvia",
+            BA: "B\u00f3snia e Herzegovina",
+            BW: "Botsuana",
+            BR: "Brasil",
+            IO: "Territ\u00f3rio Brit\u00e2nico do Oceano \u00cdndico",
+            VG: "Ilhas Virgens Brit\u00e2nicas",
+            BN: "Brunei",
+            BG: "Bulg\u00e1ria",
+            BF: "Burkina Faso",
+            BI: "Burundi",
+            KH: "Camboja",
+            CM: "Camar\u00f5es",
+            CA: "Canad\u00e1",
+            IC: "Ilhas Can\u00e1rias",
+            CV: "Cabo Verde",
+            BQ: "Holanda caribenha",
+            KY: "Ilhas Cayman",
+            CF: "Rep\u00fablica Centro-Africana",
+            EA: "Ceuta e Melilha",
+            TD: "Chade",
+            CL: "Chile",
+            CN: "China",
+            CX: "Ilha Natal",
+            CC: "Ilhas Cocos (Keeling)",
+            CO: "Col\u00f4mbia",
+            KM: "Comores",
+            CG: "Congo - Brazavile",
+            CD: "Congo - Kinshasa",
+            CK: "Ilhas Cook",
+            CR: "Costa Rica",
+            CI: "Costa do Marfim",
+            HR: "Cro\u00e1cia",
+            CU: "Cuba",
+            CW: "Cura\u00e7au",
+            CY: "Chipre",
+            CZ: "Tcheca",
+            DK: "Dinamarca",
+            DG: "Diego Garcia",
+            DJ: "Djibuti",
+            DM: "Dom\u00ednica",
+            DO: "Rep\u00fablica Dominicana",
+            EC: "Equador",
+            EG: "Egito",
+            SV: "El Salvador",
+            GQ: "Guin\u00e9 Equatorial",
+            ER: "Eritreia",
+            EE: "Est\u00f4nia",
+            SZ: "Essuat\u00edni",
+            ET: "Eti\u00f3pia",
+            FK: "Ilhas Malvinas",
+            FO: "Ilhas Faro\u00e9",
+            FJ: "Fiji",
+            FI: "Finl\u00e2ndia",
+            GF: "Guiana Francesa",
+            PF: "Polin\u00e9sia Francesa",
+            TF: "Territ\u00f3rios Franceses do Sul",
+            GA: "Gab\u00e3o",
+            GM: "G\u00e2mbia",
+            GE: "Ge\u00f3rgia",
+            GH: "Gana",
+            GI: "Gibraltar",
+            GR: "Gr\u00e9cia",
+            GL: "Groenl\u00e2ndia",
+            GD: "Granada",
+            GP: "Guadalupe",
+            GU: "Guam",
+            GT: "Guatemala",
+            GG: "Guernsey",
+            GN: "Guin\u00e9",
+            GW: "Guin\u00e9-Bissau",
+            GY: "Guiana",
+            HT: "Haiti",
+            HN: "Honduras",
+            HK: "Hong Kong, RAE da China",
+            HU: "Hungria",
+            IS: "Isl\u00e2ndia",
+            IN: "\u00cdndia",
+            ID: "Indon\u00e9sia",
+            IR: "Ir\u00e3",
+            IQ: "Iraque",
+            IE: "Irlanda",
+            IM: "Ilha de Man",
+            IL: "Israel",
+            JM: "Jamaica",
+            JP: "Jap\u00e3o",
+            JE: "Jersey",
+            JO: "Jord\u00e2nia",
+            KZ: "Cazaquist\u00e3o",
+            KE: "Qu\u00eania",
+            KI: "Quirib\u00e1ti",
+            XK: "Kosovo",
+            KW: "Kuwait",
+            KG: "Quirguist\u00e3o",
+            LA: "Laos",
+            LV: "Let\u00f4nia",
+            LB: "L\u00edbano",
+            LS: "Lesoto",
+            LR: "Lib\u00e9ria",
+            LY: "L\u00edbia",
+            LI: "Liechtenstein",
+            LT: "Litu\u00e2nia",
+            LU: "Luxemburgo",
+            MO: "Macau, RAE da China",
+            MG: "Madag\u00e1scar",
+            MW: "Mal\u00e1ui",
+            MY: "Mal\u00e1sia",
+            MV: "Maldivas",
+            ML: "Mali",
+            MT: "Malta",
+            MH: "Ilhas Marshall",
+            MQ: "Martinica",
+            MR: "Maurit\u00e2nia",
+            MU: "Maur\u00edcio",
+            YT: "Maiote",
+            MX: "M\u00e9xico",
+            FM: "Micron\u00e9sia",
+            MD: "Mold\u00e1via",
+            MC: "M\u00f4naco",
+            MN: "Mong\u00f3lia",
+            ME: "Montenegro",
+            MS: "Montserrate",
+            MA: "Marrocos",
+            MZ: "Mo\u00e7ambique",
+            MM: "Mianmar (Birm\u00e2nia)",
+            NA: "Nam\u00edbia",
+            NR: "Nauru",
+            NP: "Nepal",
+            NC: "Nova Caled\u00f4nia",
+            NZ: "Nova Zel\u00e2ndia",
+            NI: "Nicar\u00e1gua",
+            NE: "N\u00edger",
+            NG: "Nig\u00e9ria",
+            NU: "Niue",
+            NF: "Ilha Norfolk",
+            KP: "Cor\u00e9ia do Norte",
+            MK: "Maced\u00f4nia do Norte",
+            MP: "Ilhas Marianas do Norte",
+            NO: "Noruega",
+            OM: "Om\u00e3",
+            PK: "Paquist\u00e3o",
+            PW: "Palau",
+            PS: "Territ\u00f3rios Palestinos",
+            PA: "Panam\u00e1",
+            PG: "Papua Nova Guin\u00e9",
+            PY: "Paraguai",
+            PE: "Peru",
+            PH: "Filipinas",
+            PN: "Ilhas Pitcairn",
+            PL: "Pol\u00f4nia",
+            XA: "Pseudo-acentos",
+            XB: "Pseudo-Bidi",
+            PR: "Porto Rico",
+            QA: "Catar",
+            RE: "Reuni\u00e3o",
+            RO: "Rom\u00eania",
+            RU: "R\u00fassia",
+            RW: "Ruanda",
+            WS: "Samoa",
+            SM: "S\u00e3o Marino",
+            ST: "S\u00e3o Tom\u00e9 e Pr\u00edncipe",
+            SA: "Ar\u00e1bia Saudita",
+            SN: "Senegal",
+            RS: "S\u00e9rvia",
+            SC: "Seicheles",
+            SL: "Serra Leoa",
+            SG: "Cingapura",
+            SX: "S\u00e3o Martinho",
+            SK: "Eslov\u00e1quia",
+            SI: "Eslov\u00eania",
+            SB: "Ilhas Salom\u00e3o",
+            SO: "Som\u00e1lia",
+            ZA: "\u00c1frica do Sul",
+            GS: "Ge\u00f3rgia do Sul e Ilhas Sandwich do Sul",
+            KR: "Cor\u00e9ia do Sul",
+            SS: "Sud\u00e3o do Sul",
+            LK: "Sri Lanka",
+            BL: "S\u00e3o Bartolomeu",
+            SH: "Santa Helena",
+            KN: "S\u00e3o Crist\u00f3v\u00e3o e Nevis",
+            LC: "Santa L\u00facia",
+            MF: "S\u00e3o Martinho",
+            PM: "S\u00e3o Pedro e Miquelon",
+            VC: "S\u00e3o Vicente e Granadinas",
+            SD: "Sud\u00e3o",
+            SR: "Suriname",
+            SJ: "Svalbard e Jan Mayen",
+            SE: "Su\u00e9cia",
+            CH: "Su\u00ed\u00e7a",
+            SY: "S\u00edria",
+            TW: "Taiwan",
+            TJ: "Tadjiquist\u00e3o",
+            TZ: "Tanz\u00e2nia",
+            TH: "Tail\u00e2ndia",
+            TL: "Timor-Leste",
+            TG: "Ir",
+            TK: "Toquelau",
+            TO: "Tonga",
+            TT: "Trinidad e Tobago",
+            TA: "Trist\u00e3o da Cunha",
+            TN: "Tun\u00edsia",
+            TR: "Peru",
+            TM: "Turcomenist\u00e3o",
+            TC: "Ilhas Turcas e Caicos",
+            TV: "Tuvalu",
+            UM: "Ilhas Distantes dos EUA",
+            VI: "Ilhas Virgens dos EUA",
+            UG: "Uganda",
+            UA: "Ucr\u00e2nia",
+            AE: "Emirados \u00c1rabes Unidos",
+            UY: "Uruguai",
+            UZ: "Uzbequist\u00e3o",
+            VU: "Vanuatu",
+            VA: "Cidade do Vaticano",
+            VE: "Venezuela",
+            VN: "Vietn\u00e3",
+            WF: "Wallis e Futuna",
+            EH: "Saara Ocidental",
+            YE: "I\u00e9men",
+            ZM: "Z\u00e2mbia",
+            ZW: "Zimb\u00e1bue"
+          },
+          days: "&nbsp;<u><b> {{count}} </b></u>&nbsp; dia",
+          days_plural: "&nbsp;<u><b> {{count}} </b></u>&nbsp; dias",
+          hours: "&nbsp;<u><b> {{count}} </b></u>&nbsp; hora",
+          hours_plural: "&nbsp;<u><b> {{count}} </b></u>&nbsp; horas",
+          minutes: "&nbsp;<u><b> {{count}} </b></u>&nbsp; minuto",
+          minutes_plural: "&nbsp;<u><b> {{count}} </b></u>&nbsp; minutos",
+          error: "Lamentamos. ",
+          welcomeConnectedUser: "Bem-vindo <b> {{name}} </b> voc\u00ea pode prosseguir com sua reserva",
+          invalid_user_password: "Usu\u00e1rio ou senha inv\u00e1lidos",
+          no_necessary_url_params: "A URL n\u00e3o cont\u00e9m as informa\u00e7\u00f5es necess\u00e1rias para realizar o processo",
+          required: "Obrigat\u00f3rio",
+          selectOption: "Selecione uma op\u00e7\u00e3o",
+          processSuccess: "Processo conclu\u00eddo com sucesso",
+          processError: "Lamentamos. ",
+          duplicateTab: "Voc\u00ea n\u00e3o pode duplicar a guia no processo de reserva. "
+        },
+        password_forgotten: {
+          message: "Uma mensagem foi enviada para seu endere\u00e7o de e-mail para redefinir a senha",
+          invalid_username_email: "O nome de usu\u00e1rio ou endere\u00e7o de e-mail que voc\u00ea digitou n\u00e3o existe"
+        },
+        change_password: {
+          message: "A senha foi alterada. "
+        },
+        extra: {
+          daily_amount: "{{oneUnitPrice}} por dia",
+          hourly_amount: "{{oneUnitPrice}} por hora",
+          unitary_amount: "{{oneUnitPrice}}",
+          total: "Total {{total}}"
+        },
+        contact: {
+          form_errors: "Por favor, verifique os erros",
+          validate_captcha: "Por favor, valide o captcha",
+          validations: {
+            nameRequired: "O nome \u00e9 obrigat\u00f3rio",
+            surnameRequired: "O sobrenome \u00e9 obrigat\u00f3rio",
+            emailRequired: "O e-mail \u00e9 obrigat\u00f3rio",
+            phoneNumberRequired: "O n\u00famero de telefone \u00e9 obrigat\u00f3rio",
+            commentsRequired: "A mensagem \u00e9 obrigat\u00f3ria",
+            privacyPolicyRequired: "Voc\u00ea n\u00e3o marcou que leu a pol\u00edtica de privacidade"
+          },
+          message_sent_successfully: "Mensagem enviada com sucesso",
+          error_sending_message: "Erro ao enviar mensagem"
+        },
+        calendar_selector: {
+          min_time: "A cobran\u00e7a da reserva anterior \u00e9 em {{time}}",
+          max_time: "A entrega da pr\u00f3xima reserva \u00e9 em {{time}}",
+          min_duration: "{{days}}d",
+          busy: "Ocupado",
+          no_deliveries_collection: "Dia n\u00e3o aceita entrega ou coleta",
+          delivery_not_allowed: "N\u00e3o \u00e9 poss\u00edvel entregar na data.",
+          collection_not_allowed: "N\u00e3o \u00e9 poss\u00edvel retornar na data."
+        },
+        selector: {
+          select: "Selecionar",
+          select_pickup_place: "Selecione o local de retirada",
+          select_return_place: "Selecione o local de devolu\u00e7\u00e3o",
+          another_place: "Endere\u00e7o exato",
+          error_loading_data: "Lamentamos. ",
+          error_min_days: "Lamentamos, mas n\u00e3o cumpre o n\u00famero m\u00ednimo de dias. ",
+          validations: {
+            pickupPlaceRequired: "Local de retirada obrigat\u00f3rio",
+            dateFromRequired: "Data necess\u00e1ria",
+            timeFromRequired: "Tempo necess\u00e1rio",
+            returnPlaceRequired: "Local de devolu\u00e7\u00e3o obrigat\u00f3rio",
+            dateToRequired: "Data necess\u00e1ria",
+            timeToRequired: "Tempo necess\u00e1rio",
+            sameDayTimeToGreaterTimeFrom: "Deve ser posterior ao prazo de entrega",
+            acceptAge: "Voc\u00ea deve confirmar que tem mais de {{years}} anos",
+            promotionCodeInvalid: "O c\u00f3digo promocional n\u00e3o \u00e9 v\u00e1lido",
+            durationLimit: "Voc\u00ea n\u00e3o pode selecionar uma dura\u00e7\u00e3o que exceda o hor\u00e1rio de funcionamento"
+          }
+        },
+        chooseProduct: {
+          loadShoppingCart: {
+            error: "Lamentamos. "
+          },
+          selectProduct: {
+            productNotSelected: "Por favor, selecione o ve\u00edculo.",
+            error: "Lamentamos. "
+          },
+          selectUnits: "Unidades selecionadas",
+          units: "{{count}} unidade",
+          units_plural: "{{count}} unidades",
+          max_duration: "A dura\u00e7\u00e3o m\u00e1xima \u00e9 {{duration}}",
+          min_duration: "A dura\u00e7\u00e3o m\u00ednima \u00e9 {{duration}}"
+        },
+        chooseExtras: {
+          loadShoppingCart: {
+            error: "Lamentamos. "
+          },
+          selectExtra: {
+            error: "Lamentamos. "
+          },
+          deleteExtra: {
+            error: "Lamentamos. "
+          }
+        },
+        complete: {
+          loadShoppingCart: {
+            error: "Lamentamos. "
+          },
+          selectExtra: {
+            error: "Lamentamos. "
+          },
+          deleteExtra: {
+            error: "Lamentamos. "
+          },
+          promotionCode: {
+            error: "Lamentamos. "
+          },
+          reservationForm: {
+            errors: "Por favor verifique os erros no formul\u00e1rio de reserva.",
+            total_payment: "Pague {{amount}}",
+            payment_button: "Pague {{amount}}",
+            booking_amount: "Para confirmar sua reserva \u00e9 necess\u00e1rio um pagamento de <strong> {{amount}} </strong>",
+            select_country: "Selecione o pa\u00eds",
+            validations: {
+              fieldRequired: "Este campo \u00e9 obrigat\u00f3rio",
+              invalidValue: "Valor inv\u00e1lido",
+              passwordCheck: "A senha deve conter letra mai\u00fascula, letra min\u00fascula, d\u00edgito e s\u00edmbolo",
+              minLength: "M\u00ednimo de {{minlength}} caracteres",
+              customerNameRequired: "O nome do cliente \u00e9 obrigat\u00f3rio",
+              customerSurnameRequired: "O sobrenome do cliente \u00e9 obrigat\u00f3rio",
+              customerEmailRequired: "O e-mail do cliente \u00e9 obrigat\u00f3rio",
+              customerEmailInvalidFormat: "Endere\u00e7o de e-mail inv\u00e1lido",
+              customerEmailConfirmationRequired: "A confirma\u00e7\u00e3o do e-mail do cliente \u00e9 necess\u00e1ria",
+              customerEmailConfirmationEqualsEmail: "A confirma\u00e7\u00e3o do e-mail do cliente deve ser igual ao e-mail do cliente",
+              customerPhoneNumberRequired: "O n\u00famero de telefone do cliente \u00e9 obrigat\u00f3rio",
+              customerPhoneNumberMinLength: "Comprimento m\u00ednimo do n\u00famero de telefone do cliente",
+              documentIdInvalidFormat: "N\u00famero de identifica\u00e7\u00e3o do documento inv\u00e1lido",
+              drivingLicenseNumberInvalidFormat: "N\u00famero de carta de condu\u00e7\u00e3o inv\u00e1lido",
+              driverDateOfBirthRequired: "A data de nascimento do motorista \u00e9 obrigat\u00f3ria",
+              numberOfAdultsRequired: "N\u00famero do grupo necess\u00e1rio",
+              conditionsReadRequired: "Por favor, verifique se voc\u00ea leu os termos e condi\u00e7\u00f5es",
+              privacyPolicyRequired: "Por favor, verifique se voc\u00ea leu a pol\u00edtica de privacidade",
+              selectPaymentMethod: "Por favor, selecione a forma de pagamento",
+              datePatternInvalid: "Formato de data inv\u00e1lido"
+            }
+          },
+          createReservation: {
+            error: "Lamentamos. "
+          }
+        },
+        summary: {
+          loadReservation: {
+            error: "Lamentamos. "
+          }
+        },
+        myReservation: {
+          confirmDriverIsCustomer: "Tem certeza de que deseja fazer a altera\u00e7\u00e3o? ",
+          select_country: "Selecione o pa\u00eds",
+          select_nationality: "Selecione a nacionalidade",
+          select_type_document: "Selecione o tipo de documento",
+          loadReservation: {
+            error: "Lamentamos. "
+          },
+          pay: {
+            total_payment: "Pague {{amount}}",
+            payment_button: "Pague {{amount}}",
+            paymentMethodRequired: "Por favor, selecione a forma de pagamento.",
+            depositPaymentMethodRequired: "Por favor, selecione a forma de pagamento.",
+            booking_amount: "Para confirmar sua reserva \u00e9 necess\u00e1rio um pagamento de <strong> {{amount}} </strong>",
+            pending_amount: "O pagamento do valor pendente <strong> {{amount}} </strong> \u00e9 uma op\u00e7\u00e3o"
+          },
+          deposit: {
+            total_deposit: "Dep\u00f3sito total: {{amount}}",
+            deposit_button: "Pagar dep\u00f3sito {{amount}}"
+          },
+          updateReservation: {
+            success: "Reserva atualizada com sucesso",
+            error: "Lamentamos. "
+          },
+          validations: {
+            privacyPolicyRequired: "Voc\u00ea n\u00e3o marcou que leu a pol\u00edtica de privacidade"
+          },
+          passenger: {
+            listed: {
+              error: "Erro ao recuperar passageiros"
+            },
+            added: {
+              success: "Passageiro adicionado com sucesso",
+              error: "Erro ao adicionar passageiro"
+            },
+            remove: {
+              warning: "Deseja remover o passageiro?",
+              success: "Passageiro removido com sucesso",
+              error: "Erro ao remover passageiro"
+            },
+            validations: {
+              invalid: "Por favor, verifique o formul\u00e1rio.",
+              fieldRequired: "Campo obrigat\u00f3rio"
+            }
+          }
+        },
+        selectorWizard: {
+          pickupPlace: "Ponto de coleta",
+          dateFrom: "Data de coleta",
+          timeFrom: "Hor\u00e1rio de coleta",
+          returnPlace: "Ponto de retorno",
+          dateTo: "Data de Entrega",
+          timeTo: "Hora de retorno",
+          age: "Idade"
+        },
+        activities: {
+          common: {
+            errorLoadingData: "Lamentamos. ",
+            errorUpdatingData: "Lamentamos. ",
+            dataUpdateOk: "Dados atualizados com sucesso"
+          },
+          calendarWidget: {
+            selectTickets: "Voc\u00ea n\u00e3o selecionou nenhum ingresso",
+            fullPlaces: "Capacidade total",
+            fewPlacesWarning: "\u00daltimos lugares",
+            fewNoPlacesWarning: "\u00daltimas voltas"
+          },
+          multipleDates: {
+            selectDate: "Por favor selecione a data"
+          },
+          checkout: {
+            errorCreatingOrder: "Lamentamos. ",
+            errors: "Por favor verifique os erros no formul\u00e1rio de reserva.",
+            validations: {
+              customerNameRequired: "O nome do cliente \u00e9 obrigat\u00f3rio",
+              customerSurnameRequired: "O sobrenome do cliente \u00e9 obrigat\u00f3rio",
+              customerEmailRequired: "O e-mail do cliente \u00e9 obrigat\u00f3rio",
+              customerEmailInvalidFormat: "Endere\u00e7o de e-mail inv\u00e1lido",
+              customerEmailConfirmationRequired: "A confirma\u00e7\u00e3o do e-mail do cliente \u00e9 necess\u00e1ria",
+              customerEmailConfirmationEqualsEmail: "A confirma\u00e7\u00e3o do e-mail do cliente deve ser igual ao e-mail do cliente",
+              customerPhoneNumberRequired: "O n\u00famero de telefone do cliente \u00e9 obrigat\u00f3rio",
+              customerPhoneNumberMinLength: "Comprimento m\u00ednimo do n\u00famero de telefone do cliente",
+              conditionsReadRequired: "Por favor, verifique se voc\u00ea leu os termos e condi\u00e7\u00f5es",
+              privacyPolicyRequired: "Por favor, verifique se voc\u00ea leu a pol\u00edtica de privacidade",
+              selectPaymentMethod: "Por favor, selecione a forma de pagamento"
+            }
+          },
+          payment: {
+            total_payment: "Pague {{amount}}",
+            payment_button: "Pague {{amount}}",
+            deposit_amount: "Para confirmar sua reserva \u00e9 necess\u00e1rio um pagamento de <strong> {{amount}} </strong>",
+            pending_amount: "\u00c9 permitido o pagamento do valor pendente <strong> {{amount}} </strong>",
+            errors: "Por favor verifique os erros.",
+            paymentMethodNotSelected: "Por favor, selecione a forma de pagamento."
+          },
+          myReservation: {
+            cancelReservationConfirm: "Quer cancelar a reserva?"
+          }
+        },
+        transfer: {
+          selectPickupPlace: "Selecione o local de retirada",
+          selectDropOffPlace: "Selecione o local de entrega",
+          chooseVehicle: {
+            vehicleFound: "<strong> {{available}} </strong>&nbsp;ve\u00edculos dispon\u00edveis encontrados",
+            vehicleNotFound: "Lamentamos. "
+          }
+        },
+        planning: {
+          api_conexion_error: "Desculpe, ocorreu um erro de conex\u00e3o",
+          no_schedules_found: "Nenhuma programa\u00e7\u00e3o encontrada",
+          no_resources_found: "Nenhum recurso encontrado",
+          no_data_found: "Nenhum dado encontrado",
+          generic_error: "Desculpe, ocorreu um erro."
+        },
+        shiftPicker: {
+          no_data_found: "Nenhum dado encontrado",
+          generic_error: "Desculpe, ocorreu um erro.",
+          turn_not_available: "Essa curva n\u00e3o est\u00e1 dispon\u00edvel.",
+          min_max_units_error: "O n\u00famero m\u00ednimo de unidades excede o m\u00e1ximo."
+        }
+      }
+    }
   };
 
   return engineTranslations;
