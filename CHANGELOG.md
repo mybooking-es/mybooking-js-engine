@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.6.5] - 2026.06.23
+
+### Added
+- Engine translations for 5 new languages: Estonian, Finnish, Dutch, Polish & Portuguese.
+- Ability to show/hide Franchise and Deposits in fron end.
+
 ## [2.6.4] - 2026.06.16
 
 ### Added

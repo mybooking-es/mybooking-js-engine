@@ -33,6 +33,8 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
     sales_process: null,    // Sales process information
     half_day_turns: null,   // Half day turns
     candidate_turns: null,  // Candidate turns
+    // UI settings (visibility flags)
+    settings: null,
     // Product detail
     productDetail: null,   // product detail instance
     // Selected coverage
@@ -603,6 +605,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
        model.totalProducts = data.total;
        model.totalPages = Math.ceil(model.totalProducts / model.pageSize);
        model.sales_process = data.sales_process;
+       model.settings = commonSettings.buildSummarySettings(data.settings);
        // Half day turns
        if (typeof data.half_day_turns !== 'undefined') {
          model.half_day_turns = data.half_day_turns;
@@ -1279,7 +1282,8 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
                                 products: model.products,
                                 configuration: model.configuration,
                                 available: available,
-                                i18next: i18next});
+                                i18next: i18next,
+                                settings: model.settings || {}});
             $('#product_listing').html(detailedProduct);
   
             // Add variants resume
