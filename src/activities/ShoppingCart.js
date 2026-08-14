@@ -1,9 +1,11 @@
-require(['jquery','i18next', 'ysdtemplate', 
+require(['jquery','i18next', 'ysdtemplate',
         'commonServices', 'commonSettings', 'commonTranslations', 'commonLoader', 'commonUI',
+        'commonContactControls',
         'jquery.ui', 'jquery.validate',
         'jquery.form', 'jquery.formparams'],
     function($, i18next, tmpl,
-             commonServices, commonSettings, commonTranslations, commonLoader, commonUI) {
+             commonServices, commonSettings, commonTranslations, commonLoader, commonUI,
+             commonContactControls) {
 
       var model = { // THE MODEL
           reservationFormSubmitted: false,
@@ -127,18 +129,10 @@ require(['jquery','i18next', 'ysdtemplate',
               // Request object
               var order = $('form[name=reservation_form]').formParams(false);
               // Prepare phone prefix
-              if ($('#customer_phone').length) {
-                var countryData = $('#customer_phone').intlTelInput('getSelectedCountryData');
-                if (countryData != null) {
-                  order.customer_phone_prefix = countryData.dialCode;
-                }
-              }
-              if ($('#customer_mobile_phone').length) {
-                var countryData = $('#customer_mobile_phone').intlTelInput('getSelectedCountryData');
-                if (countryData != null) {
-                  order.customer_mobile_phone_prefix = countryData.dialCode;
-                }
-              }
+              commonContactControls.appendPhonePrefixes(order, [
+                { inputSelector: '#customer_phone',        prefixKey: 'customer_phone_prefix' },
+                { inputSelector: '#customer_mobile_phone', prefixKey: 'customer_mobile_phone_prefix' }
+              ]);
               var orderJSON = JSON.stringify(order);
               var paymentMethod = order.payment;
               var paymentAmount = null;
@@ -309,13 +303,31 @@ require(['jquery','i18next', 'ysdtemplate',
                 required: i18next.t('complete.reservationForm.validations.fieldRequired')
               });
 
+              // Resolve confirmation email field: canonical wins over legacy
+              var $form = $('form[name=reservation_form]');
+              var confirmEmailField = commonContactControls.resolveConfirmationEmailField($form);
+              var confirmEmailRules = {};
+              var confirmEmailMessages = {};
+              if (confirmEmailField) {
+                confirmEmailRules[confirmEmailField] = {
+                  required: true,
+                  email: true,
+                  equalTo: '#customer_email'
+                };
+                confirmEmailMessages[confirmEmailField] = {
+                  'required': i18next.t('activities.checkout.validations.customerEmailConfirmationRequired'),
+                  email: i18next.t('activities.checkout.validations.customerEmailInvalidFormat'),
+                  'equalTo': i18next.t('activities.checkout.validations.customerEmailConfirmationEqualsEmail')
+                };
+              }
+
               $('form[name=reservation_form]').validate(
                   {
 
                       submitHandler: function(form) {
                         console.log('SHOPPING-CART - submit');
                         if (!model.reservationFormSubmitted) {
-                          model.reservationFormSubmitted = true;                        
+                          model.reservationFormSubmitted = true;
                           // Disable submit to avoid double click
                           $('form[name=reservation_form] button[type=submit]').attr('disabled', 'disabled');
                           // Hide errors
@@ -331,24 +343,19 @@ require(['jquery','i18next', 'ysdtemplate',
                           console.log('SHOPPING-CART - invalidHandler');
                           // Enable submit again
                           $('form[name=reservation_form] button[type=submit]').removeAttr('disabled');
-                          model.reservationFormSubmitted = false; 
-                          // Show errors                        
+                          model.reservationFormSubmitted = false;
+                          // Show errors
                           $('#reservation_error').html(i18next.t('activities.checkout.errors'));
                           $('#reservation_error').show();
                       },
 
-                      rules : {
+                      rules : $.extend({
 
                           'customer_name': 'required',
                           'customer_surname' : 'required',
                           'customer_email' : {
                               required: true,
                               email: true
-                          },
-                          'customer_email_confirmation': {
-                              required: true,
-                              email: true,
-                              equalTo : 'customer_email'
                           },
                           'customer_phone': {
                               required: true,
@@ -384,20 +391,15 @@ require(['jquery','i18next', 'ysdtemplate',
                           'privacy_read_request_reservation' :  {
                             required: '#privacy_read_request_reservation:visible'
                           },
-                      },
+                      }, confirmEmailRules),
 
-                      messages : {
+                      messages : $.extend({
 
                           'customer_name': i18next.t('activities.checkout.validations.customerNameRequired'),
                           'customer_surname' : i18next.t('activities.checkout.validations.customerSurnameRequired'),
                           'customer_email' : {
                               required: i18next.t('activities.checkout.validations.customerEmailRequired'),
                               email: i18next.t('activities.checkout.validations.customerEmailInvalidFormat')
-                          },
-                          'customer_email_confirmation': {
-                              'required': i18next.t('activities.checkout.validations.customerEmailConfirmationRequired'),
-                              email: i18next.t('activities.checkout.validations.customerEmailInvalidFormat'),
-                              'equalTo': i18next.t('activities.checkout.validations.customerEmailConfirmationEqualsEmail')
                           },
                           'customer_phone': {
                               'required': i18next.t('activities.checkout.validations.customerPhoneNumberRequired'),
@@ -420,10 +422,10 @@ require(['jquery','i18next', 'ysdtemplate',
                           },
                           'conditions_read_request_reservation': {
                               'required': i18next.t('activities.checkout.validations.conditionsReadRequired')
-                          },                       
+                          },
                           'conditions_read_payment_on_delivery': {
                               'required': i18next.t('activities.checkout.validations.conditionsReadRequired')
-                          },   
+                          },
                           'conditions_read_pay_now': {
                               'required': i18next.t('activities.checkout.validations.conditionsReadRequired')
                           },
@@ -433,16 +435,16 @@ require(['jquery','i18next', 'ysdtemplate',
                           'privacy_read_request_reservation': {
                             'required': i18next.t('activities.checkout.validations.privacyPolicyRequired')
                           }
-                      },
+                      }, confirmEmailMessages),
 
                       errorPlacement: function (error, element) {
-                           if (element.attr('name') == 'conditions_read_request_reservation' || element.attr('name') == 'conditions_read_pay_now' || 
+                           if (element.attr('name') == 'conditions_read_request_reservation' || element.attr('name') == 'conditions_read_pay_now' ||
                               element.attr('name') == 'privacy_read_pay_now' || element.attr('name') == 'privacy_read_request_reservation')
-                          { 
+                          {
                             error.insertAfter(element.parent());
                             element.parent().css('display', 'block');
                           }
-                          else if (element.attr('name') === 'payment_method_value' || 
+                          else if (element.attr('name') === 'payment_method_value' ||
                                    element.attr('name') === 'payment_method_select') {
                               error.insertAfter(document.getElementById('payment_method_select_error'));
                           }
@@ -495,29 +497,10 @@ require(['jquery','i18next', 'ysdtemplate',
               $('#reservation_container').html(customerForm);
 
               // Configure Telephone with prefix
-              //var countryCode = commonUI.intlTelInputCountryCode();
-              var countryCode = model.configuration.countryCode;
-              if (typeof countryCode === 'undefined' || countryCode == null) {
-                countryCode = commonUI.intlTelInputCountryCode(); 
-              }
-      
-              if ($('#customer_phone').length) {
-                $("#customer_phone").intlTelInput({
-                  initialCountry: countryCode,
-                  separateDialCode: true,
-                  utilsScript: commonServices.phoneUtilsPath,
-                  preferredCountries: [countryCode]
-                });
-              }
-
-              if ($('#customer_mobile_phone').length) {
-                $("#customer_mobile_phone").intlTelInput({
-                  initialCountry: countryCode,
-                  separateDialCode: true,
-                  utilsScript: commonServices.phoneUtilsPath,
-                  preferredCountries: [countryCode]
-                });
-              }
+              commonContactControls.initPhones(
+                ['#customer_phone', '#customer_mobile_phone'],
+                model.configuration
+              );
 
           },
 

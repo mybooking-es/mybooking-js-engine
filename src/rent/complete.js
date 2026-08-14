@@ -1,15 +1,17 @@
-require(['jquery', 
+require(['jquery',
          'commonServices', 'commonSettings', 'commonTranslations', 'commonLoader', 'commonUI',
-         'i18next','ysdtemplate','YSDDateControl', 
-         './selector/modify_reservation_selector', './selector-wizard/selector_wizard', 'select2', 
+         'commonIdentityControls', 'commonContactControls', 'commonFormValidation',
+         'i18next','ysdtemplate','YSDDateControl',
+         './selector/modify_reservation_selector', './selector-wizard/selector_wizard', 'select2',
          'YSDMemoryDataSource','YSDSelectSelector', './mediator/rentEngineMediator', '../profile/Login',
          '../profile/PasswordForgottenComponent', 'moment',
          'jquery.i18next', 'jquery.formparams', 'jquery.form',
 	       'jquery.validate', 'jquery.ui', 'jquery.ui.datepicker-es',
          'jquery.ui.datepicker-en', 'jquery.ui.datepicker-ca', 'jquery.ui.datepicker-it',
 	       'jquery.ui.datepicker.validation'],
-	     function($, 
+	     function($,
                 commonServices, commonSettings, commonTranslations, commonLoader, commonUI,
+                commonIdentityControls, commonContactControls, commonFormValidation,
                 i18next, tmpl, DateControl, selector, selectorWizard, select2,
                 MemoryDataSource, SelectSelector, rentEngineMediator, Login, PasswordForgottenComponent, moment) {
 
@@ -17,9 +19,8 @@ require(['jquery',
     reservationFormSubmitted: false,
     //
     requestLanguage: null,
-    configuration: null,     
-    customerClassifiers: null,
-    // The shopping cart    
+    configuration: null,
+    // The shopping cart
     shopping_cart: null,
     extras: null,         // Extras
     coverages: null,      // The coverages
@@ -61,48 +62,6 @@ require(['jquery',
     },      
 */
     // OPTIMIZATION 2024-01-27 END
-
-    // ------------ Load customer classifiers -----------------
-
-    /**
-     * Load customer classifiers
-     */ 
-    loadCustomerClassifier: function() { 
-
-      console.log('loadCustomerClassifier');
-      var self = this;
-      var url = commonServices.URL_PREFIX + '/api/booking/frontend/customer-classifier';
-      var urlParams = []
-      if (commonServices.apiKey && commonServices.apiKey != '') {
-        urlParams.push('api_key='+commonServices.apiKey);
-      }  
-      if (model.requestLanguage != null) {
-        urlParams.push('lang='+model.requestLanguage);
-      }
-      if (urlParams.length > 0) {
-        url += '?';
-        url += urlParams.join('&');
-      }
-      var self = this;
-      // Request
-      $.ajax({
-        type: 'GET',
-        url: url,
-        dataType: 'json',
-        success: function(data, textStatus, jqXHR) {
-          self.customerClassifiers = data;
-          for (var idx=0;idx<self.customerClassifiers.length;idx++){
-            self.customerClassifiers[idx]['text'] = self.customerClassifiers[idx]['description'] = self.customerClassifiers[idx]['name'];
-          } 
-
-          view.updateCustomerClassifiers();
-        },
-        error: function(data, textStatus, jqXHR) {
-          alert(i18next.t('common.error'));
-        }
-      });      
-    },
-
 
     // ------------ Extras information detail ------------------------
 
@@ -524,18 +483,11 @@ require(['jquery',
         }
       }
       // Prepare phone prefix
-      if ($('#customer_phone').length) {
-        var countryData = $('#customer_phone').intlTelInput('getSelectedCountryData');
-        if (countryData != null) {
-          reservation.customer_phone_prefix = countryData.dialCode;
-        }
-      }
-      if ($('#customer_mobile_phone').length) {
-        var countryData = $('#customer_mobile_phone').intlTelInput('getSelectedCountryData');
-        if (countryData != null) {
-          reservation.customer_mobile_phone_prefix = countryData.dialCode;
-        }
-      }      
+      commonContactControls.appendPhonePrefixes(reservation, [
+        { inputSelector: '#customer_phone',        prefixKey: 'customer_phone_prefix' },
+        { inputSelector: '#customer_mobile_phone', prefixKey: 'customer_mobile_phone_prefix' },
+        { inputSelector: '#driver_phone',          prefixKey: 'driver_phone_prefix' }
+      ]);
       if (!$('.js-mb-delivery-slot').is(':visible')) {
         delete reservation.slot_time_from;
       }
@@ -688,9 +640,13 @@ require(['jquery',
           $('.mybooking_customer_legal_entity').hide();
           $('.mybooking_customer_individual').show();
         }
-        else {
+        else if (customerType == 'legal_entity') {
           $('.mybooking_customer_individual').hide();
           $('.mybooking_customer_legal_entity').show();
+        }
+        else {
+          $('.mybooking_customer_individual').hide();
+          $('.mybooking_customer_legal_entity').hide();
         }
 
       },
@@ -1017,15 +973,25 @@ require(['jquery',
       }
 
       // Load customer classifier
-      if (model.configuration.useCustomerClassifier && 
-          $('form[name=reservation_form]').find('select[name=customer_classifier_id]').length) {
-        model.loadCustomerClassifier();
+      if (model.configuration.useCustomerClassifier &&
+          $('form[name=reservation_form]').find('select[name="customer_classifier_id"]').length) {
+        commonIdentityControls.initCustomerClassifier({ requestLanguage: model.requestLanguage });
       }
 
-      // Configure customer type
-      $('#customer_type').on('change', function(){
-        controller.customerTypeChanged($(this).val());
-      });
+      // Initialize identity selects (nationality, document type, license type)
+      commonIdentityControls.initIdentitySelects({ requestLanguage: model.requestLanguage });
+
+      // Initialize customer_type select with static Engine values
+      commonIdentityControls.initCustomerType();
+
+      // Configure customer type change handler — bind once, then apply current state
+      var $customerType = $('select[name="customer_type"]');
+      $customerType
+        .off('change.mybookingCustomerType')
+        .on('change.mybookingCustomerType', function() {
+          controller.customerTypeChanged($(this).val());
+        });
+      controller.customerTypeChanged($customerType.val());
 
       // Configure address country
 
@@ -1096,29 +1062,10 @@ require(['jquery',
       }
 
       // Configure Telephone with prefix
-      //var countryCode = commonUI.intlTelInputCountryCode();
-      var countryCode = model.configuration.countryCode;
-      if (typeof countryCode === 'undefined' || countryCode == null) {
-        countryCode = commonUI.intlTelInputCountryCode(); 
-      }
-
-      if ($('#customer_phone').length) {
-        $("#customer_phone").intlTelInput({
-          initialCountry: countryCode,
-          separateDialCode: true,        
-          utilsScript: commonServices.phoneUtilsPath,
-          preferredCountries: [countryCode]
-        });
-      }
-
-      if ($("#customer_mobile_phone").length) {
-        $("#customer_mobile_phone").intlTelInput({
-          initialCountry: countryCode,
-          separateDialCode: true,
-          utilsScript: commonServices.phoneUtilsPath,
-          preferredCountries: [countryCode]
-        });
-      }
+      commonContactControls.initPhones(
+        ['#customer_phone', '#customer_mobile_phone', '#driver_phone'],
+        model.configuration
+      );
 
       // Configure driver document id date
       if (document.getElementById('driver_document_id_date_day')) {
@@ -1221,12 +1168,14 @@ require(['jquery',
                     $('#reservation_error').show();
                 },
 
-                rules : {
+                rules : $.extend(
+                    commonFormValidation.buildIdentityRequiredRules(),
+                    {
                     'customer_classifier_id': {
-                      required: '#customer_classifier_id:visible'
+                      required: commonFormValidation.buildEngineRequiredIfRenderedFn('customer_classifier_id')
                     },
                     'customer_type': {
-                      required: '#customer_type:visible'
+                      required: commonFormValidation.buildEngineRequiredIfRenderedFn('customer_type')
                     },
                     'customer_company_name': {
                       required: '#customer_company_name:visible',
@@ -1462,7 +1411,7 @@ require(['jquery',
                         return $('#destination_accommodation').attr('required') === 'required' || model.isHotelDataRequired;
                       }
                     }
-                },
+                }),
 
                 messages : {
                     'customer_classifier_id': {
@@ -1471,8 +1420,7 @@ require(['jquery',
                     'customer_type': {
                       required: i18next.t('complete.reservationForm.validations.fieldRequired')
                     },
-                    'customer_company_name': {
-                      required: i18next.t('complete.reservationForm.validations.fieldRequired')
+                    'customer_company_name': {                      required: i18next.t('complete.reservationForm.validations.fieldRequired')
                     },
                     'customer_company_contact_name': {
                       required: i18next.t('complete.reservationForm.validations.fieldRequired')
@@ -1570,40 +1518,32 @@ require(['jquery',
                       }
                       else {
                         error.insertAfter(element.parent());
-                      }                    
+                      }
                     }
-                    else if (element.attr('name') == 'conditions_read_request_reservation' || 
-                      element.attr('name') == 'conditions_read_payment_on_delivery' || 
+                    else if (element.attr('name') == 'conditions_read_request_reservation' ||
+                      element.attr('name') == 'conditions_read_payment_on_delivery' ||
                       element.attr('name') == 'conditions_read_pay_now' ||
-                      element.attr('name') == 'privacy_read_request_reservation'  || 
-                      element.attr('name') == 'privacy_read_payment_on_delivery'  || 
+                      element.attr('name') == 'privacy_read_request_reservation'  ||
+                      element.attr('name') == 'privacy_read_payment_on_delivery'  ||
                       element.attr('name') == 'privacy_read_pay_now')
-                    { 
+                    {
                         error.insertAfter(element.parent());
                         element.parent().css('display', 'block');
                     }
                     else if (element.attr('name') == 'payment_method_select') {
                         error.insertAfter(document.getElementById('payment_method_select_error'));
                     }
-                    else if (element.attr('name') == 'customer_classifier_id' && 
-                             $('#customer_classifier_id + span.select2-container').length) {
-                        error.insertAfter('#customer_classifier_id + span.select2-container');
-                    }
-                    else if (element.attr('name') == 'slot_time_from' && 
+                    else if (element.attr('name') == 'slot_time_from' &&
                              $('#slot_time_from + span.select2-container').length) {
                         error.insertAfter('#slot_time_from + span.select2-container');
                     }
-                    else if (element.attr('name') == 'with_optional_external_driver' && 
+                    else if (element.attr('name') == 'with_optional_external_driver' &&
                              $('#with_optional_external_driver + span.select2-container').length) {
                         error.insertAfter('#with_optional_external_driver + span.select2-container');
                     }
-                    else if (element.attr('name') == 'driver_driving_license_country' && 
-                             $('#driver_driving_license_country + span.select2-container').length) {
-                        error.insertAfter('#driver_driving_license_country + span.select2-container');
-                    }    
-                    else if (element.attr('name') == 'country' && 
-                             $('#country + span.select2-container').length) {
-                        error.insertAfter('#country + span.select2-container');
+                    else if (commonFormValidation.identityErrorPlacement(error, element))
+                    {
+                        // handled: identity selects (classifier, country, nationality, document, license)
                     }
                     else
                     {
@@ -1726,40 +1666,6 @@ require(['jquery',
     },
 
     // -------------------- View Updates
-
-    /**
-     * Update customer classifier
-     */ 
-    updateCustomerClassifiers: function() {
-      var $customerClassifierSelector = null;
-      if (commonServices.jsUseSelect2) {
-        $customerClassifierSelector = $('#customer_classifier_id');
-        if ($customerClassifierSelector.length > 0) {
-          $customerClassifierSelector.select2({
-            placeholder: i18next.t('common.selectOption'),
-            allowClear: true,
-            width: '100%',
-            theme: 'bootstrap4',                  
-            data: model.customerClassifiers
-          });
-          $customerClassifierSelector.val('');
-          $customerClassifierSelector.trigger('change');
-        }
-      }
-      else {
-        // Setup customer classifier
-        if (document.getElementById('customer_classifier_id')) {
-          var customerClassifierDataSource = new MemoryDataSource(model.customerClassifiers);
-          var customerClassifierModel = null;
-          var selectorModel = new SelectSelector('customer_classifier_id',
-                                                 customerClassifierDataSource, 
-                                                 customerClassifierModel, 
-                                                 true, 
-                                                 i18next.t('common.selectOption'));
-        }
-      }
-
-    },
 
     /**
      * Updates the shopping card when the shopping cart is loaded

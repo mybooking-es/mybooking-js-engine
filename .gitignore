@@ -98,4 +98,4 @@ docs/
 memory/
 .github/prompts/
 .github/copilot-instructions.md
-
+tests/

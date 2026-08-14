@@ -1,15 +1,17 @@
-require(['jquery', 
+require(['jquery',
          'commonServices', 'commonSettings', 'commonTranslations', 'commonLoader', 'commonUI',
-         'i18next','ysdtemplate','YSDDateControl', 
-         './selector/modify_reservation_selector', 'select2', 
+         'commonContactControls',
+         'i18next','ysdtemplate','YSDDateControl',
+         './selector/modify_reservation_selector', 'select2',
          'YSDMemoryDataSource','YSDSelectSelector', './mediator/transferEngineMediator', '../profile/Login',
          '../profile/PasswordForgottenComponent',
          'jquery.i18next', 'jquery.formparams', 'jquery.form',
 	       'jquery.validate', 'jquery.ui', 'jquery.ui.datepicker-es',
          'jquery.ui.datepicker-en', 'jquery.ui.datepicker-ca', 'jquery.ui.datepicker-it',
 	       'jquery.ui.datepicker.validation'],
-	     function($, 
+	     function($,
                 commonServices, commonSettings, commonTranslations, commonLoader, commonUI,
+                commonContactControls,
                 i18next, tmpl, DateControl, selector, select2,
                 MemoryDataSource, SelectSelector, transferEngineMediator, Login, PasswordForgottenComponent) {
 
@@ -292,18 +294,10 @@ require(['jquery',
         }
       }
       // Prepare phone prefix
-      if ($('#customer_phone').length) {
-        var countryData = $('#customer_phone').intlTelInput('getSelectedCountryData');
-        if (countryData != null) {
-          reservation.customer_phone_prefix = countryData.dialCode;
-        }
-      }
-      if ($('#customer_mobile_phone').length) {
-        var countryData = $('#customer_mobile_phone').intlTelInput('getSelectedCountryData');
-        if (countryData != null) {
-          reservation.customer_mobile_phone_prefix = countryData.dialCode;
-        }
-      }
+      commonContactControls.appendPhonePrefixes(reservation, [
+        {inputSelector: '#customer_phone', prefixKey: 'customer_phone_prefix'},
+        {inputSelector: '#customer_mobile_phone', prefixKey: 'customer_mobile_phone_prefix'}
+      ]);
       //
       var reservationJSON = JSON.stringify(reservation);
       // Prepare the URL
@@ -687,28 +681,7 @@ require(['jquery',
       }
 
       // Configure Telephone with prefix
-      var countryCode = model.configuration.countryCode;
-      if (typeof countryCode === 'undefined' || countryCode == null) {
-        countryCode = commonUI.intlTelInputCountryCode(); 
-      }
-            
-      if ($('#customer_phone').length) {
-        $("#customer_phone").intlTelInput({
-          initialCountry: countryCode,
-          separateDialCode: true,
-          utilsScript: commonServices.phoneUtilsPath,
-          preferredCountries: [countryCode]
-        });
-      }
-
-      if ($('#customer_mobile_phone').length) {
-        $("#customer_mobile_phone").intlTelInput({
-          initialCountry: countryCode,
-          separateDialCode: true,
-          utilsScript: commonServices.phoneUtilsPath,
-          preferredCountries: [countryCode]
-        });
-      }
+      commonContactControls.initPhones(['#customer_phone', '#customer_mobile_phone'], model.configuration);
 
     },
 
