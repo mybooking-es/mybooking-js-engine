@@ -57,6 +57,7 @@ require('./common/commonPromotionCode.js');
 require('./common/commonIdentityControls.js');
 require('./common/commonContactControls.js');
 require('./common/commonFormValidation.js');
+require('./common/commonAddressControls.js');
 
 // == Contact module
 

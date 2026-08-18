@@ -1,6 +1,6 @@
 require(['jquery',
          'commonServices', 'commonSettings', 'commonTranslations', 'commonLoader', 'commonUI',
-         'commonIdentityControls', 'commonContactControls', 'commonFormValidation',
+         'commonIdentityControls', 'commonContactControls', 'commonFormValidation', 'commonAddressControls',
          'i18next','ysdtemplate','YSDDateControl',
          './selector/modify_reservation_selector', './selector-wizard/selector_wizard', 'select2',
          'YSDMemoryDataSource','YSDSelectSelector', './mediator/rentEngineMediator', '../profile/Login',
@@ -11,7 +11,7 @@ require(['jquery',
 	       'jquery.ui.datepicker.validation'],
 	     function($,
                 commonServices, commonSettings, commonTranslations, commonLoader, commonUI,
-                commonIdentityControls, commonContactControls, commonFormValidation,
+                commonIdentityControls, commonContactControls, commonFormValidation, commonAddressControls,
                 i18next, tmpl, DateControl, selector, selectorWizard, select2,
                 MemoryDataSource, SelectSelector, rentEngineMediator, Login, PasswordForgottenComponent, moment) {
 
@@ -995,71 +995,46 @@ require(['jquery',
 
       // Configure address country
 
-      // Load countries
-      var countries = i18next.t('common.countries', {returnObjects: true });
-      if (countries instanceof Object) {
-        var countryCodes = Object.keys(countries);
-        var countriesArray = countryCodes.map(function(value){ 
-                                return {id: value, text: countries[value], description: countries[value]};
-                             });
-      } 
-      else {
-        var countriesArray = [];
+      var countrySelectors = ['select[name=country]',
+                       'select[name=customer_origin_country]',
+                       'select[name=driver_address\\[country\\]]',
+                       'select[name=driver_origin_country]',
+                       'select[name=driver_driving_license_country]',
+                       'select[name=additional_driver_1_origin_country]',
+                       'select[name=additional_driver_1_driving_license_country]',
+                       'select[name=additional_driver_2_origin_country]',
+                       'select[name=additional_driver_2_driving_license_country]'];
+      for (var idx=0; idx<countrySelectors.length; idx++) {
+        commonAddressControls.initCountrySelector($(countrySelectors[idx]), '', {requestLanguage: model.requestLanguage});
       }
 
-      var values = ['','','','','','','','','']; 
-      if (commonServices.jsUseSelect2) {
-        // Setup country selector
-        var selectors = ['select[name=country]',
-                         'select[name=customer_origin_country]',
-                         'select[name=driver_address\\[country\\]]',
-                         'select[name=driver_origin_country]',
-                         'select[name=driver_driving_license_country]',
-                         'select[name=additional_driver_1_origin_country]',
-                         'select[name=additional_driver_1_driving_license_country]',
-                         'select[name=additional_driver_2_origin_country]',
-                         'select[name=additional_driver_2_driving_license_country]'];
-        console.log(selectors);
-        var $countrySelector = null;
-        for (var idx=0; idx<selectors.length; idx++) {
-          if ($(selectors[idx]).length > 0) { 
-            $countrySelector = $(selectors[idx]);    
-            if ($countrySelector.length > 0 && $countrySelector.prop('tagName') === 'SELECT' && typeof values[idx] !== 'undefined') {
-              $countrySelector.select2({
-                width: '100%',
-                theme: 'bootstrap4',                  
-                data: countriesArray
-              });
-              // Assign value
-              var value = (values[idx] !== null && values[idx] !== '' ? values[idx] : '');
-              $countrySelector.val(values[idx]);
-              $countrySelector.trigger('change');
-            }
-          }
-        }
-      }
-      else {
-        // Setup country selector
-        var selectors = ['country',
-                         'customer_origin_country', 
-                         'driver_address_country',
-                         'driver_origin_country',
-                         'driver_driving_license_country',
-                         'additional_driver_1_origin_country',
-                         'additional_driver_1_driving_license_country',
-                         'additional_driver_2_origin_country',
-                         'additional_driver_2_driving_license_country'
-                        ];
-        for (var idx=0; idx<selectors.length; idx++) { 
-          var countryElement = document.getElementById(selectors[idx]);
-          if (countryElement && countryElement.tagName === 'SELECT') {
-            var countriesDataSource = new MemoryDataSource(countriesArray);
-            var countryModel = (values[idx] == null ? '' : values[idx])
-            var selectorModel = new SelectSelector(selectors[idx],
-                countriesDataSource, countryModel, true, i18next.t('complete.reservationForm.select_country'));
-          }
-        }
-      }
+      // P4 SES: customer address descriptor (selectors will be empty until Phase 4 template adds them)
+      commonAddressControls.initAddressDescriptor({
+        enabled: !!model.configuration.sesHospedajes,
+        requestLanguage: model.requestLanguage,
+        countrySelector: 'select[name=country]',
+        stateTextSelector: '[name="state"]',
+        stateCodeSelector: '.js-mb-ses-address[data-mb-address-scope="customer"] .js-mb-ses-state-code',
+        cityTextSelector: '[name="city"]',
+        cityCodeSelector: '.js-mb-ses-address[data-mb-address-scope="customer"] .js-mb-ses-city-code',
+        stateRequired: !!$('[name="state"]').prop('required'),
+        cityRequired: !!$('[name="city"]').prop('required'),
+        locked: false
+      });
+
+      // P4 SES: driver address descriptor
+      commonAddressControls.initAddressDescriptor({
+        enabled: !!model.configuration.sesHospedajes,
+        requestLanguage: model.requestLanguage,
+        countrySelector: 'select[name=driver_address\\[country\\]]',
+        stateTextSelector: '[name="driver_address[state]"]',
+        stateCodeSelector: '.js-mb-ses-address[data-mb-address-scope="driver"] .js-mb-ses-state-code',
+        cityTextSelector: '[name="driver_address[city]"]',
+        cityCodeSelector: '.js-mb-ses-address[data-mb-address-scope="driver"] .js-mb-ses-city-code',
+        stateRequired: !!$('[name="driver_address[state]"]').prop('required'),
+        cityRequired: !!$('[name="driver_address[city]"]').prop('required'),
+        locked: false
+      });
 
       // Configure Telephone with prefix
       commonContactControls.initPhones(
@@ -1208,17 +1183,44 @@ require(['jquery',
                     'street': {
                         required: '#street[required]:visible'
                     },
+                    'number': {
+                        required: '#number[required]:visible'
+                    },
+                    'complement': {
+                        required: '#complement[required]:visible'
+                    },
                     'city': {
-                        required: '#city[required]:visible'
-                    },    
+                        required: commonFormValidation.buildPairedRequiredFn('[name="city"]', '.js-mb-ses-address[data-mb-address-scope="customer"] .js-mb-ses-city-code')
+                    },
                     'state': {
-                        required: '#state[required]:visible'
-                    }, 
+                        required: commonFormValidation.buildPairedRequiredFn('[name="state"]', '.js-mb-ses-address[data-mb-address-scope="customer"] .js-mb-ses-state-code')
+                    },
                     'zip': {
                         required: '#zip[required]:visible'
-                    }, 
+                    },
                     'country': {
-                        required: '#country[required]:visible'
+                        required: commonFormValidation.buildSelectorRequiredFn('select[name=country]')
+                    },
+                    'driver_address[street]': {
+                        required: '[name="driver_address[street]"][required]:visible'
+                    },
+                    'driver_address[number]': {
+                        required: '[name="driver_address[number]"][required]:visible'
+                    },
+                    'driver_address[complement]': {
+                        required: '[name="driver_address[complement]"][required]:visible'
+                    },
+                    'driver_address[city]': {
+                        required: commonFormValidation.buildPairedRequiredFn('[name="driver_address[city]"]', '.js-mb-ses-address[data-mb-address-scope="driver"] .js-mb-ses-city-code')
+                    },
+                    'driver_address[state]': {
+                        required: commonFormValidation.buildPairedRequiredFn('[name="driver_address[state]"]', '.js-mb-ses-address[data-mb-address-scope="driver"] .js-mb-ses-state-code')
+                    },
+                    'driver_address[zip]': {
+                        required: '[name="driver_address[zip]"][required]:visible'
+                    },
+                    'driver_address[country]': {
+                        required: commonFormValidation.buildSelectorRequiredFn('select[name=driver_address\\[country\\]]')
                     },
                     'driver_document_id_date_day': {
                       required: "#driver_document_id_date_day[required]:visible"
@@ -1544,6 +1546,21 @@ require(['jquery',
                     else if (commonFormValidation.identityErrorPlacement(error, element))
                     {
                         // handled: identity selects (classifier, country, nationality, document, license)
+                    }
+                    else if ((element.attr('name') === 'state' &&
+                              commonFormValidation.placeErrorAfterActiveAlternate(error, element,
+                                '.js-mb-ses-address[data-mb-address-scope="customer"] .js-mb-ses-state-code')) ||
+                             (element.attr('name') === 'city' &&
+                              commonFormValidation.placeErrorAfterActiveAlternate(error, element,
+                                '.js-mb-ses-address[data-mb-address-scope="customer"] .js-mb-ses-city-code')) ||
+                             (element.attr('name') === 'driver_address[state]' &&
+                              commonFormValidation.placeErrorAfterActiveAlternate(error, element,
+                                '.js-mb-ses-address[data-mb-address-scope="driver"] .js-mb-ses-state-code')) ||
+                             (element.attr('name') === 'driver_address[city]' &&
+                              commonFormValidation.placeErrorAfterActiveAlternate(error, element,
+                                '.js-mb-ses-address[data-mb-address-scope="driver"] .js-mb-ses-city-code')))
+                    {
+                        // handled: SES code select error after Select2 container
                     }
                     else
                     {

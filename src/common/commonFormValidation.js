@@ -106,6 +106,80 @@ define('commonFormValidation',
           return true;
         }
         return false;
+      },
+
+      /**
+       * Effective visibility for any CSS/jQuery selector.
+       * Handles Select2-backed elements the same way as isEffectivelyVisible.
+       */
+      isEffectivelyVisibleBySelector: function(sel) {
+        var $el = $(sel);
+        if (!$el.length) return false;
+        if ($el.is(':visible')) return true;
+        var $container = $el.next('span.select2-container');
+        if ($container.length && $container.is(':visible')) return true;
+        return false;
+      },
+
+      /**
+       * Returns a jQuery Validate required-rule function for any selector.
+       * Required when: effectively visible AND has the `required` HTML attribute.
+       */
+      buildSelectorRequiredFn: function(sel) {
+        var self = this;
+        return function() {
+          return self.isEffectivelyVisibleBySelector(sel) && !!$(sel).attr('required');
+        };
+      },
+
+      /**
+       * Returns a jQuery Validate required-rule function for any selector.
+       * Required when: effectively visible (engine-required, no markup attr needed).
+       */
+      buildSelectorVisibleFn: function(sel) {
+        var self = this;
+        return function() {
+          return self.isEffectivelyVisibleBySelector(sel);
+        };
+      },
+
+      /**
+       * True when the selector's element is visible (including Select2) AND has `required` attr.
+       */
+      isSelectorMarkupRequiredAndVisible: function(sel) {
+        var $el = $(sel);
+        if (!$el.length) return false;
+        if (!$el.attr('required')) return false;
+        return this.isEffectivelyVisibleBySelector(sel);
+      },
+
+      /**
+       * Paired required for SES address controls: true when the canonical text input
+       * is visible+required OR the alternate SES code select is visible+required.
+       * Only one of the pair is shown at a time (ES vs non-ES mode).
+       */
+      buildPairedRequiredFn: function(canonicalSelector, alternateSelector) {
+        var self = this;
+        return function() {
+          return self.isSelectorMarkupRequiredAndVisible(canonicalSelector) ||
+                 self.isSelectorMarkupRequiredAndVisible(alternateSelector);
+        };
+      },
+
+      /**
+       * Error placement for paired canonical/SES fields.
+       * When the alternate SES code select is effectively visible, inserts after its Select2 container.
+       * Otherwise falls through (returns false) for default placement.
+       */
+      placeErrorAfterActiveAlternate: function(error, canonicalElement, alternateSelector) {
+        var $alt = $(alternateSelector);
+        if (!$alt.length) return false;
+        var $container = $alt.next('span.select2-container');
+        if ($container.length && $container.is(':visible')) {
+          error.insertAfter($container);
+          return true;
+        }
+        return false;
       }
 
     };

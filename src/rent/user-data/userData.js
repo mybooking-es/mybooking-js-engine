@@ -18,6 +18,8 @@ require([
   'jquery.validate',
   'jquery.ui',
   'jquery.form',
+  'commonAddressControls',
+  'commonFormValidation',
 ], function(
   $,
   RemoteDataSource,
@@ -32,6 +34,8 @@ require([
   i18next,
   tmpl,
   DateControl,
+  commonAddressControls,
+  commonFormValidation,
 ) {
   const model = {
     // THE MODEL
@@ -312,7 +316,6 @@ require([
       );
 
       model.configuration = commonSettings.data;
-      model.configuration.sesHospedajes = true; // TODO remove
 
       this.setupForm();
       this.setupEvents();
@@ -337,63 +340,9 @@ require([
      * Load selects options
      */
     formatCountries: function () {
-      // Load countries
-      let countries = i18next.t('common.countries', { returnObjects: true });
-
-      let countriesArray = [];
-      if (countries instanceof Object) {
-        const countryCodes = Object.keys(countries);
-        countriesArray = countryCodes.map(function (value) {
-          return { id: value, text: countries[value], description: countries[value] };
-        });
-        countriesArray.unshift({ id: '', text: '' });
-      }
-
-      if (commonServices.jsUseSelect2) {
-        // Configure address country
-        const selectors = [
-          'select[name=address\\[country\\]]',
-          'select[name=origin_country]',
-          'select[name=driving_license_country]',
-        ];
-        let $countrySelector = null;
-        for (let idx = 0; idx < selectors.length; idx++) {
-          console.log('countries', selectors[idx]);
-          $countrySelector = $(selectors[idx]);
-          if ($countrySelector.length > 0) {
-            $countrySelector.select2({
-              width: '100%',
-              theme: 'bootstrap4',
-              data: countriesArray,
-              placeholder: i18next.t('common.selectOption'),
-            });
-          }
-        }
-      } else {
-        // Setup country selector
-        const selectors = [
-          'address[country]',
-          'origin_country',
-          'driving_license_country',
-        ];
-        for (let idx = 0; idx < selectors.length; idx++) {
-          // Load the contries
-          const elements = document.getElementsByName(selectors[idx]);
-          if (elements.length > 0) {
-            const countriesDataSource = new MemoryDataSource(countriesArray);
-            const countryModel = '';
-            for (let j = 0; j < elements.length; j++) {
-              new SelectSelector(
-                selectors[idx],
-                countriesDataSource,
-                countryModel,
-                true,
-                i18next.t('myUserData.select_country'),
-              );
-            }
-          }
-        }
-      }
+      commonAddressControls.initCountrySelector($('select[name=address\\[country\\]]'), null, {});
+      commonAddressControls.initCountrySelector($('select[name=origin_country]'), null, {});
+      commonAddressControls.initCountrySelector($('select[name=driving_license_country]'), null, {});
     },
 
     /*
@@ -611,18 +560,21 @@ require([
      * Setup selects controls in form
      */
     setupSelectControls: function () {
-      if (model.configuration.sesHospedajes) {
-        // Setup state code and city code controls
-        const $driverAddressStateCode = $('select[name=address\\[state_code\\]]');
-        const $driverAddressCityCode = $('select[name=address\\[city_code\\]]');
-        this.setupAddressStateCodeControl($driverAddressStateCode);
-        $driverAddressStateCode.next('.select2-container').hide();
-        this.setupAddressCityCodeControl($driverAddressCityCode, $driverAddressStateCode);
-        $driverAddressCityCode.next('.select2-container').hide();
-        this.setupAddressStateControlEvents($driverAddressStateCode, $driverAddressCityCode);
-        // Setup the customer/driver address country events
-        this.setupAddressCountryEvents($('select[name=address\\[country\\]]'));
-      }
+
+      // Address SES descriptor
+      commonAddressControls.initAddressDescriptor({
+        enabled: !!model.configuration.sesHospedajes,
+        requestLanguage: model.requestLanguage,
+        countrySelector: 'select[name=address\\[country\\]]',
+        countryValue: null,
+        stateTextSelector: '[name="address[state]"]',
+        stateCodeSelector: 'select[name=address\\[state_code\\]]',
+        cityTextSelector: '[name="address[city]"]',
+        cityCodeSelector: 'select[name=address\\[city_code\\]]',
+        stateRequired: model.required_fields.includes('address[state]'),
+        cityRequired: model.required_fields.includes('address[city]'),
+        locked: false
+      });
 
       // Load countries and set value if exists
       this.formatCountries();
@@ -632,145 +584,6 @@ require([
       model.loadDocumentTypes();
       // Load license types and set value if exists
       model.loadLicenseTypes();
-    },
-
-    /**
-     * Setup customer/driver address country events
-     */
-    setupAddressCountryEvents: function ($countrySelector) {
-      if (commonServices.jsUseSelect2) {
-        $countrySelector.off('select2:select');
-        $countrySelector.on('select2:select', function (e) {
-          const country = $(this).val();
-          const stateSelectorName = $(this).attr('data-state-selector-name');
-          const stateInputName = $(this).attr('data-state-input-name');
-          const citySelectorName = $(this).attr('data-city-selector-name');
-          const cityInputName = $(this).attr('data-city-input-name');
-          controller.onChangeCountry(country, stateSelectorName, stateInputName, citySelectorName, cityInputName);
-        });
-      } else {
-        $countrySelector.off('change');
-        $countrySelector.on('change', function (e) {
-          const country = $(this).val(); //e.params.data.id;
-          const stateSelectorName = $(this).attr('data-state-selector-name');
-          const stateInputName = $(this).attr('data-state-input-name');
-          const citySelectorName = $(this).attr('data-city-selector-name');
-          const cityInputName = $(this).attr('data-city-input-name');
-          controller.onChangeCountry(country, stateSelectorName, stateInputName, citySelectorName, cityInputName);
-        });
-      }
-    },
-
-    /**
-     * Setup address state code events
-     */
-    setupAddressStateControlEvents: function ($selector, $citiesSelector) {
-      $($selector).off('select2:select');
-      $($selector).on('select2:select', function (e) {
-        const stateCode = e.params.data.id;
-        // Clear city value
-        $($citiesSelector).val(undefined).trigger('change');
-
-        if (stateCode && stateCode !== '') {
-          $($citiesSelector).removeAttr('disabled');
-        } else {
-          $($citiesSelector).attr('disabled', 'disabled');
-        }
-      });
-    },
-
-    /**
-     * Setup address state code
-     */
-    setupAddressStateCodeControl: function ($selector) {
-      console.log('setupAddressStateCodeControl', $selector);
-
-      // Build the URL to retrieve the states
-      let url = commonServices.URL_PREFIX + '/api/booking/frontend/states';
-      const urlParams = [];
-      if (this.requestLanguage != null) {
-        urlParams.push('lang=' + model.requestLanguage);
-      }
-      if (commonServices.apiKey && commonServices.apiKey != '') {
-        urlParams.push('api_key=' + commonServices.apiKey);
-      }
-      if (urlParams.length > 0) {
-        url += '?';
-        url += urlParams.join('&');
-      }
-
-      // Create the select2 control
-      $selector.select2({
-        width: '100%',
-        allowClear: true,
-        placeholder: i18next.t('common.selectOption'),
-        ajax: {
-          url: url,
-          processResults: function (data) {
-            var transformedData = [];
-            for (var idx = 0; idx < data.length; idx++) {
-              var element = {
-                text: data[idx].literal,
-                id: data[idx].code,
-              };
-              transformedData.push(element);
-            }
-            return { results: transformedData };
-          },
-        },
-      });
-    },
-
-    /**
-     * Setup address city code
-     */
-    setupAddressCityCodeControl: function ($selector, $stateSelector) {
-      console.log('setupAddressCityCodeControl', $selector);
-
-      // Build the URL to retrieve the states
-      let url = commonServices.URL_PREFIX + '/api/booking/frontend/cities';
-      const urlParams = [];
-      if (this.requestLanguage != null) {
-        urlParams.push('lang=' + model.requestLanguage);
-      }
-      if (commonServices.apiKey && commonServices.apiKey != '') {
-        urlParams.push('api_key=' + commonServices.apiKey);
-      }
-      if (urlParams.length > 0) {
-        url += '?';
-        url += urlParams.join('&');
-      }
-
-      // Create the select2 control
-      $selector.select2({
-        width: '100%',
-        allowClear: true,
-        placeholder: i18next.t('common.selectOption'),
-        ajax: {
-          url: () => {
-            let theUrl;
-            const state_code = $stateSelector.val();
-            if (urlParams.length > 0) {
-              theUrl = `${url}&state_code=${state_code}`;
-            } else {
-              theUrl = `${url}?state_code=${state_code}`;
-            }
-            console.log('theUrl', theUrl);
-            return theUrl;
-          },
-          processResults: function (data) {
-            var transformedData = [];
-            for (var idx = 0; idx < data.length; idx++) {
-              var element = {
-                text: data[idx].name,
-                id: data[idx].cmun5d,
-              };
-              transformedData.push(element);
-            }
-            return { results: transformedData };
-          },
-        },
-      });
     },
 
     /**
@@ -852,7 +665,7 @@ require([
                 required: () => $('[name="document_id"]').is(':visible') && $('[name="document_id"]').prop('required'),             
               },
               'origin_country': {
-                required: () => $('[name="origin_country"]').is(':visible') && $('[name="origin_country"]').prop('required'),
+                required: commonFormValidation.buildSelectorRequiredFn('select[name=origin_country]'),
               },
               'document_id_date': {
                 required: (element) => view.validateDateIsRequired(element),
@@ -869,7 +682,7 @@ require([
                 required: () => $('[name="driving_license_number"]').is(':visible') && $('[name="driving_license_number"]').prop('required'),
               },
               'driving_license_country': {
-                required: () => $('[name="driving_license_country"]').is(':visible') && $('[name="driving_license_country"]').prop('required'),
+                required: commonFormValidation.buildSelectorRequiredFn('select[name=driving_license_country]'),
               },
               'driving_license_date': {
                 required: (element) => view.validateDateIsRequired(element),
@@ -892,16 +705,16 @@ require([
                 required: () => $('[name="address\\[city\\]"]').is(':visible') && model.required_fields.includes('address[city]'),
               },
               'address[city_code]': {
-                required: () => $('[name="address\\[city_code\\]"]').is(':visible') && model.required_fields.includes('address[city]'),
+                required: commonFormValidation.buildSelectorRequiredFn('select[name=address\\[city_code\\]]'),
               },
               'address[state]': {
                 required: () => $('[name="address\\[state\\]"]').is(':visible') && model.required_fields.includes('address[state]'),
               },
               'address[state_code]': {
-                required: () => $('[name="address\\[state_code\\]"]').is(':visible') && model.required_fields.includes('address[state]'),
+                required: commonFormValidation.buildSelectorRequiredFn('select[name=address\\[state_code\\]]'),
               },
               'address[country]': {
-                required: () => $('[name="address\\[country\\]"]').is(':visible') && $('[name="address\\[country\\]"]').prop('required'),
+                required: commonFormValidation.buildSelectorRequiredFn('select[name=address\\[country\\]]'),
               },
               'address[zip]': {
                 required: () => $('[name="address\\[zip\\]"]').is(':visible') && $('[name="address\\[zip\\]"]').prop('required'),

@@ -1,6 +1,6 @@
 require(['jquery',
          'commonServices', 'commonSettings', 'commonTranslations', 'commonLoader', 'commonUI',
-         'commonContactControls',
+         'commonContactControls', 'commonAddressControls', 'commonFormValidation',
          'i18next','ysdtemplate','YSDDateControl',
          './selector/modify_reservation_selector', 'select2',
          'YSDMemoryDataSource','YSDSelectSelector', './mediator/transferEngineMediator', '../profile/Login',
@@ -11,7 +11,7 @@ require(['jquery',
 	       'jquery.ui.datepicker.validation'],
 	     function($,
                 commonServices, commonSettings, commonTranslations, commonLoader, commonUI,
-                commonContactControls,
+                commonContactControls, commonAddressControls, commonFormValidation,
                 i18next, tmpl, DateControl, selector, select2,
                 MemoryDataSource, SelectSelector, transferEngineMediator, Login, PasswordForgottenComponent) {
 
@@ -635,50 +635,11 @@ require(['jquery',
       }
 
       // Configure address country
-      
-      // Load countries
-      var countries = i18next.t('common.countries', {returnObjects: true });
-      if (countries instanceof Object) {
-        var countryCodes = Object.keys(countries);
-        var countriesArray = countryCodes.map(function(value){ 
-                                return {id: value, text: countries[value], description: countries[value]};
-                             });
-      } 
-      else {
-        var countriesArray = [];
-      }
-      var values = ['']; 
 
-      if (commonServices.jsUseSelect2) {
-        // Setup country selector
-        var selectors = ['customer_address_country'];
-        for (var idx=0; idx<selectors.length; idx++) { 
-          var $countrySelector = $(selectors[idx]);    
-          if ($countrySelector.length > 0 && typeof values[idx] !== 'undefined') {
-            $countrySelector.select2({
-              width: '100%',
-              theme: 'bootstrap4',                  
-              data: countriesArray
-            });
-            // Assign value
-            var value = (values[idx] !== null && values[idx] !== '' ? values[idx] : '');
-            $countrySelector.val(values[idx]);
-            $countrySelector.trigger('change');
-          }
-        }
-      }
-      else {
-        // Setup country selector
-        var selectors = ['customer_address_country'];
-        for (var idx=0; idx<selectors.length; idx++) { 
-          if (document.getElementById(selectors[idx])) {
-            var countriesDataSource = new MemoryDataSource(countriesArray);
-            var countryModel = (values[idx] == null ? '' : values[idx])
-            var selectorModel = new SelectSelector(selectors[idx],
-                countriesDataSource, countryModel, true, i18next.t('complete.reservationForm.select_country'));
-          }
-        }
-      }
+      // Load countries
+      commonAddressControls.initCountrySelector(
+        $('select[name=customer_address_country]'), '', {requestLanguage: model.requestLanguage}
+      );
 
       // Configure Telephone with prefix
       commonContactControls.initPhones(['#customer_phone', '#customer_mobile_phone'], model.configuration);
@@ -803,7 +764,10 @@ require(['jquery',
                     },
                     'detailed_return_destination_flight_estimated_time': {
                         required: '#detailed_return_destination_flight_estimated_time:visible'
-                    },                                                                                                    
+                    },
+                    'customer_address_country': {
+                        required: commonFormValidation.buildSelectorRequiredFn('select[name=customer_address_country]')
+                    },
                 },
 
                 messages : {
@@ -920,6 +884,10 @@ require(['jquery',
                     }
                     else if (element.attr('name') == 'payment_method_select') {
                         error.insertAfter(document.getElementById('payment_method_select_error'));
+                    }
+                    else if (element.attr('name') === 'customer_address_country') {
+                        var $s2 = $('select[name=customer_address_country]').next('span.select2-container');
+                        if ($s2.length) { error.insertAfter($s2); } else { error.insertAfter(element); }
                     }
                     else
                     {
