@@ -13,7 +13,7 @@ require([
   'commonUI',
   'i18next',
   'ysdtemplate',
-  'YSDDateControl',
+  'commonDateControls',
   'jquery.i18next',
   'jquery.validate',
   'jquery.ui',
@@ -33,7 +33,7 @@ require([
   commonUI,
   i18next,
   tmpl,
-  DateControl,
+  commonDateControls,
   commonAddressControls,
   commonFormValidation,
 ) {
@@ -514,25 +514,13 @@ require([
      * Setup date controls in form
      */
     setupDateControls: function () {
-      const controls = $('.js-date-select-control');
-
-      controls.each((index, element) => {
-        const day = $(element).find('[name$="_day"]');
-        const month = $(element).find('[name$="_month"]');
-        const year = $(element).find('[name$="_year"]');
-        const hiddenControl = $(element).find('[type="hidden"]');
-
-        const direction = $(element).attr('data-date-select-control-direction');
-        // If date is in the past revert
-        const dateControl = new DateControl(
-          day[0],
-          month[0],
-          year[0],
-          hiddenControl[0],
-          commonSettings.language(model.requestLanguage),
-          undefined,
-          direction,
-        );
+      commonDateControls.setup({
+        root: $('form[name=new_customer_form]'),
+        locale: commonSettings.language(model.requestLanguage),
+        legacyDirections: {
+          document_id_expiration_date: 'future',
+          driving_license_expiration_date: 'future'
+        }
       });
     },
 
@@ -603,20 +591,6 @@ require([
         required: i18next.t('complete.reservationForm.validations.fieldRequired'),
       });
 
-      // Date patter
-      $.validator.addMethod(
-        'date_pattern',
-        function (value, element) {
-          // Check the regular expression only if it is not empty
-          if (value === '') {
-            return true;
-          }
-          const regex = new RegExp('^\\d{4}-\\d{2}-\\d{2}$');
-          return regex.test(value);
-        },
-        'Date format is YYYY-MM-DD.',
-      );
-
       $('form[name=new_customer_form]').unbind('validate');
       $('form[name=new_customer_form]').validate(
           {   
@@ -643,10 +617,6 @@ require([
                 required: () => $('[name="customer_phone"]').is(':visible') && $('[name="customer_phone"]').prop('required'),
                 minlength: 9
               },
-              'date_of_birth': {
-                required: (element) => view.validateDateIsRequired(element),
-                date_pattern: true,
-              },
               'nacionality': {
                 required: () => $('[name="nacionality"]').is(':visible') && $('[name="nacionality"]').prop('required'),
               },
@@ -667,14 +637,6 @@ require([
               'origin_country': {
                 required: commonFormValidation.buildSelectorRequiredFn('select[name=origin_country]'),
               },
-              'document_id_date': {
-                required: (element) => view.validateDateIsRequired(element),
-                date_pattern: true,
-              },
-              'document_id_expiration_date': {
-                required: (element) => view.validateDateIsRequired(element),
-                date_pattern: true,
-              },
               'driving_license_type_id': {
                 required: () => $('[name="driving_license_type_id"]').is(':visible') && $('[name="driving_license_type_id"]').prop('required'),
               },
@@ -683,14 +645,6 @@ require([
               },
               'driving_license_country': {
                 required: commonFormValidation.buildSelectorRequiredFn('select[name=driving_license_country]'),
-              },
-              'driving_license_date': {
-                required: (element) => view.validateDateIsRequired(element),
-                date_pattern: true,
-              },
-              'driving_license_expiration_date': {
-                required: (element) => view.validateDateIsRequired(element),
-                date_pattern: true,
               },
               'address[street]': {
                 required: () => $('[name="address\\[street\\]"]').is(':visible') && $('[name="address\\[street\\]"]').prop('required'),
@@ -736,10 +690,6 @@ require([
                 required: i18next.t('complete.reservationForm.validations.fieldRequired'),
                 minlength: i18next.t('complete.reservationForm.validations.customerPhoneNumberMinLength')
               },
-              'date_of_birth': {
-                required: i18next.t('complete.reservationForm.validations.fieldRequired'),
-                date_pattern: i18next.t('complete.reservationForm.validations.datePatternInvalid'),
-              },
               'nacionality': {
                 required: i18next.t('complete.reservationForm.validations.fieldRequired')
               },
@@ -753,14 +703,6 @@ require([
               'origin_country': {
                 required: i18next.t('complete.reservationForm.validations.fieldRequired')
               },
-              'document_id_date': {
-                required: i18next.t('complete.reservationForm.validations.fieldRequired'),
-                date_pattern: i18next.t('complete.reservationForm.validations.datePatternInvalid'),
-              },
-              'document_id_expiration_date': {
-                rrequired: i18next.t('complete.reservationForm.validations.fieldRequired'),
-                date_pattern: i18next.t('complete.reservationForm.validations.datePatternInvalid'),
-              },
               'driving_license_type_id': {
                 required: i18next.t('complete.reservationForm.validations.fieldRequired')
               },
@@ -769,14 +711,6 @@ require([
               },
               'driving_license_country': {
                 required: i18next.t('complete.reservationForm.validations.fieldRequired')
-              },
-              'driving_license_date': {
-                required: i18next.t('complete.reservationForm.validations.fieldRequired'),
-                date_pattern: i18next.t('complete.reservationForm.validations.datePatternInvalid'),
-              },
-              'driving_license_expiration_date': {
-                required: i18next.t('complete.reservationForm.validations.fieldRequired'),
-                date_pattern: i18next.t('complete.reservationForm.validations.datePatternInvalid'),
               },
               'address\\[street\\]': {
                 required: i18next.t('complete.reservationForm.validations.fieldRequired')
@@ -808,7 +742,9 @@ require([
             },
 
             errorPlacement: function(error, element) {
-              if (element.attr('name') === 'document_id_type_id')  {
+              if (commonDateControls.placeError(error, element)) {
+                // handled: canonical date error after visible date composite
+              } else if (element.attr('name') === 'document_id_type_id')  {
                 if (commonServices.jsUseSelect2) {
                   error.insertAfter('form[name=new_customer_form] select[name=document_id_type_id] + span.select2-container');
                 }
@@ -837,6 +773,11 @@ require([
           }
       );
 
+      commonDateControls.applyValidationRules(
+        $('form[name=new_customer_form]'),
+        i18next.t('complete.reservationForm.validations.datePatternInvalid')
+      );
+
       if (model.configuration.sesHospedajes) {
         // Apply the validation rules for the document
         $('input[name=document_id]').rules('add', {
@@ -847,35 +788,6 @@ require([
       }
 
       commonLoader.hide();
-    },
-
-    /**
-     * Validate that a date is required
-     * @param {*} element
-     * @returns
-     */
-    validateDateIsRequired: function (element) {
-      // Get the field name
-      const fieldName = $(element).attr('name');
-
-      // Check if the date is required, if not return true because do not need validate the value
-      if (!$(element).prop('required')) {
-        return false;
-      }
-
-      // Get the others fields
-      const dayField = $('[name="' + fieldName + '_day"]');
-      const monthField = $('[name="' + fieldName + '_month"]');
-      const yearField = $('[name="' + fieldName + '_year"]');
-
-      // Check if any field is visible
-      const anyFieldsIsVisible = dayField.is(':visible') || monthField.is(':visible') || yearField.is(':visible');
-      // If no field is visible, return true because do not need validate the value
-      if (!anyFieldsIsVisible) {
-        return false;
-      }
-
-      return true;
     },
 
     /**

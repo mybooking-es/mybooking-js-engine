@@ -1,7 +1,7 @@
 require(['jquery',
          'commonServices', 'commonSettings', 'commonTranslations', 'commonLoader', 'commonUI',
          'commonIdentityControls', 'commonContactControls', 'commonFormValidation', 'commonAddressControls',
-         'i18next','ysdtemplate','YSDDateControl',
+         'i18next','ysdtemplate','commonDateControls',
          './selector/modify_reservation_selector', './selector-wizard/selector_wizard', 'select2',
          'YSDMemoryDataSource','YSDSelectSelector', './mediator/rentEngineMediator', '../profile/Login',
          '../profile/PasswordForgottenComponent', 'moment',
@@ -12,7 +12,7 @@ require(['jquery',
 	     function($,
                 commonServices, commonSettings, commonTranslations, commonLoader, commonUI,
                 commonIdentityControls, commonContactControls, commonFormValidation, commonAddressControls,
-                i18next, tmpl, DateControl, selector, selectorWizard, select2,
+                i18next, tmpl, commonDateControls, selector, selectorWizard, select2,
                 MemoryDataSource, SelectSelector, rentEngineMediator, Login, PasswordForgottenComponent, moment) {
 
   var model = { // THE MODEL
@@ -1042,63 +1042,19 @@ require(['jquery',
         model.configuration
       );
 
-      // Configure driver document id date
-      if (document.getElementById('driver_document_id_date_day')) {
-        new DateControl(document.getElementById('driver_document_id_date_day'),
-                        document.getElementById('driver_document_id_date_month'),
-                        document.getElementById('driver_document_id_date_year'),
-                        document.getElementById('driver_document_id_date'),
-                        commonSettings.language(model.requestLanguage));
-      }
-      if (document.getElementById('driver_document_id_expiration_date_day')) {
-        new DateControl(document.getElementById('driver_document_id_expiration_date_day'),
-                        document.getElementById('driver_document_id_expiration_date_month'),
-                        document.getElementById('driver_document_id_expiration_date_year'),
-                        document.getElementById('driver_document_id_expiration_date'),
-                        commonSettings.language(model.requestLanguage),
-                        undefined, 'future');
-      }
-      // Configure driver date of birth and driver license date
-      if (document.getElementById('driver_date_of_birth_day')) {
-        new DateControl(document.getElementById('driver_date_of_birth_day'),
-                        document.getElementById('driver_date_of_birth_month'),
-                        document.getElementById('driver_date_of_birth_year'),
-                        document.getElementById('driver_date_of_birth'),
-                        commonSettings.language(model.requestLanguage));
-      }
-      // Configure driver driving license date 
-      if (document.getElementById('driver_driving_license_date_day')) {
-        new DateControl(document.getElementById('driver_driving_license_date_day'),
-                        document.getElementById('driver_driving_license_date_month'),
-                        document.getElementById('driver_driving_license_date_year'),
-                        document.getElementById('driver_driving_license_date'),
-                        commonSettings.language(model.requestLanguage));
-      }
-      // Configure driver driving license expiration date 
-      if (document.getElementById('driver_driving_license_expiration_date_day')) {
-        new DateControl(document.getElementById('driver_driving_license_expiration_date_day'),
-                        document.getElementById('driver_driving_license_expiration_date_month'),
-                        document.getElementById('driver_driving_license_expiration_date_year'),
-                        document.getElementById('driver_driving_license_expiration_date'),
-                        commonSettings.language(model.requestLanguage),
-                        undefined, 'future');
-      }
-
-      // Configure additional driver driving license date 
-      if (document.getElementById('additional_driver_1_driving_license_date_day')) {
-        new DateControl(document.getElementById('additional_driver_1_driving_license_date_day'),
-                        document.getElementById('additional_driver_1_driving_license_date_month'),
-                        document.getElementById('additional_driver_1_driving_license_date_year'),
-                        document.getElementById('additional_driver_1_driving_license_date'),
-                        commonSettings.language(model.requestLanguage));
-      }
-      if (document.getElementById('additional_driver_2_driving_license_date_day')) {
-        new DateControl(document.getElementById('additional_driver_2_driving_license_date_day'),
-                        document.getElementById('additional_driver_2_driving_license_date_month'),
-                        document.getElementById('additional_driver_2_driving_license_date_year'),
-                        document.getElementById('additional_driver_2_driving_license_date'),
-                        commonSettings.language(model.requestLanguage));
-      }
+      // Configure date controls (modern wrappers + generic legacy fallback)
+      commonDateControls.setup({
+        root: $('form[name=reservation_form]'),
+        locale: commonSettings.language(model.requestLanguage),
+        legacyDirections: {
+          driver_document_id_expiration_date: 'future',
+          driver_driving_license_expiration_date: 'future',
+          additional_driver_1_document_id_expiration_date: 'future',
+          additional_driver_1_driving_license_expiration_date: 'future',
+          additional_driver_2_document_id_expiration_date: 'future',
+          additional_driver_2_driving_license_expiration_date: 'future'
+        }
+      });
 
       // Reservation Form is complete
       rentEngineMediator.onCompleteSetupReservationForm();
@@ -1222,142 +1178,7 @@ require(['jquery',
                     'driver_address[country]': {
                         required: commonFormValidation.buildSelectorRequiredFn('select[name=driver_address\\[country\\]]')
                     },
-                    'driver_document_id_date_day': {
-                      required: "#driver_document_id_date_day[required]:visible"
-                    },
-                    'driver_document_id_date_month': {
-                      required: "#driver_document_id_date_month[required]:visible"
-                    },
-                    'driver_document_id_date_year': {
-                      required: "#driver_document_id_date_year[required]:visible"
-                    },
-                    'driver_document_id_date': {
-                      required: "#driver_document_id_date[required]:visible"
-                    },
-                    'driver_document_id_expiration_date_day': {
-                      required: "#driver_document_id_expiration_date_day[required]:visible"
-                    },
-                    'driver_document_id_expiration_date_month': {
-                      required: "#driver_document_id_expiration_date_month[required]:visible"
-                    },
-                    'driver_document_id_expiration_date_year': {
-                      required: "#driver_document_id_expiration_date_year[required]:visible"
-                    },
-                    'driver_document_id_expiration_date': {
-                      required: "#driver_document_id_expiration_date[required]:visible"
-                    },
-                    'driver_date_of_birth_day': {
-                      required: "#driver_date_of_birth_day[required]:visible"
-                    },
-                    'driver_date_of_birth_month': {
-                      required: "#driver_date_of_birth_month[required]:visible"
-                    },
-                    'driver_date_of_birth_year': {
-                      required: "#driver_date_of_birth_year[required]:visible"
-                    },
-                    'driver_date_of_birth': {
-                        required: "#driver_date_of_birth[required]:visible"
-                    },
-                    'driver_driving_license_date_day': {
-                      required: "#driver_driving_license_date_day[required]:visible"                       
-                    },
-                    'driver_driving_license_date_month': {
-                      required: "#driver_driving_license_date_month[required]:visible"                         
-                    },
-                    'driver_driving_license_date_year': {
-                      required: "#driver_driving_license_date_year[required]:visible"                     
-                    },
-                    'driver_driving_license_date': {
-                      required: "#driver_driving_license_date[required]:visible"                        
-                    },
-                    'additional_driver_1_driving_license_date_day': {
-                      //required: "#additional_driver_1_driving_license_date_day:visible"
-                      required: function() {
-                        if ($('#additional_driver_1_driving_license_date_day').length) {
-                          if ($('#additional_driver_1_driving_license_date_day').attr('required')) {
-                            return true;
-                          }
-                        }
-                        return false;
-                      }  
-                    },
-                    'additional_driver_1_driving_license_date_month': {
-                      //required: "#additional_driver_1_driving_license_date_month:visible"
-                      required: function() {
-                        if ($('#additional_driver_1_driving_license_date_month').length) {
-                          if ($('#additional_driver_1_driving_license_date_month').attr('required')) {
-                            return true;
-                          }
-                        }
-                        return false;
-                      }                       
-                    },
-                    'additional_driver_1_driving_license_date_year': {
-                      //required: "#additional_driver_1_driving_license_date_year:visible"
-                      required: function() {
-                        if ($('#additional_driver_1_driving_license_date_year').length) {
-                          if ($('#additional_driver_1_driving_license_date_year').attr('required')) {
-                            return true;
-                          }
-                        }
-                        return false;
-                      }                        
-                    },
-                    'additional_driver_1_driving_license_date': {
-                        //required: "#additional_driver_1_driving_license_date:visible"
-                        required: function() {
-                          if ($('#additional_driver_1_driving_license_date').length) {
-                            if ($('#additional_driver_1_driving_license_date').attr('required')) {
-                              return true;
-                            }
-                          }
-                          return false;
-                        }                             
-                    },
-                    'additional_driver_2_driving_license_date_day': {
-                      //required: "#additional_driver_2_driving_license_date_day:visible"
-                      required: function() {
-                        if ($('#additional_driver_2_driving_license_date_day').length) {
-                          if ($('#additional_driver_2_driving_license_date_day').attr('required')) {
-                            return true;
-                          }
-                        }
-                        return false;
-                      }  
-                    },
-                    'additional_driver_2_driving_license_date_month': {
-                      //required: "#additional_driver_2_driving_license_date_month:visible"
-                      required: function() {
-                        if ($('#additional_driver_2_driving_license_date_month').length) {
-                          if ($('#additional_driver_2_driving_license_date_month').attr('required')) {
-                            return true;
-                          }
-                        }
-                        return false;
-                      }                       
-                    },
-                    'additional_driver_2_driving_license_date_year': {
-                      //required: "#additional_driver_2_driving_license_date_year:visible"
-                      required: function() {
-                        if ($('#additional_driver_2_driving_license_date_year').length) {
-                          if ($('#additional_driver_2_driving_license_date_year').attr('required')) {
-                            return true;
-                          }
-                        }
-                        return false;
-                      }                        
-                    },
-                    'additional_driver_2_driving_license_date': {
-                        //required: "#additional_driver_2_driving_license_date:visible"
-                        required: function() {
-                          if ($('#additional_driver_2_driving_license_date').length) {
-                            if ($('#additional_driver_2_driving_license_date').attr('required')) {
-                              return true;
-                            }
-                          }
-                          return false;
-                        }                             
-                    },                    
+
                     'number_of_adults': {
                         required: '#number_of_adults:visible'               
                     },
@@ -1514,7 +1335,10 @@ require(['jquery',
                 },
 
                 errorPlacement: function (error, element) {
-                    if (element.attr('type') == 'radio') {
+                    if (commonDateControls.placeError(error, element)) {
+                      // handled: canonical date error after visible date composite
+                    }
+                    else if (element.attr('type') == 'radio') {
                       if (element.parent() && element.parent().parent()) {
                         error.insertAfter(element.parent().parent());
                       }
@@ -1572,6 +1396,11 @@ require(['jquery',
                 errorClass : 'form-reservation-error'
 
             }
+        );
+
+        commonDateControls.applyValidationRules(
+          $('form[name=reservation_form]'),
+          i18next.t('complete.reservationForm.validations.datePatternInvalid')
         );
 
     },

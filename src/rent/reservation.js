@@ -3,7 +3,7 @@
 require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelector', 'select2',
          'commonServices', 'commonSettings', 'commonTranslations', 'commonLoader', 'commonUI',
          './mediator/rentEngineMediator',
-         'i18next','ysdtemplate', 'YSDDateControl',
+         'i18next','ysdtemplate', 'commonDateControls',
          './passengers/passengersComponent',
          './payment/paymentComponent',
          './deposit/depositComponent',
@@ -14,7 +14,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
          'jquery.validate', 'jquery.ui', 'jquery.form'],
     function($, RemoteDataSource, MemoryDataSource, SelectSelector, select2,
              commonServices, commonSettings, commonTranslations, commonLoader, commonUI,
-             rentEngineMediator, i18next, tmpl, DateControl,
+             rentEngineMediator, i18next, tmpl, commonDateControls,
              passengersComponent,  paymentComponent, depositComponent, documentsComponent, signatureComponent,
              commonAddressControls, commonFormValidation
           ) {
@@ -1064,139 +1064,34 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
     },
 
     /*
-    * Setup old date controls
-    * Retrocompatibility nedded code
-    */
-    setupOldDateControls: function() {
-      // Configure driver document id date
-      if (document.getElementById('driver_document_id_date_day')) {
-        const dateControl = new DateControl(document.getElementById('driver_document_id_date_day'),
-                        document.getElementById('driver_document_id_date_month'),
-                        document.getElementById('driver_document_id_date_year'),
-                        document.getElementById('driver_document_id_date'),
-                        commonSettings.language(model.requestLanguage));
-        if (model.booking.driver_document_id_date) {
-          dateControl.setDate(model.booking.driver_document_id_date);
-        }        
-      }
-      if (document.getElementById('driver_document_id_expiration_date_day')) {
-        const dateControl = new DateControl(document.getElementById('driver_document_id_expiration_date_day'),
-                        document.getElementById('driver_document_id_expiration_date_month'),
-                        document.getElementById('driver_document_id_expiration_date_year'),
-                        document.getElementById('driver_document_id_expiration_date'),
-                        commonSettings.language(model.requestLanguage),
-                        undefined, 'future');
-        if (model.booking.driver_document_id_expiration_date) {
-          dateControl.setDate(model.booking.driver_document_id_expiration_date);
-        }        
-      }
-
-      // Configure driver date of birth 
-      if (document.getElementById('driver_date_of_birth_day')) {
-        const dateControl = new DateControl(document.getElementById('driver_date_of_birth_day'),
-                        document.getElementById('driver_date_of_birth_month'),
-                        document.getElementById('driver_date_of_birth_year'),
-                        document.getElementById('driver_date_of_birth'),
-                        commonSettings.language(model.requestLanguage));
-        if (model.booking.driver_date_of_birth) {
-          dateControl.setDate(model.booking.driver_date_of_birth);
-        }
-      }
-      // Configure driver driving license date 
-      if (document.getElementById('driver_driving_license_date_day')) {
-        const dateControl = new DateControl(document.getElementById('driver_driving_license_date_day'),
-                        document.getElementById('driver_driving_license_date_month'),
-                        document.getElementById('driver_driving_license_date_year'),
-                        document.getElementById('driver_driving_license_date'),
-                        commonSettings.language(model.requestLanguage));
-        if (model.booking.driver_driving_license_date) {
-          dateControl.setDate(model.booking.driver_driving_license_date);
-        }
-      }
-      if (document.getElementById('driver_driving_license_expiration_date_day')) {
-        const dateControl = new DateControl(document.getElementById('driver_driving_license_expiration_date_day'),
-                        document.getElementById('driver_driving_license_expiration_date_month'),
-                        document.getElementById('driver_driving_license_expiration_date_year'),
-                        document.getElementById('driver_driving_license_expiration_date'),
-                        commonSettings.language(model.requestLanguage),
-                        undefined, 'future');
-        if (model.booking.driver_driving_license_expiration_date) {
-          dateControl.setDate(model.booking.driver_driving_license_expiration_date);
-        }
-      }
-      // Configure additional driver 1 driving license date 
-      if (document.getElementById('additional_driver_1_driving_license_date_day')) {
-        const dateControl = new DateControl(document.getElementById('additional_driver_1_driving_license_date_day'),
-                        document.getElementById('additional_driver_1_driving_license_date_month'),
-                        document.getElementById('additional_driver_1_driving_license_date_year'),
-                        document.getElementById('additional_driver_1_driving_license_date'),
-                        commonSettings.language(model.requestLanguage));
-        if (model.booking.additional_driver_1_driving_license_date) {
-          dateControl.setDate(model.booking.additional_driver_1_driving_license_date);
-        }
-      }
-      if (document.getElementById('additional_driver_1_driving_license_expiration_date_day')) {
-        const dateControl = new DateControl(document.getElementById('additional_driver_1_driving_license_expiration_date_day'),
-                        document.getElementById('additional_driver_1_driving_license_expiration_date_month'),
-                        document.getElementById('additional_driver_1_driving_license_expiration_date_year'),
-                        document.getElementById('additional_driver_1_driving_license_expiration_date'),
-                        commonSettings.language(model.requestLanguage),
-                        undefined, 'future');
-        if (model.booking.additional_driver_1_driving_license_expiration_date) {
-          dateControl.setDate(model.booking.additional_driver_1_driving_license_expiration_date);
-        }        
-      }
-      // Configuration additional driver 2 driving license date
-      if (document.getElementById('additional_driver_2_driving_license_date_day')) {
-        const dateControl = new DateControl(document.getElementById('additional_driver_2_driving_license_date_day'),
-                        document.getElementById('additional_driver_2_driving_license_date_month'),
-                        document.getElementById('additional_driver_2_driving_license_date_year'),
-                        document.getElementById('additional_driver_2_driving_license_date'),
-                        commonSettings.language(model.requestLanguage));
-        if (model.booking.additional_driver_2_driving_license_date) {
-          dateControl.setDate(model.booking.additional_driver_2_driving_license_date);
-        }        
-      }
-      if (document.getElementById('additional_driver_2_driving_license_expiration_date_day')) {
-        const dateControl = new DateControl(document.getElementById('additional_driver_2_driving_license_expiration_date_day'),
-                        document.getElementById('additional_driver_2_driving_license_expiration_date_month'),
-                        document.getElementById('additional_driver_2_driving_license_expiration_date_year'),
-                        document.getElementById('additional_driver_2_driving_license_expiration_date'),
-                        commonSettings.language(model.requestLanguage),
-                        undefined, 'future');
-        if (model.booking.additional_driver_2_driving_license_expiration_date) {
-          dateControl.setDate(model.booking.additional_driver_2_driving_license_expiration_date);
-        }        
-      }
-    },
-
-    /*
     * Setup date controls in form
     */
     setupDateControls: function() {
-      const controls = $('.js-date-select-control');
-
-      // setupOldDateControls
-      if (controls.length == 0) {
-        this.setupOldDateControls();
-        return;
-      }
-
-      controls.each((index, element) => {
-        const day = $(element).find('[name$="_day"]');
-        const month = $(element).find('[name$="_month"]');
-        const year = $(element).find('[name$="_year"]');
-        const hiddenControl = $(element).find('[type="hidden"]');
-    
-        const direction = $(element).attr('data-date-select-control-direction');
-        // If date is in the past revert
-        const dateControl = new DateControl(day[0], month[0], year[0], hiddenControl[0], commonSettings.language(model.requestLanguage), undefined, direction);
-        // Set date
-        const value = model.booking[hiddenControl.attr('name')];
-        if (value) {
-          dateControl.setDate(value);
+      const $form = $('form[name=booking_information_form]');
+      commonDateControls.setup({
+        root: $form,
+        locale: commonSettings.language(model.requestLanguage),
+        getInitialValue: function(name) {
+          return model.booking[name];
+        },
+        legacyDirections: {
+          driver_document_id_expiration_date: 'future',
+          driver_driving_license_expiration_date: 'future',
+          additional_driver_1_document_id_expiration_date: 'future',
+          additional_driver_1_driving_license_expiration_date: 'future',
+          additional_driver_2_document_id_expiration_date: 'future',
+          additional_driver_2_driving_license_expiration_date: 'future'
         }
       });
+
+      // Driver/customer panels can be re-rendered after validation is already active.
+      // Apply rules to newly inserted date composites without rebuilding the validator.
+      if ($form.data('validator')) {
+        commonDateControls.applyValidationRules(
+          $form,
+          i18next.t('complete.reservationForm.validations.datePatternInvalid')
+        );
+      }
     },
 
     /**
@@ -1322,11 +1217,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
       // Setup select controls
       this.setupSelectControls();
 
-      // Setup date old date controls 
-      // Retrocompatibility nedded code
-      this.setupOldDateControls();
-
-      // Setup date controls
+      // Setup date controls (modern wrappers + generic legacy fallback)
       this.setupDateControls();
 
       // Setup phone controls
@@ -1335,18 +1226,6 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
       $.extend($.validator.messages, {
         required: i18next.t('complete.reservationForm.validations.fieldRequired')
       });
-
-      // Date is required function
-      
-      // Date patter
-      $.validator.addMethod('date_pattern', function(value, element) {
-        // Check the regular expression only if it is not empty
-        if (value === '') {
-          return true;
-        }
-        const regex = new RegExp('^\\d{4}-\\d{2}-\\d{2}$');
-        return regex.test(value);
-      }, 'Date format is YYYY-MM-DD.');
 
       $('form[name=booking_information_form]').data('validator', null);
       $('form[name=booking_information_form]').unbind('validate');
@@ -1381,10 +1260,6 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
               'customer_phone': {
                 required: () => $('[name="customer_phone"]').is(':visible') && $('[name="customer_phone"]').prop('required'),
                 minlength: 9
-              },
-              'driver_date_of_birth': {
-                required: (element) => view.validateDateIsRequired(element),
-                date_pattern: true,
               },
               'customer_nacionality': {
                 required: () => $('[name="customer_nacionality"]').is(':visible') && $('[name="customer_nacionality"]').prop('required'),
@@ -1421,14 +1296,6 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
               'driver_origin_country': {
                 required: commonFormValidation.buildSelectorRequiredFn('select[name=driver_origin_country]'),
               },
-              'driver_document_id_date': {
-                required: (element) => view.validateDateIsRequired(element),
-                date_pattern: true,
-              },
-              'driver_document_id_expiration_date': {
-                required: (element) => view.validateDateIsRequired(element),
-                date_pattern: true,
-              },
               'driver_driving_license_type_id': {
                 required: () => $('[name="driver_driving_license_type_id"]').is(':visible') && $('[name="driver_driving_license_type_id"]').prop('required'),
               },
@@ -1437,14 +1304,6 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
               },
               'driver_driving_license_country': {
                 required: commonFormValidation.buildSelectorRequiredFn('select[name=driver_driving_license_country]'),
-              },
-              'driver_driving_license_date': {
-                required: (element) => view.validateDateIsRequired(element),
-                date_pattern: true,
-              },
-              'driver_driving_license_expiration_date': {
-                required: (element) => view.validateDateIsRequired(element),
-                date_pattern: true,
               },
               'additional_driver_1_origin_country': {
                 required: commonFormValidation.buildSelectorRequiredFn('select[name=additional_driver_1_origin_country]'),
@@ -1544,10 +1403,6 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
                 required: i18next.t('complete.reservationForm.validations.customerPhoneNumberRequired'),
                 minlength: i18next.t('complete.reservationForm.validations.customerPhoneNumberMinLength')
               },
-              'driver_date_of_birth': {
-                required: i18next.t('complete.reservationForm.validations.fieldRequired'),
-                date_pattern: i18next.t('complete.reservationForm.validations.datePatternInvalid'),
-              },
               'customer_nacionality': {
                 required: i18next.t('complete.reservationForm.validations.fieldRequired')
               },
@@ -1579,14 +1434,6 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
               'driver_origin_country': {
                 required: i18next.t('complete.reservationForm.validations.fieldRequired')
               },
-              'driver_document_id_date': {
-                required: i18next.t('complete.reservationForm.validations.fieldRequired'),
-                date_pattern: i18next.t('complete.reservationForm.validations.datePatternInvalid'),
-              },
-              'driver_document_id_expiration_date': {
-                rrequired: i18next.t('complete.reservationForm.validations.fieldRequired'),
-                date_pattern: i18next.t('complete.reservationForm.validations.datePatternInvalid'),
-              },
               'driver_driving_license_type_id': {
                 required: i18next.t('complete.reservationForm.validations.fieldRequired')
               },
@@ -1595,14 +1442,6 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
               },
               'driver_driving_license_country': {
                 required: i18next.t('complete.reservationForm.validations.fieldRequired')
-              },
-              'driver_driving_license_date': {
-                required: i18next.t('complete.reservationForm.validations.fieldRequired'),
-                date_pattern: i18next.t('complete.reservationForm.validations.datePatternInvalid'),
-              },
-              'driver_driving_license_expiration_date': {
-                required: i18next.t('complete.reservationForm.validations.fieldRequired'),
-                date_pattern: i18next.t('complete.reservationForm.validations.datePatternInvalid'),
               },
               'customer_address\\[street\\]': {
                 required: i18next.t('complete.reservationForm.validations.fieldRequired')
@@ -1660,7 +1499,9 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
               },                                
             },
             errorPlacement: function(error, element) {
-              if (element.attr('name') === 'customer_document_id_type_id')  {
+              if (commonDateControls.placeError(error, element)) {
+                // handled: canonical date error after visible date composite
+              } else if (element.attr('name') === 'customer_document_id_type_id')  {
                 if (commonServices.jsUseSelect2) {
                   error.insertAfter('form[name=booking_information_form] select[name=customer_document_id_type_id] + span.select2-container');
                 }
@@ -1689,6 +1530,11 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
           }
       );
 
+      commonDateControls.applyValidationRules(
+        $('form[name=booking_information_form]'),
+        i18next.t('complete.reservationForm.validations.datePatternInvalid')
+      );
+
       if (model.configuration.sesHospedajes) {
         // Apply the validation rules for the document
         $('input[name=customer_document_id]').rules('add', {
@@ -1714,35 +1560,6 @@ require(['jquery', 'YSDRemoteDataSource','YSDMemoryDataSource','YSDSelectSelecto
       }
 
       rentEngineMediator.onMyReservationSetupReservationForm();
-    },
-
-    /**
-     * Validate that a date is required
-     * @param {*} element 
-     * @returns 
-     */
-    validateDateIsRequired: function(element) {
-      // Get the field name
-      const fieldName = $(element).attr('name');
-
-      // Check if the date is required, if not return true because do not need validate the value
-      if (!$(element).prop('required')) {
-        return false;
-      }
-
-      // Get the others fields
-      const dayField = $('[name="'+fieldName+'_day"]');
-      const monthField = $('[name="'+fieldName+'_month"]');
-      const yearField = $('[name="'+fieldName+'_year"]');
-
-      // Check if any field is visible
-      const anyFieldsIsVisible =  dayField.is(':visible') || monthField.is(':visible') || yearField.is(':visible');
-      // If no field is visible, return true because do not need validate the value
-      if (!anyFieldsIsVisible) {
-        return false;
-      }
-
-      return true;
     },
 
     /**

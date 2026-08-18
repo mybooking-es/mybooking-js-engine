@@ -78,6 +78,31 @@ define(['jquery','moment'], function($, moment){
       months : ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],    
       literals : { 'day': 'день', 'month': 'Месяц', 'year': 'Год' }
 
+    },
+
+    et: {
+      months : ['jaanuar', 'veebruar', 'märts', 'aprill', 'mai', 'juuni', 'juuli', 'august', 'september', 'oktoober', 'november', 'detsember'],
+      literals : { 'day': 'Päev', 'month': 'Kuu', 'year': 'Aasta' }
+    },
+
+    fi: {
+      months : ['tammikuu', 'helmikuu', 'maaliskuu', 'huhtikuu', 'toukokuu', 'kesäkuu', 'heinäkuu', 'elokuu', 'syyskuu', 'lokakuu', 'marraskuu', 'joulukuu'],
+      literals : { 'day': 'Päivä', 'month': 'Kuukausi', 'year': 'Vuosi' }
+    },
+
+    nl: {
+      months : ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', 'augustus', 'september', 'oktober', 'november', 'december'],
+      literals : { 'day': 'Dag', 'month': 'Maand', 'year': 'Jaar' }
+    },
+
+    pl: {
+      months : ['styczeń', 'luty', 'marzec', 'kwiecień', 'maj', 'czerwiec', 'lipiec', 'sierpień', 'wrzesień', 'październik', 'listopad', 'grudzień'],
+      literals : { 'day': 'Dzień', 'month': 'Miesiąc', 'year': 'Rok' }
+    },
+
+    pt: {
+      months : ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'],
+      literals : { 'day': 'Dia', 'month': 'Mês', 'year': 'Ano' }
     }
 
 
@@ -87,7 +112,8 @@ define(['jquery','moment'], function($, moment){
 
   var YSDDateControlModel = function (locale, dateFormat) {
 	 
-    this.locale = locale || 'es'; // Spanish is the default language		
+    var requestedLocale = locale || 'es'; // Spanish remains the default when locale is absent
+    this.locale = YSDDateControlModelData[requestedLocale] ? requestedLocale : 'en';
     this.dateFormat = dateFormat || 'YYYY-MM-DD';
     this.day = null;
     this.month = null;
