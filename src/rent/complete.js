@@ -185,15 +185,15 @@ require(['jquery',
                  
                  view.updateShoppingCart();
 
-                 // Airport and hotel form required  conditional rules
-                 // In the html it must exist a id="airport-form-section" and a atribute data-airport-required="true"
-                 // in this case it will only be required when the pick-up site is the airport
+                 // Airport and hotel form required conditional rules.
+                 // Legacy overrides keep #airport-form-section. P4R uses a
+                 // non-visual field marker so configurable requiredness does not
+                 // need a new wrapper/DOM structure.
                  var airportSection = $('#airport-form-section');
-                 if (airportSection.length > 0 )  {
-                  if (data.shopping_cart.pickup_place_type === 'airport' && airportSection.attr('data-airport-required') === 'true') {
-                    model.isAirportDataRequired = true;
-                  }
-                 }
+                 var legacyAirportRequired = airportSection.length > 0 && airportSection.attr('data-airport-required') === 'true';
+                 var configurableAirportRequired = $('[data-mb-runtime-required="airport"][required]').length > 0;
+                 model.isAirportDataRequired = data.shopping_cart.pickup_place_type === 'airport' &&
+                   (legacyAirportRequired || configurableAirportRequired);
                  // In the html it must exist a id="hotel-form-section" and a atribute data-hotel-required="true"
                  var hotelSection = $('#hotel-form-section');
                  if (hotelSection.length > 0 )  {
@@ -984,14 +984,18 @@ require(['jquery',
       // Initialize customer_type select with static Engine values
       commonIdentityControls.initCustomerType();
 
-      // Configure customer type change handler — bind once, then apply current state
+      // Configure customer type change handler only when the control exists.
+      // Legacy/custom Complete templates without customer_type must not have
+      // their company/individual groups hidden as a side effect of the bundle.
       var $customerType = $('select[name="customer_type"]');
-      $customerType
-        .off('change.mybookingCustomerType')
-        .on('change.mybookingCustomerType', function() {
-          controller.customerTypeChanged($(this).val());
-        });
-      controller.customerTypeChanged($customerType.val());
+      if ($customerType.length) {
+        $customerType
+          .off('change.mybookingCustomerType')
+          .on('change.mybookingCustomerType', function() {
+            controller.customerTypeChanged($(this).val());
+          });
+        controller.customerTypeChanged($customerType.val());
+      }
 
       // Configure address country
 
@@ -1008,9 +1012,17 @@ require(['jquery',
         commonAddressControls.initCountrySelector($(countrySelectors[idx]), '', {requestLanguage: model.requestLanguage});
       }
 
-      // P4 SES: customer address descriptor (selectors will be empty until Phase 4 template adds them)
+      // P4 SES: activate Complete descriptors only when the P4 state-code
+      // hook actually exists. This keeps legacy full-template overrides and
+      // partial legacy configs on their canonical text inputs instead of hiding
+      // state/city with no coded replacement.
+      var customerStateCodeSelector = '.js-mb-ses-address[data-mb-address-scope="customer"] .js-mb-ses-state-code';
+      var customerSesEnabled = !!model.configuration.sesHospedajes &&
+        $('select[name=country]').length > 0 &&
+        $('[name="state"]').length > 0 &&
+        $(customerStateCodeSelector).length > 0;
       commonAddressControls.initAddressDescriptor({
-        enabled: !!model.configuration.sesHospedajes,
+        enabled: customerSesEnabled,
         requestLanguage: model.requestLanguage,
         countrySelector: 'select[name=country]',
         stateTextSelector: '[name="state"]',
@@ -1022,9 +1034,14 @@ require(['jquery',
         locked: false
       });
 
-      // P4 SES: driver address descriptor
+      // P4 SES: driver address descriptor follows the same compatibility gate.
+      var driverStateCodeSelector = '.js-mb-ses-address[data-mb-address-scope="driver"] .js-mb-ses-state-code';
+      var driverSesEnabled = !!model.configuration.sesHospedajes &&
+        $('select[name=driver_address\\[country\\]]').length > 0 &&
+        $('[name="driver_address[state]"]').length > 0 &&
+        $(driverStateCodeSelector).length > 0;
       commonAddressControls.initAddressDescriptor({
-        enabled: !!model.configuration.sesHospedajes,
+        enabled: driverSesEnabled,
         requestLanguage: model.requestLanguage,
         countrySelector: 'select[name=driver_address\\[country\\]]',
         stateTextSelector: '[name="driver_address[state]"]',
@@ -1113,6 +1130,9 @@ require(['jquery',
                     },
                     'customer_company_contact_name': {
                       required: '#customer_company_contact_name:visible',
+                    },
+                    'customer_company_document_id': {
+                      required: commonFormValidation.buildSelectorRequiredFn('#customer_company_document_id')
                     },
                     'customer_name': {
                       required: '#customer_name:visible',
@@ -1246,6 +1266,9 @@ require(['jquery',
                     'customer_company_name': {                      required: i18next.t('complete.reservationForm.validations.fieldRequired')
                     },
                     'customer_company_contact_name': {
+                      required: i18next.t('complete.reservationForm.validations.fieldRequired')
+                    },
+                    'customer_company_document_id': {
                       required: i18next.t('complete.reservationForm.validations.fieldRequired')
                     },
                     'customer_name': {
