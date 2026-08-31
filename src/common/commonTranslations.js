@@ -320,6 +320,7 @@ define("commonTranslations", [], function () {
           "another_place": "Exact address",
           "error_loading_data": "Sorry. An error occurred while loading the data.",
           "error_min_days": "Sorry, the minimum number of days is not met. Please select one extra day or try selecting another return time.",
+          "error_max_days": "Sorry, the maximum number of days is {{maxDays}}. Please select fewer days.",
           "validations": {
             "pickupPlaceRequired": "Pickup place required",
             "dateFromRequired": "Date required",
@@ -334,6 +335,9 @@ define("commonTranslations", [], function () {
           }
         },
         "chooseProduct": {
+          "loadProduct": {
+            "error": "Sorry. An error occurred while loading the product."
+          },
           "loadShoppingCart": {
             "error": "Sorry. An error occurred while performing the search."
           },
@@ -359,6 +363,9 @@ define("commonTranslations", [], function () {
           }
         },
         "complete": {
+          "loadExtra": {
+            "error": "Sorry. An error occurred while loading the extra."
+          },
           "loadShoppingCart": {
             "error": "Sorry. An error occurred while loading the information."
           },
@@ -384,6 +391,8 @@ define("commonTranslations", [], function () {
               "minLength": "Minimum {{minlength}} characters",
               "customerNameRequired": "Customer name is required",
               "customerSurnameRequired": "Customer surname is required",
+              "customerCompanyNameRequired": "Company name is required",
+              "customerCompanyDocumentIdRequired": "Company document ID is required",
               "customerEmailRequired": "Customer email is required",
               "customerEmailInvalidFormat": "Invalid email address",
               "customerEmailConfirmationRequired": "Customer email confirmation is required",
@@ -849,7 +858,8 @@ define("commonTranslations", [], function () {
           "select_return_place": "Seleccionar lugar de devolución",
           "another_place": "Dirección exacta",
           "error_loading_data": "Lo sentimos. Se ha producido un error al cargar los datos.",
-          "error_min_days": "Lo lamentamos, no cumple el mínimo de días. Por favor, seleccione un día más o pruebe a seleccionar otro horario de devolución.",
+          "error_min_days": "Lo sentimos, no cumple el mínimo de días. Por favor, seleccione un día más o pruebe a seleccionar otro horario de devolución.",
+          "error_max_days": "Lo sentimos, el número máximo de días es {{maxDays}}. Por favor, seleccione menos días.",
           "validations": {
             "pickupPlaceRequired": "Lugar de entrega obligatorio",
             "dateFromRequired": "Fecha obligatoria",
@@ -864,6 +874,9 @@ define("commonTranslations", [], function () {
           }
         },
         "chooseProduct": {
+          "loadProduct": {
+            "error": "Lo sentimos. Se ha producido un error al cargar el producto."
+          },
           "loadShoppingCart": {
             "error": "Lo sentimos. Se ha producido un error al realizar la búsqueda."
           },
@@ -889,6 +902,9 @@ define("commonTranslations", [], function () {
           }
         },
         "complete": {
+          "loadExtra": {
+            "error": "Lo sentimos. Se ha producido un error al cargar el extra."
+          },
           "loadShoppingCart": {
             "error": "Lo sentimos. Se ha producido un error al cargar la información."
           },
@@ -914,6 +930,8 @@ define("commonTranslations", [], function () {
               "minLength": "Tamaño mínimo {{minlength}}",
               "customerNameRequired": "Nombre del cliente obligatorio",
               "customerSurnameRequired": "Apellidos del cliente obligatorios",
+              "customerCompanyNameRequired": "El nombre de la empresa es obligatorio",
+              "customerCompanyDocumentIdRequired": "El documento de la empresa es obligatorio",
               "customerEmailRequired": "Correo electrónico del cliente obligatorio",
               "customerEmailInvalidFormat": "Dirección de correo electrónico no válida",
               "customerEmailConfirmationRequired": "Confirmación del correo electrónico del cliente obligatorio",
@@ -1047,15 +1065,15 @@ define("commonTranslations", [], function () {
           }
         },
         "planning": {
-          "api_conexion_error": "Lo lamentamos, se ha producido un error de conexión",
+          "api_conexion_error": "Lo sentimos, se ha producido un error de conexión",
           "no_schedules_found": "No se han encontrado horarios",
           "no_resources_found": "No se han encontrado recursos",
           "no_data_found": "No se han encontrado datos",
-          "generic_error": "Lo lamentamos, se ha producido un error."
+          "generic_error": "Lo sentimos, se ha producido un error."
         },
         "shiftPicker": {
           "no_data_found": "No se han encontrado datos",
-          "generic_error": "Lo lamentamos, se ha producido un error.",
+          "generic_error": "Lo sentimos, se ha producido un error.",
           "turn_not_available": "Ese turno no está disponible.",
           "min_max_units_error": "El número mínimo de unidades supera al máximo."
         }
@@ -1379,7 +1397,8 @@ define("commonTranslations", [], function () {
           "select_return_place": "Seleccioneu el lloc de devolució",
           "another_place": "Adreça exacta",
           "error_loading_data": "Ho sentim. S'ha produït un error en carregar les dades.",
-          "error_min_days": "Ho lamentem, no es compleix el mínim de dies. Si us plau, seleccioneu un dia més o proveu de seleccionar un altre horari de devolució.",
+          "error_min_days": "Ho sentim, no es compleix el mínim de dies. Si us plau, seleccioneu un dia més o proveu de seleccionar un altre horari de devolució.",
+          "error_max_days": "Ho sentim, el nombre màxim de dies és {{maxDays}}. Si us plau, seleccioneu menys dies.",
           "validations": {
             "pickupPlaceRequired": "El lloc de lliurament és obligatori",
             "dateFromRequired": "La data és obligatòria",
@@ -1394,6 +1413,9 @@ define("commonTranslations", [], function () {
           }
         },
         "chooseProduct": {
+          "loadProduct": {
+            "error": "Ho sentim. S'ha produït un error en carregar el producte."
+          },
           "loadShoppingCart": {
             "error": "Ho sentim. S'ha produït un error en realitzar la cerca."
           },
@@ -1419,6 +1441,9 @@ define("commonTranslations", [], function () {
           }
         },
         "complete": {
+          "loadExtra": {
+            "error": "Ho sentim. S'ha produït un error en carregar l'extra."
+          },
           "loadShoppingCart": {
             "error": "Ho sentim. S'ha produït un error en carregar la informació."
           },
@@ -1444,6 +1469,8 @@ define("commonTranslations", [], function () {
               "minLength": "Mínim {{minlength}} caràcters",
               "customerNameRequired": "El nom del client és obligatori",
               "customerSurnameRequired": "Els cognoms del client són obligatoris",
+              "customerCompanyNameRequired": "El nom de l'empresa és obligatori",
+              "customerCompanyDocumentIdRequired": "El document de l'empresa és obligatori",
               "customerEmailRequired": "El correu electrònic del client és obligatori",
               "customerEmailInvalidFormat": "El correu electrònic no té un format vàlid",
               "customerEmailConfirmationRequired": "La confirmació del correu electrònic és obligatòria",
@@ -1577,15 +1604,15 @@ define("commonTranslations", [], function () {
           }
         },
         "planning": {
-          "api_conexion_error": "Ho lamentem, s'ha produït un error de connexió",
+          "api_conexion_error": "Ho sentim, s'ha produït un error de connexió",
           "no_schedules_found": "No s'han trobat horaris",
           "no_resources_found": "No s'han trobat recursos",
           "no_data_found": "No s'han trobat dades",
-          "generic_error": "Ho lamentem, s'ha produït un error."
+          "generic_error": "Ho sentim, s'ha produït un error."
         },
         "shiftPicker": {
           "no_data_found": "No s'han trobat dades",
-          "generic_error": "Ho lamentem, s'ha produït un error.",
+          "generic_error": "Ho sentim, s'ha produït un error.",
           "turn_not_available": "Aquest torn no està disponible.",
           "min_max_units_error": "El nombre mínim d'unitats supera el màxim."
         }
@@ -1910,6 +1937,7 @@ define("commonTranslations", [], function () {
           "another_place": "Exakte Adresse",
           "error_loading_data": "Es tut uns leid. Beim Laden der Daten ist ein Fehler aufgetreten.",
           "error_min_days": "Es tut uns leid, die Mindestanzahl an Tagen wird nicht erreicht. Bitte wählen Sie einen zusätzlichen Tag aus oder versuchen Sie, eine andere Rückgabezeit auszuwählen.",
+          "error_max_days": "Es tut uns leid, die maximale Anzahl an Tagen beträgt {{maxDays}}. Bitte wählen Sie weniger Tage aus.",
           "validations": {
             "pickupPlaceRequired": "Übergabeort erforderlich",
             "dateFromRequired": "Datum erforderlich",
@@ -1924,6 +1952,9 @@ define("commonTranslations", [], function () {
           }
         },
         "chooseProduct": {
+          "loadProduct": {
+            "error": "Es tut uns leid. Beim Laden des Produkts ist ein Fehler aufgetreten."
+          },
           "loadShoppingCart": {
             "error": "Es tut uns leid. Bei der Suche ist ein Fehler aufgetreten."
           },
@@ -1949,6 +1980,9 @@ define("commonTranslations", [], function () {
           }
         },
         "complete": {
+          "loadExtra": {
+            "error": "Es tut uns leid. Beim Laden des Extras ist ein Fehler aufgetreten."
+          },
           "loadShoppingCart": {
             "error": "Es tut uns leid. Beim Laden der Informationen ist ein Fehler aufgetreten."
           },
@@ -1974,6 +2008,8 @@ define("commonTranslations", [], function () {
               "minLength": "Mindestens {{minlength}} Zeichen",
               "customerNameRequired": "Obligatorischer Kundenname",
               "customerSurnameRequired": "Nachname des Kunden erforderlich",
+              "customerCompanyNameRequired": "Der Firmenname ist erforderlich",
+              "customerCompanyDocumentIdRequired": "Die Dokumentnummer des Unternehmens ist erforderlich",
               "customerEmailRequired": "Obligatorische Kunden-E-Mail",
               "customerEmailInvalidFormat": "Das E-Mail-Format ist ungültig",
               "customerEmailConfirmationRequired": "Bestätigung der obligatorischen Kunden-E-Mail",
@@ -2107,15 +2143,15 @@ define("commonTranslations", [], function () {
           }
         },
         "planning": {
-          "api_conexion_error": "Leider ist ein Verbindungsfehler aufgetreten",
+          "api_conexion_error": "Es tut uns leid, ein Verbindungsfehler ist aufgetreten",
           "no_schedules_found": "Keine Zeitpläne gefunden",
           "no_resources_found": "Keine Ressourcen gefunden",
           "no_data_found": "Keine Daten gefunden",
-          "generic_error": "Leider ist ein Fehler aufgetreten."
+          "generic_error": "Es tut uns leid, ein Fehler ist aufgetreten."
         },
         "shiftPicker": {
           "no_data_found": "Keine Daten gefunden",
-          "generic_error": "Leider ist ein Fehler aufgetreten.",
+          "generic_error": "Es tut uns leid, ein Fehler ist aufgetreten.",
           "turn_not_available": "Dieser Termin ist nicht verfügbar.",
           "min_max_units_error": "Die Mindestanzahl an Einheiten überschreitet das Maximum."
         }
@@ -2440,6 +2476,7 @@ define("commonTranslations", [], function () {
           "another_place": "Adresse exacte",
           "error_loading_data": "Nous sommes désolés. Une erreur s'est produite lors du chargement des données.",
           "error_min_days": "Nous sommes désolés, le nombre minimum de jours n'est pas respecté. Veuillez sélectionner un jour supplémentaire ou essayer une autre heure de retour.",
+          "error_max_days": "Nous sommes désolés, le nombre maximal de jours est de {{maxDays}}. Veuillez sélectionner moins de jours.",
           "validations": {
             "pickupPlaceRequired": "Le lieu de livraison est obligatoire",
             "dateFromRequired": "Champ obligatoire",
@@ -2454,6 +2491,9 @@ define("commonTranslations", [], function () {
           }
         },
         "chooseProduct": {
+          "loadProduct": {
+            "error": "Nous sommes désolés. Une erreur s'est produite lors du chargement du produit."
+          },
           "loadShoppingCart": {
             "error": "Nous sommes désolés. Une erreur s'est produite lors de la recherche."
           },
@@ -2479,6 +2519,9 @@ define("commonTranslations", [], function () {
           }
         },
         "complete": {
+          "loadExtra": {
+            "error": "Nous sommes désolés. Une erreur s'est produite lors du chargement du supplément."
+          },
           "loadShoppingCart": {
             "error": "Nous sommes désolés. Une erreur s'est produite lors du chargement des informations."
           },
@@ -2504,6 +2547,8 @@ define("commonTranslations", [], function () {
               "minLength": "Minimum {{minlength}} caractères",
               "customerNameRequired": "Champ obligatoire",
               "customerSurnameRequired": "Champ obligatoire",
+              "customerCompanyNameRequired": "Le nom de l'entreprise est obligatoire",
+              "customerCompanyDocumentIdRequired": "Le numéro de document de l'entreprise est obligatoire",
               "customerEmailRequired": "Champ obligatoire",
               "customerEmailInvalidFormat": "Saisissez une adresse e-mail valide",
               "customerEmailConfirmationRequired": "Champ obligatoire",
@@ -2637,15 +2682,15 @@ define("commonTranslations", [], function () {
           }
         },
         "planning": {
-          "api_conexion_error": "Désolé, une erreur de connexion s'est produite",
+          "api_conexion_error": "Nous sommes désolés, une erreur de connexion s'est produite",
           "no_schedules_found": "Aucun horaire trouvé",
           "no_resources_found": "Aucune ressource trouvée",
           "no_data_found": "Aucune donnée trouvée",
-          "generic_error": "Désolé, une erreur s'est produite."
+          "generic_error": "Nous sommes désolés, une erreur s'est produite."
         },
         "shiftPicker": {
           "no_data_found": "Aucune donnée trouvée",
-          "generic_error": "Désolé, une erreur s'est produite.",
+          "generic_error": "Nous sommes désolés, une erreur s'est produite.",
           "turn_not_available": "Ce créneau n'est pas disponible.",
           "min_max_units_error": "Le nombre minimum d'unités dépasse le maximum."
         }
@@ -2970,6 +3015,7 @@ define("commonTranslations", [], function () {
           "another_place": "Indirizzo esatto",
           "error_loading_data": "Siamo spiacenti. Si è verificato un errore durante il caricamento dei dati.",
           "error_min_days": "Siamo spiacenti, non viene raggiunto il numero minimo di giorni. Seleziona un giorno in più o prova a selezionare un altro orario di restituzione.",
+          "error_max_days": "Siamo spiacenti, il numero massimo di giorni è {{maxDays}}. Seleziona un numero inferiore di giorni.",
           "validations": {
             "pickupPlaceRequired": "Luogo di consegna obbligatorio",
             "dateFromRequired": "Data richiesta",
@@ -2984,6 +3030,9 @@ define("commonTranslations", [], function () {
           }
         },
         "chooseProduct": {
+          "loadProduct": {
+            "error": "Siamo spiacenti. Si è verificato un errore durante il caricamento del prodotto."
+          },
           "loadShoppingCart": {
             "error": "Siamo spiacenti. Si è verificato un errore durante l'esecuzione della ricerca."
           },
@@ -3009,6 +3058,9 @@ define("commonTranslations", [], function () {
           }
         },
         "complete": {
+          "loadExtra": {
+            "error": "Siamo spiacenti. Si è verificato un errore durante il caricamento dell'extra."
+          },
           "loadShoppingCart": {
             "error": "Siamo spiacenti. Si è verificato un errore durante il caricamento delle informazioni."
           },
@@ -3034,6 +3086,8 @@ define("commonTranslations", [], function () {
               "minLength": "Minimo {{minlength}} caratteri",
               "customerNameRequired": "Nome cliente obbligatorio",
               "customerSurnameRequired": "Cognome del cliente richiesto",
+              "customerCompanyNameRequired": "Il nome dell'azienda è obbligatorio",
+              "customerCompanyDocumentIdRequired": "Il numero del documento dell'azienda è obbligatorio",
               "customerEmailRequired": "Email cliente obbligatoria",
               "customerEmailInvalidFormat": "Il formato dell email non è valido",
               "customerEmailConfirmationRequired": "Conferma dell email obbligatoria del cliente",
@@ -3167,15 +3221,15 @@ define("commonTranslations", [], function () {
           }
         },
         "planning": {
-          "api_conexion_error": "Spiacenti, si è verificato un errore di connessione",
+          "api_conexion_error": "Siamo spiacenti, si è verificato un errore di connessione",
           "no_schedules_found": "Nessun programma trovato",
           "no_resources_found": "Nessuna risorsa trovata",
           "no_data_found": "Nessun dato trovato",
-          "generic_error": "Spiacenti, si è verificato un errore."
+          "generic_error": "Siamo spiacenti, si è verificato un errore."
         },
         "shiftPicker": {
           "no_data_found": "Nessun dato trovato",
-          "generic_error": "Spiacenti, si è verificato un errore.",
+          "generic_error": "Siamo spiacenti, si è verificato un errore.",
           "turn_not_available": "Quel turno non è disponibile.",
           "min_max_units_error": "Il numero minimo di unità supera il massimo."
         }
@@ -3500,6 +3554,7 @@ define("commonTranslations", [], function () {
           "another_place": "Точный адрес",
           "error_loading_data": "К сожалению, при загрузке данных произошла ошибка.",
           "error_min_days": "К сожалению, минимальное количество дней не соблюдено. Выберите еще один день или попробуйте выбрать другое время возврата.",
+          "error_max_days": "К сожалению, максимальное количество дней — {{maxDays}}. Пожалуйста, выберите меньшее количество дней.",
           "validations": {
             "pickupPlaceRequired": "Требуется место получения",
             "dateFromRequired": "Требуется дата",
@@ -3514,6 +3569,9 @@ define("commonTranslations", [], function () {
           }
         },
         "chooseProduct": {
+          "loadProduct": {
+            "error": "К сожалению, при загрузке продукта произошла ошибка."
+          },
           "loadShoppingCart": {
             "error": "К сожалению, при выполнении поиска произошла ошибка."
           },
@@ -3539,6 +3597,9 @@ define("commonTranslations", [], function () {
           }
         },
         "complete": {
+          "loadExtra": {
+            "error": "К сожалению, при загрузке дополнительной услуги произошла ошибка."
+          },
           "loadShoppingCart": {
             "error": "К сожалению, при загрузке информации произошла ошибка."
           },
@@ -3564,6 +3625,8 @@ define("commonTranslations", [], function () {
               "minLength": "Минимум {{minlength}} символов",
               "customerNameRequired": "Требуется имя клиента",
               "customerSurnameRequired": "Фамилия клиента обязательна",
+              "customerCompanyNameRequired": "Название компании обязательно",
+              "customerCompanyDocumentIdRequired": "Номер документа компании обязателен",
               "customerEmailRequired": "Требуется електронная почта клиента",
               "customerEmailInvalidFormat": "Неверный адрес электронной почты",
               "customerEmailConfirmationRequired": "Требуется подтверждение электронной почт клиента",
@@ -3697,15 +3760,15 @@ define("commonTranslations", [], function () {
           }
         },
         "planning": {
-          "api_conexion_error": "Извините, произошла ошибка подключения",
+          "api_conexion_error": "К сожалению, произошла ошибка подключения",
           "no_schedules_found": "Расписания не найдены",
           "no_resources_found": "Ресурсы не найдены",
           "no_data_found": "Данные не найдены",
-          "generic_error": "Извините, произошла ошибка."
+          "generic_error": "К сожалению, произошла ошибка."
         },
         "shiftPicker": {
           "no_data_found": "Данные не найдены",
-          "generic_error": "Извините, произошла ошибка.",
+          "generic_error": "К сожалению, произошла ошибка.",
           "turn_not_available": "Этот слот недоступен.",
           "min_max_units_error": "Минимальное количество единиц превышает максимальное."
         }
@@ -4030,6 +4093,7 @@ define("commonTranslations", [], function () {
           "another_place": "Täpne aadress",
           "error_loading_data": "Vabandust. Andmete laadimisel ilmnes viga.",
           "error_min_days": "Vabandust, minimaalne päevade arv ei ole täidetud. Palun valige üks lisapäev või proovige valida teine tagastusaeg.",
+          "error_max_days": "Vabandust, maksimaalne päevade arv on {{maxDays}}. Palun valige vähem päevi.",
           "validations": {
             "pickupPlaceRequired": "Üleandmise koht on kohustuslik",
             "dateFromRequired": "Kuupäev on nõutav",
@@ -4044,6 +4108,9 @@ define("commonTranslations", [], function () {
           }
         },
         "chooseProduct": {
+          "loadProduct": {
+            "error": "Vabandust. Toote laadimisel ilmnes viga."
+          },
           "loadShoppingCart": {
             "error": "Vabandust. Otsingu tegemisel ilmnes viga."
           },
@@ -4069,6 +4136,9 @@ define("commonTranslations", [], function () {
           }
         },
         "complete": {
+          "loadExtra": {
+            "error": "Vabandust. Lisateenuse laadimisel ilmnes viga."
+          },
           "loadShoppingCart": {
             "error": "Vabandust. Teabe laadimisel ilmnes viga."
           },
@@ -4094,6 +4164,8 @@ define("commonTranslations", [], function () {
               "minLength": "Minimaalselt {{minlength}} tähemärki",
               "customerNameRequired": "Kliendi nimi on nõutav",
               "customerSurnameRequired": "Kliendi perekonnanimi on kohustuslik",
+              "customerCompanyNameRequired": "Ettevõtte nimi on kohustuslik",
+              "customerCompanyDocumentIdRequired": "Ettevõtte dokumendi number on kohustuslik",
               "customerEmailRequired": "Kliendi meiliaadress on nõutav",
               "customerEmailInvalidFormat": "Vale e-posti aadress",
               "customerEmailConfirmationRequired": "Vajalik on kliendi e-posti kinnitus",
@@ -4227,15 +4299,15 @@ define("commonTranslations", [], function () {
           }
         },
         "planning": {
-          "api_conexion_error": "Kahjuks ilmnes ühenduse viga",
+          "api_conexion_error": "Vabandust, ilmnes ühenduse viga",
           "no_schedules_found": "Ajakavasid ei leitud",
           "no_resources_found": "Ressursse ei leitud",
           "no_data_found": "Andmeid ei leitud",
-          "generic_error": "Kahjuks ilmnes viga."
+          "generic_error": "Vabandust, ilmnes viga."
         },
         "shiftPicker": {
           "no_data_found": "Andmeid ei leitud",
-          "generic_error": "Kahjuks ilmnes viga.",
+          "generic_error": "Vabandust, ilmnes viga.",
           "turn_not_available": "See aeg ei ole saadaval.",
           "min_max_units_error": "Minimaalne ühikute arv ületab maksimumi."
         }
@@ -4560,6 +4632,7 @@ define("commonTranslations", [], function () {
           "another_place": "Tarkka osoite",
           "error_loading_data": "Pahoittelut. Tietojen lataamisessa tapahtui virhe.",
           "error_min_days": "Pahoittelut, vähimmäispäivien määrä ei täyty. Valitse yksi lisäpäivä tai kokeile toista palautusaikaa.",
+          "error_max_days": "Pahoittelut, päivien enimmäismäärä on {{maxDays}}. Valitse vähemmän päiviä.",
           "validations": {
             "pickupPlaceRequired": "Toimituspaikka vaaditaan",
             "dateFromRequired": "Päivämäärä vaaditaan",
@@ -4574,6 +4647,9 @@ define("commonTranslations", [], function () {
           }
         },
         "chooseProduct": {
+          "loadProduct": {
+            "error": "Pahoittelut. Tuotetta ladattaessa tapahtui virhe."
+          },
           "loadShoppingCart": {
             "error": "Pahoittelut. Haun suorittamisessa tapahtui virhe."
           },
@@ -4599,6 +4675,9 @@ define("commonTranslations", [], function () {
           }
         },
         "complete": {
+          "loadExtra": {
+            "error": "Pahoittelut. Lisäpalvelua ladattaessa tapahtui virhe."
+          },
           "loadShoppingCart": {
             "error": "Pahoittelut. Tietojen lataamisessa tapahtui virhe."
           },
@@ -4624,6 +4703,8 @@ define("commonTranslations", [], function () {
               "minLength": "Vähintään {{minlength}} merkkiä",
               "customerNameRequired": "Asiakkaan nimi vaaditaan",
               "customerSurnameRequired": "Asiakkaan sukunimi vaaditaan",
+              "customerCompanyNameRequired": "Yrityksen nimi on pakollinen",
+              "customerCompanyDocumentIdRequired": "Yrityksen asiakirjan numero on pakollinen",
               "customerEmailRequired": "Asiakkaan sähköpostiosoite vaaditaan",
               "customerEmailInvalidFormat": "Virheellinen sähköpostiosoite",
               "customerEmailConfirmationRequired": "Asiakkaan sähköpostivahvistus vaaditaan",
@@ -4757,15 +4838,15 @@ define("commonTranslations", [], function () {
           }
         },
         "planning": {
-          "api_conexion_error": "Valitettavasti tapahtui yhteysvirhe",
+          "api_conexion_error": "Pahoittelut, tapahtui yhteysvirhe",
           "no_schedules_found": "Aikatauluja ei löytynyt",
           "no_resources_found": "Resursseja ei löytynyt",
           "no_data_found": "Tietoja ei löytynyt",
-          "generic_error": "Valitettavasti tapahtui virhe."
+          "generic_error": "Pahoittelut, tapahtui virhe."
         },
         "shiftPicker": {
           "no_data_found": "Tietoja ei löytynyt",
-          "generic_error": "Valitettavasti tapahtui virhe.",
+          "generic_error": "Pahoittelut, tapahtui virhe.",
           "turn_not_available": "Tämä vuoro ei ole käytettävissä.",
           "min_max_units_error": "Yksiköiden vähimmäismäärä ylittää enimmäismäärän."
         }
@@ -5089,7 +5170,8 @@ define("commonTranslations", [], function () {
           "select_return_place": "Selecteer retourlocatie",
           "another_place": "Exact adres",
           "error_loading_data": "Onze excuses. Er is een fout opgetreden bij het laden van de gegevens.",
-          "error_min_days": "Sorry, het minimumaantal dagen wordt niet gehaald. Selecteer een extra dag of probeer een andere retourtijd te kiezen.",
+          "error_min_days": "Onze excuses, het minimumaantal dagen wordt niet gehaald. Selecteer een extra dag of probeer een andere retourtijd te kiezen.",
+          "error_max_days": "Onze excuses, het maximale aantal dagen is {{maxDays}}. Selecteer minder dagen.",
           "validations": {
             "pickupPlaceRequired": "Afleverplaats is verplicht",
             "dateFromRequired": "Datum vereist",
@@ -5104,6 +5186,9 @@ define("commonTranslations", [], function () {
           }
         },
         "chooseProduct": {
+          "loadProduct": {
+            "error": "Onze excuses. Er is een fout opgetreden bij het laden van het product."
+          },
           "loadShoppingCart": {
             "error": "Onze excuses. Er is een fout opgetreden tijdens het uitvoeren van de zoekopdracht."
           },
@@ -5129,6 +5214,9 @@ define("commonTranslations", [], function () {
           }
         },
         "complete": {
+          "loadExtra": {
+            "error": "Onze excuses. Er is een fout opgetreden bij het laden van de extra."
+          },
           "loadShoppingCart": {
             "error": "Onze excuses. Er is een fout opgetreden bij het laden van de informatie."
           },
@@ -5154,6 +5242,8 @@ define("commonTranslations", [], function () {
               "minLength": "Minimaal {{minlength}} tekens",
               "customerNameRequired": "Klantnaam is vereist",
               "customerSurnameRequired": "De achternaam van de klant is vereist",
+              "customerCompanyNameRequired": "De bedrijfsnaam is verplicht",
+              "customerCompanyDocumentIdRequired": "Het documentnummer van het bedrijf is verplicht",
               "customerEmailRequired": "E-mailadres van de klant is vereist",
               "customerEmailInvalidFormat": "Ongeldig e-mailadres",
               "customerEmailConfirmationRequired": "Een e-mailbevestiging van de klant is vereist",
@@ -5287,15 +5377,15 @@ define("commonTranslations", [], function () {
           }
         },
         "planning": {
-          "api_conexion_error": "Sorry, er is een verbindingsfout opgetreden",
+          "api_conexion_error": "Onze excuses, er is een verbindingsfout opgetreden",
           "no_schedules_found": "Geen schema's gevonden",
           "no_resources_found": "Geen bronnen gevonden",
           "no_data_found": "Geen gegevens gevonden",
-          "generic_error": "Sorry, er is een fout opgetreden."
+          "generic_error": "Onze excuses, er is een fout opgetreden."
         },
         "shiftPicker": {
           "no_data_found": "Geen gegevens gevonden",
-          "generic_error": "Sorry, er is een fout opgetreden.",
+          "generic_error": "Onze excuses, er is een fout opgetreden.",
           "turn_not_available": "Die beurt is niet beschikbaar.",
           "min_max_units_error": "Het minimumaantal eenheden overschrijdt het maximum."
         }
@@ -5620,6 +5710,7 @@ define("commonTranslations", [], function () {
           "another_place": "Dokładny adres",
           "error_loading_data": "Przepraszamy. Wystąpił błąd podczas ładowania danych.",
           "error_min_days": "Przepraszamy, minimalna liczba dni nie została spełniona. Wybierz dodatkowy dzień lub spróbuj wybrać inną godzinę zwrotu.",
+          "error_max_days": "Przepraszamy, maksymalna liczba dni to {{maxDays}}. Wybierz mniejszą liczbę dni.",
           "validations": {
             "pickupPlaceRequired": "Miejsce dostawy jest wymagane",
             "dateFromRequired": "Wymagana data",
@@ -5634,6 +5725,9 @@ define("commonTranslations", [], function () {
           }
         },
         "chooseProduct": {
+          "loadProduct": {
+            "error": "Przepraszamy. Wystąpił błąd podczas ładowania produktu."
+          },
           "loadShoppingCart": {
             "error": "Przepraszamy. Wystąpił błąd podczas wykonywania wyszukiwania."
           },
@@ -5659,6 +5753,9 @@ define("commonTranslations", [], function () {
           }
         },
         "complete": {
+          "loadExtra": {
+            "error": "Przepraszamy. Wystąpił błąd podczas ładowania dodatku."
+          },
           "loadShoppingCart": {
             "error": "Przepraszamy. Wystąpił błąd podczas ładowania informacji."
           },
@@ -5684,6 +5781,8 @@ define("commonTranslations", [], function () {
               "minLength": "Minimum {{minlength}} znaków",
               "customerNameRequired": "Nazwa klienta jest wymagana",
               "customerSurnameRequired": "Nazwisko klienta jest wymagane",
+              "customerCompanyNameRequired": "Nazwa firmy jest wymagana",
+              "customerCompanyDocumentIdRequired": "Numer dokumentu firmy jest wymagany",
               "customerEmailRequired": "Adres e-mail klienta jest wymagany",
               "customerEmailInvalidFormat": "Nieprawidłowy adres e-mail",
               "customerEmailConfirmationRequired": "Wymagane jest potwierdzenie e-mailem klienta",
@@ -6150,6 +6249,7 @@ define("commonTranslations", [], function () {
           "another_place": "Endereço exato",
           "error_loading_data": "Lamentamos. Ocorreu um erro ao carregar os dados.",
           "error_min_days": "Lamentamos, o número mínimo de dias não foi cumprido. Selecione mais um dia ou tente escolher outro horário de devolução.",
+          "error_max_days": "Lamentamos, o número máximo de dias é {{maxDays}}. Selecione menos dias.",
           "validations": {
             "pickupPlaceRequired": "Local de entrega obrigatório",
             "dateFromRequired": "Data necessária",
@@ -6164,6 +6264,9 @@ define("commonTranslations", [], function () {
           }
         },
         "chooseProduct": {
+          "loadProduct": {
+            "error": "Lamentamos. Ocorreu um erro ao carregar o produto."
+          },
           "loadShoppingCart": {
             "error": "Lamentamos. Ocorreu um erro ao realizar a pesquisa."
           },
@@ -6189,6 +6292,9 @@ define("commonTranslations", [], function () {
           }
         },
         "complete": {
+          "loadExtra": {
+            "error": "Lamentamos. Ocorreu um erro ao carregar o extra."
+          },
           "loadShoppingCart": {
             "error": "Lamentamos. Ocorreu um erro ao carregar as informações."
           },
@@ -6214,6 +6320,8 @@ define("commonTranslations", [], function () {
               "minLength": "Mínimo de {{minlength}} caracteres",
               "customerNameRequired": "O nome do cliente é obrigatório",
               "customerSurnameRequired": "O sobrenome do cliente é obrigatório",
+              "customerCompanyNameRequired": "O nome da empresa é obrigatório",
+              "customerCompanyDocumentIdRequired": "O número do documento da empresa é obrigatório",
               "customerEmailRequired": "O e-mail do cliente é obrigatório",
               "customerEmailInvalidFormat": "Endereço de e-mail inválido",
               "customerEmailConfirmationRequired": "A confirmação do e-mail do cliente é necessária",
@@ -6347,15 +6455,15 @@ define("commonTranslations", [], function () {
           }
         },
         "planning": {
-          "api_conexion_error": "Desculpe, ocorreu um erro de conexão",
+          "api_conexion_error": "Lamentamos, ocorreu um erro de conexão",
           "no_schedules_found": "Nenhuma programação encontrada",
           "no_resources_found": "Nenhum recurso encontrado",
           "no_data_found": "Nenhum dado encontrado",
-          "generic_error": "Desculpe, ocorreu um erro."
+          "generic_error": "Lamentamos, ocorreu um erro."
         },
         "shiftPicker": {
           "no_data_found": "Nenhum dado encontrado",
-          "generic_error": "Desculpe, ocorreu um erro.",
+          "generic_error": "Lamentamos, ocorreu um erro.",
           "turn_not_available": "Esse turno não está disponível.",
           "min_max_units_error": "O número mínimo de unidades excede o máximo."
         }
