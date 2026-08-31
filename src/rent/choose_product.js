@@ -1089,7 +1089,8 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
           products: products,
           configuration: model.configuration,
           available: available,
-          i18next: i18next});
+          i18next: i18next,
+          settings: model.settings || {}});
         $('#product_listing').append(result);
       }
 
