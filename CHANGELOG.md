@@ -1,10 +1,15 @@
 # Changelog
 
-## [2.6.5] - 2026.06.23
+## [2.6.6] - 2026.08.31
 
 ### Added
-- Engine translations for 5 new languages: Estonian, Finnish, Dutch, Polish & Portuguese.
-- Ability to show/hide Franchise and Deposits in fron end.
+- Engine translations for five new languages: Estonian, Finnish, Dutch, Polish & Portuguese.
+- Franchise and Deposit visibility settings across reservation flows and product listings.
+
+### Fixed
+- Apply visibility settings to lazy-loaded products.
+- Complete i18next coverage across all 12 supported languages, including Datepicker locales.
+- Reuse the existing reservation selector translation keys and consolidate error-message courtesy formulas.
 
 ## [2.6.4] - 2026.06.16
 
