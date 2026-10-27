@@ -1,5 +1,15 @@
 # Changelog
 
+## [Unreleased]
+
+### Changed
+- Login: credentials in the request body, not in the URL (mybooking E63)
+
+### Added
+- Login: second factor step. When the server answers 202 the code form is shown (email code or
+  authenticator app), with "send a new code" and "back"; the `login` event is only fired with the final
+  result. Optional template `script_login_second_factor`.
+
 ## [2.6.4] - 2026.06.16
 
 ### Added
