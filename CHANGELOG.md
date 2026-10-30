@@ -10,6 +10,11 @@
   authenticator app), with "send a new code" and "back"; the `login` event is only fired with the final
   result. Optional template `script_login_second_factor`.
 
+## [2.6.6] - 2026.10.28
+
+### Added
+- Checkout login 2FA
+
 ## [2.6.4] - 2026.06.16
 
 ### Added
