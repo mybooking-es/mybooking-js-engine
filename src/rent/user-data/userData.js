@@ -388,7 +388,7 @@ require([
                 countriesDataSource,
                 countryModel,
                 true,
-                i18next.t('myUserData.select_country'),
+                i18next.t('myReservation.select_country'),
               );
             }
           }
@@ -443,7 +443,7 @@ require([
                 nationalitiesDataSource,
                 nationalityModel,
                 true,
-                i18next.t('myUserData.select_nationality'),
+                i18next.t('myReservation.select_nationality'),
               );
             }
           }
@@ -498,7 +498,7 @@ require([
                 countriesDataSource,
                 countryModel,
                 true,
-                i18next.t('myUserData.select_type_document'),
+                i18next.t('myReservation.select_type_document'),
               );
             }
           }
@@ -553,7 +553,7 @@ require([
                 countriesDataSource,
                 countryModel,
                 true,
-                i18next.t('myUserData.select_type_document'),
+                i18next.t('myReservation.select_type_document'),
               );
             }
           }
